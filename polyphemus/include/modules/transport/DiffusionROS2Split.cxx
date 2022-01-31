@@ -1125,7 +1125,7 @@ namespace Polyphemus
 	Array<T, 1> Matrix_x_tmp(Nx);
 	Array<T, 1> Matrix_xl_tmp(Nx);
 	Array<T, 1> Matrix_xu_tmp(Nx);
-	
+
 	Rho = AirDensity()(0, 0, Range::all());
 	DiffusionCoefficient =
 	  ZonalDiffusionCoefficient()(0, 0, Range::all());
@@ -1155,7 +1155,7 @@ namespace Polyphemus
 		  Rho = AirDensity()(k, j, Range::all());
 		  DiffusionCoefficient =
 		    ZonalDiffusionCoefficient()(k, j, Range::all());
-		
+
 		  // Rank of the indices of OrdConc has to match the one
 		  // defined in ScatterSlice_y_MPI.
 		  for (i = 0; i < Nx; i++)
@@ -1427,7 +1427,7 @@ namespace Polyphemus
     Concentration.GetArray() = res;
   }
 
-    
+
 } // namespace Polyphemus.
 
 

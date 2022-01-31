@@ -1,24 +1,24 @@
 C-----------------------------------------------------------------------
 C     Copyright (C) 2003-2007, ENPC - INRIA - EDF R&D
 C     Author(s): Kathleen Fahey and Bruno Sportisse
-C     
+C
 C     This file is part of the Variable Size Resolved Model (VSRM),
 C     based on the VSRM model of Carnegie Melon University.  It is a
 C     component of the air quality modeling system Polyphemus.
-C    
+C
 C     Polyphemus is developed in the INRIA - ENPC joint project-team
 C     CLIME and in the ENPC - EDF R&D joint laboratory CEREA.
-C    
+C
 C     Polyphemus is free software; you can redistribute it and/or modify
 C     it under the terms of the GNU General Public License as published
 C     by the Free Software Foundation; either version 2 of the License,
 C     or (at your option) any later version.
-C     
+C
 C     Polyphemus is distributed in the hope that it will be useful, but
 C     WITHOUT ANY WARRANTY; without even the implied warranty of
 C     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 C     General Public License for more details.
-C     
+C
 C     For more information, visit the Polyphemus web site:
 C     http://cerea.enpc.fr/polyphemus/
 C-----------------------------------------------------------------------
@@ -26,47 +26,47 @@ C-----------------------------------------------------------------------
       subroutine react(c,cmet,con,akre,rr,arytm)
 
 C------------------------------------------------------------------------
-C     
-C     -- DESCRIPTION 
-C     
-C     This routine computes the reaction rates for the 
+C
+C     -- DESCRIPTION
+C
+C     This routine computes the reaction rates for the
 C     aqueous-phase model.
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- INPUT VARIABLES
-C     
+C
 C     C     : concentration vector for aqueous model ([...]).
 C     CMET  : metal concentrations    ([...]).
 C     CON   : gas + ions    ([...]).
 C     AKRE  : kinetic rates.
-C     
+C
 C     -- INPUT/OUTPUT VARIABLES
-C     
+C
 C     -- OUTPUT VARIABLES
-C     
+C
 C     RR    : reaction rates.
 C     ARYTM : coefficient for the S(IV)+N(III) reaction (depends on pH).
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- REMARKS
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- MODIFICATIONS
-C     
+C
 C     1) Clean the IF statements with ELSEIF
 C     2) Remove GOTO and replace by IF statements.
 C     3) Optimize RR(109).
 C------------------------------------------------------------------------
-C     
+C
 C     -- AUTHOR(S)
-C     
-C     Kathleen Fahey, CEREA, , on the basis of the VSRM model 
+C
+C     Kathleen Fahey, CEREA, , on the basis of the VSRM model
 C     (Carneggie Mellon University).
 C     2005/10/3, cleaning and update, Bruno Sportisse, CEREA.
-C     
+C
 C------------------------------------------------------------------------
 
       IMPLICIT NONE
@@ -78,11 +78,11 @@ C------------------------------------------------------------------------
       double precision akre(120),rr(120)
       double precision arytm,ph,r1,r2
       double precision r3,r4,r5,sn
-      
+
       double precision hmsa
 
-c     Due to the fact that a transfer of the HMSA produced in the 
-c     aqueous phase to sulfate can skew the sulfate to an excessively 
+c     Due to the fact that a transfer of the HMSA produced in the
+c     aqueous phase to sulfate can skew the sulfate to an excessively
 c     high level, one should not turn on reaction 106 for the production
 c     of HMSA unless HMSA is treated as a regular species in the model.
 
@@ -173,7 +173,7 @@ c     RATE EXPRESSIONS FOR THE METAL CATALYSED OXIDATION OF S(IV)
 
       if (kiron .eq. 1) then
 c     ** PHENOMENOLOGICAL EXPRESSION BY MARTIN et al. (1991) **
-         
+
          if (ph .le. 3.d0) then
             rr(74)=6.d0*cmet(1)*con(1)/c(46)
          elseif (ph .gt. 3.d0 .AND. ph .le. 4.5d0) then
@@ -207,11 +207,11 @@ c     ** EXPRESSION BY MARTIN (1984) **
                r4=akre(76)*cmet(2)*cmet(2)/c(46)
                r5=akre(79)*cmet(1)*con(1)*con(1)
                rr(74)=r4+r5
-            else 
+            else
                rr(74)=akre(78)*cmet(2)*c(2)
             endif
          endif
-      endif   
+      endif
       rr(75)=akre(80)*c(3)*c(28)
       rr(76)=akre(81)*c(2)*c(28)
       rr(77)=akre(82)*c(40)*c(2)+akre(117)*c(40)*c(3)
@@ -251,10 +251,10 @@ c     ** EXPRESSION BY MARTIN (1984) **
          arytm=0.0d0
       end if
 
-      rr(106)=(akre(113)*c(16)*c(2)+akre(119)*c(16)*c(3))*hmsa 
+      rr(106)=(akre(113)*c(16)*c(2)+akre(119)*c(16)*c(3))*hmsa
       rr(107)=akre(114)*c(42)*c(45)
       rr(108)=akre(115)*c(42)*c(28)
       rr(109)=akre(116)*c(36)*chlorine*(c(2)+c(3))
-      
+
       return
       end

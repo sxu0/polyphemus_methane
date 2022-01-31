@@ -185,4 +185,3 @@ void TypeAabs(int n, double aero[], double f[])
   free(acshift);
   free(aerotmp);
 }
-

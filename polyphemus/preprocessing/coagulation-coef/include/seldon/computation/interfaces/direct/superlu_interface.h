@@ -27,14 +27,14 @@ extern void
 dCreate_Dense_Matrix(SuperMatrix *, int, int, double *, int,
 		     Stype_t, Dtype_t, Mtype_t);
 extern void
-dCreate_SuperNode_Matrix(SuperMatrix *, int, int, int, double *, 
+dCreate_SuperNode_Matrix(SuperMatrix *, int, int, int, double *,
 		         int *, int *, int *, int *, int *,
 			 Stype_t, Dtype_t, Mtype_t);
 extern void
 dCopy_Dense_Matrix(int, int, double *, int, double *, int);
 
-extern void    dgstrf (superlu_options_t*, SuperMatrix*, double, 
-                       int, int, int*, void *, int, int *, int *, 
+extern void    dgstrf (superlu_options_t*, SuperMatrix*, double,
+                       int, int, int*, void *, int, int *, int *,
                        SuperMatrix *, SuperMatrix *, SuperLUStat_t*, int *);
 extern int     dsnode_dfs (const int, const int, const int *, const int *,
 			     const int *, int *, int *, GlobalLU_t *);
@@ -52,8 +52,8 @@ extern int     dcolumn_bmod (const int, const int, double *,
 			   double *, int *, int *, int,
                            GlobalLU_t *, SuperLUStat_t*);
 extern int     dcopy_to_ucol (int, int, int *, int *, int *,
-                              double *, GlobalLU_t *);         
-extern int     dpivotL (const int, const double, int *, int *, 
+                              double *, GlobalLU_t *);
+extern int     dpivotL (const int, const double, int *, int *,
                          int *, int *, int *, GlobalLU_t *, SuperLUStat_t*);
 extern void    dpruneL (const int, const int *, const int, const int,
 			  const int *, const int *, int *, GlobalLU_t *);
@@ -71,12 +71,12 @@ extern void    dgsequ (SuperMatrix *, double *, double *, double *,
 			double *, double *, int *);
 extern void    dlaqgs (SuperMatrix *, double *, double *, double,
                         double, double, char *);
-extern void    dgscon (char *, SuperMatrix *, SuperMatrix *, 
+extern void    dgscon (char *, SuperMatrix *, SuperMatrix *,
 		         double, double *, SuperLUStat_t*, int *);
-extern double   dPivotGrowth(int, SuperMatrix *, int *, 
+extern double   dPivotGrowth(int, SuperMatrix *, int *,
                             SuperMatrix *, SuperMatrix *);
 extern void    dgsrfs (trans_t, SuperMatrix *, SuperMatrix *,
-                       SuperMatrix *, int *, int *, char *, double *, 
+                       SuperMatrix *, int *, int *, char *, double *,
                        double *, SuperMatrix *, SuperMatrix *,
                        double *, double *, SuperLUStat_t*, int *);
 
@@ -86,7 +86,7 @@ extern int     sp_dgemv (char *, double, SuperMatrix *, double *,
 			int, double, double *, int);
 
 extern int     sp_dgemm (char *, char *, int, int, int, double,
-			SuperMatrix *, double *, int, double, 
+			SuperMatrix *, double *, int, double,
 			double *, int);
 
 /*! \brief Memory-related */

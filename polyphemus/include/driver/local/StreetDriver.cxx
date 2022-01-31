@@ -86,7 +86,7 @@ namespace Polyphemus
         OutputSaver.InitStep(Model);
 
         Model.Forward();
-        
+
         OutputSaver.Save(Model);
         Model.OutputSaver();
       }

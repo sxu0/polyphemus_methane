@@ -294,7 +294,7 @@ namespace Polyphemus
     int GetNgroup_aer() const;
     int GetNcomposition_aer() const;
     int GetNsize_section_aer() const;
-    
+
     Date GetDate_min() const;
     int GetNz() const;
     T GetY_min() const;
@@ -311,7 +311,7 @@ namespace Polyphemus
     int GetSpeciesIndex(string species,
                         const vector<string>& ref_species_list) const;
     int GetSpeciesIndex(string field, string species);
-    
+
     vector<string> GetGroupList_aer() const;
     vector<string> GetSpeciesList_aer() const;
     string GetGroupName_aer(int i) const;
@@ -320,7 +320,7 @@ namespace Polyphemus
     bool IsSpecies_aer(string name) const;
     int GetSpeciesIndex_aer(string species) const;
     int GetGroupIndex_aer(string species) const;
-        
+
     const vector<string>& GetSpeciesList(string field);
     const vector<int>& GetBinsList_aer(string field);
 
@@ -436,8 +436,8 @@ namespace Polyphemus
     void InitData(string input_file, Date date_min_file, T Delta_t_file,
 		  Data<T, N>& FileData_i, Data<T, N>& FileData_f,
 		  Date date, int first_index, int second_index,
-		  Data<T, N>& CurrentData, int Nc);		  
-		  
+		  Data<T, N>& CurrentData, int Nc);
+
     template<int N>
     void UpdateData(string section, string field, Data<T, N>& FileData_i,
                     Data<T, N>& FileData_f, Data<T, N>& CurrentData,
@@ -492,7 +492,7 @@ namespace Polyphemus
 		    T Delta_t_file, Data<T, N>& FileData_i,
 		    Data<T, N>& FileData_f, int first_index, int second_index,
 		    Data<T, N>& CurrentData_i, Data<T, N>& CurrentData_f, int Nc);
-		    
+
     template<int N>
     void UpdateData(string section, string field, Data<T, N>& FileData_i,
                     Data<T, N>& FileData_f, Data<T, N>& CurrentData_i,

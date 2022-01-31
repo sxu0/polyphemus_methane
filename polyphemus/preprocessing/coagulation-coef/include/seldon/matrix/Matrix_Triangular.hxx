@@ -30,7 +30,7 @@
 
 namespace Seldon
 {
-  
+
 
   //! Triangular matrix stored in a full matrix.
   template <class T, class Prop, class Storage,
@@ -56,7 +56,7 @@ namespace Seldon
     Matrix_Triangular(int i, int j);
     Matrix_Triangular(const Matrix_Triangular<T, Prop,
 		      Storage, Allocator>& A);
-    
+
     // Destructor.
     ~Matrix_Triangular();
     void Clear();
@@ -120,7 +120,7 @@ namespace Seldon
     Matrix<T, Prop, ColUpTriang, Allocator>& operator= (const T0& x);
     template<class T0>
     Matrix<T, Prop, ColUpTriang, Allocator>& operator*= (const T0& x);
-    
+
   };
 
 
@@ -137,7 +137,7 @@ namespace Seldon
     Matrix<T, Prop, ColLoTriang, Allocator>& operator= (const T0& x);
     template<class T0>
     Matrix<T, Prop, ColLoTriang, Allocator>& operator*= (const T0& x);
-  
+
   };
 
 
@@ -154,7 +154,7 @@ namespace Seldon
     Matrix<T, Prop, RowUpTriang, Allocator>& operator= (const T0& x);
     template<class T0>
     Matrix<T, Prop, RowUpTriang, Allocator>& operator*= (const T0& x);
-    
+
   };
 
 

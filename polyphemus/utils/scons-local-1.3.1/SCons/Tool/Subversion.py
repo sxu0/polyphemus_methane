@@ -39,30 +39,32 @@ import SCons.Action
 import SCons.Builder
 import SCons.Util
 
+
 def generate(env):
     """Add a Builder factory function and construction variables for
     Subversion to an Environment."""
 
-    def SubversionFactory(repos, module='', env=env):
+    def SubversionFactory(repos, module="", env=env):
         """ """
         # fail if repos is not an absolute path name?
-        if module != '':
-            module = os.path.join(module, '')
-        act = SCons.Action.Action('$SVNCOM', '$SVNCOMSTR')
-        return SCons.Builder.Builder(action = act,
-                                     env = env,
-                                     SVNREPOSITORY = repos,
-                                     SVNMODULE = module)
+        if module != "":
+            module = os.path.join(module, "")
+        act = SCons.Action.Action("$SVNCOM", "$SVNCOMSTR")
+        return SCons.Builder.Builder(
+            action=act, env=env, SVNREPOSITORY=repos, SVNMODULE=module
+        )
 
-    #setattr(env, 'Subversion', SubversionFactory)
+    # setattr(env, 'Subversion', SubversionFactory)
     env.Subversion = SubversionFactory
 
-    env['SVN']      = 'svn'
-    env['SVNFLAGS'] = SCons.Util.CLVar('')
-    env['SVNCOM']   = '$SVN $SVNFLAGS cat $SVNREPOSITORY/$SVNMODULE$TARGET > $TARGET'
+    env["SVN"] = "svn"
+    env["SVNFLAGS"] = SCons.Util.CLVar("")
+    env["SVNCOM"] = "$SVN $SVNFLAGS cat $SVNREPOSITORY/$SVNMODULE$TARGET > $TARGET"
+
 
 def exists(env):
-    return env.Detect('svn')
+    return env.Detect("svn")
+
 
 # Local Variables:
 # tab-width:4

@@ -64,7 +64,7 @@
        ENDIF
  C
 @@ -2802,8 +2810,10 @@
- C 
+ C
        IF (MOLAL(1).GT.TINY .AND. MOLAL(5).GT.TINY) THEN
           CALL CALCHS4 (MOLAL(1), MOLAL(5), ZERO, DELTA)
 -         MOLAL(1) = MOLAL(1) - DELTA                     ! H+   EFFECT
@@ -77,7 +77,7 @@
        ENDIF
  C
 @@ -3111,8 +3121,10 @@
- C 
+ C
        IF (MOLAL(1).GT.TINY .AND. MOLAL(5).GT.TINY) THEN
           CALL CALCHS4 (MOLAL(1), MOLAL(5), ZERO, DELTA)
 -         MOLAL(1) = MOLAL(1) - DELTA     ! H+   AFFECT

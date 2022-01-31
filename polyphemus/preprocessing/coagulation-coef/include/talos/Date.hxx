@@ -79,7 +79,7 @@ namespace Talos
     bool LeapYear() const;
 
     int GetDate() const;
-    
+
     string GetDate(const string& format) const;
     template <class T>
     void GetDate(const string& format, T& date) const;

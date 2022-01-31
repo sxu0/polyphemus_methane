@@ -101,7 +101,7 @@ namespace Polyphemus
                 vector<string> species_list_aer,
                 vector<string> bin_list,
                 Array<T, 2> quantity_aer, bool is_volume_source, string source_id);
-  
+
     /*** Constructor for number computation ***/
     PuffAerosol(T time_puff, T velocity, T temperature, T diameter,
 		vector<T> quantity, T abscissa, T ordinate, T height,
@@ -110,8 +110,8 @@ namespace Polyphemus
                 vector<string> photolysis_reaction_list,
                 vector<string> species_list_aer,
                 vector<string> bin_list,
-                Array<T, 2> quantity_aer, 
-                Array<T, 1> quantity_aer_number, 
+                Array<T, 2> quantity_aer,
+                Array<T, 1> quantity_aer_number,
 		string source_id);
 
     PuffAerosol(T time_puff, T velocity, T temperature, T diameter,
@@ -122,8 +122,8 @@ namespace Polyphemus
                 vector<string> photolysis_reaction_list,
                 vector<string> species_list_aer,
                 vector<string> bin_list,
-                Array<T, 2> quantity_aer, 
-                Array<T, 1> quantity_aer_number, 
+                Array<T, 2> quantity_aer,
+                Array<T, 1> quantity_aer_number,
 		bool is_volume_source, string source_id);
 
     /*** Methods ***/

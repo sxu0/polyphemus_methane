@@ -33,7 +33,7 @@ You have to create a file with the list of hosts in this directory: \code
 import os, types, commands, socket, popen2
 
 ## The ssh command.
-ssh = 'ssh '
+ssh = "ssh "
 
 
 ###########################
@@ -77,7 +77,7 @@ def ToNum(str_value):
     elif IsNum(str_value):
         return float(str_value)
     else:
-        raise Exception, "\"" + str_value + "\" is not a number."
+        raise Exception, '"' + str_value + '" is not a number.'
 
 
 def remove(files):
@@ -89,6 +89,7 @@ def remove(files):
     for path in files:
         if os.path.isdir(path):
             import shutil
+
             shutil.rmtree(path)
         elif os.path.isfile(path):
             os.remove(path)
@@ -102,8 +103,7 @@ def remove(files):
 class Host:
     """Dedicated to host management."""
 
-
-    def __init__(self, host = socket.gethostname()):
+    def __init__(self, host=socket.gethostname()):
         """Initializes the name of the host and the number of CPUs.
 
         \param host the name of the host.
@@ -113,18 +113,15 @@ class Host:
             ## The name of the host.
             self.name = str(host[0])
             if len(host) == 1:
-                (_, o) = commands.getstatusoutput(ssh + self.name
-                                                  + ' ' + command_name)
+                (_, o) = commands.getstatusoutput(ssh + self.name + " " + command_name)
                 ## Number of CPU.
                 self.cpu = ToNum(o)
             else:
                 self.cpu = int(host[1])
         else:
             self.name = str(host)
-            (_, o) = commands.getstatusoutput(ssh + self.name
-                                              + ' ' + command_name)
+            (_, o) = commands.getstatusoutput(ssh + self.name + " " + command_name)
             self.cpu = ToNum(o)
-
 
     def LoadAverage(self):
         """Returns the load average.
@@ -134,14 +131,12 @@ class Host:
         if self.name == socket.gethostname():
             return os.getloadavg()
         else:
-            command = ssh + self.name + ' uptime'
+            command = ssh + self.name + " uptime"
             (s, o) = commands.getstatusoutput(command)
             if s == 0:
-                return tuple([ToNum(elt.strip(',')) for elt in \
-                                  o.split()[-3:]])
+                return tuple([ToNum(elt.strip(",")) for elt in o.split()[-3:]])
             else:
                 return (9999, 9999, 9999)
-
 
     def LoadAverageFile(self):
         """Returns the load average in a file.
@@ -149,14 +144,14 @@ class Host:
         @return the file where are the load averages.
         """
         import warnings
+
         warnings.simplefilter("ignore")
         tmp_file = os.tempnam("/tmp/")
         load_average = self.LoadAverage()
-        sfile = open(tmp_file, 'w')
-        sfile.write(' '.join([str(x) for x in load_average]))
+        sfile = open(tmp_file, "w")
+        sfile.write(" ".join([str(x) for x in load_average]))
         sfile.close()
         return tmp_file
-
 
     def LaunchInt(self, command):
         """Launches a command in interactive mode (using os.system).
@@ -166,7 +161,6 @@ class Host:
         """
         return os.system(command)
 
-
     def LaunchFG(self, command):
         """Launches a command in the foreground.
 
@@ -174,7 +168,6 @@ class Host:
         @return the output and the status of the command.
         """
         return commands.getstatusoutput(command)
-
 
     def LaunchBG(self, command):
         """Launches a command in the background and returns a Popen4 object.
@@ -186,8 +179,7 @@ class Host:
         command = "( " + command + "; ) &> /dev/null"
         return popen2.Popen4(command)
 
-
-    def LaunchWait(self, command, ltime, wait = 0.1):
+    def LaunchWait(self, command, ltime, wait=0.1):
         """Launches a command in the foreground and waits for its output for a
         given time after which the process is killed.
 
@@ -197,18 +189,19 @@ class Host:
         @return the output and the status of the command.
         """
         import time
+
         # Output is redirected.
         file_index = 0
         while os.path.exists("/tmp/output-" + str(file_index)):
             file_index += 1
-        file_tmp = open("/tmp/output-" + str(file_index), 'w')
+        file_tmp = open("/tmp/output-" + str(file_index), "w")
         file_tmp.close()
         file_name = "/tmp/output-" + str(file_index)
         os.chmod(file_name, 0600)
         command = "( " + command + "; ) &> " + file_name
         p = popen2.Popen4(command)
         t = time.time()
-        while (p.poll() == -1 and time.time() - t < ltime):
+        while p.poll() == -1 and time.time() - t < ltime:
             time.sleep(wait)
         s = p.poll()
         if s == -1:
@@ -216,7 +209,7 @@ class Host:
                 os.kill(p.pid, 9)
             except:
                 pass
-        o = open("/tmp/output-" + str(file_index), 'r').read()
+        o = open("/tmp/output-" + str(file_index), "r").read()
         os.remove(file_name)
         return (s, o)
 
@@ -229,55 +222,53 @@ class Host:
 class Network:
     """Dedicated to network management."""
 
-
-    def __init__(self, group = 'all'):
+    def __init__(self, group="all"):
         """Initiliazes the list of hosts.
 
         \param group the file name where there is a list of hosts.
         """
-        dsh_dir = os.environ['HOME'] + '/.dsh/'
+        dsh_dir = os.environ["HOME"] + "/.dsh/"
         ## A list of Host instances.
         self.hosts = []
         # Checking files and directories.
         if not os.path.isdir(dsh_dir):
-            raise Exception, "You must install 'dsh' and create " \
-                + "a directory '.dsh/group' in your home."
-        if not os.path.isfile(dsh_dir + 'group/' + group):
-            raise Exception, "You must create a file with the list "\
-                + "of your hosts. Unable to find \"" \
-                + dsh_dir + "group/" + group + "\"."
-        command = "dsh -g " + group  +" -r " + ssh + " -Mc " \
-            +"'cat /proc/cpuinfo | grep ^processor | wc -l'"
+            raise Exception, "You must install 'dsh' and create " + "a directory '.dsh/group' in your home."
+        if not os.path.isfile(dsh_dir + "group/" + group):
+            raise Exception, "You must create a file with the list " + 'of your hosts. Unable to find "' + dsh_dir + "group/" + group + '".'
+        command = (
+            "dsh -g "
+            + group
+            + " -r "
+            + ssh
+            + " -Mc "
+            + "'cat /proc/cpuinfo | grep ^processor | wc -l'"
+        )
         s, o = commands.getstatusoutput(command)
         # If the command does not work.
         if s != 0:
-            raise Exception, "The command \"" + command + "\" did not work. " \
-                + "The command returns:\n\n" \
-                + o
+            raise Exception, 'The command "' + command + '" did not work. ' + "The command returns:\n\n" + o
         o = o.split()
         # A loop to store the name and cpu hosts.
         for i in range(0, len(o), 2):
-            self.hosts.append(Host((o[i].strip(':'), o[i+1].strip(':'))))
+            self.hosts.append(Host((o[i].strip(":"), o[i + 1].strip(":"))))
         ## The name of the file where there is the hosts list.
         self.group = group
 
-
     def PrintHostNames(self):
-        """Prints the name of hosts.
-        """
-        for host in self.hosts: print host.name
-
+        """Prints the name of hosts."""
+        for host in self.hosts:
+            print host.name
 
     def GetHostNames(self):
         """Returns the hosts names.
         @return the list of hosts.
         """
         l = []
-        for host in self.hosts: l.append(host.name)
+        for host in self.hosts:
+            l.append(host.name)
         return l
 
-
-    def LaunchInt(self, command, host = socket.gethostname()):
+    def LaunchInt(self, command, host=socket.gethostname()):
         """Launches a command in interactive mode (using os.system).
 
         \param command the name of the command.
@@ -289,10 +280,9 @@ class Network:
         if host.name == socket.gethostname():
             return os.system(command)
         else:
-            return os.system(ssh + host.name + " \"" + command + "\"")
+            return os.system(ssh + host.name + ' "' + command + '"')
 
-
-    def LaunchFG(self, command, host = socket.gethostname()):
+    def LaunchFG(self, command, host=socket.gethostname()):
         """Launches a command in the foreground.
 
         \param command the name of the command.
@@ -307,14 +297,11 @@ class Network:
             # # Assuming that there was a line break:
             # o += "\n"
         else:
-            (s, o) = commands.getstatusoutput(ssh + host.name \
-                                              + " \"" + command + "\"")
+            (s, o) = commands.getstatusoutput(ssh + host.name + ' "' + command + '"')
         # Note: "commands.getstatusoutput" removes the last '\n' if it exists!
         return (s, o)
 
-
-    def LaunchWait(self, command, ltime, wait = 0.1,
-                   host = socket.gethostname()):
+    def LaunchWait(self, command, ltime, wait=0.1, host=socket.gethostname()):
         """Launches a command in the foreground and waits for its output for a given
         time after which the process is killed.
 
@@ -325,24 +312,26 @@ class Network:
         @return the output and the status of the command.
         """
         import time
+
         if not isinstance(host, Host):
             host = Host(host)
         # Output is redirected.
         file_index = 0
         while os.path.exists("/tmp/output-" + str(file_index)):
             file_index += 1
-        file_tmp = open("/tmp/output-" + str(file_index), 'w')
+        file_tmp = open("/tmp/output-" + str(file_index), "w")
         file_tmp.close()
         file_name = "/tmp/output-" + str(file_index)
         os.chmod(file_name, 0600)
         if host.name == socket.gethostname():
             command = "( " + command + "; ) &> " + file_name
         else:
-            command = "( " + ssh + " " + host.name + " \"" \
-                      + command + "\"; ) &> " + file_name
+            command = (
+                "( " + ssh + " " + host.name + ' "' + command + '"; ) &> ' + file_name
+            )
         p = popen2.Popen4(command)
         t = time.time()
-        while (p.poll() == -1 and time.time() - t < ltime):
+        while p.poll() == -1 and time.time() - t < ltime:
             time.sleep(wait)
         s = p.poll()
         if s == -1:
@@ -350,10 +339,9 @@ class Network:
                 os.kill(p.pid, 9)
             except:
                 pass
-        o = open("/tmp/output-" + str(file_index), 'r').read()
+        o = open("/tmp/output-" + str(file_index), "r").read()
         os.remove(file_name)
         return (s, o)
-
 
     def LaunchBGTest(self):
         """Checks the LaunchBG function on all hosts."""
@@ -363,12 +351,9 @@ class Network:
             proc.append(self.LaunchBG(command, h))
         for p in proc:
             if p.poll() != 0 and p.poll() != -1:
-                raise Exception, "An error appears during the launching of " \
-                      + "the command \"" + command + "\" on host \"" \
-                      + h.name + "\"."
+                raise Exception, "An error appears during the launching of " + 'the command "' + command + '" on host "' + h.name + '".'
 
-
-    def LaunchBG(self, command, host = socket.gethostname()):
+    def LaunchBG(self, command, host=socket.gethostname()):
         """Launches a command in the background and returns a Popen4 object.
 
         \param command the name of the command.
@@ -382,10 +367,9 @@ class Network:
         if host.name == socket.gethostname():
             return popen2.Popen4(command)
         else:
-            return popen2.Popen4(ssh + host.name + " \"" + command + "\"")
+            return popen2.Popen4(ssh + host.name + ' "' + command + '"')
 
-
-    def LaunchScreen(self, command, host = socket.gethostname()):
+    def LaunchScreen(self, command, host=socket.gethostname()):
         """Launches a command in a screen.
 
         \param command the name of the command.
@@ -399,47 +383,45 @@ class Network:
             command = "screen -d -m " + command
         os.system(command)
 
-
-    def SendMail(self, subject, fromaddr, toaddr, msg = ""):
-        """Sends a mail.
-        """
+    def SendMail(self, subject, fromaddr, toaddr, msg=""):
+        """Sends a mail."""
         from email.MIMEText import MIMEText
+
         msg = MIMEText(msg)
-        msg['Subject'] = subject
-        msg['From'] = fromaddr
-        msg['To'] = toaddr
+        msg["Subject"] = subject
+        msg["From"] = fromaddr
+        msg["To"] = toaddr
         import smtplib
-        server = smtplib.SMTP('localhost')
+
+        server = smtplib.SMTP("localhost")
         server.sendmail(fromaddr, toaddr, msg.as_string())
         server.quit()
 
-
-    def SendMailAttach(self, subject, attachments, fromaddr, toaddr,
-                       msg = ""):
-        """Sends a mail with attachments.
-        """
+    def SendMailAttach(self, subject, attachments, fromaddr, toaddr, msg=""):
+        """Sends a mail with attachments."""
         from email.MIMEMultipart import MIMEMultipart
         from email.MIMEText import MIMEText
+
         tmp = MIMEMultipart()
         tmp.attach(MIMEText(msg))
         msg = tmp
-        msg['Subject'] = subject
-        msg['From'] = fromaddr
-        msg['To'] = toaddr
+        msg["Subject"] = subject
+        msg["From"] = fromaddr
+        msg["To"] = toaddr
         if type(attachments) == types.StringType:
-            attached_file = open(attachments, 'rb')
+            attached_file = open(attachments, "rb")
             msg.attach(MIMEText(attached_file.read()))
             attached_file.close()
         else:
             for attachment in attachments:
-                attached_file = open(attachment, 'rb')
+                attached_file = open(attachment, "rb")
                 msg.attach(MIMEText(attached_file.read()))
                 attached_file.close()
         import smtplib
-        server = smtplib.SMTP('localhost')
+
+        server = smtplib.SMTP("localhost")
         server.sendmail(fromaddr, toaddr, msg.as_string())
         server.quit()
-
 
     def GetLoadAverages(self):
         """Returns the load averages.
@@ -447,20 +429,19 @@ class Network:
         @return a list of hosts with the load averages for the past 1 minute.
         """
         result = []
-        command = "dsh -r " + ssh + " -Mc -g "+ self.group \
-            + " 'echo `hostname` `uptime`'"
+        command = (
+            "dsh -r " + ssh + " -Mc -g " + self.group + " 'echo `hostname` `uptime`'"
+        )
         status, out = commands.getstatusoutput(command)
         # If the command does not work.
         if status != 0:
-            raise Exception, "Unable to launch the command: \"" + command \
-                  + "\"."
+            raise Exception, 'Unable to launch the command: "' + command + '".'
         # A loop for every hosts to pick the load averages.
         for line in out.split("\n"):
-            name = line.split()[0].strip(':')
-            load_average = ToNum(line.split()[-3].strip(','))
+            name = line.split()[0].strip(":")
+            load_average = ToNum(line.split()[-3].strip(","))
             result.append((name, load_average))
         return result
-
 
     def GetAvailableHosts(self):
         """Returns the available hosts.
@@ -478,8 +459,7 @@ class Network:
                 result.append((host.name, int(host.cpu - avr + 0.5)))
         return result
 
-
-    def GetAvailableHost(self, load_limit = 0.3):
+    def GetAvailableHost(self, load_limit=0.3):
         """Return an available host.
 
         \param load_limit the limit time to load.
@@ -496,8 +476,7 @@ class Network:
             result = host[load_list.index(load_min)]
         return result
 
-
-    def GetRandomAvailableHost(self, load_limit = 0.3):
+    def GetRandomAvailableHost(self, load_limit=0.3):
         """Returns a random available host.
 
         \param load_limit the limit time to load.
@@ -510,6 +489,7 @@ class Network:
                 host_available.append(host)
         if len(host_available) != 0:
             import random
+
             return host_available[random.randint(0, len(host_available) - 1)].name
         else:
             return self.hosts[0].name
@@ -520,4 +500,4 @@ if __name__ == "__main__":
     net = Network()
     print "# Name \t # CPU"
     for host in net.hosts:
-        print(host.name + '\t' + str(host.cpu))
+        print (host.name + "\t" + str(host.cpu))

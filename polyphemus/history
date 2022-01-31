@@ -15,14 +15,14 @@ Version 1.11.1 (2019-08-02)
 - Updated Aerosol-SCRAM-SOAP (Karine Sartelet)
      + H2O is updated to better represent ELVOC and organic nitrate.
 - Updated plume-in-grid-aerosol (Valentin Raffort)
-     + SOAP is set to the default SOA model in plume-in-grid-aerosol 
+     + SOAP is set to the default SOA model in plume-in-grid-aerosol
      + Added Forward_Gaussien that is called only if rank = 0.
      + Added a new option Save_Gaussian_concentrations. Mass in puffs had been
       systemically injected in the corresponding grids at the moment of
       saving
      + Corrected the computation of interaction volume of puffs to avoid a
        negative overlap_volume.
-       
+
 ** Bug fixes
 
 - Default arguments in template are removed to meet C++ standard.
@@ -56,7 +56,7 @@ Version 1.10 (2018-04-10)
 
 - When we use the compile flag profile=debug, we got a compile error using
   gcc-4.6 (the version we tested). This is the issue of the backtrace library
-  which is available in gcc-4.8 or later.   
+  which is available in gcc-4.8 or later.
 - SeldonData: SetNaN and InitData should be carefully revised. They are
   currently unused because of a conflict with Resize function.
 - Add ifcore in scons/scons_ext/utils.py for Intel compiler.

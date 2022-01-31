@@ -1,63 +1,63 @@
 C-----------------------------------------------------------------------
 C     Copyright (C) 2007, ENPC - INRIA - EDF R&D
 C     Author(s): Maryline Tombette
-C     
+C
 C     This file is part of the Simple Aqueous model (SIMPLE_AQUEOUS), a
 C     component of the air quality modeling system Polyphemus.
-C    
+C
 C     Polyphemus is developed in the INRIA - ENPC joint project-team
 C     CLIME and in the ENPC - EDF R&D joint laboratory CEREA.
-C    
+C
 C     Polyphemus is free software; you can redistribute it and/or modify
 C     it under the terms of the GNU General Public License as published
 C     by the Free Software Foundation; either version 2 of the License,
 C     or (at your option) any later version.
-C     
+C
 C     Polyphemus is distributed in the hope that it will be useful, but
 C     WITHOUT ANY WARRANTY; without even the implied warranty of
 C     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 C     General Public License for more details.
-C     
+C
 C     For more information, visit the Polyphemus web site:
 C     http://cerea.enpc.fr/polyphemus/
 C-----------------------------------------------------------------------
 
       subroutine newdist_simple(NS,dbf_aero,dsf_aero,fdistx,
      $     fdistx2,ifirstact)
-      
+
 C------------------------------------------------------------------------
-C     
-C     -- DESCRIPTION 
-C     
-C     This routine computes the activated distribution of aerosols 
+C
+C     -- DESCRIPTION
+C
+C     This routine computes the activated distribution of aerosols
 C     (before the aqueous-phase model). This is projected onto a
 C     fixed bimodal lognormal distribution.
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- INPUT VARIABLES
-C     
+C
 C     -- INPUT/OUTPUT VARIABLES
-C     
+C
 C     -- OUTPUT VARIABLES
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- REMARKS
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- MODIFICATIONS
-C     
+C
 C     Adapted from VSRM to the simple aqueous module.
 C     (Marilyne Tombette, 2007).
 C
 C------------------------------------------------------------------------
-C     
+C
 C     -- AUTHOR(S)
-C     
+C
 C     2005/10/3, Bruno Sportisse, CEREA.
-C     
+C
 C------------------------------------------------------------------------
 
       IMPLICIT NONE
@@ -101,8 +101,8 @@ C------------------------------------------------------------------------
       sumx = 0.d0
       sumx1 = 0.d0
       sumx2 = 0.d0
-      
-c     Normalize so fdist sums to 1      
+
+c     Normalize so fdist sums to 1
       do i = ifirstact,NS
          sumx = sumx + fracx(i)
          if(dsf_aero(i) .lt. dsep) then
@@ -123,4 +123,3 @@ c     Normalize so fdist sums to 1
 
       return
       end
-

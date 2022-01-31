@@ -40,9 +40,10 @@ import subprocess
 import SCons.Tool
 import SCons.Util
 
-cplusplus = __import__('c++', globals(), locals(), [])
+cplusplus = __import__("c++", globals(), locals(), [])
 
-compilers = ['g++']
+compilers = ["g++"]
+
 
 def generate(env):
     """Add Builders and construction variables for g++ to an Environment."""
@@ -50,38 +51,44 @@ def generate(env):
 
     cplusplus.generate(env)
 
-    env['CXX']        = env.Detect(compilers)
+    env["CXX"] = env.Detect(compilers)
 
     # platform specific settings
-    if env['PLATFORM'] == 'aix':
-        env['SHCXXFLAGS'] = SCons.Util.CLVar('$CXXFLAGS -mminimal-toc')
-        env['STATIC_AND_SHARED_OBJECTS_ARE_THE_SAME'] = 1
-        env['SHOBJSUFFIX'] = '$OBJSUFFIX'
-    elif env['PLATFORM'] == 'hpux':
-        env['SHOBJSUFFIX'] = '.pic.o'
-    elif env['PLATFORM'] == 'sunos':
-        env['SHOBJSUFFIX'] = '.pic.o'
+    if env["PLATFORM"] == "aix":
+        env["SHCXXFLAGS"] = SCons.Util.CLVar("$CXXFLAGS -mminimal-toc")
+        env["STATIC_AND_SHARED_OBJECTS_ARE_THE_SAME"] = 1
+        env["SHOBJSUFFIX"] = "$OBJSUFFIX"
+    elif env["PLATFORM"] == "hpux":
+        env["SHOBJSUFFIX"] = ".pic.o"
+    elif env["PLATFORM"] == "sunos":
+        env["SHOBJSUFFIX"] = ".pic.o"
     # determine compiler version
-    if env['CXX']:
-        #pipe = SCons.Action._subproc(env, [env['CXX'], '-dumpversion'],
-        pipe = SCons.Action._subproc(env, [env['CXX'], '--version'],
-                                     stdin = 'devnull',
-                                     stderr = 'devnull',
-                                     stdout = subprocess.PIPE)
-        if pipe.wait() != 0: return
+    if env["CXX"]:
+        # pipe = SCons.Action._subproc(env, [env['CXX'], '-dumpversion'],
+        pipe = SCons.Action._subproc(
+            env,
+            [env["CXX"], "--version"],
+            stdin="devnull",
+            stderr="devnull",
+            stdout=subprocess.PIPE,
+        )
+        if pipe.wait() != 0:
+            return
         # -dumpversion was added in GCC 3.0.  As long as we're supporting
         # GCC versions older than that, we should use --version and a
         # regular expression.
-        #line = pipe.stdout.read().strip()
-        #if line:
+        # line = pipe.stdout.read().strip()
+        # if line:
         #    env['CXXVERSION'] = line
         line = pipe.stdout.readline()
-        match = re.search(r'[0-9]+(\.[0-9]+)+', line)
+        match = re.search(r"[0-9]+(\.[0-9]+)+", line)
         if match:
-            env['CXXVERSION'] = match.group(0)
+            env["CXXVERSION"] = match.group(0)
+
 
 def exists(env):
     return env.Detect(compilers)
+
 
 # Local Variables:
 # tab-width:4

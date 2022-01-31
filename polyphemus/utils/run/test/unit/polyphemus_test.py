@@ -23,10 +23,9 @@ import io, unittest, sys
 
 
 class PolyphemusTest(unittest.TestCase):
-
     def testProgram(self):
         msg = "Hello World!"
-        program = Program("/bin/echo", arguments_format = msg)
+        program = Program("/bin/echo", arguments_format=msg)
 
         log = io.BytesIO()
         program.Run(log)
@@ -35,11 +34,10 @@ class PolyphemusTest(unittest.TestCase):
     def testPolyphemus(self):
         simulation = Polyphemus()
 
-        msg_list = [ "first message", "second message" ]
+        msg_list = ["first message", "second message"]
 
         for msg in msg_list:
-            simulation.AddProgram(Program("/bin/echo",
-                                          arguments_format = msg))
+            simulation.AddProgram(Program("/bin/echo", arguments_format=msg))
         log = io.BytesIO()
         simulation.Run(log)
         log_str = log.getvalue()
@@ -47,5 +45,5 @@ class PolyphemusTest(unittest.TestCase):
             self.assertTrue(msg in log_str)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main(argv=sys.argv)

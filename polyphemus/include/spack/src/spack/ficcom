@@ -13,13 +13,13 @@ c
 c
       dimension tabphot(ntabphotmax)
       dimension iphot(nrmax),iphotinv(nrmax),
-     &           ntab(nphotmax)   
-      dimension xtab(nphotmax,nangl)   
-      dimension ytab(nphotmax,nangl)   
-      dimension cpolg(nphotmax,nlo)  
+     &           ntab(nphotmax)
+      dimension xtab(nphotmax,nangl)
+      dimension ytab(nphotmax,nangl)
+      dimension cpolg(nphotmax,nlo)
       dimension slump(nespmax,nrmax),seff(nespmax,nrmax)
       character *12 nom
-c	
+c
       dimension nom(nespmax),inom(nespmax)
 c
 c-----------------------------------------------------
@@ -42,14 +42,14 @@ c-----------------------------------------------------
      &     iemonodi,irmonodi,iedimono,iphasecom,
      &     indthird(nrmax,nphase),nthird(nphase),ittb(nrmax),
      &     iprecalc(nrmax),iunitaq,iunitgas
-c     
+c
       common/photolyse/xtab,ytab,cpolg,tabphot,
      &            iphot,iphotinv,ntab,ntabphot,ireversetab,nrphot
 c
       common/especes/nom,inom
       common/dimens/nesp(nphase),nalg,ndiff(nphase)
-c        
-c    
+c
+c
       common/reducphys/xlphy(nespmax,5),indpur(nespmax,5),
      &         idlump(nespmax),indlump(nespmax),
      &         idifford(nespmax)
@@ -82,5 +82,5 @@ c
      &         iequil51(neqmax,5),jhpoh(nionx),
      &         iequil52(neqmax,5),iequil42(neqmax,2)
 
-		
-		
+
+

@@ -9,10 +9,9 @@ else:
 
 class CoefficientRepartitionBase(_core.CoefficientRepartitionBase):
     @staticmethod
-    def Init(configuration_file, config_type = "default"):
+    def Init(configuration_file, config_type="default"):
         _core.CoefficientRepartitionBase_Init(configuration_file, config_type)
 
 
-def Init(configuration_file, config_type = "default"):
+def Init(configuration_file, config_type="default"):
     CoefficientRepartitionBase.Init(configuration_file, config_type)
-

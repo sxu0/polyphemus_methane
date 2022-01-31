@@ -2,10 +2,10 @@ SUBROUTINE EULER_COUPLED_NORM(ns, nesp,eh2o, dbound, grand, d, diam, &
      fixed_density_aer, idens,kloc, alpha, LMD,DQLIMIT, Q_esp, N)
 
 !!$------------------------------------------------------------------------
-!!$     
+!!$
 !!$     -- INPUT VARIABLES
-!!$     
-!!$     
+!!$
+!!$
 !!$     ns             : number of sections
 !!$     nesp           : number of species
 !!$     dbound         : list of limit bound diameter [\mu m]
@@ -18,24 +18,24 @@ SUBROUTINE EULER_COUPLED_NORM(ns, nesp,eh2o, dbound, grand, d, diam, &
 !!$     d              : list of mean diameter before condensation/evaporation
 !!$     j              : time integration
 !!$     LMD            : list of liquid mass density of each species
-!!$ 
+!!$
 !!$     -- VARIABLES
-!!$     
+!!$
 !!$     Q              : Mass concentration
 !!$     rho            : density per bin
-!!$     Eps_machine    : tolerance due to the lack of precision of the machine     
+!!$     Eps_machine    : tolerance due to the lack of precision of the machine
 !!$     Q_1_esp, N_1_esp : Concentration stay in the current bin
 !!$     Q_2evap_esp, N_2evap_esp : Concentration give at the lower bin
 !!$     Q_2cond_esp, N_2cond_esp : Concentration give at the upper bin
 !!$
 !!$     -- INPUT/OUTPUT VARIABLES
-!!$      
+!!$
 !!$     N            : Number concentration by bin
 !!$     Qesp         : Mass concentration by bin and species
-!!$      
+!!$
 !!$     -- OUTPUT VARIABLES
-!!$     
-!!$     
+!!$
+!!$
 !!$------------------------------------------------------------------------
 
 
@@ -44,11 +44,11 @@ SUBROUTINE EULER_COUPLED_NORM(ns, nesp,eh2o, dbound, grand, d, diam, &
   INCLUDE "../INC/parameuler.inc"
 
   ! ------ Input
-  INTEGER, INTENT(in) :: ns,  nesp 
+  INTEGER, INTENT(in) :: ns,  nesp
   DOUBLE PRECISION, DIMENSION(ns+1),  INTENT(in) :: dbound
   INTEGER, DIMENSION(ns), INTENT(in) :: grand, kloc
   DOUBLE PRECISION, DIMENSION(ns), INTENT(in) :: diam, d
-  DOUBLE PRECISION, DIMENSION(ns,nesp), INTENT(in) :: alpha 
+  DOUBLE PRECISION, DIMENSION(ns,nesp), INTENT(in) :: alpha
   DOUBLE PRECISION, DIMENSION(ns), INTENT(in) :: LMD
   integer eh2o
   DOUBLE PRECISION, INTENT(in) :: fixed_density_aer
@@ -56,9 +56,9 @@ SUBROUTINE EULER_COUPLED_NORM(ns, nesp,eh2o, dbound, grand, d, diam, &
 
   ! ------ Input/Output
   DOUBLE PRECISION, DIMENSION(ns), INTENT(inout) :: N
-  DOUBLE PRECISION, DIMENSION(ns, nesp), INTENT(inout)  ::Q_esp 
+  DOUBLE PRECISION, DIMENSION(ns, nesp), INTENT(inout)  ::Q_esp
 
-  ! ------ 
+  ! ------
   INTEGER k, jesp
   DOUBLE PRECISION, DIMENSION(ns) :: rho
   DOUBLE PRECISION, DIMENSION(ns) :: Q
@@ -69,7 +69,7 @@ SUBROUTINE EULER_COUPLED_NORM(ns, nesp,eh2o, dbound, grand, d, diam, &
 
   DOUBLE PRECISION, DIMENSION(ns, nesp) :: N_esp
   DOUBLE PRECISION, DIMENSION(ns, nesp) :: Q_1_esp, N_1_esp
-  DOUBLE PRECISION, DIMENSION(ns, nesp) :: Q_2evap_esp, N_2evap_esp 
+  DOUBLE PRECISION, DIMENSION(ns, nesp) :: Q_2evap_esp, N_2evap_esp
   DOUBLE PRECISION, DIMENSION(ns, nesp) :: Q_2cond_esp, N_2cond_esp
   DOUBLE PRECISION, DIMENSION(ns) :: RQ, RN
   DOUBLE PRECISION, DIMENSION(nesp) :: QTOTin, QTOTout
@@ -164,7 +164,7 @@ SUBROUTINE EULER_COUPLED_NORM(ns, nesp,eh2o, dbound, grand, d, diam, &
            AQ = 1D0 -((dbound(1)/diam(k))*(dbound(1)/diam(k)) &
                 *(dbound(1)/diam(k)))
            BQ = 1D0 - ((dbound(1)/d(kloc(k)))*(dbound(1)/d(kloc(k))) &
-                *(dbound(1)/d(kloc(k))))   
+                *(dbound(1)/d(kloc(k))))
 
            AN = (diam(k)*diam(k)*diam(k)) &
                 -(dbound(1)*dbound(1)*dbound(1))
@@ -301,7 +301,7 @@ SUBROUTINE EULER_COUPLED_NORM(ns, nesp,eh2o, dbound, grand, d, diam, &
                  PRINT*, "DN",DN, "d(k+1)",d(k+1)
                  STOP
               ENDIF
-              
+
 
               IF ( Q_2evap_esp(kloc(k),jesp) .LT. 0D0 ) THEN
                  PRINT*, k,jesp,"Q_2evap_esp(k,jesp) negatif"
@@ -319,7 +319,7 @@ SUBROUTINE EULER_COUPLED_NORM(ns, nesp,eh2o, dbound, grand, d, diam, &
                  PRINT*, "DN",DN, "d(k+1)",d(k+1)
                  STOP
               ENDIF
-              
+
 
               IF ( Q_2cond_esp(kloc(k),jesp) .LT. 0D0 ) THEN
                  PRINT*, k,jesp,"Q_2cond_esp(k,jesp) negatif"
@@ -331,7 +331,7 @@ SUBROUTINE EULER_COUPLED_NORM(ns, nesp,eh2o, dbound, grand, d, diam, &
            ENDIF
         ENDDO
 
-     ELSE 
+     ELSE
         DO jesp =1,nesp
            IF ( N_1_esp(k,jesp) .LT. 0D0 ) THEN
               PRINT*,  k,"N_1(k) negatif here"
@@ -381,10 +381,10 @@ SUBROUTINE EULER_COUPLED_NORM(ns, nesp,eh2o, dbound, grand, d, diam, &
   !test de conservation du nombre et de la masse, se verifie si on ferme les bornes
 
 !!$  IF ( DABS (1D0 - (N_nouveau/N_ancien)) .GE. Eps_machine &
-!!$       .AND. N_ancien .GT. 0.d0) THEN            
+!!$       .AND. N_ancien .GT. 0.d0) THEN
 !!$     PRINT*,"non conservation du nombre total !!"
-!!$     PRINT*,"1 - N_nouveau/N_ancien ", 1D0 - N_nouveau/N_ancien   
-!!$     PRINT*, "N_nouveau", N_nouveau 
+!!$     PRINT*,"1 - N_nouveau/N_ancien ", 1D0 - N_nouveau/N_ancien
+!!$     PRINT*, "N_nouveau", N_nouveau
 !!$     PRINT*, "N_ancien", N_ancien
 !!$     !STOP
 !!$  ENDIF
@@ -396,16 +396,16 @@ SUBROUTINE EULER_COUPLED_NORM(ns, nesp,eh2o, dbound, grand, d, diam, &
            Q = 0.d0
            DO jesp = 1, nesp
               Q_esp(kloc(k)-1, jesp) = Q_esp(kloc(k)-1, jesp) &
-                   + Q_2evap_esp(kloc(k), jesp) 
+                   + Q_2evap_esp(kloc(k), jesp)
               N_esp(kloc(k)-1, jesp) = N_esp(kloc(k)-1, jesp) &
-                   + N_2evap_esp(kloc(k), jesp)             
+                   + N_2evap_esp(kloc(k), jesp)
            ENDDO
         ENDIF
      ELSE
         IF (kloc(k) .NE. ns) THEN
            DO jesp = 1, nesp
               Q_esp(kloc(k)+1, jesp) = Q_esp(kloc(k)+1, jesp) &
-                   + Q_2cond_esp(kloc(k), jesp) 
+                   + Q_2cond_esp(kloc(k), jesp)
               N_esp(kloc(k)+1, jesp) = N_esp(kloc(k)+1, jesp) &
                    + N_2cond_esp(kloc(k), jesp)
            ENDDO
@@ -429,8 +429,8 @@ SUBROUTINE EULER_COUPLED_NORM(ns, nesp,eh2o, dbound, grand, d, diam, &
         QTOTout(jesp) = QTOTout(jesp) + Q_esp(k, jesp)
      enddo
   enddo
-     
-  do k = 1, ns 
+
+  do k = 1, ns
      DO jesp=1, nesp
         if (abs(QTOTin(jesp)-QTOTout(jesp)) .GT. DQLIMIT .and. QTOTout(jesp) .GT. 0d0 ) then
            !print*, "normalisation : ", k
@@ -462,25 +462,25 @@ SUBROUTINE EULER_COUPLED_NORM(ns, nesp,eh2o, dbound, grand, d, diam, &
   !test de conservation du nombre et de la masse, se verifie si on ferme les bornes
 
 !!$  IF ( DABS (1D0 - (N_nouveau/N_ancien)) .GE. Eps_machine &
-!!$       .AND. N_ancien .GT. 0.d0) THEN            
+!!$       .AND. N_ancien .GT. 0.d0) THEN
 !!$     PRINT*,"non conservation du nombre total !!"
-!!$     PRINT*,"1 - N_nouveau/N_ancien ", 1D0 - N_nouveau/N_ancien   
-!!$     PRINT*, "N_nouveau", N_nouveau 
+!!$     PRINT*,"1 - N_nouveau/N_ancien ", 1D0 - N_nouveau/N_ancien
+!!$     PRINT*, "N_nouveau", N_nouveau
 !!$     PRINT*, "N_ancien", N_ancien
 !!$     STOP
 !!$  ENDIF
 
 !!$  IF ( DABS (1D0 - (Q_nouveau/Q_ancien)) .GE. Eps_machine &
-!!$       .AND. Q_ancien .GT. 0.d0) THEN            
+!!$       .AND. Q_ancien .GT. 0.d0) THEN
 !!$     PRINT*,"non conservation de la masse totale !!"
-!!$     PRINT*,"1 - Q_nouveau/Q_ancien ", 1D0 - Q_nouveau/Q_ancien   
-!!$     PRINT*, "Q_nouveau", Q_nouveau 
+!!$     PRINT*,"1 - Q_nouveau/Q_ancien ", 1D0 - Q_nouveau/Q_ancien
+!!$     PRINT*, "Q_nouveau", Q_nouveau
 !!$     PRINT*, "Q_ancien", Q_ancien
 !!$     STOP
 !!$  ENDIF
 
  !tests de limite minimum pour le nombre et le volume
-  
+
   DO k=1, ns
      rho(k) = fixed_density_aer
      if (IDENS .EQ. 1) CALL COMPUTE_DENSITY(ns,nesp,eh2o, TINYM, Q_esp,LMD,k,rho(k))
@@ -489,5 +489,3 @@ SUBROUTINE EULER_COUPLED_NORM(ns, nesp,eh2o, dbound, grand, d, diam, &
 
 
 END SUBROUTINE EULER_COUPLED_NORM
-
-

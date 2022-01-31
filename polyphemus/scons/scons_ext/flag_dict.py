@@ -23,8 +23,9 @@
 
 class FlagDict:
     """Holds a profile attributes."""
+
     def __init__(self):
-        self.__dict__['_dict'] = {}
+        self.__dict__["_dict"] = {}
 
     def __getattr__(self, name):
         """Returns an empty string when an attribute was not found."""
@@ -46,7 +47,7 @@ class FlagDict:
 
 
 # Example of use:
-if __name__ == '__main__':
+if __name__ == "__main__":
     example = FlagDict()
     example.a_flag += " -Wall"
     example.a_flag += " -Wpedantic"

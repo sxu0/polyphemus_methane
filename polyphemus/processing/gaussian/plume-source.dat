@@ -26,7 +26,7 @@ Temperature = 60.
 # Source diameter (m)
 Diameter = 2.7
 
-# For a volume source, 
+# For a volume source,
 # Width and Length should be provided.
 IsVolumeSource: no
 
@@ -60,7 +60,7 @@ Temperature = 60.
 # Source diameter (m)
 Diameter = 2.7
 
-# For a volume source, 
+# For a volume source,
 # Width and Length should be provided.
 IsVolumeSource: no
 

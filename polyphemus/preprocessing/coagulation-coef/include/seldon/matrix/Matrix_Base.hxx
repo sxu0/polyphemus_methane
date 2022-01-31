@@ -30,7 +30,7 @@
 namespace Seldon
 {
 
-  
+
   //! Base class for all matrices.
   /*!
     It stores some data and matrix dimensions. It defines basic
@@ -66,7 +66,7 @@ namespace Seldon
     Matrix_Base();
     explicit Matrix_Base(int i, int j);
     Matrix_Base(const Matrix_Base<T, Allocator>& A);
-    
+
     // Destructor.
     ~Matrix_Base();
 

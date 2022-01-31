@@ -30,7 +30,7 @@
 
 namespace Seldon
 {
-  
+
 
   //! Hermitian packed matrix class.
   template <class T, class Prop, class Storage,
@@ -118,9 +118,9 @@ namespace Seldon
     Matrix<T, Prop, ColHermPacked, Allocator>& operator= (const T0& x);
     template<class T0>
     Matrix<T, Prop, ColHermPacked, Allocator>& operator*= (const T0& x);
-    
+
     void Resize(int i, int j);
-    
+
   };
 
 
@@ -137,9 +137,9 @@ namespace Seldon
     Matrix<T, Prop, RowHermPacked, Allocator>& operator= (const T0& x);
     template<class T0>
     Matrix<T, Prop, RowHermPacked, Allocator>& operator*= (const T0& x);
-    
+
     void Resize(int i, int j);
-    
+
   };
 
 

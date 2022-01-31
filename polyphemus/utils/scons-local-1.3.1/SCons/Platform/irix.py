@@ -34,8 +34,10 @@ __revision__ = "src/engine/SCons/Platform/irix.py 5110 2010/07/25 16:14:38 bdeeg
 
 import posix
 
+
 def generate(env):
     posix.generate(env)
+
 
 # Local Variables:
 # tab-width:4

@@ -39,8 +39,9 @@ ops.GetInt("death_age", "v >= 0 and v < 150")
 
 ops.GetString("one_composition", "ops_in(v, {'Messiah', 'Water Music'})")
 
-ops.GetVectInt("compositions.concerti_grossi_op_6",
-               "(v % 2 == 0 or v % 2 == 1) and v < 13")
+ops.GetVectInt(
+    "compositions.concerti_grossi_op_6", "(v % 2 == 0 or v % 2 == 1) and v < 13"
+)
 
 ### Default values
 
@@ -51,14 +52,15 @@ ops.GetBool("Show_compositions", "", True)
 
 # Lua functions may be called from the Python interface. The type of the input
 # parameters and the returned value must be appended to 'Apply'.
-print "Call to function \"sum\":", ops.ApplyInt("sum", 1, 2, 3)
+print 'Call to function "sum":', ops.ApplyInt("sum", 1, 2, 3)
 
 # If the function has many input parameters, or if it has more than one
 # returned value, Python lists may be used. One may simply call
 # 'Apply{TypeIn}{TypeOut}' where 'TypeIn' is the type of the input parameters
 # and 'TypeOut' is the type of the returned values.
-print "Call to function \"sum_product\":", \
-    ops.ApplyDoubleDouble("sum_product", [1., 2.5, 3.])
+print 'Call to function "sum_product":', ops.ApplyDoubleDouble(
+    "sum_product", [1.0, 2.5, 3.0]
+)
 
 ### Saving the configuration
 

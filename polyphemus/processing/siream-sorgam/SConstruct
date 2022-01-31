@@ -84,7 +84,7 @@ for chemistry in chemistry_list:
 
             # Hack in Polair3DChemistry.
             preprocessor_defines = ["POLYPHEMUS_WITH_AEROSOL_MODULE"]
-            # build_flavor = ["aer"]            
+            # build_flavor = ["aer"]
             build_flavor = []
 
             program_suffix = [chemistry]

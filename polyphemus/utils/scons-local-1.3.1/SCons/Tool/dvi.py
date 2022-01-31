@@ -34,9 +34,10 @@ import SCons.Tool
 
 DVIBuilder = None
 
+
 def generate(env):
     try:
-        env['BUILDERS']['DVI']
+        env["BUILDERS"]["DVI"]
     except KeyError:
         global DVIBuilder
 
@@ -44,18 +45,22 @@ def generate(env):
             # The suffix is hard-coded to '.dvi', not configurable via a
             # construction variable like $DVISUFFIX, because the output
             # file name is hard-coded within TeX.
-            DVIBuilder = SCons.Builder.Builder(action = {},
-                                               source_scanner = SCons.Tool.LaTeXScanner,
-                                               suffix = '.dvi',
-                                               emitter = {},
-                                               source_ext_match = None)
+            DVIBuilder = SCons.Builder.Builder(
+                action={},
+                source_scanner=SCons.Tool.LaTeXScanner,
+                suffix=".dvi",
+                emitter={},
+                source_ext_match=None,
+            )
 
-        env['BUILDERS']['DVI'] = DVIBuilder
+        env["BUILDERS"]["DVI"] = DVIBuilder
+
 
 def exists(env):
     # This only puts a skeleton Builder in place, so if someone
     # references this Tool directly, it's always "available."
     return 1
+
 
 # Local Variables:
 # tab-width:4

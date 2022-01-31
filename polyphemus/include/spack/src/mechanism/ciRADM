@@ -34,7 +34,7 @@ MGLY          72.
 DCB           87.
 ONIT         119.
 PAN          121.
-TPAN         147. 
+TPAN         147.
 OP1           48.
 OP2           62.
 PAA           76.
@@ -63,9 +63,8 @@ XNO2          1.
 
 ! The following species are not taken into account for gas-phase:
 ! CO2 (mass = 44.)
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! NH3 and HCL : not in RADM (BUT TO BE ADDED FOR AEROSOLS !!!!)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ! mass (XNO2) not specified.
-

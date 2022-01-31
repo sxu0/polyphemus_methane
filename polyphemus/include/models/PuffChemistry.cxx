@@ -47,7 +47,7 @@ namespace Polyphemus
 				  T ordinate, T height, T source_water, T volume_prev,
 				  vector<string> species_list,
 				  vector<string> photolysis_reaction_list, string source_id):
-    Puff<T>(release_time, velocity,  temperature, diameter, 
+    Puff<T>(release_time, velocity,  temperature, diameter,
 	    0., abscissa, ordinate, height, source_water, volume_prev, 0, source_id),
     quantity_list(quantity), species_list(species_list),
     photolysis_reaction_list(photolysis_reaction_list)

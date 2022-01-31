@@ -68,8 +68,8 @@ contains
 !     index_second: original data of second index of coagulation couple
 !     coefficient: original data of coefficients
 !
-!------------------------------------------------------------------------   
-    implicit none 
+!------------------------------------------------------------------------
+    implicit none
 
     integer:: coef_size
     integer:: Ncoef
@@ -90,7 +90,7 @@ contains
     allocate(repartition_coefficient_nc(N_size))
 
     Nc_id=1!index of original data
-    
+
     do i = 1, N_size
       Ncoef=Ncoefficient(i)
       index1_repartition_coefficient_nc(i)%n = Ncoef
@@ -99,7 +99,7 @@ contains
       allocate(index1_repartition_coefficient_nc(i)%arr(Ncoef))
       allocate(index2_repartition_coefficient_nc(i)%arr(Ncoef))
       allocate(repartition_coefficient_nc(i)%arr(Ncoef))
-      
+
 	!Problem: In NetCDF index of bin start from 0; However, in fortran index of bin start from 1
       do j= 1, Ncoef
 	index1_repartition_coefficient_nc(i)%arr(j)=index_first(Nc_id)+1
@@ -109,7 +109,7 @@ contains
       enddo
 
     end do
-    
+
     do j = 1, N_size
       Ncfix=repartition_coefficient_nc(j)%n
       Ncoef=Ncfix
@@ -145,7 +145,7 @@ contains
 	endif
       enddo
     end do
-    
+
   end subroutine ReadCoefficient
 
   subroutine check_repart_coeff()
@@ -162,7 +162,7 @@ contains
     implicit none
     integer::k,i,j,l
     double precision:: sumcr(N_size,N_size)
-    
+
     sumcr=0.d0
     do k=1,N_size
       do l=1,repartition_coefficient(k)%n
@@ -171,8 +171,8 @@ contains
 	sumcr(i,j)=sumcr(i,j)+repartition_coefficient(k)%arr(l)
       enddo
     enddo
-    
-    do k=1,N_size 
+
+    do k=1,N_size
       do l=1,repartition_coefficient(k)%n
 	i=index1_repartition_coefficient(k)%arr(l)! index of grid 1
 	j=index2_repartition_coefficient(k)%arr(l)! index of grid 2
@@ -182,7 +182,7 @@ contains
 	  endif
 	endif
       enddo
-    enddo    
+    enddo
   end subroutine
 
   subroutine DeallocateCoefficientRepartition()
@@ -195,7 +195,7 @@ contains
 !
 !     -- INPUT VARIABLES
 !
-!------------------------------------------------------------------------  
+!------------------------------------------------------------------------
     implicit none
 
     integer :: j
@@ -205,7 +205,7 @@ contains
        deallocate (index1_repartition_coefficient(j)%arr)
        deallocate (index2_repartition_coefficient(j)%arr)
        deallocate (repartition_coefficient_nc(j)%arr)
-       deallocate (index1_repartition_coefficient_nc(j)%arr)       
+       deallocate (index1_repartition_coefficient_nc(j)%arr)
        deallocate (index2_repartition_coefficient_nc(j)%arr)
     end do
 
@@ -215,9 +215,9 @@ contains
     deallocate (repartition_coefficient_nc)
     deallocate (index1_repartition_coefficient_nc)
     deallocate (index2_repartition_coefficient_nc)
-    
+
   end subroutine DeallocateCoefficientRepartition
-  
-  
+
+
 
 end module bCoefficientRepartition

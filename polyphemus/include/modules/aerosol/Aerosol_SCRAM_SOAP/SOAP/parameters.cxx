@@ -6,7 +6,7 @@
 #include "properties.hxx"
 
 using namespace soap;
-  
+
 void system_coupling(model_config &config, vector<species>& surrogate)
 {
   //Check if the system is coupled (at least a species condense on both phases) and give the
@@ -50,7 +50,7 @@ void system_coupling(model_config &config, vector<species>& surrogate)
 
 void system_aiomfac(model_config &config, vector<species>& surrogate)
 {
-  //Create the matrixes for the aiomfac computation 
+  //Create the matrixes for the aiomfac computation
   //Parameters for the aiomfac computation of long ranges and medium ranges interactions
   // Value comes from Zuend et al. (ACP 2008) and Zuend et al. (ACP 2011)
   int i,j,k,l;
@@ -108,7 +108,7 @@ void system_aiomfac(model_config &config, vector<species>& surrogate)
     { 0.0215532, 0.0       , 0.0153214 , 0.0       , 0.00759735, 0.0       , 0.0       , 0.0       , 0.0       , 0.0       , 0.0       , 0.0       }, //HSO4-
     { 0.286343 , 0.114470  , 0.001891  , 0.004079  , 0.000373  ,0.122364   , 0.0       , 0.0       , 0.0       , 0.0       , 0.0       , 0.0       }};//SO4--
 
-  
+
   double b2ca[12][12]={
     { 0.0      ,   0.0     ,  0.0      , 0.0       , 0.0       , 0.0       , 0.0       , 0.243340  , 0.444859  , 0.122694  , 0.562966  , -5.99615  }, //H+
     { 0.0      ,   0.0     ,  0.0      , 0.0       , 0.0       , 0.0       , 0.0       , 0.206370  , 0.316480  , 0.300550  , 0.0       , 0.035401  }, //Li+
@@ -122,7 +122,7 @@ void system_aiomfac(model_config &config, vector<species>& surrogate)
     { 0.122694 , 0.300550  , -0.102546 , -0.413172 , -0.171746 , 0.767242  , 0.203681  ,  0.0      ,  0.0      , 0.0       , 0.0       , 0.0       }, //NO3-
     { 0.562966 , 0.0       , 0.400000  , 0.0       , 0.143012  , 0.0       , 0.0       ,  0.0      ,  0.0      , 0.0       , 0.0       , 0.0       }, //HSO4-
     { -5.99615 , 0.035401  , -0.424184 , -0.869936 , -0.906075 , -3.425876 , -0.696806 ,  0.0      ,  0.0      , 0.0       , 0.0       , 0.0       }}; //SO4--
-	  
+
   double b3ca[12][12];
   for (i=0; i<Nions; ++i)
     for (j=0; j<Nions; ++j)
@@ -138,14 +138,14 @@ void system_aiomfac(model_config &config, vector<species>& surrogate)
   b3ca[10][2]=0.423635;
   b3ca[3][9]=0.357227;  //K+  NO3-
   b3ca[9][3]=0.357227;
-  b3ca[4][7]=0.116801;  //NH4+ Cl- 
+  b3ca[4][7]=0.116801;  //NH4+ Cl-
   b3ca[7][4]=0.116801;
   b3ca[4][8]=0.143621;  //NH4+ Br-
   b3ca[8][4]=0.143621;
   b3ca[4][9]=0.260000;  //NH4+ NO3-
-  b3ca[9][4]=0.260000;  
+  b3ca[9][4]=0.260000;
   b3ca[4][10]=0.203954; //NH4+ HSO4-
-  b3ca[10][4]=0.203954; 
+  b3ca[10][4]=0.203954;
   b3ca[4][11]=0.545109; //NH4+ SO4--
   b3ca[11][4]=0.545109;
 
@@ -184,7 +184,7 @@ void system_aiomfac(model_config &config, vector<species>& surrogate)
 
   Rcc[4][0]=-0.154486;
   Rcc[0][4]=Rcc[4][0];
-  
+
   for (i=0; i<Nions; ++i)
     for (j=0; j<Nions; ++j)
       for (k=0; k<Nions; ++k)
@@ -235,7 +235,7 @@ void system_aiomfac(model_config &config, vector<species>& surrogate)
 
   //default structure (used if there is no group in the given structure of the molecule)
   double default_structure[45]={0.69,12.74,0.0,0.0, // group C
-                                0.0,0.0,0.0,0.0, // group C[OH] 
+                                0.0,0.0,0.0,0.0, // group C[OH]
                                 0.0,0.0,0.0,0.0, // group Clacohol
 				0.0,0.0,0.0,0.0, // group Clacohol-tail
                                 0.0,0.05,0.0,0.0,0.0, //group C=C
@@ -245,7 +245,7 @@ void system_aiomfac(model_config &config, vector<species>& surrogate)
                                 0.0, //group H2O
                                 0.15, //group ACOH
                                 0.15,0.0, //group ketone
-                                0.0,   //group aldehyde  
+                                0.0,   //group aldehyde
                                 0.0,0.0, //group ester
                                 0.30,0.0,0.0, //group ether
                                 1.01,  //group acid
@@ -262,11 +262,11 @@ void system_aiomfac(model_config &config, vector<species>& surrogate)
   bool composition_already_defined;
   int index=0;
   int idefault=-1;
-  
-  
+
+
   for (j=0;j<Ngroup_solute;++j)
     sum_group_solute[j] = 0.0;
-  
+
   for (i=0;i<n;++i)
     if (surrogate[i].hydrophilic and surrogate[i].compute_gamma_aq)
       {
@@ -277,7 +277,7 @@ void system_aiomfac(model_config &config, vector<species>& surrogate)
               sum_group_species += surrogate[i].groups[j];
               sum_group_solute[Group_unifac_to_aiomfac[j]] += surrogate[i].groups[j];
             }
-		
+
         if (sum_group_species == 0.0)
           {
             if (idefault < 0)
@@ -322,7 +322,7 @@ void system_aiomfac(model_config &config, vector<species>& surrogate)
                 ++index;
               }
           }
-	  
+
       }
     else
       surrogate[i].index_gamma_aiomfac = -1;
@@ -332,14 +332,14 @@ void system_aiomfac(model_config &config, vector<species>& surrogate)
   for (j=0;j<Ngroup_solute;++j)
     if (sum_group_solute[j]>0.0)
       config.ngroup_aiomfac++;
-  
+
   Array<int, 1> index_group_aiomfac;
   Array<int, 1> i_ion_aiomfac;
   index_group_aiomfac.resize(Ngroup_solute);
   i_ion_aiomfac.resize(Nions);
 
   index=0;
-  
+
   for (j=0;j<Ngroup_solute;++j)
     if (sum_group_solute[j]>0.0)
       {
@@ -352,11 +352,11 @@ void system_aiomfac(model_config &config, vector<species>& surrogate)
   for (i=0;i<Nions;++i)
     i_ion_aiomfac(i)=-1;
 
-  
+
   config.nion_aiomfac=0;
   for (i=0;i<n;++i)
     if (surrogate[i].is_organic==false and config.iH2O!=i and surrogate[i].is_inorganic_precursor==false)
-      {	
+      {
         surrogate[i].index_ion=config.nion_aiomfac;
         i_ion_aiomfac(surrogate[i].index_ion_aiomfac)=surrogate[i].index_ion;
         config.nion_aiomfac++;
@@ -381,22 +381,22 @@ void system_aiomfac(model_config &config, vector<species>& surrogate)
         for (j=0;j<config.ngroup_aiomfac;++j)
           config.groups_aiomfac(i,j)=0.0;
 
-	  
+
       for (i=0;i<n;++i)
         if (surrogate[i].hydrophilic and surrogate[i].compute_gamma_aq and
             surrogate[i].index_gamma_aiomfac>=0)
           {
-            sum_group_species = 0.0;	
-			
+            sum_group_species = 0.0;
+
             for (j=0;j<NFUNC;++j)
               if (Group_unifac_to_aiomfac[j]>=0)
                 sum_group_species += surrogate[i].groups[j];
-			
+
             double temp=0.0;
             for (j=0;j<config.ngroup_aiomfac;++j)
               temp+=config.groups_aiomfac(surrogate[i].index_gamma_aiomfac,j);
 
-			
+
             if (temp==0.0)
               for (j=0;j<NFUNC;++j)
                 if (Group_unifac_to_aiomfac[j]>=0)
@@ -422,9 +422,9 @@ void system_aiomfac(model_config &config, vector<species>& surrogate)
                   b1ki[j][surrogate[i].index_ion_aiomfac];
                 config.b2ki_aq(index_group_aiomfac(j),surrogate[i].index_ion)=
                   b2ki[j][surrogate[i].index_ion_aiomfac];
-				
+
               }
-	  
+
       for (j=0;j<Nions;++j)
         if (i_ion_aiomfac(j)>=0)
           for (k=0;k<Nions;++k)
@@ -447,7 +447,7 @@ void system_aiomfac(model_config &config, vector<species>& surrogate)
   for (i=0;i<config.nmol_aiomfac;++i)
     for (j=0;j<config.ngroup_aiomfac;++j)
       config.Mgroups_aiomfac(i,j)=0.0;
-  
+
   for (i=0;i<n;++i)
     if (surrogate[i].hydrophilic and surrogate[i].index_gamma_aiomfac>=0.0)
       if (i==idefault)
@@ -487,18 +487,18 @@ void system_aiomfac(model_config &config, vector<species>& surrogate)
 	      }
 	}
 
-		
+
 }
 
 void param_unifac(model_config &config, vector<species> &surrogate)
 {
-  //Create the matrixes for the unifac computation 
+  //Create the matrixes for the unifac computation
   //Parameters for the unifac computation of short ranges interactions
   // Parameters comes from :
   //       http://www.aim.env.uea.ac.uk/aim/info/UNIFACgroups.html
   //       Compernolle et al. (ACP 2009)
   //       Marcolli et al. (ACP 2005)
-  
+
   int NFUNC = 45;
   config.Z = 10.0;
   //                 CH3     CH2     CH      C      CH3[OH] CH2[0H]  CH[OH]  C[OH] CH3al   CH2alc   CHalc   Calc    CH3alct   CH2alct   CHalct   Calct   CH2=CH   CH=CH   CH2=C  CH=C     C=C      ACH    AC      ACCH3   ACCH2   ACCH    OH     H2O   ACOH    CH3CO   CH2CO   HCO    CH3COO   CH2COO  CH3O    CH2O    CHO     COOH   ACNO2  CH2ONO2 CHONO2  CONO2    CH2O-OH  CHO-OH   CO-OH
@@ -508,7 +508,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
   //                    H+    Li+   Na+   K+   NH4+  Mg2+  Ca2+  Cl-   Br-   NO3-  HSO4-  SO4--
   double RGions[12] = {1.78, 0.61, 0.38, 0.44, 0.69, 5.44, 2.24, 0.99, 1.25, 0.95, 1.65,  3.34};
   double QGions[12] = {2.70, 0.99, 0.62, 0.58, 0.78, 8.35, 3.40, 0.99, 1.16, 0.97, 1.40,  3.96};
-    
+
 
   //matrix of interactions between groups
   // CH3     CH2     CH      C      CH3[OH] CH2[0H]  CH[OH]  C[OH] CH3alc   CH2alc   CHalc   Calc    CH3alct   CH2alct   CHalct   Calct   CH2=CH   CH=CH   CH2=C  CH=C     C=C      ACH    AC    ACCH3   ACCH2  ACCH   OH     H2O   ACOH    CH3CO   CH2CO   HCO    CH3COO   CH2COO  CH3O    CH2O    CHO     COOH   ACNO2  CH2ONO2 CHONO2  CONO2    CH2O-OH  CHO-OH   CO-OH
@@ -544,7 +544,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
     {275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 217.50, 217.50, 217.50, 217.50, 217.50, 25.34, 25.34, 244.2, 244.2, 244.2, -451.6, -601.8, 0.0   ,-356.10,-356.10,-271.1, -449.4, -449.4, -162.9, -162.9, -162.9, 408.90,-413.48, 0.0   , 0.0   , 0.0   , 0.0    , 0.0   ,  0.0  }, //ACOH interactions with inorganic ions missing and nitrate and hydroperoxide groups are missing
     {26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 42.920, 42.920, 42.920, 42.920, 42.920, 140.1, 140.1, 365.8, 365.8, 365.8, 164.50, 472.50, -133.1, 0.0   , 0.0   ,-37.36, -213.7, -213.7, -103.6, -103.6, -103.6, 669.40, 548.50,-197.93,-197.93,-197.93, -350.58,-350.58,-350.58}, //CH3CO
     {26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 26.760, 42.920, 42.920, 42.920, 42.920, 42.920, 140.1, 140.1, 365.8, 365.8, 365.8, 164.50, 472.50, -133.1, 0.0   , 0.0   ,-37.36, -213.7, -213.7, -103.6, -103.6, -103.6, 669.40, 548.50,-197.93,-197.93,-197.93, -350.58,-350.58,-350.58}, //CH2CO
-    {505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 56.300, 56.300, 56.300, 56.300, 56.300, 23.39, 23.39, 106.0, 106.0, 106.0, 529.00, 480.80, -155.6, 128.00, 128.00, 0.0  , -110.3, -110.3, 304.10, 304.10, 304.10, 497.50, 0.0   , 402.00, 402.00, 402.00, -387.63,-387.63,-387.93}, //HCO interactions with inorganic ions set equal to the parameters of CH2CO groups	  
+    {505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 505.70, 56.300, 56.300, 56.300, 56.300, 56.300, 23.39, 23.39, 106.0, 106.0, 106.0, 529.00, 480.80, -155.6, 128.00, 128.00, 0.0  , -110.3, -110.3, 304.10, 304.10, 304.10, 497.50, 0.0   , 402.00, 402.00, 402.00, -387.63,-387.63,-387.93}, //HCO interactions with inorganic ions set equal to the parameters of CH2CO groups
     {114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 132.10, 132.10, 132.10, 132.10, 132.10, 85.84, 85.84,-170.0,-170.0,-170.0, 245.40, 200.80, -36.72, 372.20, 372.20,185.10, 0.0   , 0.0   , -235.7, -235.7, -235.7, 660.20, 0.0   , 1273.8, 1273.8, 1273.8, 928.33 , 928.33, 928.33}, //CH3COO interactions with inorganic ions missing
     {114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 114.80, 132.10, 132.10, 132.10, 132.10, 132.10, 85.84, 85.84,-170.0,-170.0,-170.0, 245.40, 200.80, -36.72, 372.20, 372.20,185.10, 0.0   , 0.0   , -235.7, -235.7, -235.7, 660.20, 0.0   , 1273.8, 1273.8, 1273.8, 928.33 , 928.33, 928.33}, //CH2COO interactions with inorganic ions missin
     {83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 26.510, 26.510, 26.510, 26.510, 26.510, 52.13, 52.13, 65.69, 65.69, 65.69, 237.70, -314.7, -178.5, 191.10, 191.10,-7.838, 461.30, 461.30, 0.0   , 0.0   , 0.0   , 664.60, 155.11, 1133.1, 1133.1, 1133.1, -438.74,-438.74,-438.74}, //CH3O interactions with inorganic ions missing
@@ -552,7 +552,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
     {83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 83.360, 26.510, 26.510, 26.510, 26.510, 26.510, 52.13, 52.13, 65.69, 65.69, 65.69, 237.70, -314.7, -178.5, 191.10, 191.10,-7.838, 461.30, 461.30, 0.0   , 0.0   , 0.0   , 664.60, 155.11, 1133.1, 1133.1, 1133.1, -438.74,-438.74,-438.74}, //CHO interactions with inorganic ions missing
     {315.30, 315.30, 315.30, 315.30, 315.30, 315.30, 315.30, 315.30, 315.30, 315.30, 315.30, 315.30, 315.30, 315.30, 315.30, 315.30, 1264.0, 1264.0, 1264.0, 1264.0, 1264.0, 62.32, 62.32, 89.86, 89.86, 89.86,-103.03,-145.88, -11.00, -297.8, -297.8,-165.5, -256.3, -256.3, -338.5, -338.5, -338.5, 0.0   , 0.0   ,-100.17,-100.17,-100.17, -501.23,-501.23,-501.23}, //COOH
     {5541.0, 5541.0, 5541.0, 5541.0, 5541.0, 5541.0, 5541.0, 5541.0, 5541.0, 5541.0, 5541.0, 5541.0, 5541.0, 5541.0, 5541.0, 5541.0, 0.0   , 0.0   , 0.0   , 0.0   , 0.0   ,1824.0,1824.0,-127.8,-127.8,-127.8, 561.60, 360.70, 815.12, -101.5, -101.5, 0.0  , 0.0   , 0.0   , 220.66, 220.66, 220.66, 0.0   , 0.0   , 0.0   , 0.0   , 0.0   , 0.0    , 0.0   ,  0.0  }, //ACNO2 interactions with numerous groups are missing
-    {-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-294.43,-294.43,-294.43,-294.43,-294.43, 0.0 , 0.0  , 0.0  , 0.0  , 0.0  , 818.97, 681.78, 0.0   , 188.72, 188.72,-179.38,-356.25,-356.25,-289.81,-289.81,-289.81,1173.3, 0.0   , 0.0   , 0.0   , 0.0   , 545.66 , 545.66, 545.66}, //CH2ONO2 interactions with several groups and inorganic ions are missing	
+    {-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-294.43,-294.43,-294.43,-294.43,-294.43, 0.0 , 0.0  , 0.0  , 0.0  , 0.0  , 818.97, 681.78, 0.0   , 188.72, 188.72,-179.38,-356.25,-356.25,-289.81,-289.81,-289.81,1173.3, 0.0   , 0.0   , 0.0   , 0.0   , 545.66 , 545.66, 545.66}, //CH2ONO2 interactions with several groups and inorganic ions are missing
     {-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-294.43,-294.43,-294.43,-294.43,-294.43, 0.0 , 0.0  , 0.0  , 0.0  , 0.0  , 818.97, 681.78, 0.0   , 188.72, 188.72,-179.38,-356.25,-356.25,-289.81,-289.81,-289.81,1173.3, 0.0   , 0.0   , 0.0   , 0.0   , 545.66 , 545.66, 545.66}, //CHONO2 interactions with several groups and inorganic ions are missing
     {-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-75.718,-294.43,-294.43,-294.43,-294.43,-294.43, 0.0 , 0.0  , 0.0  , 0.0  , 0.0  , 818.97, 681.78, 0.0   , 188.72, 188.72,-179.38,-356.25,-356.25,-289.81,-289.81,-289.81,1173.3, 0.0   , 0.0   , 0.0   , 0.0   , 545.66 , 545.66, 545.66}, //CONO2 interactions with several groups and inorganic ions are missing
     {-23.233,-23.233,-23.233,-23.233,-23.233,-23.233,-23.233,-23.233,-23.233,-23.233,-23.233,-23.233,-23.233,-23.233,-23.233,-23.233,-57.949,-57.949,-57.949,-57.949,-57.949, 0.0 , 0.0  , 0.0  , 0.0  , 0.0  , 342.92, 795.55, 0.0   , 380.94, 380.94, 408.88, -355.0, -355.0, 490.36, 490.36, 490.36,1479.0, 0.0   ,-86.279,-86.279,-86.279, 0.0    , 0.0   , 0.0   }, //CH2O-OH interactions with several groups and inorganic ions are missing
@@ -591,7 +591,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
     {275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 275.80, 0.0   , 0.0   , 0.0  , 0.0   , 0.0   , 200.00, 200.0, 0.0  , 0.0  , 0.0  ,  451.6, 98.265, 0.0   , 356.10, 356.10, 0.0  , 356.89, 356.89, 0.0   , 0.0   , 0.0  , 408.90,   0.0  , 0.0   , 0.0   , 0.0   , 0.0    , 0.0   ,  0.0  },  //ACOH interactions with inorganic ions missing and nitrate and hydroperoxide groups are missing
     {-50.597,-50.597,-50.597,-50.597,-50.597,-50.597,-50.597,-50.597,-50.597,-50.597,-50.597,-50.597,-50.597,-50.597,-50.597,-50.597, 0.0  , 0.0   , 0.0  , 0.0   , 0.0   ,-189.62,-189.62,0.0  , 0.0  , 0.0  , 200.00, 114.60, 200.00, 0.0   , 0.0   , 0.0  , 0.0   , 213.70, 0.0   , 0.0   , 0.0  , -669.35,  0.0  , 0.0   , 0.0   , 0.0   , 0.0    , 0.0   ,  0.0  }, //CH3CO
     {-50.597,-50.597,-50.597,-50.597,-50.597,-50.597,-50.597,-50.597,-50.597,-50.597,-50.597,-50.597,-50.597,-50.597,-50.597,-50.597, 0.0  , 0.0   , 0.0  , 0.0   , 0.0   ,-189.62,-189.62,0.0  , 0.0  , 0.0  , 200.00, 114.60, 200.00, 0.0   , 0.0   , 0.0  , 0.0   , 213.70, 0.0   , 0.0   , 0.0  , -669.35,  0.0  , 0.0   , 0.0   , 0.0   , 0.0    , 0.0   ,  0.0  }, //CH2CO
-    {505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 0.0   , 0.0   , 0.0   , 0.0   , 0.0   ,-200.0,-200.0, 0.0  , 0.0  , 0.0  ,-529.00, 480.80, 0.0   , 0.0   , 0.0   , 0.0  , 0.0   , 0.0   , 0.0   , 0.0   , 0.0  ,-497.50, 0.0   ,  0.0   , 0.0   , 0.0   , 0.0    , 0.0   ,  0.0  }, //HCO interactions with inorganic ions set equal to the parameters of CH2CO groups	  
+    {505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 505.69, 0.0   , 0.0   , 0.0   , 0.0   , 0.0   ,-200.0,-200.0, 0.0  , 0.0  , 0.0  ,-529.00, 480.80, 0.0   , 0.0   , 0.0   , 0.0  , 0.0   , 0.0   , 0.0   , 0.0   , 0.0  ,-497.50, 0.0   ,  0.0   , 0.0   , 0.0   , 0.0    , 0.0   ,  0.0  }, //HCO interactions with inorganic ions set equal to the parameters of CH2CO groups
     {200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 0.0   , 0.0   , 0.0   , 0.0   , 0.0   , 0.0  , 0.0  , 0.0  , 0.0  , 0.0  , 245.40, 77.173, 199.50,-116.27,-116.27, 0.0  , 0.0   , 0.0   , -217.7, -217.7, -217.7,-429.17, 0.0   , 0.0   , 0.0   , 0.0   , 0.0    , 0.0   , 0.0  }, //CH3COO interactions with inorganic ions missing
     {200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 0.0   , 0.0   , 0.0   , 0.0   , 0.0   , 0.0  , 0.0  , 0.0  , 0.0  , 0.0  , 245.40, 77.173, 199.50,-116.27,-116.27, 0.0  , 0.0   , 0.0   , -217.7, -217.7, -217.7,-429.17, 0.0   , 0.0   , 0.0   , 0.0   , 0.0    , 0.0   , 0.0  }, //CH2COO interactions with inorganic ions missing
     {200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 200.00, 0.0   , 0.0   , 0.0   , 0.0   , 0.0   ,-200.00,-200.00, 0.0, 0.0  , 0.0  , 237.70, -314.7, 0.0   , 0.0   , 0.0   , 0.0  ,-459.06,-459.06, 0.0   , 0.0   , 0.0   ,-664.60, 0.0   , 0.0   , 0.0   , 0.0   , 0.0    , 0.0   , 0.0  }, //CH3O interactions with inorganic ions missing
@@ -637,7 +637,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
     {0.97679, 0.97679, 0.97679, 0.97679, 0.97679, 0.97679, 0.97679, 0.97679, 0.97679, 0.97679, 0.97679, 0.97679, 0.97679, 0.97679, 0.97679, 0.97679, 0.0   , 0.0   , 0.0  , 0.0   , 0.0   , -0.49742,-0.49742, 0.0  , 0.0  , 0.0  ,0.18064,-0.20012, 0.0   , 0.0, 0.0, 0.0  , 0.0, 0.0, 0.0   , 0.0   , 0.0  , 0.17894,   0.0  , 0.0   , 0.0   , 0.0   , 0.0    , 0.0   ,  0.0  },  //ACOH interactions with inorganic ions missing and nitrate and hydroperoxide groups are missing
     {-0.8,-0.8,-0.8,-0.8,-0.8,-0.8,-0.8,-0.8,-0.8,-0.8,-0.8,-0.8,-0.8,-0.8,-0.8,-0.8, 0.0  , 0.0   , 0.0  , 0.0   , 0.0   ,0.0,0.0,0.0  , 0.0  , 0.0  , 0.8, -1.89, 0.0, 0.0   , 0.0   , 0.0  , 0.0   , 0.0, 0.0   , 0.0   , 0.0  , -2.6776,  0.0  , 0.0   , 0.0   , 0.0   , 0.0    , 0.0   ,  0.0  }, //CH3CO
     {-0.8,-0.8,-0.8,-0.8,-0.8,-0.8,-0.8,-0.8,-0.8,-0.8,-0.8,-0.8,-0.8,-0.8,-0.8,-0.8, 0.0  , 0.0   , 0.0  , 0.0   , 0.0   ,0.0,0.0,0.0  , 0.0  , 0.0  , 0.8, -1.89, 0.0, 0.0   , 0.0   , 0.0  , 0.0   , 0.0, 0.0   , 0.0   , 0.0  , -2.6776,  0.0  , 0.0   , 0.0   , 0.0   , 0.0    , 0.0   ,  0.0  }, //CH2CO
-    {-2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, 0.0   , 0.0   , 0.0   , 0.0   , 0.0   ,0.0,0.0, 0.0  , 0.0  , 0.0  ,-2.1160, 0.0, 0.0   , 0.0   , 0.0   , 0.0  , 0.0   , 0.0   , 0.0   , 0.0   , 0.0  ,-497.50, 0.0   ,  0.0   , 0.0   , 0.0   , 0.0    , 0.0   ,  0.0  }, //HCO interactions with inorganic ions set equal to the parameters of CH2CO groups	  
+    {-2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, -2.0228, 0.0   , 0.0   , 0.0   , 0.0   , 0.0   ,0.0,0.0, 0.0  , 0.0  , 0.0  ,-2.1160, 0.0, 0.0   , 0.0   , 0.0   , 0.0  , 0.0   , 0.0   , 0.0   , 0.0   , 0.0  ,-497.50, 0.0   ,  0.0   , 0.0   , 0.0   , 0.0    , 0.0   ,  0.0  }, //HCO interactions with inorganic ions set equal to the parameters of CH2CO groups
     {0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.0   , 0.0   , 0.0   , 0.0   , 0.0   , 0.0  , 0.0  , 0.0  , 0.0  , 0.0  , 0.9816, -0.8032, 0.0,0.0,0.0, 0.0  , 0.0   , 0.0   , -0.94280, -0.94280, -0.94280, 0.0, 0.0   , 0.0   , 0.0   , 0.0   , 0.0    , 0.0   , 0.0  }, //CH3COO interactions with inorganic ions missing
     {0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.0   , 0.0   , 0.0   , 0.0   , 0.0   , 0.0  , 0.0  , 0.0  , 0.0  , 0.0  , 0.9816, -0.8032, 0.0,0.0,0.0, 0.0  , 0.0   , 0.0   , -0.94280, -0.94280, -0.94280, 0.0, 0.0   , 0.0   , 0.0   , 0.0   , 0.0    , 0.0   , 0.0  }, //CH2COO interactions with inorganic ions missing
     {0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.0   , 0.0   , 0.0   , 0.0   , 0.0   ,0.8,0.8, 0.0, 0.0  , 0.0  , 0.95080, -1.2588, 0.0   , 0.0   , 0.0   , 0.0  ,-0.96038,-0.96038, 0.0   , 0.0   , 0.0   ,2.6560, 0.0   , 0.0   , 0.0   , 0.0   , 0.0    , 0.0   , 0.0  }, //CH3O interactions with inorganic ions missing
@@ -653,7 +653,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
 
   //default structure (used if there is no group in the given structure of the molecule)
   double default_structure[45]={0.69,12.74,0.0,0.0, // group C
-                                0.0,0.0,0.0,0.0, // group C[OH] 
+                                0.0,0.0,0.0,0.0, // group C[OH]
                                 0.0,0.0,0.0,0.0, // group Clacohol
                                 0.0,0.0,0.0,0.0, // group Clacohol-tail
                                 0.0,0.05,0.0,0.0,0.0, //group C=C
@@ -663,7 +663,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
                                 0.0, //group H2O
                                 0.15, //group ACOH
                                 0.15,0.0, //group ketone
-                                0.0,   //group aldehyde  
+                                0.0,   //group aldehyde
                                 0.0,0.0, //group ester
                                 0.30,0.0,0.0, //group ether
                                 1.01,  //group acid
@@ -671,7 +671,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
                                 0.0,0.0,0.0, //group NO3
                                 0.0,0.0,0.0}; //group CO-OH
 
-  int i,j,k; 
+  int i,j,k;
   int n=surrogate.size();
   // Unifac ions matrixes
   config.nion_unifac=0;
@@ -679,7 +679,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
     for (i=0;i<n;i++)
       if (surrogate[i].is_organic==false and surrogate[i].is_inorganic_precursor==false and i!=config.iH2O)
         config.nion_unifac++;
-  
+
   config.RGions.resize(config.nion_unifac);
   config.QGions.resize(config.nion_unifac);
   config.Lions.resize(config.nion_unifac);
@@ -695,7 +695,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
         }
 
   //modification of the matrixes to keep only necessary informations:
-  //      - remove unused groups in each phase    
+  //      - remove unused groups in each phase
   double sum_group[45];
   double sum_group_species;
   int idefault=-1;
@@ -704,7 +704,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
 
   for (j=0;j<NFUNC;++j)
     sum_group[j] = 0.0;
-  
+
   for (i=0;i<n;++i)
     if (surrogate[i].hydrophobic and surrogate[i].compute_gamma_org)
       {
@@ -714,7 +714,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
             sum_group_species += surrogate[i].groups[j];
             sum_group[j] += surrogate[i].groups[j];
           }
-		
+
         if (sum_group_species == 0.0)
           {
             if (idefault < 0)
@@ -756,7 +756,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
                 ++index;
               }
           }
-	  
+
       }
     else
       surrogate[i].index_gamma_org = -1;
@@ -765,18 +765,18 @@ void param_unifac(model_config &config, vector<species> &surrogate)
   for (j=0;j<NFUNC;++j)
     if (sum_group[j]>0.0)
       config.nfunc_org++;
-  
+
   config.nmol_org=index;
 
   if (config.nmol_org>0)
-    { 
+    {
       config.Inter_org.resize(config.nfunc_org,config.nfunc_org);
       config.InterB_org.resize(config.nfunc_org,config.nfunc_org);
       config.InterC_org.resize(config.nfunc_org,config.nfunc_org);
       config.groups_org.resize(config.nfunc_org,config.nmol_org);
       config.RG_org.resize(config.nfunc_org);
       config.QG_org.resize(config.nfunc_org);
-	  
+
       int index_group1=0;
       for (j=0;j<NFUNC;++j)
         if (sum_group[j]>0.0)
@@ -804,8 +804,8 @@ void param_unifac(model_config &config, vector<species> &surrogate)
               {
                 sum_group_species += surrogate[i].groups[j];
               }
-			
-			
+
+
             for (j=0;j<NFUNC;++j)
               if (sum_group[j]>0.0)
                 {
@@ -822,8 +822,8 @@ void param_unifac(model_config &config, vector<species> &surrogate)
       //Pre-calculation of some unifac parameters
       config.Rparam_org.resize(config.nmol_org);
       config.Qparam_org.resize(config.nmol_org);
-      config.Lparam_org.resize(config.nmol_org); 
-     
+      config.Lparam_org.resize(config.nmol_org);
+
       for (i=0;i<config.nmol_org;i++)
         {
           config.Rparam_org(i)=0.0;
@@ -835,17 +835,17 @@ void param_unifac(model_config &config, vector<species> &surrogate)
             }
           config.Lparam_org(i)=config.Z/2*(config.Rparam_org(i)-config.Qparam_org(i))-(config.Rparam_org(i)-1.0);
         }
-	  
-	  
+
+
     }
 
 
   index=0;
   idefault=-1;
-  
+
   for (j=0;j<NFUNC;++j)
     sum_group[j] = 0.0;
-  
+
   for (i=0;i<n;++i)
     if (surrogate[i].hydrophilic and surrogate[i].compute_gamma_aq)
       {
@@ -855,7 +855,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
             sum_group_species += surrogate[i].groups[j];
             sum_group[j] += surrogate[i].groups[j];
           }
-		
+
         if (sum_group_species == 0.0)
           {
             if (idefault < 0)
@@ -897,7 +897,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
                 ++index;
               }
           }
-	  
+
       }
     else
       surrogate[i].index_gamma_aq = -1;
@@ -906,7 +906,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
   for (j=0;j<NFUNC;++j)
     if (sum_group[j]>0.0)
       ++config.nfunc_aq;
-  
+
   config.nmol_aq=index;
 
   if (config.nmol_aq>0)
@@ -917,7 +917,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
       config.groups_aq.resize(config.nfunc_aq,config.nmol_aq);
       config.RG_aq.resize(config.nfunc_aq);
       config.QG_aq.resize(config.nfunc_aq);
-	  
+
       int index_group1=0;
       for (j=0;j<NFUNC;++j)
         if (sum_group[j]>0.0)
@@ -945,8 +945,8 @@ void param_unifac(model_config &config, vector<species> &surrogate)
               {
                 sum_group_species += surrogate[i].groups[j];
               }
-			
-			
+
+
             for (j=0;j<NFUNC;++j)
               if (sum_group[j]>0.0)
                 {
@@ -958,12 +958,12 @@ void param_unifac(model_config &config, vector<species> &surrogate)
                       surrogate[i].groups[j];
                   index_group1++;
                 }
-          }	 
+          }
 
       //Pre-calculation of some unifac parameters
       config.Rparam_aq.resize(config.nmol_aq);
       config.Qparam_aq.resize(config.nmol_aq);
-      config.Lparam_aq.resize(config.nmol_aq);      
+      config.Lparam_aq.resize(config.nmol_aq);
       for (i=0;i<config.nmol_aq;i++)
         {
           config.Rparam_aq(i)=0.0;
@@ -975,18 +975,18 @@ void param_unifac(model_config &config, vector<species> &surrogate)
             }
           config.Lparam_aq(i)=config.Z/2*(config.Rparam_aq(i)-config.Qparam_aq(i))-(config.Rparam_aq(i)-1.0);
         }
-	  
- 
+
+
     }
 
-  
+
 
   index=0;
   idefault=-1;
-  
+
   for (j=0;j<NFUNC;++j)
     sum_group[j] = 0.0;
-  
+
   for (i=0;i<n;++i)
     if (surrogate[i].compute_gamma_org)
       {
@@ -996,7 +996,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
             sum_group_species += surrogate[i].groups[j];
             sum_group[j] += surrogate[i].groups[j];
           }
-		
+
         if (sum_group_species == 0.0)
           {
             if (idefault < 0)
@@ -1037,7 +1037,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
                 ++index;
               }
           }
-	  
+
       }
     else
       surrogate[i].index_gamma_tot = -1;
@@ -1046,7 +1046,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
   for (j=0;j<NFUNC;++j)
     if (sum_group[j]>0.0)
       ++config.nfunc_tot;
-  
+
   config.nmol_tot=index;
 
   if (config.nmol_tot>0)
@@ -1057,7 +1057,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
       config.groups_tot.resize(config.nfunc_tot,config.nmol_tot);
       config.RG_tot.resize(config.nfunc_tot);
       config.QG_tot.resize(config.nfunc_tot);
-	  
+
       int index_group1=0;
       for (j=0;j<NFUNC;++j)
         if (sum_group[j]>0.0)
@@ -1085,8 +1085,8 @@ void param_unifac(model_config &config, vector<species> &surrogate)
               {
                 sum_group_species += surrogate[i].groups[j];
               }
-			
-			
+
+
             for (j=0;j<NFUNC;++j)
               if (sum_group[j]>0.0)
                 {
@@ -1104,7 +1104,7 @@ void param_unifac(model_config &config, vector<species> &surrogate)
       config.Rparam_tot.resize(config.nmol_tot);
       config.Qparam_tot.resize(config.nmol_tot);
       config.Lparam_tot.resize(config.nmol_tot);
-      
+
       for (i=0;i<config.nmol_tot;i++)
         {
           config.Rparam_tot(i)=0.0;
@@ -1116,14 +1116,14 @@ void param_unifac(model_config &config, vector<species> &surrogate)
             }
           config.Lparam_tot(i)=config.Z/2*(config.Rparam_tot(i)-config.Qparam_tot(i))-(config.Rparam_tot(i)-1.0);
         }
-	  
+
     }
 
   if (config.tabulation_unifac)
     {
       FILE *f;
       string file_out="unifac.csv";
-      f=fopen(file_out.c_str(),"wb");  
+      f=fopen(file_out.c_str(),"wb");
       fprintf (f, "%i %s", config.iH2O, "\n");
       for (i=0;i<=config.iH2O;i++)
         {
@@ -1133,60 +1133,60 @@ void param_unifac(model_config &config, vector<species> &surrogate)
             a=1;
           if (surrogate[i].hydrophobic)
             b=1;
-          fprintf (f, "%i %s %i %s %i", i, ";", a, ";", b); 
+          fprintf (f, "%i %s %i %s %i", i, ";", a, ";", b);
           for (j=0;j<NFUNC;j++)
-            fprintf (f, "%s %e", ";", surrogate[i].groups[j]); 
+            fprintf (f, "%s %e", ";", surrogate[i].groups[j]);
           fprintf (f, "%s", "\n");
         }
 
       for (i=0;i<=config.iH2O;i++)
-        fprintf (f, "%i %s %i %s %i %s", surrogate[i].index_gamma_tot, ";", surrogate[i].index_gamma_org, ";", surrogate[i].index_gamma_aq, "\n");         
+        fprintf (f, "%i %s %i %s %i %s", surrogate[i].index_gamma_tot, ";", surrogate[i].index_gamma_org, ";", surrogate[i].index_gamma_aq, "\n");
 
       fprintf (f, "%i %s %i %s", config.nmol_tot, ";", config.nfunc_tot, "\n");
       for (j=0;j<config.nfunc_tot;j++)
-        for (k=0;k<config.nfunc_tot;k++)      
-          fprintf (f, "%i %s %i %s %e %s %e %s %e %s", j, ";", k, ";", config.Inter_tot(j,k), ";", config.InterB_tot(j,k), ";", config.InterC_tot(j,k),"\n");        
-     
-      for (i=0;i<config.nmol_tot;i++)    
-        for (k=0;k<config.nfunc_tot;k++)      
-          fprintf (f, "%i %s %i %s %e %s", k, ";", i, ";", config.groups_tot(k,i), "\n");    
+        for (k=0;k<config.nfunc_tot;k++)
+          fprintf (f, "%i %s %i %s %e %s %e %s %e %s", j, ";", k, ";", config.Inter_tot(j,k), ";", config.InterB_tot(j,k), ";", config.InterC_tot(j,k),"\n");
+
+      for (i=0;i<config.nmol_tot;i++)
+        for (k=0;k<config.nfunc_tot;k++)
+          fprintf (f, "%i %s %i %s %e %s", k, ";", i, ";", config.groups_tot(k,i), "\n");
 
       for (j=0;j<config.nfunc_tot;j++)
         fprintf(f, "%i %s %e %s %e %s", j, ";", config.RG_tot(j), ";", config.QG_tot(j), "\n");
 
-      for (i=0;i<config.nmol_tot;i++)  
+      for (i=0;i<config.nmol_tot;i++)
         fprintf(f, "%i %s %e %s %e %s %e %s", i, ";", config.Rparam_tot(i), ";", config.Qparam_tot(i), ";", config.Lparam_tot(i), "\n");
 
 
       fprintf (f, "%i %s %i %s", config.nmol_org, ";", config.nfunc_org, "\n");
       for (j=0;j<config.nfunc_org;j++)
-        for (k=0;k<config.nfunc_org;k++)      
-          fprintf (f, "%i %s %i %s %e %s %e %s %e %s", j, ";", k, ";", config.Inter_org(j,k),  ";", config.InterB_org(j,k),  ";", config.InterC_org(j,k),"\n");        
-     
-      for (i=0;i<config.nmol_org;i++)    
-        for (k=0;k<config.nfunc_org;k++)      
-          fprintf (f, "%i %s %i %s %e %s", k, ";", i, ";", config.groups_org(k,i), "\n");    
+        for (k=0;k<config.nfunc_org;k++)
+          fprintf (f, "%i %s %i %s %e %s %e %s %e %s", j, ";", k, ";", config.Inter_org(j,k),  ";", config.InterB_org(j,k),  ";", config.InterC_org(j,k),"\n");
+
+      for (i=0;i<config.nmol_org;i++)
+        for (k=0;k<config.nfunc_org;k++)
+          fprintf (f, "%i %s %i %s %e %s", k, ";", i, ";", config.groups_org(k,i), "\n");
 
       for (j=0;j<config.nfunc_org;j++)
         fprintf(f, "%i %s %e %s %e %s", j, ";", config.RG_org(j), ";", config.QG_org(j), "\n");
 
-      for (i=0;i<config.nmol_org;i++)  
+      for (i=0;i<config.nmol_org;i++)
         fprintf(f, "%i %s %e %s %e %s %e %s", i, ";", config.Rparam_org(i), ";", config.Qparam_org(i), ";", config.Lparam_org(i), "\n");
 
 
       fprintf (f, "%i %s %i %s", config.nmol_aq, ";", config.nfunc_aq, "\n");
       for (j=0;j<config.nfunc_aq;j++)
-        for (k=0;k<config.nfunc_aq;k++)      
-          fprintf (f, "%i %s %i %s %e %s %e %s %e %s", j, ";", k, ";", config.Inter_aq(j,k), ";", config.InterB_aq(j,k),";", config.InterC_aq(j,k),  "\n");        
-     
-      for (i=0;i<config.nmol_aq;i++)    
-        for (k=0;k<config.nfunc_aq;k++)      
-          fprintf (f, "%i %s %i %s %e %s", k, ";", i, ";", config.groups_aq(k,i), "\n");    
+        for (k=0;k<config.nfunc_aq;k++)
+          fprintf (f, "%i %s %i %s %e %s %e %s %e %s", j, ";", k, ";", config.Inter_aq(j,k), ";", config.InterB_aq(j,k),";", config.InterC_aq(j,k),  "\n");
+
+      for (i=0;i<config.nmol_aq;i++)
+        for (k=0;k<config.nfunc_aq;k++)
+          fprintf (f, "%i %s %i %s %e %s", k, ";", i, ";", config.groups_aq(k,i), "\n");
 
       for (j=0;j<config.nfunc_aq;j++)
         fprintf(f, "%i %s %e %s %e %s", j, ";", config.RG_aq(j), ";", config.QG_aq(j), "\n");
 
-      for (i=0;i<config.nmol_aq;i++)  
+      for (i=0;i<config.nmol_aq;i++)
         fprintf(f, "%i %s %e %s %e %s %e %s", i, ";", config.Rparam_aq(i), ";", config.Qparam_aq(i), ";", config.Lparam_aq(i), "\n");
 
 
@@ -1210,15 +1210,15 @@ void param_unifac(model_config &config, vector<species> &surrogate)
           }
 
       for (itemp=0;itemp<config.ntemp;itemp++)
-        {     
+        {
           double Temperature=263.15+1.0*itemp;
           Array<double,2> Inter2;
           Inter2.resize(NFUNC,NFUNC);
           Array <double, 2> group_activity_mol,sum2mol;
           group_activity_mol.resize(NFUNC,n);
           sum2mol.resize(NFUNC,n);
-          Array <double, 2> surface_fraction_mol;      
-          surface_fraction_mol.resize(NFUNC,n);      
+          Array <double, 2> surface_fraction_mol;
+          surface_fraction_mol.resize(NFUNC,n);
           surface_fraction_mol=0.0;
           double sum_surf=0.0;
           for (i=0;i<n;i++)
@@ -1227,18 +1227,18 @@ void param_unifac(model_config &config, vector<species> &surrogate)
                 double sum_surf_mol=0.0;
                 for (j=0;j<NFUNC;j++)
                   if (surrogate[i].groups[j]>0.0)
-                    {               
-                      surface_fraction_mol(j,i)+=QG[j]*surrogate[i].groups[j];               
-                      sum_surf_mol+=QG[j]*surrogate[i].groups[j];  
+                    {
+                      surface_fraction_mol(j,i)+=QG[j]*surrogate[i].groups[j];
+                      sum_surf_mol+=QG[j]*surrogate[i].groups[j];
                     }
 
-                for (j=0;j<NFUNC;j++)      
+                for (j=0;j<NFUNC;j++)
                   surface_fraction_mol(j,i)/=sum_surf_mol;
               }
 
           for (j=0;j<NFUNC;j++)
-            for (k=0;k<NFUNC;k++)          
-              Inter2(j,k)=exp(-A[j][k]/Temperature+B[j][k]*(1.0/298.15-1.0/298)+C[j][k]*(298.15/Temperature-1+log(Temperature/298.15)));                  
+            for (k=0;k<NFUNC;k++)
+              Inter2(j,k)=exp(-A[j][k]/Temperature+B[j][k]*(1.0/298.15-1.0/298)+C[j][k]*(298.15/Temperature-1+log(Temperature/298.15)));
 
           for (i=0;i<n;i++)
             if (surrogate[i].is_organic or surrogate[i].name=="H2O")
@@ -1248,10 +1248,10 @@ void param_unifac(model_config &config, vector<species> &surrogate)
                     sum2mol(j,i)=0.0;
                     for (k=0;k<NFUNC;k++)
                       if (surrogate[i].groups[k]>0.0)
-                        sum2mol(j,i)+=surface_fraction_mol(k,i)*Inter2(k,j);              
+                        sum2mol(j,i)+=surface_fraction_mol(k,i)*Inter2(k,j);
                   }
 
-  
+
           for (i=0;i<n;i++)
             if (surrogate[i].is_organic or surrogate[i].name=="H2O")
               {
@@ -1259,34 +1259,34 @@ void param_unifac(model_config &config, vector<species> &surrogate)
                 for (j=0;j<NFUNC;j++)
                   if (surrogate[i].groups[j]>0.0)
                     {
-                      group_activity_mol(j,i)=1.0-log(sum2mol(j,i));                     
-                      for (k=0;k<NFUNC;k++)      
+                      group_activity_mol(j,i)=1.0-log(sum2mol(j,i));
+                      for (k=0;k<NFUNC;k++)
                         if (surrogate[i].groups[k]>0.0)
-                          group_activity_mol(j,i)-=surface_fraction_mol(k,i)*Inter2(j,k)/sum2mol(k,i);  
+                          group_activity_mol(j,i)-=surface_fraction_mol(k,i)*Inter2(j,k)/sum2mol(k,i);
 
                       surrogate[i].species_activity(itemp)+=surrogate[i].groups[j]*QG[j]*group_activity_mol(j,i);
 
-                    }     
+                    }
                  fprintf (f, "%i %s %i %s %e %s", itemp, ";", i, ";", surrogate[i].species_activity(itemp), "\n");
-              }           
+              }
         }
- 
+
       fclose(f);
-    }  
+    }
 }
 
 
 void read_tab_unifac(model_config &config, vector<species>& surrogate)
 {
   FILE *f;
-  string file_out="unifac.csv";  
+  string file_out="unifac.csv";
   ifstream fichier(file_out.c_str(), ios::in);
   string ligne;
   int NFUNC=45;
   int okfile=1;
   int n=surrogate.size();
   getline(fichier, ligne, '\n');
-  int ih2oin=atoi(ligne.c_str()); 
+  int ih2oin=atoi(ligne.c_str());
   if (ih2oin!=config.iH2O)
     {
       okfile=0;
@@ -1294,15 +1294,15 @@ void read_tab_unifac(model_config &config, vector<species>& surrogate)
     }
   int i,j,k,itemp;
   config.Z=10.0;
-  
+
   for (i=0;i<=config.iH2O;i++)
     {
       getline(fichier, ligne, ';');
-      int ispecies=atoi(ligne.c_str()); 
+      int ispecies=atoi(ligne.c_str());
       getline(fichier, ligne, ';');
-      int a=atoi(ligne.c_str()); 
+      int a=atoi(ligne.c_str());
       getline(fichier, ligne, ';');
-      int b=atoi(ligne.c_str());            
+      int b=atoi(ligne.c_str());
       if ((surrogate[i].hydrophilic and a!=1) or (surrogate[i].hydrophilic==false and a==1))
         {
           okfile=0;
@@ -1313,7 +1313,7 @@ void read_tab_unifac(model_config &config, vector<species>& surrogate)
           okfile=0;
           cout << surrogate[i].name << " hydrophobic problem: " << surrogate[i].hydrophobic << " " << b << endl;
         }
-      
+
       for (j=0;j<NFUNC-1;j++)
         {
           getline(fichier, ligne, ';');
@@ -1326,8 +1326,8 @@ void read_tab_unifac(model_config &config, vector<species>& surrogate)
       double g=atof(ligne.c_str());
       if (g!=surrogate[i].groups[j])
         okfile=0;
-    }  
- 
+    }
+
   if (okfile==0)
     {
       fichier.close();
@@ -1338,27 +1338,27 @@ void read_tab_unifac(model_config &config, vector<species>& surrogate)
       for (i=0;i<=config.iH2O;i++)
         {
           getline(fichier, ligne, ';');
-          surrogate[i].index_gamma_tot=atoi(ligne.c_str()); 
+          surrogate[i].index_gamma_tot=atoi(ligne.c_str());
           getline(fichier, ligne, ';');
-          surrogate[i].index_gamma_org=atoi(ligne.c_str()); 
+          surrogate[i].index_gamma_org=atoi(ligne.c_str());
           getline(fichier, ligne, '\n');
-          surrogate[i].index_gamma_aq=atoi(ligne.c_str()); 
+          surrogate[i].index_gamma_aq=atoi(ligne.c_str());
         }
 
       for (i=config.iH2O+1;i<n;i++)
         {
-          surrogate[i].index_gamma_tot=-1;           
-          surrogate[i].index_gamma_org=-1;           
-          surrogate[i].index_gamma_aq=-1; 
+          surrogate[i].index_gamma_tot=-1;
+          surrogate[i].index_gamma_org=-1;
+          surrogate[i].index_gamma_aq=-1;
         }
 
       getline(fichier, ligne, ';');
-      config.nmol_tot=atoi(ligne.c_str()); 
+      config.nmol_tot=atoi(ligne.c_str());
       getline(fichier, ligne, '\n');
-      config.nfunc_tot=atoi(ligne.c_str()); 
-      config.Inter_tot.resize(config.nfunc_tot,config.nfunc_tot);            
-      config.InterB_tot.resize(config.nfunc_tot,config.nfunc_tot); 
-      config.InterC_tot.resize(config.nfunc_tot,config.nfunc_tot); 
+      config.nfunc_tot=atoi(ligne.c_str());
+      config.Inter_tot.resize(config.nfunc_tot,config.nfunc_tot);
+      config.InterB_tot.resize(config.nfunc_tot,config.nfunc_tot);
+      config.InterC_tot.resize(config.nfunc_tot,config.nfunc_tot);
       config.groups_tot.resize(config.nfunc_tot,config.nmol_tot);
       config.RG_tot.resize(config.nfunc_tot);
       config.QG_tot.resize(config.nfunc_tot);
@@ -1367,61 +1367,61 @@ void read_tab_unifac(model_config &config, vector<species>& surrogate)
       config.Lparam_tot.resize(config.nmol_tot);
 
       for (j=0;j<config.nfunc_tot;j++)
-        for (k=0;k<config.nfunc_tot;k++)      
+        for (k=0;k<config.nfunc_tot;k++)
           {
             getline(fichier, ligne, ';');
-            int a=atoi(ligne.c_str()); 
+            int a=atoi(ligne.c_str());
             getline(fichier, ligne, ';');
-            int b=atoi(ligne.c_str()); 
+            int b=atoi(ligne.c_str());
             getline(fichier, ligne, ';');
-            config.Inter_tot(j,k)=atof(ligne.c_str());             
+            config.Inter_tot(j,k)=atof(ligne.c_str());
 	    getline(fichier, ligne, ';');
             config.InterB_tot(j,k)=atof(ligne.c_str());
 	    getline(fichier, ligne, '\n');
             config.InterC_tot(j,k)=atof(ligne.c_str());
-          }        
-  
-      for (i=0;i<config.nmol_tot;i++)    
-        for (k=0;k<config.nfunc_tot;k++)      
+          }
+
+      for (i=0;i<config.nmol_tot;i++)
+        for (k=0;k<config.nfunc_tot;k++)
           {
             getline(fichier, ligne, ';');
-            int a=atoi(ligne.c_str()); 
+            int a=atoi(ligne.c_str());
             getline(fichier, ligne, ';');
-            int b=atoi(ligne.c_str()); 
+            int b=atoi(ligne.c_str());
             getline(fichier, ligne, '\n');
-            config.groups_tot(k,i)=atof(ligne.c_str());  
-          }         
+            config.groups_tot(k,i)=atof(ligne.c_str());
+          }
 
-  
+
       for (j=0;j<config.nfunc_tot;j++)
         {
           getline(fichier, ligne, ';');
-          int a=atoi(ligne.c_str()); 
+          int a=atoi(ligne.c_str());
           getline(fichier, ligne, ';');
-          config.RG_tot(j)=atof(ligne.c_str()); 
+          config.RG_tot(j)=atof(ligne.c_str());
           getline(fichier, ligne, '\n');
-          config.QG_tot(j)=atof(ligne.c_str()); 
+          config.QG_tot(j)=atof(ligne.c_str());
         }
- 
-      for (i=0;i<config.nmol_tot;i++)  
+
+      for (i=0;i<config.nmol_tot;i++)
         {
           getline(fichier, ligne, ';');
-          int a=atoi(ligne.c_str()); 
+          int a=atoi(ligne.c_str());
           getline(fichier, ligne, ';');
-          config.Rparam_tot(i)=atof(ligne.c_str()); 
+          config.Rparam_tot(i)=atof(ligne.c_str());
           getline(fichier, ligne, ';');
-          config.Qparam_tot(i)=atof(ligne.c_str()); 
+          config.Qparam_tot(i)=atof(ligne.c_str());
           getline(fichier, ligne, '\n');
-          config.Lparam_tot(i)=atof(ligne.c_str()); 
+          config.Lparam_tot(i)=atof(ligne.c_str());
         }
- 
+
       getline(fichier, ligne, ';');
-      config.nmol_org=atoi(ligne.c_str()); 
+      config.nmol_org=atoi(ligne.c_str());
       getline(fichier, ligne, '\n');
-      config.nfunc_org=atoi(ligne.c_str()); 
-      config.Inter_org.resize(config.nfunc_org,config.nfunc_org); 
-      config.InterB_org.resize(config.nfunc_org,config.nfunc_org); 
-      config.InterC_org.resize(config.nfunc_org,config.nfunc_org); 
+      config.nfunc_org=atoi(ligne.c_str());
+      config.Inter_org.resize(config.nfunc_org,config.nfunc_org);
+      config.InterB_org.resize(config.nfunc_org,config.nfunc_org);
+      config.InterC_org.resize(config.nfunc_org,config.nfunc_org);
       config.groups_org.resize(config.nfunc_org,config.nmol_org);
       config.RG_org.resize(config.nfunc_org);
       config.QG_org.resize(config.nfunc_org);
@@ -1430,61 +1430,61 @@ void read_tab_unifac(model_config &config, vector<species>& surrogate)
       config.Lparam_org.resize(config.nmol_org);
 
       for (j=0;j<config.nfunc_org;j++)
-        for (k=0;k<config.nfunc_org;k++)      
+        for (k=0;k<config.nfunc_org;k++)
           {
             getline(fichier, ligne, ';');
-            int a=atoi(ligne.c_str()); 
+            int a=atoi(ligne.c_str());
             getline(fichier, ligne, ';');
-            int b=atoi(ligne.c_str()); 
+            int b=atoi(ligne.c_str());
             getline(fichier, ligne, ';');
-            config.Inter_org(j,k)=atof(ligne.c_str());             
+            config.Inter_org(j,k)=atof(ligne.c_str());
 	    getline(fichier, ligne, ';');
-	    config.InterB_org(j,k)=atof(ligne.c_str());  
+	    config.InterB_org(j,k)=atof(ligne.c_str());
 	    getline(fichier, ligne, '\n');
-            config.InterC_org(j,k)=atof(ligne.c_str());  
-          }        
-  
-      for (i=0;i<config.nmol_org;i++)    
-        for (k=0;k<config.nfunc_org;k++)      
+            config.InterC_org(j,k)=atof(ligne.c_str());
+          }
+
+      for (i=0;i<config.nmol_org;i++)
+        for (k=0;k<config.nfunc_org;k++)
           {
             getline(fichier, ligne, ';');
-            int a=atoi(ligne.c_str()); 
+            int a=atoi(ligne.c_str());
             getline(fichier, ligne, ';');
-            int b=atoi(ligne.c_str()); 
+            int b=atoi(ligne.c_str());
             getline(fichier, ligne, '\n');
-            config.groups_org(k,i)=atof(ligne.c_str());  
-          }         
+            config.groups_org(k,i)=atof(ligne.c_str());
+          }
 
-  
+
       for (j=0;j<config.nfunc_org;j++)
         {
           getline(fichier, ligne, ';');
-          int a=atoi(ligne.c_str()); 
+          int a=atoi(ligne.c_str());
           getline(fichier, ligne, ';');
-          config.RG_org(j)=atof(ligne.c_str()); 
+          config.RG_org(j)=atof(ligne.c_str());
           getline(fichier, ligne, '\n');
-          config.QG_org(j)=atof(ligne.c_str()); 
+          config.QG_org(j)=atof(ligne.c_str());
         }
- 
-      for (i=0;i<config.nmol_org;i++)  
+
+      for (i=0;i<config.nmol_org;i++)
         {
           getline(fichier, ligne, ';');
-          int a=atoi(ligne.c_str()); 
+          int a=atoi(ligne.c_str());
           getline(fichier, ligne, ';');
-          config.Rparam_org(i)=atof(ligne.c_str()); 
+          config.Rparam_org(i)=atof(ligne.c_str());
           getline(fichier, ligne, ';');
-          config.Qparam_org(i)=atof(ligne.c_str()); 
+          config.Qparam_org(i)=atof(ligne.c_str());
           getline(fichier, ligne, '\n');
-          config.Lparam_org(i)=atof(ligne.c_str()); 
+          config.Lparam_org(i)=atof(ligne.c_str());
         }
 
       getline(fichier, ligne, ';');
-      config.nmol_aq=atoi(ligne.c_str()); 
+      config.nmol_aq=atoi(ligne.c_str());
       getline(fichier, ligne, '\n');
-      config.nfunc_aq=atoi(ligne.c_str()); 
-      config.Inter_aq.resize(config.nfunc_aq,config.nfunc_aq);            
-      config.InterB_aq.resize(config.nfunc_aq,config.nfunc_aq);  
-      config.InterC_aq.resize(config.nfunc_aq,config.nfunc_aq);  
+      config.nfunc_aq=atoi(ligne.c_str());
+      config.Inter_aq.resize(config.nfunc_aq,config.nfunc_aq);
+      config.InterB_aq.resize(config.nfunc_aq,config.nfunc_aq);
+      config.InterC_aq.resize(config.nfunc_aq,config.nfunc_aq);
       config.groups_aq.resize(config.nfunc_aq,config.nmol_aq);
       config.RG_aq.resize(config.nfunc_aq);
       config.QG_aq.resize(config.nfunc_aq);
@@ -1493,52 +1493,52 @@ void read_tab_unifac(model_config &config, vector<species>& surrogate)
       config.Lparam_aq.resize(config.nmol_aq);
 
       for (j=0;j<config.nfunc_aq;j++)
-        for (k=0;k<config.nfunc_aq;k++)      
+        for (k=0;k<config.nfunc_aq;k++)
           {
             getline(fichier, ligne, ';');
-            int a=atoi(ligne.c_str()); 
+            int a=atoi(ligne.c_str());
             getline(fichier, ligne, ';');
-            int b=atoi(ligne.c_str()); 
+            int b=atoi(ligne.c_str());
             getline(fichier, ligne, ';');
-            config.Inter_aq(j,k)=atof(ligne.c_str());             
+            config.Inter_aq(j,k)=atof(ligne.c_str());
             getline(fichier, ligne, ';');
-            config.InterB_aq(j,k)=atof(ligne.c_str());  
+            config.InterB_aq(j,k)=atof(ligne.c_str());
             getline(fichier, ligne, '\n');
-            config.InterC_aq(j,k)=atof(ligne.c_str());  
-          }        
-  
-      for (i=0;i<config.nmol_aq;i++)    
-        for (k=0;k<config.nfunc_aq;k++)      
-          {
-            getline(fichier, ligne, ';');
-            int a=atoi(ligne.c_str()); 
-            getline(fichier, ligne, ';');
-            int b=atoi(ligne.c_str()); 
-            getline(fichier, ligne, '\n');
-            config.groups_aq(k,i)=atof(ligne.c_str());  
-          }         
+            config.InterC_aq(j,k)=atof(ligne.c_str());
+          }
 
-  
+      for (i=0;i<config.nmol_aq;i++)
+        for (k=0;k<config.nfunc_aq;k++)
+          {
+            getline(fichier, ligne, ';');
+            int a=atoi(ligne.c_str());
+            getline(fichier, ligne, ';');
+            int b=atoi(ligne.c_str());
+            getline(fichier, ligne, '\n');
+            config.groups_aq(k,i)=atof(ligne.c_str());
+          }
+
+
       for (j=0;j<config.nfunc_aq;j++)
         {
           getline(fichier, ligne, ';');
-          int a=atoi(ligne.c_str()); 
+          int a=atoi(ligne.c_str());
           getline(fichier, ligne, ';');
-          config.RG_aq(j)=atof(ligne.c_str()); 
+          config.RG_aq(j)=atof(ligne.c_str());
           getline(fichier, ligne, '\n');
-          config.QG_aq(j)=atof(ligne.c_str()); 
+          config.QG_aq(j)=atof(ligne.c_str());
         }
- 
-      for (i=0;i<config.nmol_aq;i++)  
+
+      for (i=0;i<config.nmol_aq;i++)
         {
           getline(fichier, ligne, ';');
-          int a=atoi(ligne.c_str()); 
+          int a=atoi(ligne.c_str());
           getline(fichier, ligne, ';');
-          config.Rparam_aq(i)=atof(ligne.c_str()); 
+          config.Rparam_aq(i)=atof(ligne.c_str());
           getline(fichier, ligne, ';');
-          config.Qparam_aq(i)=atof(ligne.c_str()); 
+          config.Qparam_aq(i)=atof(ligne.c_str());
           getline(fichier, ligne, '\n');
-          config.Lparam_aq(i)=atof(ligne.c_str()); 
+          config.Lparam_aq(i)=atof(ligne.c_str());
         }
 
       config.ntemp=60;
@@ -1546,16 +1546,16 @@ void read_tab_unifac(model_config &config, vector<species>& surrogate)
         surrogate[i].species_activity.resize(config.ntemp);
 
       for (itemp=0;itemp<config.ntemp;itemp++)
-        {       
-          for (i=0;i<=config.iH2O;i++)           
+        {
+          for (i=0;i<=config.iH2O;i++)
             {
               getline(fichier, ligne, ';');
-              int a=atoi(ligne.c_str()); 
+              int a=atoi(ligne.c_str());
               getline(fichier, ligne, ';');
-              int b=atoi(ligne.c_str()); 
+              int b=atoi(ligne.c_str());
               getline(fichier, ligne, '\n');
-              surrogate[i].species_activity(itemp)=atof(ligne.c_str());   
-            }           
+              surrogate[i].species_activity(itemp)=atof(ligne.c_str());
+            }
         }
 
       fichier.close();
@@ -1563,14 +1563,14 @@ void read_tab_unifac(model_config &config, vector<species>& surrogate)
 
   //                    H+    Li+   Na+   K+   NH4+  Mg2+  Ca2+  Cl-   Br-   NO3-  HSO4-  SO4--
   double RGions[12] = {1.78, 0.61, 0.38, 0.44, 0.69, 5.44, 2.24, 0.99, 1.25, 0.95, 1.65,  3.34};
-  double QGions[12] = {2.70, 0.99, 0.62, 0.58, 0.78, 8.35, 3.40, 0.99, 1.16, 0.97, 1.40,  3.96};   
+  double QGions[12] = {2.70, 0.99, 0.62, 0.58, 0.78, 8.35, 3.40, 0.99, 1.16, 0.97, 1.40,  3.96};
 
   config.nion_unifac=0;
   if (config.SR_ions)
     for (i=0;i<n;i++)
       if (surrogate[i].is_organic==false and surrogate[i].is_inorganic_precursor==false and i!=config.iH2O)
         config.nion_unifac++;
-  
+
   config.RGions.resize(config.nion_unifac);
   config.QGions.resize(config.nion_unifac);
   config.Lions.resize(config.nion_unifac);
@@ -1597,17 +1597,17 @@ void check_config(model_config &config, vector<species>& surrogate)
   int i;
   double tiny=1.0e-100;
   bool badly_formatted=false;
-  
+
   for (i=0;i<n;++i)
     if(surrogate[i].MM<=tiny)
       {
         cout << "WARNING: bad input for MM of species " << surrogate[i].name << endl;
         badly_formatted=true;
       }
-  
+
   for (i=0;i<n;++i)
     if (surrogate[i].is_organic)
-      if(surrogate[i].nonvolatile==false) 
+      if(surrogate[i].nonvolatile==false)
         {
           if (surrogate[i].Tref<=tiny)
             {
@@ -1619,7 +1619,7 @@ void check_config(model_config &config, vector<species>& surrogate)
               cout << "WARNING: bad input for deltaH of species " << surrogate[i].name << endl;
               badly_formatted=true;
             }
-		
+
           if (surrogate[i].hydrophilic)
             {
               if (surrogate[i].compute_gamma_aq and surrogate[i].Henry<=tiny and
@@ -1678,7 +1678,7 @@ void check_config(model_config &config, vector<species>& surrogate)
                   badly_formatted=true;
                 }
             }
-		
+
           if (surrogate[i].kp_from_experiment)
             {
               if (surrogate[i].kp_experiment<=tiny)
@@ -1686,7 +1686,7 @@ void check_config(model_config &config, vector<species>& surrogate)
                   cout << "WARNING: bad input for kp_experiment of species "
                        << surrogate[i].name << endl;
                   badly_formatted=true;
-                }	
+                }
             }
           else
             {
@@ -1696,7 +1696,7 @@ void check_config(model_config &config, vector<species>& surrogate)
                        << surrogate[i].name << surrogate[i].Psat_ref << endl;
                   badly_formatted=true;
                 }
-			  
+
               if (surrogate[i].Koligo_org<0.0)
                 {
                   cout << "WARNING: bad input for Koligo_org of species "
@@ -1704,11 +1704,11 @@ void check_config(model_config &config, vector<species>& surrogate)
                   badly_formatted=true;
                 }
             }
-		  
+
         }
   if(badly_formatted)
     exit(0);
-  
+
 }
 
 void init_transfert_parameters(model_config &config, vector<species>& surrogate)
@@ -1725,7 +1725,7 @@ void init_transfert_parameters(model_config &config, vector<species>& surrogate)
       config.dbound.resize(config.nbins,config.nlayer+1);
       config.Radius.resize(config.nbins,config.nlayer);
       for (i=0;i<n;++i)
-	surrogate[i].dif_org.resize(config.nbins,config.nlayer);	
+	surrogate[i].dif_org.resize(config.nbins,config.nlayer);
 
       double sum_Vlayer=0.0;
       if (config.explicit_method==1)
@@ -1743,14 +1743,14 @@ void init_transfert_parameters(model_config &config, vector<species>& surrogate)
 	  double sumVlayer=1.0;
 	  double Red=1.01;
 	  for (ilayer=1;ilayer<config.nlayer;ilayer++)
-	    { 
+	    {
 	      config.Vlayer(ilayer)=config.Vlayer(ilayer-1)/Red;
 	      sumVlayer+=config.Vlayer(ilayer);
 	    }
 	  for (ilayer=0;ilayer<config.nlayer;ilayer++)
 	    config.Vlayer(ilayer)=config.Vlayer(ilayer)/sumVlayer;
 	}
-   
+
     }
   else
     {
@@ -1859,7 +1859,7 @@ void init_transfert_parameters(model_config &config, vector<species>& surrogate)
 	  config.Alayer(4,0)=-0.04054916;
 	  config.Alayer(4,1)=0.11232971;
 	  config.Alayer(4,2)=0.23075899;
-	  config.Alayer(4,3)=-1.30253945;  	    
+	  config.Alayer(4,3)=-1.30253945;
 	}
       else if (config.nlayer>10)
 	{
@@ -1886,19 +1886,19 @@ void init_transfert_parameters(model_config &config, vector<species>& surrogate)
 
       else
 	{
-	  cout << "WARNING: parameters for a number of layers " 
+	  cout << "WARNING: parameters for a number of layers "
 	       << config.nlayer << " not defined." << endl;
 	  exit(0);
 	}
     }
 
   for (i=0;i<n;++i)
-    {      
+    {
       surrogate[i].Ap_layer.resize(config.nbins,config.nlayer,config.max_number_of_phases);
       surrogate[i].Aaq_bins.resize(config.nbins);
       surrogate[i].Ap_layer_init.resize(config.nbins,config.nlayer,config.max_number_of_phases);
       surrogate[i].Ap_layer_init0.resize(config.nbins,config.nlayer,config.max_number_of_phases);
-      for (b=0;b<config.nbins;++b)		  
+      for (b=0;b<config.nbins;++b)
         for (ilayer=0;ilayer<config.nlayer;++ilayer)
           for (iphase=0;iphase<config.max_number_of_phases;++iphase)
             surrogate[i].Ap_layer_init(b,ilayer,iphase)=0.0;
@@ -1926,7 +1926,7 @@ void init_transfert_parameters(model_config &config, vector<species>& surrogate)
 
 
 void parameters(model_config& config, vector<species>& surrogate, vector<string> species_list_aer)
-{    
+{
   config.max_iter=10000;  //maximal number of iterations for the newton raphson method
   config.hygroscopicity=true; //Does hygroscopicity has to be computed?
 
@@ -1956,7 +1956,7 @@ void parameters(model_config& config, vector<species>& surrogate, vector<string>
   config.compute_inorganic=false;
   if (config.compute_inorganic)
     config.compute_long_and_medium_range_interactions=true; //force to be used when inorganic are computed
-  if (config.compute_long_and_medium_range_interactions==false) 
+  if (config.compute_long_and_medium_range_interactions==false)
     config.SR_ions=false; // false if AIOMFAC is not used
   config.compute_organic=true;
   config.coupling_organic_inorganic=false;
@@ -1974,7 +1974,7 @@ void parameters(model_config& config, vector<species>& surrogate, vector<string>
       config.compute_saturation=false; //no saturation is the system is ideal
       config.max_number_of_phases=1;
     }
-  
+
   config.precision=0.0001;
   if (config.equilibrium==true)
     {
@@ -1982,7 +1982,7 @@ void parameters(model_config& config, vector<species>& surrogate, vector<string>
       config.initialized_saturation=false;
       config.compute_kelvin_effect=false;
     }
-  
+
   if (config.equilibrium==false)
     {
       config.relative_precision=0.01; //absolute precision under which the system has been solved
@@ -1999,7 +1999,7 @@ void parameters(model_config& config, vector<species>& surrogate, vector<string>
       config.explicit_method=3;
       if (config.explicit_representation)
 	config.nlayer=200;
-	
+
       config.surface_tension_aq=72.0;  //surface tension of the organic phase
       config.surface_tension_org=24.0; //surface tension of the aqueous phase
       config.diameters.resize(config.nbins); //diameters of particles for each bin
@@ -2010,9 +2010,9 @@ void parameters(model_config& config, vector<species>& surrogate, vector<string>
   config.nh_aq_init=1;
   config.nh_org_init=1;
   config.nh_max=4;
-	  
-  //create the vector of species and the various parameters of the model 
-  creation_species(surrogate,species_list_aer); 
+
+  //create the vector of species and the various parameters of the model
+  creation_species(surrogate,species_list_aer);
   system_coupling(config, surrogate);
   if (config.tabulation_unifac)
     {
@@ -2021,15 +2021,15 @@ void parameters(model_config& config, vector<species>& surrogate, vector<string>
       if( fp != NULL )
         {
           fclose(fp);
-          read_tab_unifac(config, surrogate); 
+          read_tab_unifac(config, surrogate);
         }
       else
         {
-          param_unifac(config, surrogate); 
+          param_unifac(config, surrogate);
         }
     }
   else
-    param_unifac(config, surrogate); 
+    param_unifac(config, surrogate);
   system_aiomfac(config, surrogate);
   if (config.equilibrium==false)
     init_transfert_parameters(config, surrogate);

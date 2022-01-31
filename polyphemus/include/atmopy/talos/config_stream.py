@@ -34,23 +34,24 @@ class ConfigStream:
 
     def __init__(self, file):
         import os.path
+
         self.filename = file
-        self.extract = os.path.dirname(os.path.abspath(__file__)) \
-                       + "/extract_configuration"
+        self.extract = (
+            os.path.dirname(os.path.abspath(__file__)) + "/extract_configuration"
+        )
         if os.name == "nt":
             self.extract += ".exe"
 
         # Tests that "extract_configuration" has been built.
         if not os.path.isfile(self.extract):
-            raise Exception, \
-                '"' + self.extract + '" does not exist (Did you build it?).'
+            raise Exception, '"' + self.extract + '" does not exist (Did you build it?).'
 
         # Tests that "extract_configuration" is okay and that the configuration
         # file is accessible.
         self.GetOutput("-t " + file)
 
     def GetOutput(self, command):
-        """ Calls external program extract_configuration (which must
+        """Calls external program extract_configuration (which must
         be in the PATH), and returns output of execution on success.
         Raises exception on failure.
 
@@ -66,6 +67,7 @@ class ConfigStream:
         error = None
         if os.name == "nt":
             import popen2
+
             o, w, e = popen2.popen3(cmd)
             errors = e.readlines()
             output = o.readlines()
@@ -83,8 +85,7 @@ class ConfigStream:
             else:
                 error = o
         if error:
-            raise Exception, "While running \"" + cmd + "\",\n" \
-                + "the following errors occurred:\n" + error
+            raise Exception, 'While running "' + cmd + '",\n' + "the following errors occurred:\n" + error
 
     def ListSections(self):
         """
@@ -116,7 +117,7 @@ class ConfigStream:
         """
         return self.GetOutput("-s " + section)
 
-    def GetElement(self, element, section = "", type = "String"):
+    def GetElement(self, element, section="", type="String"):
         """
         Returns the value of a given field.
 
@@ -143,47 +144,55 @@ class ConfigStream:
         if type == "String":
             return self.GetString(element, section)
         elif type == "StringList":
-            return self.ListSectionLines(element).split('\n')[0].split()
+            return self.ListSectionLines(element).split("\n")[0].split()
         elif type == "StringSection":
-            return self.ListSectionLines(element).split('\n')
+            return self.ListSectionLines(element).split("\n")
         elif type == "Num":
             return self.GetNum(element, section)
         elif type == "NumList":
-            return [miscellaneous.to_num(x) for x in \
-                    self.ListSectionLines(element).split('\n')[0].split()]
+            return [
+                miscellaneous.to_num(x)
+                for x in self.ListSectionLines(element).split("\n")[0].split()
+            ]
         elif type == "NumSection":
-            return [miscellaneous.to_num(x) for x in \
-                    self.ListSectionLines(element).split('\n')]
+            return [
+                miscellaneous.to_num(x)
+                for x in self.ListSectionLines(element).split("\n")
+            ]
         elif type == "Int":
             return self.GetInt(element, section)
         elif type == "IntList":
-            return [int(x) for x in \
-                    self.ListSectionLines(element).split('\n')[0].split()]
+            return [
+                int(x) for x in self.ListSectionLines(element).split("\n")[0].split()
+            ]
         elif type == "IntSection":
-            return [int(x) for x in \
-                    self.ListSectionLines(element).split('\n')]
+            return [int(x) for x in self.ListSectionLines(element).split("\n")]
         elif type == "Bool":
             return self.GetBool(element, section)
         elif type == "Float":
             return self.GetFloat(element, section)
         elif type == "FloatList":
-            return [float(x) for x in \
-                    self.ListSectionLines(element).split('\n')[0].split()]
+            return [
+                float(x) for x in self.ListSectionLines(element).split("\n")[0].split()
+            ]
         elif type == "FloatSection":
-            return [float(x) for x in \
-                    self.ListSectionLines(element).split('\n')]
+            return [float(x) for x in self.ListSectionLines(element).split("\n")]
         elif type == "DateTime":
             return self.GetDateTime(element, section)
         elif type == "DateTimeList":
-            return [self.StringToDateTime(x) for x in \
-                    self.ListSectionLines(element).split('\n')[0].split()]
+            return [
+                self.StringToDateTime(x)
+                for x in self.ListSectionLines(element).split("\n")[0].split()
+            ]
         elif type == "DateTimeSection":
-            return [self.StringToDateTime(x) for x in \
-                    self.ListSectionLines(element).split('\n')]
+            return [
+                self.StringToDateTime(x)
+                for x in self.ListSectionLines(element).split("\n")
+            ]
         else:
-            raise Exception, "Type \"" + type + "\" is unknown."
+            raise Exception, 'Type "' + type + '" is unknown.'
 
-    def GetString(self, element, section = ""):
+    def GetString(self, element, section=""):
         """
         Returns the value (string) of a given field.
 
@@ -202,7 +211,7 @@ class ConfigStream:
         else:
             return self.GetOutput("-s " + section + " " + element)
 
-    def GetNum(self, element, section = ""):
+    def GetNum(self, element, section=""):
         """
         Returns the value (number: int or float) of a given field.
 
@@ -219,11 +228,10 @@ class ConfigStream:
         if section == "":
             str = self.GetOutput(element)
         else:
-            str = self.GetOutput("-s " + section + " " \
-                                 + element)
+            str = self.GetOutput("-s " + section + " " + element)
         return miscellaneous.to_num(str)
 
-    def GetFloat(self, element, section = ""):
+    def GetFloat(self, element, section=""):
         """
         Returns specified element value in given section, as float.
 
@@ -240,10 +248,9 @@ class ConfigStream:
         if section == "":
             return float(self.GetOutput(element))
         else:
-            return float(self.GetOutput("-s " + section + " " \
-                                        + element))
+            return float(self.GetOutput("-s " + section + " " + element))
 
-    def GetInt(self, element, section = ""):
+    def GetInt(self, element, section=""):
         """
         Returns specified element value in given section, as integer
 
@@ -260,10 +267,9 @@ class ConfigStream:
         if section == "":
             return int(self.GetOutput(element))
         else:
-            return int(self.GetOutput("-s " + section + " " \
-                                      + element))
+            return int(self.GetOutput("-s " + section + " " + element))
 
-    def GetBool(self, element, section = ""):
+    def GetBool(self, element, section=""):
         """
         Returns the value (Boolean) of a given field.
 
@@ -287,10 +293,9 @@ class ConfigStream:
         elif elt == "false" or elt == "f" or elt == "n" or elt == "no":
             return False
         else:
-            raise Exception, "Field \"" + element + "\" is not a Boolean " \
-                  "in " + self.filename + "."
+            raise Exception, 'Field "' + element + '" is not a Boolean ' "in " + self.filename + "."
 
-    def GetDateTime(self, element, section = ""):
+    def GetDateTime(self, element, section=""):
         """
         Returns the value (datetime) of a given field.
 

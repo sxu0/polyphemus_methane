@@ -41,11 +41,11 @@ contains
 !------------------------------------------------------------------------
 !
 !     -- INPUT VARIABLES
-!------------------------------------------------------------------------   
+!------------------------------------------------------------------------
     implicit none
-    
+
     integer::j,jesp,iter,s,k
-    integer ::nesp_eq!number of species at equilibirum    
+    integer ::nesp_eq!number of species at equilibirum
     double precision::dq(N_aerosol),qext(N_aerosol),qextold(N_aerosol)
     double precision::qaero(N_aerosol),qgas(N_aerosol)
     double precision:: Kelvin_effect(N_size,N_aerosol)
@@ -62,7 +62,7 @@ contains
     DOUBLE PRECISION :: q(N_size*(1+N_aerosol)+N_aerosol)
     double precision qaerona,qaerocl,qgascl
 
-    
+
 !!     ******zero init
     do s=1,(N_aerosol-1)
 	jesp=List_species(s)
@@ -75,7 +75,7 @@ contains
 	total_ms(jesp)=0.d0
     end do
     Kelvin_effect=1.000001
-  !     ****** allocate equilibrium species list      
+  !     ****** allocate equilibrium species list
 
     do s=1,nesp_aec
       eq_species(s)=aec_species(s)
@@ -93,7 +93,7 @@ contains
       jesp=List_species(s)
       if (aerosol_species_interact(jesp).GT.0) then
 	emw_tmp = molecular_weight_aer(jesp) * 1.D-6 ! g/mol
-		  
+
 	do j = 1,N_size	!FOR OGANIC
  	 wet_diam=wet_diameter(j)
 	 rhop_tmp = rho_wet_cell (j) * 1.d9 !1400 ! kg/m3
@@ -115,7 +115,7 @@ contains
 	                +ce_kernal_coef(j,jesp)*concentration_number(j)&
 	                *(1.d0/(Kelvin_effect(j,jesp)-1.d0))
 	  !KS: ce_kernal_coef_tot(jesp)= ce_kernal_coef_tot(jesp)&! compute total ce_kernal_coef coef
-	  ! 	      +ce_kernal_coef(j,jesp)*concentration_number(j) 
+	  ! 	      +ce_kernal_coef(j,jesp)*concentration_number(j)
 	enddo
       endif
     enddo
@@ -163,7 +163,7 @@ contains
     endif
 
     qgas(EH2O)=0.0
-    
+
       !for organic
     do s=1,nesp_eq
       jesp=eq_species(s)
@@ -198,10 +198,10 @@ contains
 !------------------------------------------------------------------------
 !
 !     -- INPUT VARIABLES
-!------------------------------------------------------------------------   
+!------------------------------------------------------------------------
     implicit none
     integer::j,jesp,s
-    integer ::nesp_eq!number of species at equilibirum    
+    integer ::nesp_eq!number of species at equilibirum
     double precision::dq(N_aerosol),qext(N_aerosol),qextold(N_aerosol)
     double precision::qaero(N_aerosol),qgas(N_aerosol)
     double precision::ce_kernal_coef_tot(N_aerosol)
@@ -212,7 +212,7 @@ contains
     integer :: eq_species(nesp_eq)! species compute with equilibrium
     double precision:: total_ms(N_aerosol)
     double precision :: liquid(12), ionic
-    
+
 !!     ******zero init
     do s=1, N_aerosol !nesp_isorropia
       jesp=List_species(s)
@@ -241,8 +241,8 @@ contains
        ce_kernal_coef_tot(jesp) = 0.d0
 
       if (aerosol_species_interact(jesp).GT.0) then
-	    ! compute total ce_kernal_coef coef (s-1)	
-!	if(jesp.ne.isorropia_species(2)) then ! need to compute sulfate in case of sulfate equilibrium 
+	    ! compute total ce_kernal_coef coef (s-1)
+!	if(jesp.ne.isorropia_species(2)) then ! need to compute sulfate in case of sulfate equilibrium
 #ifdef WITHOUT_NACL_IN_THERMODYNAMICS
          IF (jesp.NE.ECl) THEN
 #endif
@@ -349,7 +349,7 @@ contains
     endif
     do s=1, nesp_isorropia
       jesp=eq_species(s)
-      if(aerosol_species_interact(jesp).GT.0) then      
+      if(aerosol_species_interact(jesp).GT.0) then
 	qext(jesp)=qaero(jesp)
 #ifdef WITHOUT_NACL_IN_THERMODYNAMICS
        if(jesp.ne.ECl) then
@@ -362,10 +362,10 @@ contains
 	endif
 #ifdef WITHOUT_NACL_IN_THERMODYNAMICS
  	endif
-#endif	
+#endif
       endif
    enddo
-   
+
   ! give back initial SO4 gas conc
   ! minus that consumed by equi bins
     if(sulfate_computation.eq.0) then
@@ -385,7 +385,7 @@ contains
   end subroutine bulkequi_inorg
 
 
-  
+
   subroutine bulkequi_redistribution(c_number,c_mass,nesp_eq,eq_species,end_bin,dq,AAi,ce_kernal_coef_tot)
 !------------------------------------------------------------------------
 !
@@ -420,7 +420,7 @@ contains
     double precision::dm_bin(N_sizebin,N_aerosol)
     integer::iclip_bin(N_sizebin,N_aerosol)
     integer::k,ibegin
- 
+
     frac_bin=0.d0
     dm_bin=0.d0
     iclip_bin=0
@@ -429,7 +429,7 @@ contains
     else
        ibegin = isorropia_species(2)
     endif
-   
+
     do s=1, nesp_eq
       jesp=eq_species(s)
       if (aerosol_species_interact(jesp).GT.0) then
@@ -507,7 +507,7 @@ contains
 !     dq: bulk mass variations
 !     AAi: c/e kernel coefficient          ([m3.s-1]).
 !     ce_kernal_coef_tot: sum of c/e kernel coefficient          ([m3.s-1]).
-!------------------------------------------------------------------------   
+!------------------------------------------------------------------------
     implicit none
     integer::j,s,jesp,end_bin,iclip
     integer::nesp_eq
@@ -524,7 +524,7 @@ contains
     double precision::dm_bin(N_sizebin,N_aerosol)
     integer::iclip_bin(N_sizebin,N_aerosol)
     integer::k,ibegin
-  
+
     frac_bin=0.d0
     dm_bin=0.d0
     iclip_bin=0
@@ -533,7 +533,7 @@ contains
     else
        ibegin = isorropia_species(2)
     endif
-    
+
     do s=1, nesp_eq
       jesp=eq_species(s)
       if (aerosol_species_interact(jesp).GT.0) then
@@ -597,5 +597,5 @@ contains
   end subroutine bulkequi_redistribution_anck
 
 end Module iBulkequibrium
-  
-  
+
+

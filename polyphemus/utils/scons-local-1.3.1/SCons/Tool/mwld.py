@@ -41,59 +41,64 @@ def generate(env):
     SCons.Tool.createSharedLibBuilder(env)
     SCons.Tool.createProgBuilder(env)
 
-    env['AR'] = 'mwld'
-    env['ARCOM'] = '$AR $ARFLAGS -library -o $TARGET $SOURCES'
+    env["AR"] = "mwld"
+    env["ARCOM"] = "$AR $ARFLAGS -library -o $TARGET $SOURCES"
 
-    env['LIBDIRPREFIX'] = '-L'
-    env['LIBDIRSUFFIX'] = ''
-    env['LIBLINKPREFIX'] = '-l'
-    env['LIBLINKSUFFIX'] = '.lib'
+    env["LIBDIRPREFIX"] = "-L"
+    env["LIBDIRSUFFIX"] = ""
+    env["LIBLINKPREFIX"] = "-l"
+    env["LIBLINKSUFFIX"] = ".lib"
 
-    env['LINK'] = 'mwld'
-    env['LINKCOM'] = '$LINK $LINKFLAGS -o $TARGET $SOURCES $_LIBDIRFLAGS $_LIBFLAGS'
+    env["LINK"] = "mwld"
+    env["LINKCOM"] = "$LINK $LINKFLAGS -o $TARGET $SOURCES $_LIBDIRFLAGS $_LIBFLAGS"
 
-    env['SHLINK'] = '$LINK'
-    env['SHLINKFLAGS'] = '$LINKFLAGS'
-    env['SHLINKCOM']   = shlib_action
-    env['SHLIBEMITTER']= shlib_emitter
+    env["SHLINK"] = "$LINK"
+    env["SHLINKFLAGS"] = "$LINKFLAGS"
+    env["SHLINKCOM"] = shlib_action
+    env["SHLIBEMITTER"] = shlib_emitter
 
 
 def exists(env):
     import SCons.Tool.mwcc
+
     return SCons.Tool.mwcc.set_vars(env)
 
 
 def shlib_generator(target, source, env, for_signature):
-    cmd = ['$SHLINK', '$SHLINKFLAGS', '-shared']
+    cmd = ["$SHLINK", "$SHLINKFLAGS", "-shared"]
 
-    no_import_lib = env.get('no_import_lib', 0)
-    if no_import_lib: cmd.extend('-noimplib')
+    no_import_lib = env.get("no_import_lib", 0)
+    if no_import_lib:
+        cmd.extend("-noimplib")
 
-    dll = env.FindIxes(target, 'SHLIBPREFIX', 'SHLIBSUFFIX')
-    if dll: cmd.extend(['-o', dll])
+    dll = env.FindIxes(target, "SHLIBPREFIX", "SHLIBSUFFIX")
+    if dll:
+        cmd.extend(["-o", dll])
 
-    implib = env.FindIxes(target, 'LIBPREFIX', 'LIBSUFFIX')
-    if implib: cmd.extend(['-implib', implib.get_string(for_signature)])
+    implib = env.FindIxes(target, "LIBPREFIX", "LIBSUFFIX")
+    if implib:
+        cmd.extend(["-implib", implib.get_string(for_signature)])
 
-    cmd.extend(['$SOURCES', '$_LIBDIRFLAGS', '$_LIBFLAGS'])
+    cmd.extend(["$SOURCES", "$_LIBDIRFLAGS", "$_LIBFLAGS"])
 
     return [cmd]
 
 
 def shlib_emitter(target, source, env):
-    dll = env.FindIxes(target, 'SHLIBPREFIX', 'SHLIBSUFFIX')
-    no_import_lib = env.get('no_import_lib', 0)
+    dll = env.FindIxes(target, "SHLIBPREFIX", "SHLIBSUFFIX")
+    no_import_lib = env.get("no_import_lib", 0)
 
     if not dll:
-        raise SCons.Errors.UserError, "A shared library should have exactly one target with the suffix: %s" % env.subst("$SHLIBSUFFIX")
+        raise SCons.Errors.UserError, "A shared library should have exactly one target with the suffix: %s" % env.subst(
+            "$SHLIBSUFFIX"
+        )
 
-    if not no_import_lib and \
-       not env.FindIxes(target, 'LIBPREFIX', 'LIBSUFFIX'):
+    if not no_import_lib and not env.FindIxes(target, "LIBPREFIX", "LIBSUFFIX"):
 
         # Append an import library to the list of targets.
-        target.append(env.ReplaceIxes(dll,
-                                      'SHLIBPREFIX', 'SHLIBSUFFIX',
-                                      'LIBPREFIX', 'LIBSUFFIX'))
+        target.append(
+            env.ReplaceIxes(dll, "SHLIBPREFIX", "SHLIBSUFFIX", "LIBPREFIX", "LIBSUFFIX")
+        )
 
     return target, source
 

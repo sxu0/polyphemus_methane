@@ -36,35 +36,38 @@ __revision__ = "src/engine/SCons/Tool/g77.py 5110 2010/07/25 16:14:38 bdeegan"
 import SCons.Util
 from SCons.Tool.FortranCommon import add_all_to_env, add_f77_to_env
 
-compilers = ['g77', 'f77']
+compilers = ["g77", "f77"]
+
 
 def generate(env):
     """Add Builders and construction variables for g77 to an Environment."""
     add_all_to_env(env)
     add_f77_to_env(env)
 
-    fcomp = env.Detect(compilers) or 'g77'
-    if env['PLATFORM'] in ['cygwin', 'win32']:
-        env['SHFORTRANFLAGS'] = SCons.Util.CLVar('$FORTRANFLAGS')
-        env['SHF77FLAGS'] = SCons.Util.CLVar('$F77FLAGS')
+    fcomp = env.Detect(compilers) or "g77"
+    if env["PLATFORM"] in ["cygwin", "win32"]:
+        env["SHFORTRANFLAGS"] = SCons.Util.CLVar("$FORTRANFLAGS")
+        env["SHF77FLAGS"] = SCons.Util.CLVar("$F77FLAGS")
     else:
-        env['SHFORTRANFLAGS'] = SCons.Util.CLVar('$FORTRANFLAGS -fPIC')
-        env['SHF77FLAGS'] = SCons.Util.CLVar('$F77FLAGS -fPIC')
+        env["SHFORTRANFLAGS"] = SCons.Util.CLVar("$FORTRANFLAGS -fPIC")
+        env["SHF77FLAGS"] = SCons.Util.CLVar("$F77FLAGS -fPIC")
 
-    env['FORTRAN'] = fcomp
-    env['SHFORTRAN'] = '$FORTRAN'
+    env["FORTRAN"] = fcomp
+    env["SHFORTRAN"] = "$FORTRAN"
 
-    env['F77'] = fcomp
-    env['SHF77'] = '$F77'
+    env["F77"] = fcomp
+    env["SHF77"] = "$F77"
 
-    env['INCFORTRANPREFIX'] = "-I"
-    env['INCFORTRANSUFFIX'] = ""
+    env["INCFORTRANPREFIX"] = "-I"
+    env["INCFORTRANSUFFIX"] = ""
 
-    env['INCF77PREFIX'] = "-I"
-    env['INCF77SUFFIX'] = ""
+    env["INCF77PREFIX"] = "-I"
+    env["INCF77SUFFIX"] = ""
+
 
 def exists(env):
     return env.Detect(compilers)
+
 
 # Local Variables:
 # tab-width:4

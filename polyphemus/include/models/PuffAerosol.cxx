@@ -86,10 +86,10 @@ namespace Polyphemus
                               vector<string> bin_list,
                               Array<T, 2> quantity_aer, Array<T, 1> quantity_aer_number,
 			      bool is_volume_source, string source_id):
-    PuffChemistry<T>(release_time, velocity,  temperature, diameter, 
-                     width, length, 
+    PuffChemistry<T>(release_time, velocity,  temperature, diameter,
+                     width, length,
                      quantity, abscissa, ordinate, height, source_water,
-		     volume_prev, species_list, 
+		     volume_prev, species_list,
                      photolysis_reaction_list, is_volume_source, source_id)
   {
     this->Ns = species_list.size();
@@ -101,7 +101,7 @@ namespace Polyphemus
     quantity_list_aer = quantity_aer;
     quantity_list_number = quantity_aer_number;
   }
-  
+
 
 
   //! Initializes the puff.
@@ -118,7 +118,7 @@ namespace Polyphemus
     previous_background_concentration_aer = 0.;
     previous_background_concentration_number.resize(this->Nbin_aer);
     previous_background_concentration_number = 0.;
-    
+
     reflection_factor_aer = 1.;
   }
 

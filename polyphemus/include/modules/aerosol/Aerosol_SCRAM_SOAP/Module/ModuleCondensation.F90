@@ -24,7 +24,7 @@
   use aInitialization
   use cThermodynamics
   implicit none
- 
+
 contains
   subroutine SULFDYN(Q1,Q,N1,N,c_gas,dqdt,dtx)
 !------------------------------------------------------------------------
@@ -95,7 +95,7 @@ contains
     !   print*,"total_cond_so4",cond_so4,DEXP(-ce_kernal_coef_tot*dtx)
     !   stop
     ! endif !! YK test
-      
+
   end subroutine SULFDYN
 
   subroutine KERCOND(qn,q,c_gas,Wet_diam,Temperature,ce_kernel,ce_kernal_coef_i,jj,&
@@ -115,7 +115,7 @@ contains
 !     qn: aerosol number concentration (#/m^3)
 !     Temperature: temperature
 !     ce_kernal_coef_i: c/e kernel coefficient          ([m3.s-1]).
-!     jj: current bin index 
+!     jj: current bin index
 !
 !     -- OUTPUT VARIABLES
 !
@@ -133,7 +133,7 @@ contains
     double precision:: q(N_aerosol)!mass concentration in current grid point
     double precision:: qih,emw_tmp,rhop_tmp,Temperature
     double precision:: lwc,ionic,proton, liquid(12)
-  
+
 
 !!     ******Initialization to zero
     do s=1,N_aerosol
@@ -258,11 +258,11 @@ contains
      concentration_mass(jj,EH2O)=0.d0
       do jesp=1,N_inside_aer
 	concentration_inti(JJ,jesp)=0.d0
-      enddo     
+      enddo
    endif
-   
+
   end subroutine KERCOND
-   
+
   subroutine surface_eq_conc(qext,qinti,surface_equilibrium_conc,lwc,ionic,proton,liquid)
 !------------------------------------------------------------------------
 !
@@ -313,7 +313,7 @@ contains
     do s=1,nesp_isorropia
       jesp=isorropia_species(s)
       if(surface_equilibrium_conc(jesp).lt.0.0) surface_equilibrium_conc(jesp)=0.d0
-    enddo    
+    enddo
   end subroutine surface_eq_conc
-   
+
 End module fCondensation

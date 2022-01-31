@@ -517,9 +517,9 @@ void zrhqr(double a[], int m, double rtr[], double rti[]);
 double zriddr(double (*func)(double), double x1, double x2, double xacc);
 void zroots(fcomplex a[], int m, fcomplex roots[], int polish);
 
-/* 
+/*
 Betty Pun 1/99
-added twins of these functions because they are used in 
+added twins of these functions because they are used in
 nested loops
 */
 void fdjac1_double(int n, double x[], double fvec[], double **df,
@@ -533,4 +533,3 @@ void newt1_double(double x[], int n, int *check, void (*vecfunc)(int, double [],
 
 
 #endif /* _NR_H_ */
-

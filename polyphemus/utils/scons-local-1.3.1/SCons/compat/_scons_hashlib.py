@@ -31,26 +31,30 @@ purposes, anyway).  In fact, this module will raise an ImportError if
 the underlying md5 module isn't available.
 """
 
-__revision__ = "src/engine/SCons/compat/_scons_hashlib.py 5110 2010/07/25 16:14:38 bdeegan"
+__revision__ = (
+    "src/engine/SCons/compat/_scons_hashlib.py 5110 2010/07/25 16:14:38 bdeegan"
+)
 
 import md5
 import string
+
 
 class md5obj:
 
     md5_module = md5
 
-    def __init__(self, name, string=''):
-        if not name in ('MD5', 'md5'):
+    def __init__(self, name, string=""):
+        if not name in ("MD5", "md5"):
             raise ValueError, "unsupported hash type"
-        self.name = 'md5'
+        self.name = "md5"
         self.m = self.md5_module.md5()
 
     def __repr__(self):
-        return '<%s HASH object @ %#x>' % (self.name, id(self))
+        return "<%s HASH object @ %#x>" % (self.name, id(self))
 
     def copy(self):
         import copy
+
         result = copy.copy(self)
         result.m = self.m.copy()
         return result
@@ -61,7 +65,7 @@ class md5obj:
     def update(self, arg):
         return self.m.update(arg)
 
-    if hasattr(md5.md5(), 'hexdigest'):
+    if hasattr(md5.md5(), "hexdigest"):
 
         def hexdigest(self):
             return self.m.hexdigest()
@@ -73,16 +77,19 @@ class md5obj:
         # equivalent lifted from elsewhere.
         def hexdigest(self):
             h = string.hexdigits
-            r = ''
+            r = ""
             for c in self.digest():
                 i = ord(c)
                 r = r + h[(i >> 4) & 0xF] + h[i & 0xF]
             return r
 
+
 new = md5obj
 
-def md5(string=''):
-    return md5obj('md5', string)
+
+def md5(string=""):
+    return md5obj("md5", string)
+
 
 # Local Variables:
 # tab-width:4

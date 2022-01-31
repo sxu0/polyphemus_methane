@@ -38,11 +38,12 @@ import SCons.Tool
 import SCons.Defaults
 import SCons.Util
 
-compilers = ['CC', 'c++']
+compilers = ["CC", "c++"]
 
-CXXSuffixes = ['.cpp', '.cc', '.cxx', '.c++', '.C++', '.mm']
-if SCons.Util.case_sensitive_suffixes('.c', '.C'):
-    CXXSuffixes.append('.C')
+CXXSuffixes = [".cpp", ".cc", ".cxx", ".c++", ".C++", ".mm"]
+if SCons.Util.case_sensitive_suffixes(".c", ".C"):
+    CXXSuffixes.append(".C")
+
 
 def iscplusplus(source):
     if not source:
@@ -55,6 +56,7 @@ def iscplusplus(source):
                 return 1
     return 0
 
+
 def generate(env):
     """
     Add Builders and construction variables for Visual Age C++ compilers
@@ -62,6 +64,7 @@ def generate(env):
     """
     import SCons.Tool
     import SCons.Tool.cc
+
     static_obj, shared_obj = SCons.Tool.createObjBuilders(env)
 
     for suffix in CXXSuffixes:
@@ -72,25 +75,27 @@ def generate(env):
 
     SCons.Tool.cc.add_common_cc_variables(env)
 
-    env['CXX']        = 'c++'
-    env['CXXFLAGS']   = SCons.Util.CLVar('')
-    env['CXXCOM']     = '$CXX -o $TARGET -c $CXXFLAGS $CCFLAGS $_CCCOMCOM $SOURCES'
-    env['SHCXX']      = '$CXX'
-    env['SHCXXFLAGS'] = SCons.Util.CLVar('$CXXFLAGS')
-    env['SHCXXCOM']   = '$SHCXX -o $TARGET -c $SHCXXFLAGS $SHCCFLAGS $_CCCOMCOM $SOURCES'
+    env["CXX"] = "c++"
+    env["CXXFLAGS"] = SCons.Util.CLVar("")
+    env["CXXCOM"] = "$CXX -o $TARGET -c $CXXFLAGS $CCFLAGS $_CCCOMCOM $SOURCES"
+    env["SHCXX"] = "$CXX"
+    env["SHCXXFLAGS"] = SCons.Util.CLVar("$CXXFLAGS")
+    env["SHCXXCOM"] = "$SHCXX -o $TARGET -c $SHCXXFLAGS $SHCCFLAGS $_CCCOMCOM $SOURCES"
 
-    env['CPPDEFPREFIX']  = '-D'
-    env['CPPDEFSUFFIX']  = ''
-    env['INCPREFIX']  = '-I'
-    env['INCSUFFIX']  = ''
-    env['SHOBJSUFFIX'] = '.os'
-    env['OBJSUFFIX'] = '.o'
-    env['STATIC_AND_SHARED_OBJECTS_ARE_THE_SAME'] = 0
+    env["CPPDEFPREFIX"] = "-D"
+    env["CPPDEFSUFFIX"] = ""
+    env["INCPREFIX"] = "-I"
+    env["INCSUFFIX"] = ""
+    env["SHOBJSUFFIX"] = ".os"
+    env["OBJSUFFIX"] = ".o"
+    env["STATIC_AND_SHARED_OBJECTS_ARE_THE_SAME"] = 0
 
-    env['CXXFILESUFFIX'] = '.cc'
+    env["CXXFILESUFFIX"] = ".cc"
+
 
 def exists(env):
     return env.Detect(compilers)
+
 
 # Local Variables:
 # tab-width:4

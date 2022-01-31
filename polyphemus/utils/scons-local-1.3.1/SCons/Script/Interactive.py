@@ -33,7 +33,7 @@ SCons interactive mode
 # of its own, which might or might not be a good thing.  Nevertheless,
 # here are some enhancements that will probably be requested some day
 # and are worth keeping in mind (assuming this takes off):
-# 
+#
 # - A command to re-read / re-load the SConscript files.  This may
 #   involve allowing people to specify command-line options (e.g. -f,
 #   -I, --no-site-dir) that affect how the SConscript files are read.
@@ -98,6 +98,7 @@ try:
 except ImportError:
     pass
 
+
 class SConsInteractiveCmd(cmd.Cmd):
     """\
     build [TARGETS]         Build the specified TARGETS and their dependencies.
@@ -113,11 +114,11 @@ class SConsInteractiveCmd(cmd.Cmd):
     """
 
     synonyms = {
-        'b'     : 'build',
-        'c'     : 'clean',
-        'h'     : 'help',
-        'scons' : 'build',
-        'sh'    : 'shell',
+        "b": "build",
+        "c": "clean",
+        "h": "help",
+        "scons": "build",
+        "sh": "shell",
     }
 
     def __init__(self, **kw):
@@ -125,10 +126,10 @@ class SConsInteractiveCmd(cmd.Cmd):
         for key, val in kw.items():
             setattr(self, key, val)
 
-        if sys.platform == 'win32':
-            self.shell_variable = 'COMSPEC'
+        if sys.platform == "win32":
+            self.shell_variable = "COMSPEC"
         else:
-            self.shell_variable = 'SHELL'
+            self.shell_variable = "SHELL"
 
     def default(self, argv):
         print "*** Unknown command: %s" % argv[0]
@@ -139,19 +140,19 @@ class SConsInteractiveCmd(cmd.Cmd):
             print self.lastcmd
             return self.emptyline()
         self.lastcmd = line
-        if line[0] == '!':
-            line = 'shell ' + line[1:]
-        elif line[0] == '?':
-            line = 'help ' + line[1:]
-        if os.sep == '\\':
-            line = string.replace(line, '\\', '\\\\')
+        if line[0] == "!":
+            line = "shell " + line[1:]
+        elif line[0] == "?":
+            line = "help " + line[1:]
+        if os.sep == "\\":
+            line = string.replace(line, "\\", "\\\\")
         argv = shlex.split(line)
         argv[0] = self.synonyms.get(argv[0], argv[0])
         if not argv[0]:
             return self.default(line)
         else:
             try:
-                func = getattr(self, 'do_' + argv[0])
+                func = getattr(self, "do_" + argv[0])
             except AttributeError:
                 return self.default(argv)
             return func(argv)
@@ -178,10 +179,9 @@ class SConsInteractiveCmd(cmd.Cmd):
             # use the list of default targets.
             SCons.Script.BUILD_TARGETS = SCons.Script._build_plus_default
 
-        nodes = SCons.Script.Main._build_targets(self.fs,
-                                                 options,
-                                                 targets,
-                                                 self.target_top)
+        nodes = SCons.Script.Main._build_targets(
+            self.fs, options, targets, self.target_top
+        )
 
         if not nodes:
             return
@@ -216,13 +216,16 @@ class SConsInteractiveCmd(cmd.Cmd):
         # XXX: Someone more familiar with the inner workings of scons
         # may be able to point out a more efficient way to do this.
 
-        SCons.Script.Main.progress_display("scons: Clearing cached node information ...")
+        SCons.Script.Main.progress_display(
+            "scons: Clearing cached node information ..."
+        )
 
         seen_nodes = {}
 
         def get_unseen_children(node, parent, seen_nodes=seen_nodes):
             def is_unseen(node, seen_nodes=seen_nodes):
                 return not seen_nodes.has_key(node)
+
             return filter(is_unseen, node.children(scan=1))
 
         def add_to_seen_nodes(node, parent, seen_nodes=seen_nodes):
@@ -244,9 +247,9 @@ class SConsInteractiveCmd(cmd.Cmd):
                 seen_nodes[rfile] = 1
 
         for node in nodes:
-            walker = SCons.Node.Walker(node,
-                                        kids_func=get_unseen_children,
-                                        eval_func=add_to_seen_nodes)
+            walker = SCons.Node.Walker(
+                node, kids_func=get_unseen_children, eval_func=add_to_seen_nodes
+            )
             n = walker.next()
             while n:
                 n = walker.next()
@@ -261,7 +264,7 @@ class SConsInteractiveCmd(cmd.Cmd):
 
             # Debug:  Uncomment to verify that all Taskmaster reference
             # counts have been reset to zero.
-            #if node.ref_count != 0:
+            # if node.ref_count != 0:
             #    from SCons.Debug import Trace
             #    Trace('node %s, ref_count %s !!!\n' % (node, node.ref_count))
 
@@ -273,7 +276,7 @@ class SConsInteractiveCmd(cmd.Cmd):
         clean [TARGETS]         Clean (remove) the specified TARGETS
                                 and their dependencies.  'c' is a synonym.
         """
-        return self.do_build(['build', '--clean'] + argv[1:])
+        return self.do_build(["build", "--clean"] + argv[1:])
 
     def do_EOF(self, argv):
         print
@@ -282,44 +285,45 @@ class SConsInteractiveCmd(cmd.Cmd):
     def _do_one_help(self, arg):
         try:
             # If help_<arg>() exists, then call it.
-            func = getattr(self, 'help_' + arg)
+            func = getattr(self, "help_" + arg)
         except AttributeError:
             try:
-                func = getattr(self, 'do_' + arg)
+                func = getattr(self, "do_" + arg)
             except AttributeError:
                 doc = None
             else:
                 doc = self._doc_to_help(func)
             if doc:
-                sys.stdout.write(doc + '\n')
+                sys.stdout.write(doc + "\n")
                 sys.stdout.flush()
         else:
             doc = self.strip_initial_spaces(func())
             if doc:
-                sys.stdout.write(doc + '\n')
+                sys.stdout.write(doc + "\n")
                 sys.stdout.flush()
 
     def _doc_to_help(self, obj):
         doc = obj.__doc__
         if doc is None:
-            return ''
+            return ""
         return self._strip_initial_spaces(doc)
 
     def _strip_initial_spaces(self, s):
-        #lines = s.split('\n')
-        lines = string.split(s, '\n')
-        spaces = re.match(' *', lines[0]).group(0)
-        #def strip_spaces(l):
+        # lines = s.split('\n')
+        lines = string.split(s, "\n")
+        spaces = re.match(" *", lines[0]).group(0)
+        # def strip_spaces(l):
         #    if l.startswith(spaces):
         #        l = l[len(spaces):]
         #    return l
-        #return '\n'.join([ strip_spaces(l) for l in lines ])
+        # return '\n'.join([ strip_spaces(l) for l in lines ])
         def strip_spaces(l, spaces=spaces):
-            if l[:len(spaces)] == spaces:
-                l = l[len(spaces):]
+            if l[: len(spaces)] == spaces:
+                l = l[len(spaces) :]
             return l
+
         lines = map(strip_spaces, lines)
-        return string.join(lines, '\n')
+        return string.join(lines, "\n")
 
     def do_exit(self, argv):
         """\
@@ -341,7 +345,7 @@ class SConsInteractiveCmd(cmd.Cmd):
             # string (if it has one).
             doc = self._doc_to_help(self.__class__)
             if doc:
-                sys.stdout.write(doc + '\n')
+                sys.stdout.write(doc + "\n")
                 sys.stdout.flush()
 
     def do_shell(self, argv):
@@ -350,6 +354,7 @@ class SConsInteractiveCmd(cmd.Cmd):
                                 '!' are synonyms.
         """
         import subprocess
+
         argv = argv[1:]
         if not argv:
             argv = os.environ[self.shell_variable]
@@ -358,9 +363,9 @@ class SConsInteractiveCmd(cmd.Cmd):
             # http://mail.python.org/pipermail/python-dev/2008-August/081979.html "+
             # Doing the right thing with an argument list currently
             # requires different shell= values on Windows and Linux.
-            p = subprocess.Popen(argv, shell=(sys.platform=='win32'))
+            p = subprocess.Popen(argv, shell=(sys.platform == "win32"))
         except EnvironmentError, e:
-            sys.stderr.write('scons: %s: %s\n' % (argv[0], e.strerror))
+            sys.stderr.write("scons: %s: %s\n" % (argv[0], e.strerror))
         else:
             p.wait()
 
@@ -368,16 +373,20 @@ class SConsInteractiveCmd(cmd.Cmd):
         """\
         version                 Prints SCons version information.
         """
-        sys.stdout.write(self.parser.version + '\n')
+        sys.stdout.write(self.parser.version + "\n")
+
 
 def interact(fs, parser, options, targets, target_top):
-    c = SConsInteractiveCmd(prompt = 'scons>>> ',
-                            fs = fs,
-                            parser = parser,
-                            options = options,
-                            targets = targets,
-                            target_top = target_top)
+    c = SConsInteractiveCmd(
+        prompt="scons>>> ",
+        fs=fs,
+        parser=parser,
+        options=options,
+        targets=targets,
+        target_top=target_top,
+    )
     c.cmdloop()
+
 
 # Local Variables:
 # tab-width:4

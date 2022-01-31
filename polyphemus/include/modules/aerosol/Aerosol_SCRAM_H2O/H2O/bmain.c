@@ -16,7 +16,7 @@ extern double VPCrit;
 #endif
 
 /**************************************************************************
-Purpose:  Main for Type B module                          
+Purpose:  Main for Type B module
           Calculates total condensables Ci
           Determines if set of simultaneous equations is solved.
           If so, calls Newt, the globally convergent multi-dimensional
@@ -28,13 +28,13 @@ Purpose:  Main for Type B module
           and composition (fixed composition and mass of absorbing medium)
 
 Key calls:  Newt, TypeB
-                                                          
+
 Notes: 1. Parameters hard coded in glo.h (global variable include file)
           or glodef.h:
           used in bmain:
             NBSP, VPBi, MWBi of condensing species
           used in typeb:
-            NBSPAOM, fom, MWBom, xaom[i]        
+            NBSPAOM, fom, MWBom, xaom[i]
        2. Parameters include file unifacparam.h used in unidriver
        3. Partitioning molecules:
           Anthropogenic 1 methyl nitro benzoic acid
@@ -42,7 +42,7 @@ Notes: 1. Parameters hard coded in glo.h (global variable include file)
 	  Biogenic 1 C15 diene aldehyde with OH and NO3 groups
 	  Biogenic 2 humulone aldehyde
 	  Biogenic 3 nopinone
- 
+
 Revision History:  Developed by Betty Pun, AER, Jan 99 Under EPRI
                    Modified by Betty Pun, AER, Nov 99 Under CARB
                    1. Increase the no. of partitioning compounds
@@ -59,14 +59,14 @@ Revision History:  Developed by Betty Pun, AER, Jan 99 Under EPRI
 void bmain (float gas[], float aero[] )
 {
   /* global functions */
-  extern void newt (float x[], int n, int * check, 
+  extern void newt (float x[], int n, int * check,
 		    void (*vecfunc)(int, float[], float[]));
-  extern void TypeB (int n, float x[], float f[]);    
+  extern void TypeB (int n, float x[], float f[]);
 
   FILE *fout1;
   int neq;                         /* no. of equations to be solved by Newt */
   int check;                       /* flag used by newt */
-  /* need to allocate space for check to avoid overwriting x[1] */     
+  /* need to allocate space for check to avoid overwriting x[1] */
   int idx;                         /* counter for aidx */
   int i;                           /* dummy counter */
   double guesssoa;                 /* if SOA >> PAOM, may need to reset intial
@@ -103,10 +103,10 @@ void bmain (float gas[], float aero[] )
         idx ++;
       }
       neq = idx-1;
-    }                                                                    
-      
+    }
+
     /* bkp reset initial guess similar to PAOM = 0 if guesssoa >> PAOM */
-    /* 10/13/00 */ 
+    /* 10/13/00 */
     if (10 * PAOM < guesssoa) {
       for (idx = 1; idx <= neq; idx++){
 	if (VPB[aidxb[idx]] > VPCrit) aero[idx] = 0.3 * cb[aidxb[idx]];
@@ -128,10 +128,10 @@ void bmain (float gas[], float aero[] )
 	  aero[idx] = 0.0;
 	}
         else if ( aero[idx] > cb[i]) {
-	  aero[idx] = cb[i];    
+	  aero[idx] = cb[i];
 	}
 
-	gas[i] = cb[i]- aero[idx]; 
+	gas[i] = cb[i]- aero[idx];
         idx ++;
       }
       else {
@@ -142,7 +142,7 @@ void bmain (float gas[], float aero[] )
     }  /* end for */
 
     /* reassign aero to contain zero elements for output in main */
-    for (i = 1; i <= NBSP; i++) 
+    for (i = 1; i <= NBSP; i++)
       aero[i] = cb[i] - gas[i];
 
   }
@@ -151,8 +151,8 @@ void bmain (float gas[], float aero[] )
     /* all concentration elements passed into TypeB */
     for (i = 1; i <=NBSP ; i ++)  {
       aidxb[i] = i;
-    }                              
-                                           
+    }
+
     TypeB (NBSP, aero, NULL);
     /* solution is output in aero array */
 
@@ -163,7 +163,3 @@ void bmain (float gas[], float aero[] )
 
   return;
 }
-
-
-
-

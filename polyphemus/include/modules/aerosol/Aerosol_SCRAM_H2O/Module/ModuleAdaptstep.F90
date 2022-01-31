@@ -58,7 +58,7 @@ contains
     Integer solver
     Double precision emw_tmp,tmp
     doUBLE PRECISION start_time,end_time
-    double precision :: timestep_coag,timestep_cond    
+    double precision :: timestep_coag,timestep_cond
 
 	IF (with_coag.EQ.1) THEN
 	  do j1 = 1, N_size
@@ -128,9 +128,9 @@ contains
 	      * partition_coefficient(jesp) * DEXP(vaporization_enthalpy(jesp) * tmp)
 	enddo
     endIF
-    
+
     !call mass_conservation(concentration_mass,concentration_number,concentration_gas, total_mass)
-    
+
     initial_time_splitting = 0.D0
     final_time = end_time-start_time
     timestep_splitting=0.D0
@@ -182,19 +182,19 @@ contains
 	tag_nucl   = with_nucl
 	solver=dynamic_solver
 	sub_timestep_splitting=timestep_cond
-! 	call check_nan_inf(8)	
+! 	call check_nan_inf(8)
 	call  processearo(solver)
-      
+
 ! 	call mass_conservation(concentration_mass,concentration_number,&
 ! 	concentration_gas, total_mass)
 ! 	print*, "after cond:",total_number
-! 	call check_nan_inf(9)	
+! 	call check_nan_inf(9)
 	!call mass_conservation(concentration_mass,concentration_number,concentration_gas, total_mass)
 	! Redistribute concentrations on fixed fraction sections
 	if(N_fracmax.gt.1) then
 	  call redistribution_fraction()!fraction redistribution
 	endif
-! 	call check_nan_inf(10)		
+! 	call check_nan_inf(10)
 	! Redistribute concentrations on fixed size sections
 	if(redistribution_method.ge.2) then! .and.with_cond+with_coag.eq.2
 	  call redistribution_size(redistribution_method)!size redistribution
@@ -258,7 +258,7 @@ contains
 !     do j =1,N_sizels
 ! 	total_water = total_water + concentration_mass(j,EH2O)
 !     enddo
-! 
+!
 !     if (total_water .GE. 1.D06) then
 ! 	write(6,*) total_water,'SCRAM (aerodyn-ModuleAdaptstep): total water>1e6'
 !     endIF
@@ -282,7 +282,7 @@ contains
 !     -- OUTPUT VARIABLES
 !------------------------------------------------------------------------
     implicit none
-    
+
     integer:: solver,itrat
     double precision:: time_t,time_p
     time_p=0.d0
@@ -304,7 +304,7 @@ contains
 	    concentration_number,concentration_gas,dqdt,sub_timestep_splitting)
 	else
 	  call SULFDYN(concentration_mass_tmp,concentration_mass,concentration_number_tmp,&
-	    concentration_number,concentration_gas,dqdt,time_t)	  
+	    concentration_number,concentration_gas,dqdt,time_t)
 	endif
       endif
 !       call check_nan_inf(29)
@@ -434,7 +434,7 @@ contains
 
       do j=ICUT+1,N_size
 	do s= 1, (N_aerosol-1)!s=G1,G2
-	  jesp=List_species(s)	  
+	  jesp=List_species(s)
 	  tmp=c_mass(j,jesp)*dqdt1(j,jesp)
 	  if (DABS(dqdt1(j,jesp)).gt.0.d0.and.c_mass(j,jesp).gt.TINYM) then
 	    tscale=c_mass(j,jesp)/DABS(dqdt1(j,jesp))
@@ -551,7 +551,7 @@ contains
 !     dtx: dynamic time step for N_aerosol integration
 !------------------------------------------------------------------------
     implicit none
-    
+
     integer::j,jesp,t_good!s is the species index of ESO4
     double precision:: dqdt(N_size,N_aerosol)
     double precision:: tmp,tscale,dtx
@@ -925,5 +925,5 @@ contains
     enddo
 !     if(IsNaN(n2(1)*0.d0)) print*,'Error',6
   end subroutine Ros2_solver
-  
+
 end Module jAdaptstep

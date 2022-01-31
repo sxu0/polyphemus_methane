@@ -118,11 +118,11 @@ namespace Polyphemus
 
     //! corrected volume or not.
     // bool corrected_background;
-    
+
     //! If the grid cell is urban or not.
     Array<bool, 2> is_urban;
 
-    //! Ratio of the urbanized surface. 
+    //! Ratio of the urbanized surface.
     Array<T, 2> urban_fraction;
 
     //! Length-weighted height of the urban canopy.
@@ -151,7 +151,7 @@ namespace Polyphemus
 
 
     /*** Meteorological data ***/
-    
+
     //! Zonal wind at current date.
     Data<T, 3> ZonalWind_i;
     //! Meridional wind at current date.
@@ -229,14 +229,14 @@ namespace Polyphemus
     void UpdateStreetData(int street_index);
     void UpdateIntersectionData(int intersection_index);
     void ExtractMeteo(T height, T lat, T lon, map<string, T>& met_data);
-    void ExtractMeteo(T height, T lat, T lon, map<string, T>& met_data, 
+    void ExtractMeteo(T height, T lat, T lon, map<string, T>& met_data,
                       bool check);
     void ExtractSpeciesData(T height, T lat, T lon,
 			    Array<T, 1>& background_concentration);
     void UpdateMeteo();
 
     /*** Mass transfer from the streets ***/
- 
+
     void StreetTransfer(Data<T, 4>& Concentration_out);
     void ComputeMassFlux();
 
@@ -259,7 +259,7 @@ namespace Polyphemus
     void EmissionRateSave();
 
     /*** Save Concentration over canopy ***/
-    
+
     void ComputeConcentrationOverCanopy();
     Data<T, 3>& GetConcentrationOverCanopy();
 

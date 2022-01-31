@@ -28,27 +28,27 @@ namespace Seldon
     bool symmetric_precond; //!< true for Symmetric relaxation
     int nb_iter; //!< number of iterations
     T omega; //!< relaxation parameter
-    
+
   public :
     SorPreconditioner();
     ~SorPreconditioner(){}
-    
+
     void InitSymmetricPreconditioning() { symmetric_precond = true; }
     void InitUnSymmetricPreconditioning() { symmetric_precond = false; }
     void SetParameterRelaxation(const T& param) { omega = param; }
     void SetNumberIterations(int nb_iterations) { nb_iter = nb_iterations; }
-    
+
     template<class Vector, class Matrix>
     void Solve(const Matrix& A, const Vector& r, Vector& z,
 	       bool init_guess_null = true);
-    
+
     template<class Vector, class Matrix>
     void TransSolve(const Matrix& A, const Vector& r, Vector& z,
 		    bool init_guess_null = true);
-    
+
   };
-  
-  
+
+
   //! Default constructor
   template<class T>
   SorPreconditioner<T>::SorPreconditioner()
@@ -56,8 +56,8 @@ namespace Seldon
     nb_iter = 1; omega = T(1);
     symmetric_precond = true;
   }
-  
-  
+
+
   //! Solves M z = r
   template<class T>
   template<class Vector, class Matrix>
@@ -66,14 +66,14 @@ namespace Seldon
   {
     if (init_guess_null)
       z.Zero();
-    
+
     if (symmetric_precond)
       Seldon::SOR(A, z, r, omega, nb_iter, 0);
     else
       Seldon::SOR(A, z, r, omega, nb_iter, 2);
   }
-  
-  
+
+
   //! Solves M^t z = r
   template<class T>
   template<class Vector, class Matrix>
@@ -82,13 +82,13 @@ namespace Seldon
   {
     if (init_guess_null)
       z.Zero();
-    
+
     if (symmetric_precond)
       Seldon::SOR(A, z, r, omega, nb_iter, 0);
     else
       Seldon::SOR(A, z, r, omega, nb_iter, 3);
   }
-  
+
 }
 
 #define SELDON_FILE_PRECOND_SSOR_CXX

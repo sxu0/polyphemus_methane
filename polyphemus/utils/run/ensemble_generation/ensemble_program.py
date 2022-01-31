@@ -26,8 +26,7 @@ It is used to launch automatically several Polyphemus programs.
 
 from atmopy import talos
 from run.ensemble_generation import EnsembleParameter
-from run.ensemble_generation.function import create_output_dir,\
-                                             get_bc_init_date
+from run.ensemble_generation.function import create_output_dir, get_bc_init_date
 from run.network import Network
 from run.polyphemus import Configuration, Polyphemus, Program
 
@@ -52,10 +51,14 @@ class EnsembleProgram:
     # CONSTRUCTOR #
     ###############
 
-
-    def __init__(self, config_parameter = None, config_program = None,
-                 polyphemus_dir = None, ConfigReplacement = None,
-                 only_preprocessing = True):
+    def __init__(
+        self,
+        config_parameter=None,
+        config_program=None,
+        polyphemus_dir=None,
+        ConfigReplacement=None,
+        only_preprocessing=True,
+    ):
         """The construcor.
 
         Initializes the attributes and reads two configuration files.
@@ -114,7 +117,7 @@ class EnsembleProgram:
             self.SetPolyphemusDirectory(polyphemus_dir)
         else:
             ## The Polyphemus directory.
-            self.polyphemus_dir = ''
+            self.polyphemus_dir = ""
 
         ## The directory where the preprocessing data will be stored.
         self.data_dir = ""
@@ -129,8 +132,7 @@ class EnsembleProgram:
 
         self.Init(config_parameter, config_program)
 
-
-    def Init(self, config_parameter = None, config_program = None):
+    def Init(self, config_parameter=None, config_program=None):
         """Checks a few directories and loads configuration files.
         \param config_parameter the path to the configuration file which
         describes the different parameters.
@@ -155,15 +157,13 @@ class EnsembleProgram:
         # Identity program.
         self.InitIdProgram()
 
-
-    def ReadIdEnsembleFile(self, filename = "id_ens.dat"):
+    def ReadIdEnsembleFile(self, filename="id_ens.dat"):
         """Reads the identity of each model from a file.
         \param filename the name of the file.
         """
 
-        self.parameter.ReadIdEnsembleFile(filename, copy = True)
+        self.parameter.ReadIdEnsembleFile(filename, copy=True)
         self.Nmodel = self.parameter.Nmodel
-
 
     def LoadConfiguration(self, config_program):
         """Checks the path of the configuraton file and loads it.
@@ -174,10 +174,8 @@ class EnsembleProgram:
         ## The program configuraton file.
         self.config_program = os.path.abspath(config_program)
         if not os.path.isfile(config_program):
-            raise Exception, "Unable to find the configuration file : \"" \
-                  + config_program + "\"."
+            raise Exception, 'Unable to find the configuration file : "' + config_program + '".'
         self.ReadConfigProgram()
-
 
     def ReadConfigProgram(self):
         """Reads the program configuraton file.
@@ -190,33 +188,34 @@ class EnsembleProgram:
         ## describes the programs.
         self.all_program = []
 
-        content = [("generic_cfg", "[general]", "String"), \
-                   ("[ground]", "", "ground", "StringSection"), \
-                   ("[meteo]", "", "meteo", "StringSection"), \
-                   ("[dep]", "", "dep", "StringSection"), \
-                   ("[emissions]", "", "emissions", "StringSection"), \
-                   ("[bio]", "", "bio", "StringSection"), \
-                   ("[ic]", "", "ic", "StringSection"), \
-                   ("[bc]", "", "bc", "StringSection"), \
-                   ("[driver]", "", "driver", "StringSection")]
+        content = [
+            ("generic_cfg", "[general]", "String"),
+            ("[ground]", "", "ground", "StringSection"),
+            ("[meteo]", "", "meteo", "StringSection"),
+            ("[dep]", "", "dep", "StringSection"),
+            ("[emissions]", "", "emissions", "StringSection"),
+            ("[bio]", "", "bio", "StringSection"),
+            ("[ic]", "", "ic", "StringSection"),
+            ("[bc]", "", "bc", "StringSection"),
+            ("[driver]", "", "driver", "StringSection"),
+        ]
 
         ## A atmopy.talos.Config instance.
-        self.config = talos.Config(self.config_program, new_content = content)
+        self.config = talos.Config(self.config_program, new_content=content)
 
         ## The directory where generic configurations files are stored.
         self.generic_cfg = self.config.generic_cfg
 
         # Extracts the name of the programs and their dependencies from the
         # configuration file.
-        self.ExtractSection('ground')
-        self.ExtractSection('meteo')
-        self.ExtractSection('dep')
-        self.ExtractSection('emissions')
-        self.ExtractSection('bio')
-        self.ExtractSection('ic')
-        self.ExtractSection('bc')
-        self.ExtractSection('driver')
-
+        self.ExtractSection("ground")
+        self.ExtractSection("meteo")
+        self.ExtractSection("dep")
+        self.ExtractSection("emissions")
+        self.ExtractSection("bio")
+        self.ExtractSection("ic")
+        self.ExtractSection("bc")
+        self.ExtractSection("driver")
 
     def InitIdProgram(self):
         """Initializes the dictionary where there are the choices of
@@ -229,21 +228,17 @@ class EnsembleProgram:
                 tmp = {name: []}
                 self.id_program.update(tmp)
 
-
     def InitEnsemble(self):
-        """Initializes an ensemble of program.
-        """
+        """Initializes an ensemble of program."""
 
         self.Check()
         self.InitIdProgram()
         self.program_instance_list.__init__()
         self.CopyConfigurationFile()
 
-
     ##################
     # ACCESS METHODS #
     ##################
-
 
     def GetProgramSection(self, program):
         """Returns the section to which the program belongs.
@@ -253,8 +248,7 @@ class EnsembleProgram:
         if len(self.all_program) == 0:
             raise Exception, "The program list is empty."
         if program not in self.all_program:
-            raise Exception, "The program: \"" + program + "\" is not in " \
-                  + "the program list."
+            raise Exception, 'The program: "' + program + '" is not in ' + "the program list."
         key = []
         value = []
         it = self.program_name.iterkeys()
@@ -263,7 +257,6 @@ class EnsembleProgram:
             value.append(self.program_name[key[i]])
             if program in value[i]:
                 return key[i]
-
 
     def GetParameterDict(self, model_index):
         """Returns the description of a model.
@@ -276,8 +269,7 @@ class EnsembleProgram:
 
         # Checks if there is a 'ConfigReplacement' instance.
         if self.config_replacement == None:
-            raise Exception, "The attribute 'config_replacement' does not "\
-                + "have value. Please use the method 'SetConfigReplacement'."
+            raise Exception, "The attribute 'config_replacement' does not " + "have value. Please use the method 'SetConfigReplacement'."
 
         if len(self.default_dict) == 0:
             self.SetDefaultDict()
@@ -288,7 +280,6 @@ class EnsembleProgram:
                 param_dict[k] = self.default_dict[k]
 
         return param_dict
-
 
     def GetGeneralDict(self, model_index):
         """Returns the 'general_dict'.
@@ -305,8 +296,7 @@ class EnsembleProgram:
         preproc_dir = self.polyphemus_dir + "/preprocessing"
         self.data_dir = self.parameter.config.data_dir
         model_dir = self.parameter.config.model_dir
-        self.output_dir = model_dir + "/" \
-                          + self.parameter.GetStringModel(model_index)
+        self.output_dir = model_dir + "/" + self.parameter.GetStringModel(model_index)
 
         # General datas.
         date_min = self.parameter.config.date_min
@@ -319,20 +309,23 @@ class EnsembleProgram:
         Ny = self.parameter.config.Ny
 
         # General dictionary.
-        base_dict = {"%polyphemus_preprocessing_dir%": preproc_dir,
-                     "%data_dir%": self.data_dir,
-                     "%output_config_dir%": self.output_dir + "/config",
-                     "%output_dir%": self.output_dir,
-                     "%Date%": str_date_min,
-                     "%x_min%": x_min,
-                     "%y_min%": y_min,
-                     "%Delta_x%": Delta_x,
-                     "%Delta_y%": Delta_y,
-                     "%Nx%": Nx,
-                     "%Ny%": Ny}
+        base_dict = {
+            "%polyphemus_preprocessing_dir%": preproc_dir,
+            "%data_dir%": self.data_dir,
+            "%output_config_dir%": self.output_dir + "/config",
+            "%output_dir%": self.output_dir,
+            "%Date%": str_date_min,
+            "%x_min%": x_min,
+            "%y_min%": y_min,
+            "%Delta_x%": Delta_x,
+            "%Delta_y%": Delta_y,
+            "%Nx%": Nx,
+            "%Ny%": Ny,
+        }
 
-        variable_replacement = self.config_replacement\
-                               .GetConfigVariable(model_index, self)
+        variable_replacement = self.config_replacement.GetConfigVariable(
+            model_index, self
+        )
         directory_replacement = self.GetDirectoryReplacement(model_index)
 
         result.update(base_dict)
@@ -340,20 +333,19 @@ class EnsembleProgram:
         result.update(directory_replacement)
 
         # Binary files dictionary.
-        self.binary_file = self.config_replacement.GetBinaryFile(model_index,
-                                                                self)
+        self.binary_file = self.config_replacement.GetBinaryFile(model_index, self)
         # Checks the programs in the binary files dictionary.
         for k in self.binary_file.keys():
             if k not in self.dependency.keys():
-                raise Exception, "The program \"" + k + "\" is not " \
-                    + "in the programs list. Please check " \
-                    + "the method 'GetBinaryFile' from your '" \
-                    + str(self.config_replacement.__class__).split('.')[-1] \
-                    + "' object or your configuration file \"" \
-                    + self.config_program + "\"."
+                raise Exception, 'The program "' + k + '" is not ' + "in the programs list. Please check " + "the method 'GetBinaryFile' from your '" + str(
+                    self.config_replacement.__class__
+                ).split(
+                    "."
+                )[
+                    -1
+                ] + "' object or your configuration file \"" + self.config_program + '".'
 
         return result
-
 
     def SetConfigReplacement(self, ConfigReplacement):
         """Sets the attribute 'config_replacement'.
@@ -366,34 +358,44 @@ class EnsembleProgram:
         """
 
         # Checks the method 'GetConfigVariable'.
-        if not hasattr(ConfigReplacement, 'GetConfigVariable'):
-            raise Exception, "There is not the method  'GetConfigVariable'" \
-                + " in the '" \
-                + str(ConfigReplacement.__class__).split('.')[-1] \
-                + "' object."
+        if not hasattr(ConfigReplacement, "GetConfigVariable"):
+            raise Exception, "There is not the method  'GetConfigVariable'" + " in the '" + str(
+                ConfigReplacement.__class__
+            ).split(
+                "."
+            )[
+                -1
+            ] + "' object."
         # Checks the method 'GetBinaryFile'.
-        if not hasattr(ConfigReplacement, 'GetBinaryFile'):
-            raise Exception, "There is not the method  'GetBinaryFile'" \
-                + " in the '" \
-                + str(ConfigReplacement.__class__).split('.')[-1] \
-                + "' object."
+        if not hasattr(ConfigReplacement, "GetBinaryFile"):
+            raise Exception, "There is not the method  'GetBinaryFile'" + " in the '" + str(
+                ConfigReplacement.__class__
+            ).split(
+                "."
+            )[
+                -1
+            ] + "' object."
         # Checks the method 'GetDefaultDict'.
-        if not hasattr(ConfigReplacement, 'GetDefaultDict'):
-            raise Exception, "There is not the method  'GetDefaultDict'" \
-                + " in the '" \
-                + str(ConfigReplacement.__class__).split('.')[-1] \
-                + "' object."
+        if not hasattr(ConfigReplacement, "GetDefaultDict"):
+            raise Exception, "There is not the method  'GetDefaultDict'" + " in the '" + str(
+                ConfigReplacement.__class__
+            ).split(
+                "."
+            )[
+                -1
+            ] + "' object."
         # Checks the method 'GetPerturbedFieldDict'.
-        if not hasattr(ConfigReplacement, 'GetPerturbedFieldDict'):
-            raise Exception, "There is not the method  'GetPerturbedFieldDict'" \
-                + " in the '" \
-                + str(ConfigReplacement.__class__).split('.')[-1] \
-                + "' object."
+        if not hasattr(ConfigReplacement, "GetPerturbedFieldDict"):
+            raise Exception, "There is not the method  'GetPerturbedFieldDict'" + " in the '" + str(
+                ConfigReplacement.__class__
+            ).split(
+                "."
+            )[
+                -1
+            ] + "' object."
 
         ## An instance 'ConfigReplacement'.
         self.config_replacement = ConfigReplacement
-
-
 
     def GetDirectoryReplacement(self, model_index):
         """Returns a dictionary about the path of the preprocessing binary files.
@@ -404,12 +406,11 @@ class EnsembleProgram:
 
         result = {}
         for program in self.dependency.keys():
-            key = '%' + program + '_dir%'
-            result[key] = \
-                create_output_dir(program, self.dependency[program],
-                                  self.GetParameterDict(model_index))
+            key = "%" + program + "_dir%"
+            result[key] = create_output_dir(
+                program, self.dependency[program], self.GetParameterDict(model_index)
+            )
         return result
-
 
     def GetPerturbationDict(self, model_index):
         """Returns the names of perturbed fields and the associated
@@ -418,15 +419,12 @@ class EnsembleProgram:
         @return A dictionary.
         """
 
-        result = self.config_replacement.GetPerturbedFieldDict(model_index,
-                                                               self)
+        result = self.config_replacement.GetPerturbedFieldDict(model_index, self)
         return result
-
 
     ##############
     # PROCESSING #
     ##############
-
 
     def Check(self):
         """Checks a few attributes, the directories, the parameters and the
@@ -436,19 +434,22 @@ class EnsembleProgram:
         if self.parameter.Nmodel == 0:
             raise Exception, "You must load a parameter configuration file."
         if len(self.parameter.id_ensemble) != self.parameter.Nmodel:
-            raise Exception, "The model number must be equal to \"" \
-                  + str(self.parameter.Nmodel) + "\" instead of \"" \
-                  + str(len(self.parameter.id_ensemble)) + "\"." \
-                  + " You forget to read or generate an identity ensemble" \
-                  + " from your " \
-                  + str(self.parameter.__class__).split(".")[-1]
+            raise Exception, 'The model number must be equal to "' + str(
+                self.parameter.Nmodel
+            ) + '" instead of "' + str(
+                len(self.parameter.id_ensemble)
+            ) + '".' + " You forget to read or generate an identity ensemble" + " from your " + str(
+                self.parameter.__class__
+            ).split(
+                "."
+            )[
+                -1
+            ]
         if len(self.program_name) == 0:
-            raise Exception, "There is no program. You must load a program "\
-                  + "configuration file."
+            raise Exception, "There is no program. You must load a program " + "configuration file."
 
         self.CheckParameterAndProgram()
         self.CheckConfigDirectory()
-
 
     def CheckProgramExist(self, program):
         """Checks if a program exists.
@@ -461,18 +462,12 @@ class EnsembleProgram:
         list_file += os.listdir(self.polyphemus_dir + "/preprocessing/bc/")
         list_file += os.listdir(self.polyphemus_dir + "/preprocessing/bio/")
         list_file += os.listdir(self.polyphemus_dir + "/preprocessing/dep/")
-        list_file += os.listdir(self.polyphemus_dir + \
-                                "/preprocessing/emissions/")
-        list_file += os.listdir(self.polyphemus_dir
-                                + "/preprocessing/ground/")
+        list_file += os.listdir(self.polyphemus_dir + "/preprocessing/emissions/")
+        list_file += os.listdir(self.polyphemus_dir + "/preprocessing/ground/")
         list_file += os.listdir(self.polyphemus_dir + "/preprocessing/ic/")
-        list_file += os.listdir(self.polyphemus_dir
-                                + "/preprocessing/meteo/")
+        list_file += os.listdir(self.polyphemus_dir + "/preprocessing/meteo/")
         if program not in list_file:
-            raise Exception, "The program \"" + program \
-                + "\" does not exist in " + self.polyphemus_dir \
-                + "/driver or /preprocessing."
-
+            raise Exception, 'The program "' + program + '" does not exist in ' + self.polyphemus_dir + "/driver or /preprocessing."
 
     def CheckParameterAndProgram(self):
         """Checks if the dependencies of all programs appear with the option
@@ -481,14 +476,11 @@ class EnsembleProgram:
 
         for program in self.all_program:
             for dependency in self.dependency[program]:
-                if dependency != "None" and dependency \
-                       not in self.parameter.preprocessing:
-                    raise Exception, "The dependency \"" + dependency \
-                        + "\" from program \"" + program + "\" in \"" \
-                        + self.config_program + "\" does not appear" \
-                        + " in file \"" + self.parameter.config_filename \
-                        + "\"" + " with \"preprocessing\" argument."
-
+                if (
+                    dependency != "None"
+                    and dependency not in self.parameter.preprocessing
+                ):
+                    raise Exception, 'The dependency "' + dependency + '" from program "' + program + '" in "' + self.config_program + '" does not appear' + ' in file "' + self.parameter.config_filename + '"' + ' with "preprocessing" argument.'
 
     def CheckConfigDirectory(self):
         """Checks the directories where the generic configuration files are
@@ -498,15 +490,13 @@ class EnsembleProgram:
         count = 0
         for cfg in self.generic_config_dir.values():
             if not os.path.isdir(cfg):
-                raise Exception, "Unable to find the directory: \"" \
-                      + cfg + "\" in [" + self.generic_config_dir.keys()[count]  \
-                      + "] in this file: \"" + self.config_program + "\"."
+                raise Exception, 'Unable to find the directory: "' + cfg + '" in [' + self.generic_config_dir.keys()[
+                    count
+                ] + '] in this file: "' + self.config_program + '".'
             count += 1
 
-
     def CheckDataDirectory(self):
-        """Checks if the preprocessing directories exist.
-        """
+        """Checks if the preprocessing directories exist."""
 
         data_dir = self.parameter.config.data_dir
         data_dir_list = os.listdir(data_dir)
@@ -514,11 +504,7 @@ class EnsembleProgram:
         section_list.remove("driver")
         for section in section_list:
             if section not in data_dir_list:
-                raise Exception, "The section name \"" + section \
-                      + "\" from the file: \"" + self.config_program \
-                      + "\" must appear in your data directory: \"" \
-                      + data_dir + "\"."
-
+                raise Exception, 'The section name "' + section + '" from the file: "' + self.config_program + '" must appear in your data directory: "' + data_dir + '".'
 
     def SetPolyphemusDirectory(self, polyphemus_dir):
         """Checks and sets the Polyphemus directory.
@@ -528,26 +514,31 @@ class EnsembleProgram:
 
         # Checks the polyphemus directory.
         if not os.path.isdir(polyphemus_dir):
-            raise Exception, "Unable to find the Polyphemus directory: \"" \
-                + polyphemus_dir + "\"."
+            raise Exception, 'Unable to find the Polyphemus directory: "' + polyphemus_dir + '".'
         self.polyphemus_dir = polyphemus_dir
 
-
     def ExtractSection(self, section):
-        """ Extracts each program name and their dependencies held
+        """Extracts each program name and their dependencies held
         in a section from the configuration file.
 
         \param section the name of the section which can be 'ground', 'meteo',
         'dep', 'emissions', 'bio', 'ic', 'bc' or 'driver'.
         """
 
-        all_section = ['ground', 'meteo', 'dep', 'emissions', \
-                           'bio', 'ic', 'bc', 'driver']
+        all_section = [
+            "ground",
+            "meteo",
+            "dep",
+            "emissions",
+            "bio",
+            "ic",
+            "bc",
+            "driver",
+        ]
         if section not in all_section:
-            raise Exception, "The section \"" + section \
-                + "\" is not supported."
+            raise Exception, 'The section "' + section + '" is not supported.'
         # A list of strings.
-        program_list = ['']
+        program_list = [""]
         if hasattr(self.config, section):
             program_list = getattr(self.config, section)
         # The name of the programs.
@@ -562,10 +553,7 @@ class EnsembleProgram:
                     # Checks if this value corresponds to a directory.
                     tmp = program_list[i].split()[-1]
                     if not os.path.isdir(tmp):
-                        raise Exception, "Unable to find the directory \"" \
-                              + tmp + "\" in the section \"" + section \
-                              + "\" from the configuration file \"" \
-                              + self.config_program + "\"."
+                        raise Exception, 'Unable to find the directory "' + tmp + '" in the section "' + section + '" from the configuration file "' + self.config_program + '".'
                     self.generic_config_dir[section] = tmp
                     continue
                 tmp = program_list[i].split()
@@ -579,7 +567,6 @@ class EnsembleProgram:
             self.program_name[section] = program_name
             self.all_program += program_name
 
-
     def DataFileCopy(self, model_index):
         """Copies a few data files.
         These data files describe the vertical levels and the emissions
@@ -592,23 +579,36 @@ class EnsembleProgram:
         vertical_distribution = general_dict["%vertical_distribution%"]
         # levels.dat
         if os.path.isfile(self.generic_cfg + "/levels/" + levels):
-            command = "cp " + self.generic_cfg + "/levels/"  + levels + " " \
-                      + self.output_dir + "/config/"
+            command = (
+                "cp "
+                + self.generic_cfg
+                + "/levels/"
+                + levels
+                + " "
+                + self.output_dir
+                + "/config/"
+            )
             commands.getstatusoutput(command)
         else:
-            raise Exception, "The file \"" + self.generic_cfg + "/levels/" \
-                  + levels + "\" does not exist."
+            raise Exception, 'The file "' + self.generic_cfg + "/levels/" + levels + '" does not exist.'
         # vertical-distribution.dat
-        if os.path.isfile(self.generic_config_dir["emissions"] + "/input/" \
-                          + vertical_distribution):
-            command = "cp " + self.generic_config_dir["emissions"] + "/input/" \
-                      + vertical_distribution + " " + self.output_dir \
-                      + "/config/"
+        if os.path.isfile(
+            self.generic_config_dir["emissions"] + "/input/" + vertical_distribution
+        ):
+            command = (
+                "cp "
+                + self.generic_config_dir["emissions"]
+                + "/input/"
+                + vertical_distribution
+                + " "
+                + self.output_dir
+                + "/config/"
+            )
             commands.getstatusoutput(command)
         else:
-            raise Exception, "The file \"" + self.generic_config_dir["emissions"] \
-                  + "/input/" + vertical_distribution + "\" does not exist."
-
+            raise Exception, 'The file "' + self.generic_config_dir[
+                "emissions"
+            ] + "/input/" + vertical_distribution + '" does not exist.'
 
     def ModelExist(self, model_index):
         """Checks if the directory of a model exist and creates it.
@@ -633,7 +633,6 @@ class EnsembleProgram:
             else:
                 return 1
 
-
     def SetDefaultDict(self):
         """Sets the default dictionary.
 
@@ -646,10 +645,9 @@ class EnsembleProgram:
         Nphysics_parameter = len(self.parameter.config.physics)
         Nnumerics_parameter = len(self.parameter.config.numerics)
         if len(self.default_dict) < Nphysics_parameter + Nnumerics_parameter:
-            raise Exception, "A parameter name is missing in the default" \
-                + " dictionary in your " \
-                + str(self.config_replacement.__class__) + "."
-
+            raise Exception, "A parameter name is missing in the default" + " dictionary in your " + str(
+                self.config_replacement.__class__
+            ) + "."
 
     def GroundProgram(self, model_index):
         """Adds the programs related to the section 'ground'.
@@ -663,15 +661,13 @@ class EnsembleProgram:
         luc = param_dict["luc"]
         dep = param_dict["deposition_velocity"]
         for prg in self.program_name["ground"]:
-            file_dir = create_output_dir(prg, self.dependency[prg],
-                                         param_dict)
+            file_dir = create_output_dir(prg, self.dependency[prg], param_dict)
             tmp_dir = self.data_dir + "/ground/" + file_dir
             if not os.path.isdir(tmp_dir):
                 os.makedirs(tmp_dir)
             if os.path.isfile(tmp_dir + "/" + self.binary_file[prg]):
                 continue
-            id_prg = self.parameter.GetIdProgram(imodel,
-                                                 self.dependency[prg])
+            id_prg = self.parameter.GetIdProgram(imodel, self.dependency[prg])
             if id_prg in self.id_program[prg]:
                 continue
             else:
@@ -683,17 +679,19 @@ class EnsembleProgram:
             if prg == "luc-convert":
                 dep = "zhang"
                 tmp_config = "/" + luc + "_to_" + dep + ".cfg"
-            config_list = [self.generic_cfg + "/general.cfg",
-                           self.generic_config_dir["ground"] + tmp_config]
+            config_list = [
+                self.generic_cfg + "/general.cfg",
+                self.generic_config_dir["ground"] + tmp_config,
+            ]
             self.CheckProgramExist(prg)
-            program = Program(preproc_dir + prg,
-                              format = " %a ",
-                              group = self.group[prg])
-            program.SetConfiguration(config = config_list, mode = "raw",
-                                     replacement = general_dict,
-                                     path = self.output_dir + "/config/")
+            program = Program(preproc_dir + prg, format=" %a ", group=self.group[prg])
+            program.SetConfiguration(
+                config=config_list,
+                mode="raw",
+                replacement=general_dict,
+                path=self.output_dir + "/config/",
+            )
             self.program_instance_list.append(program)
-
 
     def MeteoProgram(self, model_index):
         """Adds the programs related to the section 'meteo'.
@@ -707,32 +705,34 @@ class EnsembleProgram:
         param_dict = self.GetParameterDict(model_index)
         imodel = self.parameter.GetStringModel(model_index)
         for prg in self.program_name["meteo"]:
-            file_dir = create_output_dir(prg, self.dependency[prg],
-                                         param_dict)
+            file_dir = create_output_dir(prg, self.dependency[prg], param_dict)
             tmp_dir = self.data_dir + "/meteo/" + file_dir
             if not os.path.isdir(tmp_dir):
                 os.makedirs(tmp_dir)
             if os.path.isfile(tmp_dir + "/" + self.binary_file[prg]):
                 continue
-            id_prg = self.parameter.GetIdProgram(imodel,
-                                                 self.dependency[prg])
+            id_prg = self.parameter.GetIdProgram(imodel, self.dependency[prg])
             if id_prg in self.id_program[prg]:
                 continue
             else:
                 self.id_program[prg].append(id_prg)
-            config_list = [self.generic_cfg + "/general.cfg",
-                           self.generic_config_dir["meteo"] + "/meteo.cfg"]
+            config_list = [
+                self.generic_cfg + "/general.cfg",
+                self.generic_config_dir["meteo"] + "/meteo.cfg",
+            ]
             self.CheckProgramExist(prg)
-            program = Program(self.polyphemus_dir + "/utils/call_dates " \
-                                  + preproc_dir + prg,
-                              format = " %a " + str_date_min + " " \
-                              + str_date_max,
-                              group = self.group[prg])
-            program.SetConfiguration(config = config_list, mode = "raw",
-                                     replacement = general_dict,
-                                     path = self.output_dir + "/config/")
+            program = Program(
+                self.polyphemus_dir + "/utils/call_dates " + preproc_dir + prg,
+                format=" %a " + str_date_min + " " + str_date_max,
+                group=self.group[prg],
+            )
+            program.SetConfiguration(
+                config=config_list,
+                mode="raw",
+                replacement=general_dict,
+                path=self.output_dir + "/config/",
+            )
             self.program_instance_list.append(program)
-
 
     def DepositionProgram(self, model_index):
         """Adds the programs related to the section 'dep'.
@@ -746,34 +746,36 @@ class EnsembleProgram:
         param_dict = self.GetParameterDict(model_index)
         imodel = self.parameter.GetStringModel(model_index)
         for prg in self.program_name["dep"]:
-            file_dir = create_output_dir(prg, self.dependency[prg],
-                                         param_dict)
-            tmp_dir  = self.data_dir + "/dep/" + file_dir
+            file_dir = create_output_dir(prg, self.dependency[prg], param_dict)
+            tmp_dir = self.data_dir + "/dep/" + file_dir
             if not os.path.isdir(tmp_dir):
                 os.makedirs(tmp_dir)
             if os.path.isfile(tmp_dir + "/" + self.binary_file[prg]):
                 continue
-            id_prg = self.parameter.GetIdProgram(imodel,
-                                                 self.dependency[prg])
+            id_prg = self.parameter.GetIdProgram(imodel, self.dependency[prg])
             if id_prg in self.id_program[prg]:
                 continue
             else:
                 self.id_program[prg].append(id_prg)
-            config_list = [self.generic_cfg + "/general.cfg",
-                           self.generic_config_dir["dep"] + "/dep.cfg"]
+            config_list = [
+                self.generic_cfg + "/general.cfg",
+                self.generic_config_dir["dep"] + "/dep.cfg",
+            ]
             add_file = [self.generic_config_dir["dep"] + "/zhang.cfg"]
             self.CheckProgramExist(prg)
-            program = Program(self.polyphemus_dir + "/utils/call_dates " \
-                                  + preproc_dir + prg,
-                              format = " %a " + str_date_min + " " \
-                              + str_date_max,
-                              group = self.group[prg])
-            program.SetConfiguration(config = config_list, mode = "raw",
-                                     replacement = general_dict,
-                                     path = self.output_dir + "/config/",
-                                     additional_file_list = add_file)
+            program = Program(
+                self.polyphemus_dir + "/utils/call_dates " + preproc_dir + prg,
+                format=" %a " + str_date_min + " " + str_date_max,
+                group=self.group[prg],
+            )
+            program.SetConfiguration(
+                config=config_list,
+                mode="raw",
+                replacement=general_dict,
+                path=self.output_dir + "/config/",
+                additional_file_list=add_file,
+            )
             self.program_instance_list.append(program)
-
 
     def EmissionProgram(self, model_index):
         """Adds the programs related to the section 'emissions'.
@@ -787,35 +789,38 @@ class EnsembleProgram:
         param_dict = self.GetParameterDict(model_index)
         imodel = self.parameter.GetStringModel(model_index)
         for prg in self.program_name["emissions"]:
-            file_dir = create_output_dir(prg, self.dependency[prg],
-                                         param_dict)
+            file_dir = create_output_dir(prg, self.dependency[prg], param_dict)
             tmp_dir = self.data_dir + "/emissions/"
             if not os.path.isdir(tmp_dir + "surface-emissions/" + file_dir):
                 os.makedirs(tmp_dir + "surface-emissions/" + file_dir)
             if not os.path.isdir(tmp_dir + "volume-emissions/" + file_dir):
                 os.makedirs(tmp_dir + "volume-emissions/" + file_dir)
-            if os.path.isfile(tmp_dir + "/surface-emissions/" \
-                              + file_dir + "/" + self.binary_file[prg]):
+            if os.path.isfile(
+                tmp_dir + "/surface-emissions/" + file_dir + "/" + self.binary_file[prg]
+            ):
                 continue
-            id_prg = self.parameter.GetIdProgram(imodel,
-                                                 self.dependency[prg])
+            id_prg = self.parameter.GetIdProgram(imodel, self.dependency[prg])
             if id_prg in self.id_program[prg]:
                 continue
             else:
                 self.id_program[prg].append(id_prg)
-            config_list = [self.generic_cfg + "/general.cfg",
-                           self.generic_config_dir["emissions"] + "/emissions.cfg"]
+            config_list = [
+                self.generic_cfg + "/general.cfg",
+                self.generic_config_dir["emissions"] + "/emissions.cfg",
+            ]
             self.CheckProgramExist(prg)
-            program = Program(self.polyphemus_dir + "/utils/call_dates " \
-                                  + preproc_dir + prg,
-                              format = " %a " + str_date_min + " " \
-                              + str_date_max,
-                              group = self.group[prg])
-            program.SetConfiguration(config = config_list, mode = "raw",
-                                     replacement = general_dict,
-                                     path = self.output_dir + "/config/")
+            program = Program(
+                self.polyphemus_dir + "/utils/call_dates " + preproc_dir + prg,
+                format=" %a " + str_date_min + " " + str_date_max,
+                group=self.group[prg],
+            )
+            program.SetConfiguration(
+                config=config_list,
+                mode="raw",
+                replacement=general_dict,
+                path=self.output_dir + "/config/",
+            )
             self.program_instance_list.append(program)
-
 
     def BioProgram(self, model_index):
         """Adds the programs related to the section 'bio'.
@@ -829,33 +834,34 @@ class EnsembleProgram:
         param_dict = self.GetParameterDict(model_index)
         imodel = self.parameter.GetStringModel(model_index)
         for prg in self.program_name["bio"]:
-            file_dir = create_output_dir(prg, self.dependency[prg],
-                                         param_dict)
+            file_dir = create_output_dir(prg, self.dependency[prg], param_dict)
             tmp_dir = self.data_dir + "/bio/" + file_dir
             if not os.path.isdir(tmp_dir):
                 os.makedirs(tmp_dir)
             if os.path.isfile(tmp_dir + "/" + self.binary_file[prg]):
                 continue
-            id_prg = self.parameter.GetIdProgram(imodel,
-                                                 self.dependency[prg])
+            id_prg = self.parameter.GetIdProgram(imodel, self.dependency[prg])
             if id_prg in self.id_program[prg]:
                 continue
             else:
                 self.id_program[prg].append(id_prg)
-            config_list = [self.generic_cfg + "/general.cfg",
-                           self.generic_config_dir["bio"] + "/bio.cfg"]
+            config_list = [
+                self.generic_cfg + "/general.cfg",
+                self.generic_config_dir["bio"] + "/bio.cfg",
+            ]
             self.CheckProgramExist(prg)
-            program = Program(self.polyphemus_dir + "/utils/call_dates " \
-                                  + preproc_dir + prg,
-                              format = " %a " + str_date_min + " " \
-                              + str_date_max,
-                              group = self.group[prg])
-            program.SetConfiguration(config = config_list, mode = "raw",
-                                     replacement = general_dict,
-                                     path = self.output_dir + "/config/")
+            program = Program(
+                self.polyphemus_dir + "/utils/call_dates " + preproc_dir + prg,
+                format=" %a " + str_date_min + " " + str_date_max,
+                group=self.group[prg],
+            )
+            program.SetConfiguration(
+                config=config_list,
+                mode="raw",
+                replacement=general_dict,
+                path=self.output_dir + "/config/",
+            )
             self.program_instance_list.append(program)
-
-
 
     def IcProgram(self, model_index):
         """Adds the programs related to the section 'ic'.
@@ -867,29 +873,30 @@ class EnsembleProgram:
         param_dict = self.GetParameterDict(model_index)
         imodel = self.parameter.GetStringModel(model_index)
         for prg in self.program_name["ic"]:
-            file_dir = create_output_dir(prg, self.dependency[prg],
-                                         param_dict)
+            file_dir = create_output_dir(prg, self.dependency[prg], param_dict)
             tmp_dir = self.data_dir + "/ic/" + file_dir
             if not os.path.isdir(tmp_dir):
                 os.makedirs(tmp_dir)
             if os.path.isfile(tmp_dir + "/" + self.binary_file[prg]):
                 continue
-            id_prg = self.parameter.GetIdProgram(imodel,
-                                                 self.dependency[prg])
+            id_prg = self.parameter.GetIdProgram(imodel, self.dependency[prg])
             if id_prg in self.id_program[prg]:
                 continue
             else:
                 self.id_program[prg].append(id_prg)
-            config_list = [self.generic_cfg + "/general.cfg",
-                           self.generic_config_dir["ic"] + "/ic.cfg"]
+            config_list = [
+                self.generic_cfg + "/general.cfg",
+                self.generic_config_dir["ic"] + "/ic.cfg",
+            ]
             self.CheckProgramExist(prg)
-            program = Program(preproc_dir + prg, format = " %a ",
-                              group = self.group[prg])
-            program.SetConfiguration(config = config_list, mode = "raw",
-                                     replacement = general_dict,
-                                     path = self.output_dir + "/config/")
+            program = Program(preproc_dir + prg, format=" %a ", group=self.group[prg])
+            program.SetConfiguration(
+                config=config_list,
+                mode="raw",
+                replacement=general_dict,
+                path=self.output_dir + "/config/",
+            )
             self.program_instance_list.append(program)
-
 
     def BcProgram(self, model_index):
         """Adds the programs related to the section 'bc'.
@@ -903,31 +910,34 @@ class EnsembleProgram:
         param_dict = self.GetParameterDict(model_index)
         imodel = self.parameter.GetStringModel(model_index)
         for prg in self.program_name["bc"]:
-            file_dir = create_output_dir(prg, self.dependency[prg],
-                                         param_dict)
+            file_dir = create_output_dir(prg, self.dependency[prg], param_dict)
             tmp_dir = self.data_dir + "/bc/" + file_dir
             if not os.path.isdir(tmp_dir):
                 os.makedirs(tmp_dir)
             if os.path.isfile(tmp_dir + "/" + self.binary_file[prg]):
                 continue
-            id_prg = self.parameter.GetIdProgram(imodel,
-                                                 self.dependency[prg])
+            id_prg = self.parameter.GetIdProgram(imodel, self.dependency[prg])
             if id_prg in self.id_program[prg]:
                 continue
             else:
                 self.id_program[prg].append(id_prg)
-            config_list = [self.generic_cfg + "/general.cfg",
-                           self.generic_config_dir["bc"] + "/bc-dates.cfg"]
+            config_list = [
+                self.generic_cfg + "/general.cfg",
+                self.generic_config_dir["bc"] + "/bc-dates.cfg",
+            ]
             self.CheckProgramExist(prg)
-            program = Program(preproc_dir + prg,
-                              format = " %a " + str_date_min + " " \
-                              + str_date_max,
-                              group = self.group[prg])
-            program.SetConfiguration(config = config_list, mode = "raw",
-                                     replacement = general_dict,
-                                     path = self.output_dir + "/config/")
+            program = Program(
+                preproc_dir + prg,
+                format=" %a " + str_date_min + " " + str_date_max,
+                group=self.group[prg],
+            )
+            program.SetConfiguration(
+                config=config_list,
+                mode="raw",
+                replacement=general_dict,
+                path=self.output_dir + "/config/",
+            )
             self.program_instance_list.append(program)
-
 
     def DriverProgram(self, model_index):
         """Adds the programs related to the section 'driver'.
@@ -943,13 +953,11 @@ class EnsembleProgram:
         time_step = param_dict["time_step"]
         delta_t = float(talos.to_num(time_step))
         Nday = (date_max - date_min).days
-        Nt = Nday * 24. * 3600. / delta_t
+        Nt = Nday * 24.0 * 3600.0 / delta_t
         Nt = int(Nt)
-        if 3600. % delta_t != 0.:
-            raise Exception, "The time step = \"" + time_step + "\". " \
-                  + "The division " + "\"3600. / time_step\" must be" \
-                  + " equal to an integer."
-        interval_length = 3600. / delta_t
+        if 3600.0 % delta_t != 0.0:
+            raise Exception, 'The time step = "' + time_step + '". ' + "The division " + '"3600. / time_step" must be' + " equal to an integer."
+        interval_length = 3600.0 / delta_t
         bc_date_min = get_bc_init_date(date_min)
 
         # Photolytic constant.
@@ -979,77 +987,78 @@ class EnsembleProgram:
         if photolytic == "zenith_angle":
             prg += "-zenith_angle_photolysis"
         if prg not in self.all_program:
-            raise Exception, "The program name: \"" + prg + "\" does not" \
-                  + " appear in file \"" + self.config_program + "\"."
+            raise Exception, 'The program name: "' + prg + '" does not' + ' appear in file "' + self.config_program + '".'
 
         # species.dat
         if os.path.isfile(self.generic_cfg + "/species/" + species):
-            command = "cp " + self.generic_cfg + "/species/" + species + " " \
-                      + self.output_dir + "/config/"
+            command = (
+                "cp "
+                + self.generic_cfg
+                + "/species/"
+                + species
+                + " "
+                + self.output_dir
+                + "/config/"
+            )
             commands.getstatusoutput(command)
         else:
-            raise Exception, "The file \"" + self.generic_cfg + "/species/" \
-                  + species + "\" does not exist."
+            raise Exception, 'The file "' + self.generic_cfg + "/species/" + species + '" does not exist.'
 
         # The other dictionaries.
-        second_dict = {"%time_step%": time_step,
-                       "%date_min%": str_date_min,
-                       "%bc_date_min%":  str(bc_date_min.date()) + "_12",
-                       "%Nt%": str(Nt),
-                       "%polair-data%": polair_data_config,
-                       "%species%": species,
-                       "%saved_interval_length%": str(int(interval_length)),
-                       "%with_air_density%": with_air_density,
-                       "%with_source_splitting%": with_source_splitting,
-                       "%with_forced_concentration%": \
-                           with_forced_concentration,
-                       "%splitting_method%": splitting_method}
+        second_dict = {
+            "%time_step%": time_step,
+            "%date_min%": str_date_min,
+            "%bc_date_min%": str(bc_date_min.date()) + "_12",
+            "%Nt%": str(Nt),
+            "%polair-data%": polair_data_config,
+            "%species%": species,
+            "%saved_interval_length%": str(int(interval_length)),
+            "%with_air_density%": with_air_density,
+            "%with_source_splitting%": with_source_splitting,
+            "%with_forced_concentration%": with_forced_concentration,
+            "%splitting_method%": splitting_method,
+        }
         perturbation_dict = self.GetPerturbationDict(model_index)
         general_dict.update(second_dict)
         general_dict.update(perturbation_dict)
 
         config_list = [self.generic_config_dir["driver"] + "/polair3d.cfg"]
-        add_file_list = [self.generic_config_dir["driver"] \
-                             + "/polair3d-saver.cfg",
-                         self.generic_config_dir["driver"] \
-                             + "/" + polair_data_config,
-                         self.generic_config_dir["driver"] \
-                             + "/perturbation.cfg"]
+        add_file_list = [
+            self.generic_config_dir["driver"] + "/polair3d-saver.cfg",
+            self.generic_config_dir["driver"] + "/" + polair_data_config,
+            self.generic_config_dir["driver"] + "/perturbation.cfg",
+        ]
 
         self.CheckProgramExist(prg)
-        program = Program(self.polyphemus_dir + prg_dir + prg,
-                          format = " %a ", group = self.group[prg])
-        program.SetConfiguration(config = config_list, mode = "raw",
-                                 replacement = general_dict,
-                                 path = self.output_dir + "/",
-                                 additional_file_list = add_file_list)
+        program = Program(
+            self.polyphemus_dir + prg_dir + prg, format=" %a ", group=self.group[prg]
+        )
+        program.SetConfiguration(
+            config=config_list,
+            mode="raw",
+            replacement=general_dict,
+            path=self.output_dir + "/",
+            additional_file_list=add_file_list,
+        )
         self.program_instance_list.append(program)
 
-
-
     def CopyConfigurationFile(self):
-        """Copies the configurations files in the model directory.
-        """
+        """Copies the configurations files in the model directory."""
 
         model_dir = self.parameter.config.model_dir
         # Copies program configuration file.
         if os.path.isfile(self.config_program):
-            command = "cp " + self.config_program  + " " \
-                      + model_dir + "/"
+            command = "cp " + self.config_program + " " + model_dir + "/"
             commands.getstatusoutput(command)
         else:
-            raise Exception, "The file \"" + self.config_program \
-                  + "\" does not exist."
+            raise Exception, 'The file "' + self.config_program + '" does not exist.'
         # Copies parameter configuration file.
         config_parameter = self.parameter.config_filename
         if os.path.isfile(config_parameter):
-            command = "cp " + config_parameter  + " " \
-                      + model_dir + "/"
+            command = "cp " + config_parameter + " " + model_dir + "/"
             commands.getstatusoutput(command)
         else:
-            raise Exception, "The file \"" + config_parameter \
-                  + "\" does not exist."
-
+            raise Exception, 'The file "' + config_parameter + '" does not exist.'
 
     def GeneratePerturbationFile(self, model_index, directory):
         """Replaces several variables and copies the generic perturbation
@@ -1061,19 +1070,13 @@ class EnsembleProgram:
         """
 
         if not os.path.isdir(directory):
-            raise Exception, "Unable to find the directory: \"" \
-                  + directory + "\"."
+            raise Exception, 'Unable to find the directory: "' + directory + '".'
         perturbation_dict = self.GetPerturbationDict(model_index)
         generic_file = self.generic_config_dir["driver"] + "/perturbation.cfg"
-        config = Configuration(file_list = generic_file, mode = "raw",
-                               path = directory)
-        config.SetConfiguration(config = perturbation_dict, mode = "raw",
-                                path = directory)
+        config = Configuration(file_list=generic_file, mode="raw", path=directory)
+        config.SetConfiguration(config=perturbation_dict, mode="raw", path=directory)
 
-
-
-    def GetEnsemble(self, model_index = None,
-                    group = "polyphemus"):
+    def GetEnsemble(self, model_index=None, group="polyphemus"):
         """Returns an ensemble of programs ready to launch.
         \param model_index a list of index of models.
         \param group the name of the file where there is the hosts list.
@@ -1084,8 +1087,7 @@ class EnsembleProgram:
 
         # Checks polyphemus_dir.
         if len(self.polyphemus_dir) == 0:
-            raise Exception, "The polyphemus directory is not set." \
-                + " Please use the method SetPolyphemusDirectory."
+            raise Exception, "The polyphemus directory is not set." + " Please use the method SetPolyphemusDirectory."
 
         if model_index == None:
             model_index = range(self.Nmodel)
@@ -1107,21 +1109,19 @@ class EnsembleProgram:
                     self.IcProgram(m)
                 if len(self.config.bc[0]) != 0:
                     self.BcProgram(m)
-                if not self.only_preprocessing and \
-                       len(self.config.driver[0]) != 0:
+                if not self.only_preprocessing and len(self.config.driver[0]) != 0:
                     self.DriverProgram(m)
 
         for prg in self.program_instance_list:
             ensemble.AddProgram(prg)
         if len(self.program_instance_list) == 0:
-            print "No program to launch in your \"" \
-                  + str(self.__class__).split(".")[-1] + "\"."
+            print 'No program to launch in your "' + str(self.__class__).split(".")[
+                -1
+            ] + '".'
 
         return ensemble
 
-
-    def GetEnsembleProgramSection(self, section, model_index = None,
-                                  group = "polyphemus"):
+    def GetEnsembleProgramSection(self, section, model_index=None, group="polyphemus"):
         """Returns an ensemble of programs related to a list of sections ready to
         launch.
 
@@ -1136,8 +1136,7 @@ class EnsembleProgram:
 
         # Checks polyphemus_dir.
         if len(self.polyphemus_dir) == 0:
-            raise Exception, "The polyphemus directory is not set." \
-                + " Please use the method SetPolyphemusDirectory."
+            raise Exception, "The polyphemus directory is not set." + " Please use the method SetPolyphemusDirectory."
 
         if model_index == None:
             model_index = range(self.Nmodel)
@@ -1148,8 +1147,7 @@ class EnsembleProgram:
             section = [section]
         for s in section:
             if s not in section_list:
-                raise Exception, "Unable to find section name: \"" \
-                      + s + "\" in file: \"" + self.config.filename + "\"."
+                raise Exception, 'Unable to find section name: "' + s + '" in file: "' + self.config.filename + '".'
         # Gets the ensemble.
         for m in model_index:
             if self.ModelExist(m):
@@ -1174,11 +1172,11 @@ class EnsembleProgram:
         for prg in self.program_instance_list:
             ensemble.AddProgram(prg)
         if len(self.program_instance_list) == 0:
-            print "No program to launch in your \"" \
-                  + str(self.__class__).split(".")[-1] + "\"."
+            print 'No program to launch in your "' + str(self.__class__).split(".")[
+                -1
+            ] + '".'
 
         return ensemble
-
 
     def AddParameter(self, new_config_parameter, new_config_program):
         """Adds parameters.
@@ -1192,32 +1190,27 @@ class EnsembleProgram:
         """
 
         import shutil
-        new_program = EnsembleProgram(new_config_parameter,
-                                      new_config_program,
-                                      self.polyphemus_dir)
+
+        new_program = EnsembleProgram(
+            new_config_parameter, new_config_program, self.polyphemus_dir
+        )
         # Exceptions
         self.Check()
         self.CheckDataDirectory()
         if self.parameter.Nparameter >= new_program.parameter.Nparameter:
-            raise Exception, "The new " \
-                  + str(new_program.parameter.__class__).split(".")[-1] \
-                  + "what you want to add has a parameter number " \
-                  + "equal or smaller than the old one. " \
-                  + "Please, check your file: \"" \
-                  + new_config_parameter + "\"."
+            raise Exception, "The new " + str(new_program.parameter.__class__).split(
+                "."
+            )[
+                -1
+            ] + "what you want to add has a parameter number " + "equal or smaller than the old one. " + 'Please, check your file: "' + new_config_parameter + '".'
         for name in self.parameter.name:
             if name not in new_program.parameter.name:
-                raise Exception, "The parameter name: \"" + name \
-                      + "\" must appear in file: \"" \
-                      + new_config_parameter + "\"."
+                raise Exception, 'The parameter name: "' + name + '" must appear in file: "' + new_config_parameter + '".'
         for value in self.parameter.value:
             if value not in new_program.parameter.value:
-                raise Exception, "The value: \"" + value \
-                      + "\" must appear in file: \"" \
-                      + new_config_parameter + "\"."
+                raise Exception, 'The value: "' + value + '" must appear in file: "' + new_config_parameter + '".'
         if self.program_name != new_program.program_name:
-            raise Exception, "Program name is different in \"" \
-                  + new_program.config_program + "\"."
+            raise Exception, 'Program name is different in "' + new_program.config_program + '".'
         # Directories
         self.data_dir = self.parameter.config.data_dir
         model_dir = self.parameter.config.model_dir
@@ -1242,14 +1235,16 @@ class EnsembleProgram:
         self.parameter.Nparameter = new_program.parameter.Nparameter
         new_id_ens_file = "son_of-" + self.parameter.id_ens_file
         self.parameter.WriteIdEnsembleInFile(new_id_ens_file)
-        self.parameter = EnsembleParameter(new_config_parameter,
-                                           new_id_ens_file)
+        self.parameter = EnsembleParameter(new_config_parameter, new_id_ens_file)
         self.CopyConfigurationFile()
         # Moves the model directories.
         for m in range(len(old_imodel)):
-            shutil.move(model_dir + "/" + old_imodel[m],
-                        new_model_dir + "/" \
-                        + self.parameter.GetStringModel(index_old_imodel[m]))
+            shutil.move(
+                model_dir + "/" + old_imodel[m],
+                new_model_dir
+                + "/"
+                + self.parameter.GetStringModel(index_old_imodel[m]),
+            )
 
         new_program.ReadIdEnsembleFile(self.parameter.id_ens_file)
         new_program.Check()
@@ -1266,23 +1261,19 @@ class EnsembleProgram:
             param_dict = self.GetParameterDict(m)
             new_param_dict = new_program.GetParameterDict(m)
             for prg in prg_dependency_change:
-                file_dir = create_output_dir(prg, self.dependency[prg],
-                                             param_dict)
-                new_file_dir = create_output_dir(new_program.dependency[prg],
-                                                 new_param_dict)
+                file_dir = create_output_dir(prg, self.dependency[prg], param_dict)
+                new_file_dir = create_output_dir(
+                    new_program.dependency[prg], new_param_dict
+                )
                 section = self.GetProgramSection(prg)
                 if section == "emissions":
                     tmp = ["surface-emissions", "volume-emissions"]
                     for i in range(2):
                         section = section + "/" + tmp[i]
-                        tmp_dir = self.data_dir + "/" + section + "/" \
-                                  + file_dir
-                        new_tmp_dir = self.data_dir + "/" + section + "/" \
-                                      + new_file_dir
+                        tmp_dir = self.data_dir + "/" + section + "/" + file_dir
+                        new_tmp_dir = self.data_dir + "/" + section + "/" + new_file_dir
                         shutil.move(tmp_dir, new_tmp_dir)
                 else:
-                    tmp_dir = self.data_dir + "/" + section + "/" \
-                              + file_dir
-                    new_tmp_dir = self.data_dir + "/" + section + "/" \
-                                  + new_file_dir
+                    tmp_dir = self.data_dir + "/" + section + "/" + file_dir
+                    new_tmp_dir = self.data_dir + "/" + section + "/" + new_file_dir
                     shutil.move(tmp_dir, new_tmp_dir)

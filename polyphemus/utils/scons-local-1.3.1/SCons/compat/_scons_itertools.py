@@ -21,7 +21,9 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-__revision__ = "src/engine/SCons/compat/_scons_itertools.py 5110 2010/07/25 16:14:38 bdeegan"
+__revision__ = (
+    "src/engine/SCons/compat/_scons_itertools.py 5110 2010/07/25 16:14:38 bdeegan"
+)
 
 __doc__ = """
 Implementations of itertools functions for Python versions that don't
@@ -45,19 +47,23 @@ Note that these do not have independent unit tests, so it's possible
 that there are bugs.
 """
 
+
 def chain(*iterables):
     result = []
     for x in iterables:
         result.extend(list(x))
     return result
 
+
 def count(n=0):
     # returns infinite length, should not be supported
     raise NotImplementedError
 
+
 def cycle(iterable):
     # returns infinite length, should not be supported
     raise NotImplementedError
+
 
 def dropwhile(predicate, iterable):
     result = []
@@ -68,8 +74,10 @@ def dropwhile(predicate, iterable):
     result.extend(iterable)
     return result
 
+
 def groupby(iterable, *args):
     raise NotImplementedError
+
 
 def ifilter(predicate, iterable):
     result = []
@@ -80,6 +88,7 @@ def ifilter(predicate, iterable):
             result.append(x)
     return result
 
+
 def ifilterfalse(predicate, iterable):
     result = []
     if predicate is None:
@@ -89,21 +98,27 @@ def ifilterfalse(predicate, iterable):
             result.append(x)
     return result
 
+
 def imap(function, *iterables):
     return apply(map, (function,) + tuple(iterables))
+
 
 def islice(*args, **kw):
     raise NotImplementedError
 
+
 def izip(*iterables):
     return apply(zip, iterables)
+
 
 def repeat(*args, **kw):
     # returns infinite length, should not be supported
     raise NotImplementedError
 
+
 def starmap(*args, **kw):
     raise NotImplementedError
+
 
 def takewhile(predicate, iterable):
     result = []
@@ -114,8 +129,10 @@ def takewhile(predicate, iterable):
             break
     return result
 
+
 def tee(*args, **kw):
     raise NotImplementedError
+
 
 # Local Variables:
 # tab-width:4

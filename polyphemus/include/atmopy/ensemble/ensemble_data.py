@@ -22,11 +22,13 @@
 
 
 import sys, os
+
 current_file = os.path.abspath(__file__)
 atmopy_path = os.path.split(os.path.dirname(current_file))[0]
 atmopy_path = os.path.split(os.path.dirname(atmopy_path))[0]
 sys.path.insert(0, atmopy_path)
 from atmopy import talos, io, observation, stat
+
 sys.path.pop(0)
 
 from numpy import *
@@ -57,8 +59,7 @@ class EnsembleData:
        9. stat_station (possibly): statistics per station.
     """
 
-
-    def __init__(self, configuration_file = None, verbose = False):
+    def __init__(self, configuration_file=None, verbose=False):
         """
         If a configuration file is provided, ensemble simulations and
         observations are read.
@@ -83,7 +84,6 @@ class EnsembleData:
             self.LoadObservation()
             self.LoadSimulation()
 
-
     def LoadConfiguration(self, configuration_file):
         """
         Loads the configuration and checks it. No simulation data or
@@ -94,23 +94,24 @@ class EnsembleData:
         describes ensemble simulations and observations.
         """
         import os
+
         if not os.path.isfile(configuration_file):
-            raise Exception, "Unable to open configuration file " \
-                  + "\"" + configuration_file + "\"."
+            raise Exception, "Unable to open configuration file " + '"' + configuration_file + '".'
 
         self.configuration_file = configuration_file
 
-        add_content = [("discarded_cells", "[input]", "Int"),
-                       ("discarded_days", "[input]", "Int"),
-                       ("concentrations", "[output]", "String"),
-                       ("measure", "[output]", "StringList"),
-                       ("cutoff", "[output]", "Float"),
-                       ("select_station", "[output]", "StringList"),
-                       ("paired", "[output]", "Bool"),
-                       ("ratio", "[output]", "Float")]
+        add_content = [
+            ("discarded_cells", "[input]", "Int"),
+            ("discarded_days", "[input]", "Int"),
+            ("concentrations", "[output]", "String"),
+            ("measure", "[output]", "StringList"),
+            ("cutoff", "[output]", "Float"),
+            ("select_station", "[output]", "StringList"),
+            ("paired", "[output]", "Bool"),
+            ("ratio", "[output]", "Float"),
+        ]
 
-        self.config = talos.Config(configuration_file,
-                                   additional_content = add_content)
+        self.config = talos.Config(configuration_file, additional_content=add_content)
 
         # Filters config.measure if it exists.
         try:
@@ -123,7 +124,6 @@ class EnsembleData:
 
         self.CheckConfiguration()
 
-
     def CheckConfiguration(self):
         """
         Checks that the configuration is valid.
@@ -131,12 +131,12 @@ class EnsembleData:
         # Checks that the considered period is included in the simulated
         # period. This is a restrictive constraint to be sure that the user
         # knows what he is doing.
-        if self.config.t_range[0] < self.config.origin[0] \
-               or self.config.t_range[1] > self.config.origin[0] \
-               + datetime.timedelta(0, 3600 * self.config.Delta_t
-                                    * self.config.Nt):
-            raise Exception, "The period considered for computations must " \
-                  + "be included in the simulated period."
+        if self.config.t_range[0] < self.config.origin[0] or self.config.t_range[
+            1
+        ] > self.config.origin[0] + datetime.timedelta(
+            0, 3600 * self.config.Delta_t * self.config.Nt
+        ):
+            raise Exception, "The period considered for computations must " + "be included in the simulated period."
 
         # Checks that the required concentrations are supported.
         if self.config.concentrations == "peak":
@@ -144,34 +144,41 @@ class EnsembleData:
             if self.config.paired:
                 raise Exception, "Unable to deal with paired peaks."
         elif self.config.concentrations != "hourly":
-            raise Exception, "Field \"concentrations\" is set to \"" \
-                  + self.config.concentrations \
-                  + "\" but should be \"hourly\" or \"peak\"."
-
+            raise Exception, 'Field "concentrations" is set to "' + self.config.concentrations + '" but should be "hourly" or "peak".'
 
     def LoadStation(self):
         """
         Loads information about possibly involved stations.
         """
-        if len(self.config.select_station) == 1 \
-               and self.config.select_station[0] == "single":
-            self.station = [io.load_station(self.config.station_file,
-                                            self.config.station_file_type,
-                                            self.config.station)]
+        if (
+            len(self.config.select_station) == 1
+            and self.config.select_station[0] == "single"
+        ):
+            self.station = [
+                io.load_station(
+                    self.config.station_file,
+                    self.config.station_file_type,
+                    self.config.station,
+                )
+            ]
         else:
-            self.station = io.load_stations(self.config.station_file,
-                                            self.config.station_file_type,
-                                            self.config.origin[1:],
-                                            self.config.Delta[1:],
-                                            self.config.shape[1:])
+            self.station = io.load_stations(
+                self.config.station_file,
+                self.config.station_file_type,
+                self.config.origin[1:],
+                self.config.Delta[1:],
+                self.config.shape[1:],
+            )
         # Filters stations.
         if len(self.config.select_station) == 2:
-            self.station = [x for x in self.station \
-                            if getattr(x, self.config.select_station[0]) \
-                            == self.config.select_station[1]]
+            self.station = [
+                x
+                for x in self.station
+                if getattr(x, self.config.select_station[0])
+                == self.config.select_station[1]
+            ]
 
         self.Nstation = len(self.station)
-
 
     def LoadObservation(self):
         """
@@ -187,24 +194,26 @@ class EnsembleData:
             station = self.station[istation]
 
             if self.verbose:
-                self.prt(str(istation) + "/" + str(len(self.station))
-                         + " " + station.real_name)
+                self.prt(
+                    str(istation)
+                    + "/"
+                    + str(len(self.station))
+                    + " "
+                    + station.real_name
+                )
 
             ### Observations (temporary vectors).
 
             # Initial import.
-            obs_date, obs = io.load_file_observations(station.name,
-                                                      self.config.obs_dir)
-            obs_date, obs = observation.remove_missing(obs_date,
-                                                       obs, (-999, 0))
+            obs_date, obs = io.load_file_observations(station.name, self.config.obs_dir)
+            obs_date, obs = observation.remove_missing(obs_date, obs, (-999, 0))
             # Removes concentrations outside the considered period.
-            obs_date, obs = \
-                      observation.restrict_to_period(obs_date, obs,
-                                                     self.config.t_range)
+            obs_date, obs = observation.restrict_to_period(
+                obs_date, obs, self.config.t_range
+            )
             # Peaks.
             if self.config.concentrations == "peak":
-                obs_date, obs = observation.get_daily_peaks(obs_date,
-                                                            obs, [11, 17], 2)
+                obs_date, obs = observation.get_daily_peaks(obs_date, obs, [11, 17], 2)
                 obs_date = [observation.midnight(x) for x in obs_date]
 
             ### Enough measurements?
@@ -215,9 +224,9 @@ class EnsembleData:
                 length = float(diff.days)
             else:
                 # Maximum number of hourly observations.
-                length = float(diff.days) * 24. + float(diff.seconds) / 3600.
-            if float(len(obs)) / length < self.config.ratio :
-                continue   # Not enough observations...
+                length = float(diff.days) * 24.0 + float(diff.seconds) / 3600.0
+            if float(len(obs)) / length < self.config.ratio:
+                continue  # Not enough observations...
             # Adds the stations in the output-station list.
             station_restricted.append(station)
 
@@ -228,17 +237,16 @@ class EnsembleData:
         if self.verbose:
             # Displays information.
             self.prt.Clear()
-            print "Number of stations:", \
-                  str(len(station_restricted)) + "/" + str(len(self.station))
-            print "Number of observations:", \
-                  array([len(x) for x in self.obs]).sum()
+            print "Number of stations:", str(len(station_restricted)) + "/" + str(
+                len(self.station)
+            )
+            print "Number of observations:", array([len(x) for x in self.obs]).sum()
 
         # Update the station list.
         self.station = station_restricted
         self.Nstation = len(self.station)
 
         self.GetAllDates()
-
 
     def LoadSimulation(self):
         """
@@ -250,9 +258,9 @@ class EnsembleData:
         mask = [None for i in range(self.Nstation)]
 
         # Simulation dates.
-        date = observation.get_simulation_dates(self.config.t_min,
-                                                self.config.Delta_t,
-                                                self.config.Nt)
+        date = observation.get_simulation_dates(
+            self.config.t_min, self.config.Delta_t, self.config.Nt
+        )
 
         for ifile in range(self.Nsim):
 
@@ -265,43 +273,41 @@ class EnsembleData:
                 self.prt(str(ifile) + "/" + str(self.Nsim) + " " + name)
 
             # Reads computed concentrations and extracts the first level.
-            sim_ref = io.load_binary(self.config.file_list[ifile],
-                                     [self.config.Nt, self.config.Nz,
-                                      self.config.Ny, self.config.Nx])[:, 0]
+            sim_ref = io.load_binary(
+                self.config.file_list[ifile],
+                [self.config.Nt, self.config.Nz, self.config.Ny, self.config.Nx],
+            )[:, 0]
 
             for istation in range(self.Nstation):
                 station = self.station[istation]
                 # Extracts simulated data.
-                sim = observation.get_simulated_at_station(self.config.origin,
-                                                           self.config.Delta,
-                                                           sim_ref, station)
+                sim = observation.get_simulated_at_station(
+                    self.config.origin, self.config.Delta, sim_ref, station
+                )
 
                 # Removes concentrations outside the considered period.
-                sim_date, sim = \
-                          observation.restrict_to_period(date, sim,
-                                                         self.config.t_range)
+                sim_date, sim = observation.restrict_to_period(
+                    date, sim, self.config.t_range
+                )
                 if self.config.concentrations == "peak":
                     # Peaks.
-                    sim_date, sim = observation.get_daily_peaks(sim_date,
-                                                                sim, [11, 17],
-                                                                2)
+                    sim_date, sim = observation.get_daily_peaks(
+                        sim_date, sim, [11, 17], 2
+                    )
                     sim_date = [observation.midnight(x) for x in sim_date]
 
                 # Time selections.
-                if mask[istation] == None:   # Masks are not computed.
+                if mask[istation] == None:  # Masks are not computed.
                     # Hourly concentrations.
                     function = observation.masks_for_common_dates
-                    mask[istation], tmp = function(sim_date,
-                                                   self.date[istation])
+                    mask[istation], tmp = function(sim_date, self.date[istation])
 
                 # Adds the new concentrations in the dedicated arrays.
                 self.sim[ifile].append(array(sim[mask[istation]]))
 
         self.prt.Clear()
 
-
-    def AddSimulation(self, sim, date = None, position = None,
-                      duplicate = False):
+    def AddSimulation(self, sim, date=None, position=None, duplicate=False):
         """
         Adds a new simulation.
 
@@ -340,8 +346,7 @@ class EnsembleData:
         else:
             self.sim.insert(position, add_sim)
 
-
-    def RemoveSimulation(self, index = -1):
+    def RemoveSimulation(self, index=-1):
         """
         Removes a simulation.
 
@@ -356,44 +361,48 @@ class EnsembleData:
         self.Nsim -= 1
         return self.sim.pop(index)
 
-
-    def ComputeStatistics(self, period = None):
+    def ComputeStatistics(self, period=None):
         """
         Computes statistics (simulations against measurements) over all
         stations and over the whole time period. It updates attribute "stat".
         """
-        self.stat = stat.compute_stat(self.sim, self.obs,
-                                      self.config.measure,
-                                      cutoff = self.config.cutoff,
-                                      period = period, dates = self.date)
+        self.stat = stat.compute_stat(
+            self.sim,
+            self.obs,
+            self.config.measure,
+            cutoff=self.config.cutoff,
+            period=period,
+            dates=self.date,
+        )
 
-
-    def ComputeStepStatistics(self, period = None):
+    def ComputeStepStatistics(self, period=None):
         """
         Computes statistics (simulations against measurements) over all
         stations and for every time step. It updates attribute "stat_step".
         """
-        self.stat_step = \
-                       stat.compute_stat_step(self.date, self.sim, self.obs,
-                                              self.config.concentrations,
-                                              self.config.measure,
-                                              cutoff = self.config.cutoff,
-                                              period = period)[1]
+        self.stat_step = stat.compute_stat_step(
+            self.date,
+            self.sim,
+            self.obs,
+            self.config.concentrations,
+            self.config.measure,
+            cutoff=self.config.cutoff,
+            period=period,
+        )[1]
 
-
-    def ComputeStationStatistics(self, period = None):
+    def ComputeStationStatistics(self, period=None):
         """
         Computes statistics (simulations against measurements) over all time
         steps and for every station. It updates attribute "stat_station".
         """
-        self.stat_station = \
-                          stat.compute_stat_station(self.sim, self.obs,
-                                                    self.config.measure,
-                                                    dates = self.date,
-                                                    cutoff
-                                                    = self.config.cutoff,
-                                                    period = period)
-
+        self.stat_station = stat.compute_stat_station(
+            self.sim,
+            self.obs,
+            self.config.measure,
+            dates=self.date,
+            cutoff=self.config.cutoff,
+            period=period,
+        )
 
     def GetAllDates(self):
         """
@@ -401,16 +410,14 @@ class EnsembleData:
         in attribute "all_dates".
         """
         # Period covered by observations.
-        self.period = [min([x[0] for x in self.date]),
-                       max([x[-1] for x in self.date])]
+        self.period = [min([x[0] for x in self.date]), max([x[-1] for x in self.date])]
         if self.config.concentrations == "hourly":
             delta = datetime.timedelta(0, 3600)
-        else:   # Peaks.
+        else:  # Peaks.
             delta = datetime.timedelta(1)
         self.all_dates = [self.period[0]]
         while self.all_dates[-1] < self.period[-1]:
             self.all_dates.append(self.all_dates[-1] + delta)
-
 
     def RestrictToPeriod(self, period):
         """
@@ -430,13 +437,11 @@ class EnsembleData:
             obs_out.append(tmp[1])
         for i in range(self.Nsim):
             for j in range(self.Nstation):
-                sim_out[i].append(restrict(self.date[j], self.sim[i][j],
-                                           period)[1])
+                sim_out[i].append(restrict(self.date[j], self.sim[i][j], period)[1])
         self.sim = sim_out
         self.obs = obs_out
         self.date = date_out
         self.GetAllDates()
-
 
     def DuplicateEnsemble(self, ensemble):
         """
@@ -456,7 +461,6 @@ class EnsembleData:
         self.configuration_file = ensemble.configuration_file
         self.config = ensemble.config
 
-
     def RankArray(self):
         """
         Computes the rank array to be used in a rank diagram.
@@ -464,17 +468,17 @@ class EnsembleData:
         @rtype: 1D-array
         @return: The rank array of length Nsim+1.
         """
-        result = zeros(self.Nsim + 1, 'd')
+        result = zeros(self.Nsim + 1, "d")
         for s in range(self.Nstation):
             for t in range(len(self.obs[s])):
                 obs = self.obs[s][t]
-                sim = array([x[s][t] for x in self.sim], 'd')
+                sim = array([x[s][t] for x in self.sim], "d")
                 sim.sort()
 
                 rank = 0
                 while rank != self.Nsim and obs > sim[rank]:
                     rank += 1
-                result[rank] += 1.
+                result[rank] += 1.0
 
         return result
 
@@ -514,8 +518,7 @@ def merge(date, data, date_update, data_update):
     for istation in range(Nstation):
         i = 0
         i_update = 0
-        while i < len(date[istation]) \
-                  and i_update < len(date_update[istation]):
+        while i < len(date[istation]) and i_update < len(date_update[istation]):
             if date[istation][i] < date_update[istation][i_update]:
                 output_date[istation].append(date[istation][i])
                 output_data[istation].append(data[istation][i])
@@ -550,4 +553,4 @@ def add_model(ref, model, ens):
     appended in the model list; it therefore becomes the last model.
     """
     date, sim = merge(ref.date, ref.sim, model.date, model.sim)
-    ens.AddSimulation(sim, date = date)
+    ens.AddSimulation(sim, date=date)

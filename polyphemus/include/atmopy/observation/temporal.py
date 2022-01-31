@@ -27,15 +27,16 @@ import datetime
 
 class Period:
     """Stores a time period."""
-    start = datetime.datetime(1,1,1)
-    end = datetime.datetime(1,1,1,1)
+
+    start = datetime.datetime(1, 1, 1)
+    end = datetime.datetime(1, 1, 1, 1)
 
     def __init__(self, start, end):
         self.start = start
         self.end = end
 
     def __str__(self):
-        """ Returns Period's presentation."""
+        """Returns Period's presentation."""
         return str(self.start) + " -> " + str(self.end)
 
 
@@ -52,9 +53,13 @@ def get_period(dates):
     return Period(dates[0], dates[-1])
 
 
-def get_periods(start, end, length=datetime.timedelta(1), \
-                interperiod = datetime.timedelta(0), \
-                fit_last = False):
+def get_periods(
+    start,
+    end,
+    length=datetime.timedelta(1),
+    interperiod=datetime.timedelta(0),
+    fit_last=False,
+):
     """
     Returns a list of periods of given length (except last period
     if fit_last is True), beginning at given start date, ending
@@ -96,7 +101,7 @@ def get_periods(start, end, length=datetime.timedelta(1), \
                 current = current + interperiod
                 in_period = not in_period
         if not in_period and fit_last and last_current != end:
-            periods.append(Period(last_current,end))
+            periods.append(Period(last_current, end))
     return periods
 
 
@@ -134,8 +139,9 @@ def split_into_days(dates, data):
     return output_dates, map(lambda x: numpy.array(x), output_data)
 
 
-def get_daily_obs_peaks(dates, sim, obs, hour_range = [0, 23], \
-                        nb_range_min = 24, nb_min = 0, paired = False):
+def get_daily_obs_peaks(
+    dates, sim, obs, hour_range=[0, 23], nb_range_min=24, nb_min=0, paired=False
+):
     """
     Returns the daily peaks for both observations and computed
     concentrations.
@@ -203,15 +209,17 @@ def get_daily_obs_peaks(dates, sim, obs, hour_range = [0, 23], \
             output_dates_sim.append(tmp_dates[j])
             output_sim.append(tmp_sim[j])
     if paired:
-        return output_dates, numpy.array(output_sim), \
-               numpy.array(output_obs)
+        return output_dates, numpy.array(output_sim), numpy.array(output_obs)
     else:
-        return output_dates_sim, numpy.array(output_sim), \
-               output_dates, numpy.array(output_obs)
+        return (
+            output_dates_sim,
+            numpy.array(output_sim),
+            output_dates,
+            numpy.array(output_obs),
+        )
 
 
-def get_daily_peaks(dates, conc, hour_range = [0, 23], \
-                    nb_range_min = 24, nb_min = 0):
+def get_daily_peaks(dates, conc, hour_range=[0, 23], nb_range_min=24, nb_min=0):
     """
     Returns the daily peaks.
 
@@ -284,9 +292,9 @@ def mask_for_common_days(sim_dates, simulated, obs_dates, obs):
 
     # Dates.
     sim_dates_float = list(sim_dates)
-    map(lambda x: float(x.toordinal()) + float(x.hour) / 24., sim_dates_float)
+    map(lambda x: float(x.toordinal()) + float(x.hour) / 24.0, sim_dates_float)
     obs_dates_float = list(obs_dates)
-    map(lambda x: float(x.toordinal()) + float(x.hour) / 24., obs_dates_float)
+    map(lambda x: float(x.toordinal()) + float(x.hour) / 24.0, obs_dates_float)
 
     # Selection.
     sim_condition = numpy.zeros(len(simulated))
@@ -295,21 +303,21 @@ def mask_for_common_days(sim_dates, simulated, obs_dates, obs):
     # Selects the common days.
     j = 0
     for i in range(len(sim_dates_float)):
-        while j < len(obs_dates_float) \
-                  and obs_dates_float[j] < sim_dates_float[i]:
+        while j < len(obs_dates_float) and obs_dates_float[j] < sim_dates_float[i]:
             j += 1
         if j == len(obs_dates_float):
             break
         if obs_dates_float[j] == sim_dates_float[i]:
-           sim_condition[i] = 1
-           obs_condition[j] = 1
+            sim_condition[i] = 1
+            obs_condition[j] = 1
 
     return sim_condition, obs_condition
 
 
-def apply_mask_for_common_days(sim_dates, simulated, obs_dates, obs, \
-                               mask_sim, mask_obs):
-    """ Applies a mask returned by mask_for_common_days on
+def apply_mask_for_common_days(
+    sim_dates, simulated, obs_dates, obs, mask_sim, mask_obs
+):
+    """Applies a mask returned by mask_for_common_days on
     simulated and observation data, and gets corresponding dates.
 
     @type sim_dates: sequence of datetime.datetime
@@ -341,8 +349,7 @@ def apply_mask_for_common_days(sim_dates, simulated, obs_dates, obs, \
     for i in mask_sim:
         common_dates.append(sim_dates[i])
 
-    return common_dates, simulated[numpy.where(mask_sim)], \
-           obs[numpy.where(mask_obs)]
+    return common_dates, simulated[numpy.where(mask_sim)], obs[numpy.where(mask_obs)]
 
 
 def restrict_to_common_dates(sim_dates, simulated, obs_dates, obs):
@@ -373,19 +380,18 @@ def restrict_to_common_dates(sim_dates, simulated, obs_dates, obs):
     obs_condition = numpy.zeros(len(obs))
 
     for i in range(len(dates)):
-       try:
-           ind = obs_dates.index(dates[i])
-           sim_condition[i] = 1
-           obs_condition[ind] = 1
-       except ValueError:
-           pass
+        try:
+            ind = obs_dates.index(dates[i])
+            sim_condition[i] = 1
+            obs_condition[ind] = 1
+        except ValueError:
+            pass
 
-    for i in range(len(sim_condition)-1, -1, -1):
+    for i in range(len(sim_condition) - 1, -1, -1):
         if sim_condition[i] == 0:
             dates.pop(i)
 
-    return dates, simulated[numpy.where(sim_condition)], \
-           obs[numpy.where(obs_condition)]
+    return dates, simulated[numpy.where(sim_condition)], obs[numpy.where(obs_condition)]
 
 
 def masks_for_common_dates(dates0, dates1):
@@ -459,9 +465,9 @@ def restrict_to_common_days(sim_dates, simulated, obs_dates, obs):
     sim_condition = numpy.zeros(len(simulated))
     obs_condition = numpy.zeros(len(obs))
 
-   # Gets the start date index for observations.
+    # Gets the start date index for observations.
     obs_start = 0
-    while(obs_dates_iso[obs_start] < sim_dates_iso[0]):
+    while obs_dates_iso[obs_start] < sim_dates_iso[0]:
         obs_start = obs_start + 1
 
     common_dates = []
@@ -469,8 +475,7 @@ def restrict_to_common_days(sim_dates, simulated, obs_dates, obs):
     # Loops over observation dates and mark indices of matching dates.
     for i in range(obs_start, len(obs_dates_iso)):
         ind = old_ind
-        while(sim_dates_iso[ind] < obs_dates_iso[i] \
-              and ind < len(sim_dates_iso) - 1 ):
+        while sim_dates_iso[ind] < obs_dates_iso[i] and ind < len(sim_dates_iso) - 1:
             ind = ind + 1
         if sim_dates_iso[ind] == obs_dates_iso[i]:
             sim_condition[ind] = 1
@@ -480,8 +485,11 @@ def restrict_to_common_days(sim_dates, simulated, obs_dates, obs):
         else:
             old_ind = ind - 1
 
-    return common_dates, simulated[numpy.where(sim_condition)], \
-           obs[numpy.where(obs_condition)]
+    return (
+        common_dates,
+        simulated[numpy.where(sim_condition)],
+        obs[numpy.where(obs_condition)],
+    )
 
 
 def restrict_to_common_days2(sim_dates, simulated, obs_dates, obs):
@@ -519,24 +527,27 @@ def restrict_to_common_days2(sim_dates, simulated, obs_dates, obs):
 
     # Selects the common days.
     for i in range(len(sim_dates_iso)):
-       try:
-           ind = obs_dates_iso.index(sim_dates_iso[i])
-           sim_condition[i] = 1
-           obs_condition[ind] = 1
-       except ValueError:
-           pass
+        try:
+            ind = obs_dates_iso.index(sim_dates_iso[i])
+            sim_condition[i] = 1
+            obs_condition[ind] = 1
+        except ValueError:
+            pass
 
     # Extracts the common dates.
     common_dates = sim_dates
-    for i in range(len(sim_condition)-1, -1, -1):
+    for i in range(len(sim_condition) - 1, -1, -1):
         if sim_condition[i] == 0:
             common_dates.pop(i)
 
-    return common_dates, simulated[numpy.where(sim_condition)], \
-           obs[numpy.where(obs_condition)]
+    return (
+        common_dates,
+        simulated[numpy.where(sim_condition)],
+        obs[numpy.where(obs_condition)],
+    )
 
 
-def restrict_to_period(dates, data, period_date, end_date = None):
+def restrict_to_period(dates, data, period_date, end_date=None):
     """
     Returns data and associated dates within a given period.
 
@@ -566,11 +577,13 @@ def restrict_to_period(dates, data, period_date, end_date = None):
     else:
         start_date = period_date
     istart = 0
-    while istart < len(dates) and dates[istart] < start_date: istart += 1
-    if istart == len(dates) or dates[istart] > end_date :
+    while istart < len(dates) and dates[istart] < start_date:
+        istart += 1
+    if istart == len(dates) or dates[istart] > end_date:
         return [], numpy.array([])
     iend = istart + 1
-    while iend < len(dates) and dates[iend] <= end_date: iend += 1
+    while iend < len(dates) and dates[iend] <= end_date:
+        iend += 1
     return dates[istart:iend], data[istart:iend]
 
 
@@ -601,7 +614,7 @@ def mask_for_series(dates, delta, Ndates):
     count = 0
     # Previous date.
     prev_date = dates[0]
-    if Ndates > 0:   # The first date is then removed.
+    if Ndates > 0:  # The first date is then removed.
         mask[0] = False
     for idate in range(1, len(dates)):
         if dates[idate] - prev_date <= delta:
@@ -644,7 +657,7 @@ def remove_incomplete_days(dates, data):
     # Timestep in hours.
     delta = delta.seconds / 3600
     # Number of steps per day.
-    steps = int(24. / float(delta))
+    steps = int(24.0 / float(delta))
 
     # Number of steps in the first day.
     i = 1
@@ -704,9 +717,9 @@ def midnight(date):
     @rtype: datetime.datetime
     @return: Midnight in the current day specified by date.
     """
-    return date - datetime.timedelta(0, 3600 * date.hour \
-                                     + 60 * date.minute + date.second, \
-                                     date.microsecond)
+    return date - datetime.timedelta(
+        0, 3600 * date.hour + 60 * date.minute + date.second, date.microsecond
+    )
 
 
 def timedelta2num(delta):
@@ -720,11 +733,14 @@ def timedelta2num(delta):
     @return: The number of days in 'delta'.
     """
     if delta < datetime.timedelta(0):
-        num = -(date2num(datetime.datetime(1,1,1) - delta) \
-              - date2num(datetime.datetime(1,1,1)))
+        num = -(
+            date2num(datetime.datetime(1, 1, 1) - delta)
+            - date2num(datetime.datetime(1, 1, 1))
+        )
     else:
-        num = date2num(datetime.datetime(1,1,1) + delta) \
-              - date2num(datetime.datetime(1,1,1))
+        num = date2num(datetime.datetime(1, 1, 1) + delta) - date2num(
+            datetime.datetime(1, 1, 1)
+        )
     return num
 
 
@@ -744,11 +760,11 @@ def get_simulation_dates(t_min, delta_t, Nt):
     """
     sim_dates = []
     for i in range(Nt):
-        sim_dates.append(t_min + datetime.timedelta(hours = i * delta_t))
+        sim_dates.append(t_min + datetime.timedelta(hours=i * delta_t))
     return sim_dates
 
 
-def remove_missing(dates, data, rm_value = -999):
+def remove_missing(dates, data, rm_value=-999):
     """
     Removes given values from a data array and removes the corresponding
     dates.

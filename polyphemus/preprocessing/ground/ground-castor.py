@@ -28,25 +28,27 @@ from atmopy import *
 
 ### Initializations.
 
-parser = optparse.OptionParser(usage = "%prog configuration_file")
+parser = optparse.OptionParser(usage="%prog configuration_file")
 (options, args) = parser.parse_args()
 
 if not args:
     parser.error("A configuration file is required.")
 
-additional_content = [("Nc", "[input]", "Int"), \
-                      ("File_landpar", "[input]", "String"), \
-                      ("File_landuse", "[input]", "String"), \
-                      ("Directory_out", "[output]", "String")]
+additional_content = [
+    ("Nc", "[input]", "Int"),
+    ("File_landpar", "[input]", "String"),
+    ("File_landuse", "[input]", "String"),
+    ("Directory_out", "[output]", "String"),
+]
 
-config = talos.Config(sys.argv[1], additional_content = additional_content)
+config = talos.Config(sys.argv[1], additional_content=additional_content)
 
 Nmonth = 12
 
 file = open(config.File_landpar)
 line = file.readline()
 
-roughness = empty([Nmonth, config.Nc], dtype = 'f')
+roughness = empty([Nmonth, config.Nc], dtype="f")
 for m in range(Nmonth):
     line = file.readline()
     rough = line.split()[1:]
@@ -55,16 +57,16 @@ for m in range(Nmonth):
 
 file.close()
 
-landuse = fromfile(config.File_landuse, dtype = 'f', sep = '  ')
+landuse = fromfile(config.File_landuse, dtype="f", sep="  ")
 
 landuse.shape = (config.Ny, config.Nx, config.Nc)
-landuse_trans = landuse.transpose(2,0,1)
-landuse_trans.tofile(os.path.join(config.Directory_out, 'LUC.bin'))
+landuse_trans = landuse.transpose(2, 0, 1)
+landuse_trans.tofile(os.path.join(config.Directory_out, "LUC.bin"))
 
-roughness_out = empty([Nmonth, config.Ny, config.Nx], dtype = 'f')
+roughness_out = empty([Nmonth, config.Ny, config.Nx], dtype="f")
 for m in range(Nmonth):
     for j in range(config.Ny):
         for i in range(config.Nx):
             roughness_out[m, j, i] = sum(multiply(landuse[j, i], roughness[m]))
 
-roughness_out.tofile(os.path.join(config.Directory_out, 'Roughness.bin'))
+roughness_out.tofile(os.path.join(config.Directory_out, "Roughness.bin"))

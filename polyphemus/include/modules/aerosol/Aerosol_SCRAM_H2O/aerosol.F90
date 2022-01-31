@@ -127,7 +127,7 @@ Module zAerosolSCRAM
       DOUBLE PRECISION LWCmin
       INTEGER jesp,j,f,k,t,Jt,b,g,i
       DOUBLE PRECISION tschem_aer, tfchem_aer, dtchem_aer!time for chemistry
-      
+
       INTEGER nesp_aer,nbin_aer,ncycle_aer
       INTEGER nsize_section_aer,ncomposition_aer,ngroup_aer
       INTEGER noptions_aer,options_aer(noptions_aer)
@@ -136,10 +136,10 @@ Module zAerosolSCRAM
       DOUBLE PRECISION DLLWC,DLrain
       DOUBLE PRECISION pH,lwc_surf
       DOUBLE PRECISION rain_rate
-      DOUBLE PRECISION concentration_gas_loc(nesp_loc)      
+      DOUBLE PRECISION concentration_gas_loc(nesp_loc)
       DOUBLE PRECISION qscav_gas(nesp_loc)
       DOUBLE PRECISION qscav_aer(nbin_aer,nesp_aer)
-      DOUBLE PRECISION qscav_num(nbin_aer)      
+      DOUBLE PRECISION qscav_num(nbin_aer)
       DOUBLE PRECISION bin_bound_aer(nsize_section_aer + 1)
       DOUBLE PRECISION composition_bounds(ncomposition_aer*ngroup_aer*2)
       DOUBLE PRECISION fixed_density_aer
@@ -164,9 +164,9 @@ Module zAerosolSCRAM
       DOUBLE PRECISION molecular_diameter_aer_loc(nesp_aer)
       DOUBLE PRECISION collision_factor_aer_loc(nesp_aer)
       DOUBLE PRECISION mass_density_aer_loc(nesp_aer)
-    
+
       INTEGER aerosol_species_interact_loc(nesp_aer)
-      
+
       INTEGER nesp_isorropia_loc,nesp_aec_loc,nesp_pankow_loc
       INTEGER nesp_poa_loc
       INTEGER isorropia_species_loc(nesp_isorropia_loc)
@@ -187,19 +187,19 @@ Module zAerosolSCRAM
       double precision k_nucl_fact, p_nucl_fact
       double precision total_nb,total_ms,tot_tot
       double precision total_ms_old(nesp_aer)
-      
+
       !!read the coefficient repartition for coagulation
 
       k_fact = k_nucl_fact
       p_fact = p_nucl_fact
-      
+
       Humidity=DLhumid
       Temperature=DLtemp
       Pressure=DLpress
       call COMPUTE_RELATIVE_HUMIDITY(Humidity,Temperature,Pressure,Relative_Humidity)
       Relative_Humidity = DMIN1(DMAX1(Relative_Humidity, Threshold_RH_inf), Threshold_RH_sup)
       DQLIMIT=DQLIMIT_loc
-!!    aInitialization     
+!!    aInitialization
     CALL Init_global_parameters(nesp_loc,nbin_aer,nsize_section_aer,nesp_aer,&
 				     ncomposition_aer,ngroup_aer,&
 				     aerosol_species_interact_loc,&
@@ -271,9 +271,9 @@ Module zAerosolSCRAM
 
 !!     Loop on grid cells.
       DO Jt=1,ncycle_aer
-      
+
       !print*,"start time loop",Jt,ncycle_aer
-      
+
          tschem_aer=initial_time+(Jt-1)*delta_t/ncycle_aer
          tfchem_aer=tschem_aer+delta_t/ncycle_aer
          dtchem_aer=tfchem_aer-tschem_aer
@@ -288,7 +288,7 @@ Module zAerosolSCRAM
 	      concentration_gas_loc(jesp) = 0.D0
 	    ENDIF
          ENDDO
-         
+
 	 total_nb=0.d0
 !     Number concentration: loop on bins
          IF (with_number.EQ.1) THEN
@@ -306,7 +306,7 @@ Module zAerosolSCRAM
                !why risk to add number into the system!?
             ENDDO
          ENDIF
-         
+
 	 total_ms=0.d0
 	 total_aero_mass=0.d0
          DO j=1,N_size
@@ -370,9 +370,9 @@ Module zAerosolSCRAM
           size_log_av(b)=(log_bound(b) + log_bound(b+1))*5.D-01
           size_sect(b)=log_bound(b+1) - log_bound(b)
         enddo
-	
+
 	call mass_conservation(concentration_mass,concentration_number,&
-		concentration_gas, total_mass)	
+		concentration_gas, total_mass)
 	call compute_average_bin_diameter()
 ! 	call check_nan_inf(2)
 	IF (with_number.NE.1) THEN
@@ -390,15 +390,15 @@ Module zAerosolSCRAM
 	call compute_wet_mass_diameter(1,N_size,concentration_mass,concentration_number,&
 		concentration_inti,wet_mass,wet_diameter,wet_volume,cell_diam_av)
 
-! 	call check_nan_inf(5)		
+! 	call check_nan_inf(5)
 	!print*,"before aerosol dynamic"
          IF (cloud_water.GE.LWCmin) THEN
             IF (with_incloud_scav.EQ.1) THEN
                rain_rate = DLrain
             ELSE
                rain_rate = 0.d0
-            ENDIF           
-            
+            ENDIF
+
             IF (aqueous_module.EQ.1) THEN
 	       CALL VSRMCHEM(N_gas,N_aerosol,&
                N_size,N_sizebin,nesp_cloud_interact,&
@@ -425,14 +425,14 @@ Module zAerosolSCRAM
                      qscav_aer(j,jesp) * layer_height / dtchem_aer
                   ENDDO
                ENDDO
-               
+
                IF (with_number.EQ.1) THEN
-                  
+
                   DO j=1,N_size
                      Wet_Deposition_Number_aer(j) =Wet_Deposition_Number_aer(j) +&
                      qscav_num(j) *layer_height / dtchem_aer
                   ENDDO
-                  
+
                ENDIF
 
 
@@ -456,7 +456,7 @@ Module zAerosolSCRAM
                   Wet_Deposition(jesp)=Wet_Deposition(jesp)+&
                   qscav_gas(jesp) * layer_height /dtchem_aer
                ENDDO
-               
+
                DO jesp=1,N_aerosol
                   DO j=1,N_size
                      Wet_Deposition_aer(j,jesp) =Wet_Deposition_aer(j,jesp) +&
@@ -471,7 +471,7 @@ Module zAerosolSCRAM
                      qscav_num(j) *layer_height / dtchem_aer
                   ENDDO
 	      ENDIF
-	      
+
             ELSE
 
 		CALL AERODYN(tschem_aer,tfchem_aer)
@@ -518,7 +518,7 @@ Module zAerosolSCRAM
 	      if(IsNaN(DLconc_aer(j,jesp)*0.d0)) then
 		print*,"Error of infinity/NaN end",DLconc_aer(j,jesp)
 		stop
-	      endif               
+	      endif
             ENDDO
          ENDDO
 !          print*,"last DU",DLconc_aer(121,1)
@@ -533,8 +533,8 @@ Module zAerosolSCRAM
 ! 	      print*,"total_nb",total_nb,"total_aer",tot_tot
 ! 	    endif
          ENDIF
-         
-         
+
+
          DO jesp=1,nesp
             DLconc(jesp) = concentration_gas_loc(jesp)
 	    if(IsNaN(DLconc(jesp)*0.d0)) then
@@ -550,7 +550,7 @@ Module zAerosolSCRAM
 		stop
 	      endif
          ENDDO
-	
+
       ENDDO
 
       CALL free_allocated_memory()
@@ -560,7 +560,7 @@ Module zAerosolSCRAM
       ENDIF
 
 !       print*,"Finished aerosol F"
-      
+
       END SUBROUTINE aerosol
 
 End module zAerosolSCRAM

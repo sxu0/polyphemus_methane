@@ -28,7 +28,7 @@ namespace Seldon
   /****************
    * CONSTRUCTORS *
    ****************/
-  
+
 
   //! Default constructor.
   /*!
@@ -57,7 +57,7 @@ namespace Seldon
     data_ = NULL;
   }
 
-  
+
   //! Copy constructor.
   /*!
     \param A base matrix to be copied.
@@ -71,11 +71,11 @@ namespace Seldon
     n_ = A.GetN();
   }
 
-  
+
   /**************
    * DESTRUCTOR *
    **************/
-  
+
 
   //! Destructor.
   /*!
@@ -86,12 +86,12 @@ namespace Seldon
   {
 
   }
-  
-  
+
+
   /*******************
    * BASIC FUNCTIONS *
    *******************/
-  
+
 
   //! Returns the number of rows.
   /*!

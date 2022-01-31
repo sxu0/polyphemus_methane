@@ -28,26 +28,26 @@
 
   alpha.X + Y -> Y
   Add(alpha, X, Y)
-  
+
   X -> Y
   Copy(X, Y)
-  
+
   X <-> Y
   Swap(X, Y)
-  
+
   X.Y
   DotProd(X, Y)
   DotProdConj(X, Y)
-  
+
   ||X||
   Norm1(X)
   Norm2(X)
   GetMaxAbsIndex(X)
-  
+
   Omega*X
   GenRot(x, y, cos, sin)
   ApplyRot(x, y, cos, sin)
-  
+
 */
 
 namespace Seldon
@@ -88,7 +88,7 @@ namespace Seldon
 	T1 alpha_ = alpha;
 
 	int ma = X.GetM();
-	
+
 #ifdef SELDON_CHECK_BOUNDS
 	CheckDim(X, Y, "Add(alpha, X, Y)");
 #endif
@@ -97,8 +97,8 @@ namespace Seldon
 	  Y(i) += alpha_ * X(i);
       }
   }
-  
-  
+
+
   template <class T0,
 	    class T1, class Allocator1,
 	    class T2, class Allocator2>
@@ -118,13 +118,13 @@ namespace Seldon
 
   // ADD //
   /////////
-  
-  
-  
+
+
+
   //////////
   // COPY //
 
-  
+
   template <class T1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2>
   void Copy(const Vector<T1, Storage1, Allocator1>& X,
@@ -132,17 +132,17 @@ namespace Seldon
   {
     Y.Copy(X);
   }
-  
-  
+
+
   // COPY //
   //////////
-  
-  
-  
+
+
+
   //////////
   // SWAP //
 
-  
+
   template <class T1, class Storage1, class Allocator1,
 	    class Storage2, class Allocator2>
   void Swap(Vector<T1, Storage1, Allocator1>& X,
@@ -155,8 +155,8 @@ namespace Seldon
     Y.Nullify();
     Y.SetData(nx, data);
   }
-  
-  
+
+
   template <class T1, class Allocator1, class Allocator2>
   void Swap(Vector<T1, VectSparse, Allocator1>& X,
 	    Vector<T1, VectSparse, Allocator2>& Y)
@@ -169,17 +169,17 @@ namespace Seldon
     Y.Nullify();
     Y.SetData(nx, data, index);
   }
-  
-  
+
+
   // SWAP //
   //////////
-  
-  
-  
+
+
+
   /////////////
   // DOTPROD //
-  
-  
+
+
   //! Scalar product between two vectors.
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
@@ -194,11 +194,11 @@ namespace Seldon
 
     for (int i = 0; i < X.GetM(); i++)
       value += X(i) * Y(i);
-    
+
     return value;
   }
-  
-  
+
+
   //! Scalar product between two vectors.
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
@@ -207,8 +207,8 @@ namespace Seldon
   {
     return DotProd(X, Y);
   }
-  
-  
+
+
   //! Scalar product between two vectors.
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
@@ -223,11 +223,11 @@ namespace Seldon
 
     for (int i = 0; i < X.GetM(); i++)
       value += conj(X(i)) * Y(i);
-    
+
     return value;
   }
-  
-  
+
+
   //! Scalar product between two sparse vectors.
   template<class T1, class Allocator1,
 	   class T2, class Allocator2>
@@ -244,17 +244,17 @@ namespace Seldon
 	pos_x = X.Index(kx);
 	while (ky < size_y && Y.Index(ky) < pos_x)
 	  ky++;
-	
+
 	if (ky < size_y && Y.Index(ky) == pos_x)
 	  value += X.Value(kx) * Y.Value(ky);
-	
+
 	kx++;
       }
-    
+
     return value;
   }
-  
-  
+
+
   //! Scalar product between two sparse vectors.
   template<class T1, class Allocator1,
 	   class T2, class Allocator2>
@@ -263,7 +263,7 @@ namespace Seldon
 	      const Vector<T2, VectSparse, Allocator2>& Y)
   {
     complex<T1> value(0);
-    
+
     int size_x = X.GetSize();
     int size_y = Y.GetSize();
     int kx = 0, ky = 0, pos_x;
@@ -272,156 +272,156 @@ namespace Seldon
 	pos_x = X.Index(kx);
 	while (ky < size_y && Y.Index(ky) < pos_x)
 	  ky++;
-	
+
 	if (ky < size_y && Y.Index(ky) == pos_x)
 	  value += conj(X.Value(kx)) * Y.Value(ky);
-	
+
 	kx++;
       }
-    
+
     return value;
   }
-  
-  
+
+
   // DOTPROD //
   /////////////
-  
-  
-  
+
+
+
   ///////////
   // NORM1 //
-  
-  
+
+
   template<class T1, class Storage1, class Allocator1>
   T1 Norm1(const Vector<T1, Storage1, Allocator1>& X)
   {
     T1 value(0);
-    
+
     for (int i = 0; i < X.GetM(); i++)
       value += abs(X(i));
-    
+
     return value;
   }
-  
-  
+
+
   template<class T1, class Storage1, class Allocator1>
   T1 Norm1(const Vector<complex<T1>, Storage1, Allocator1>& X)
   {
     T1 value(0);
-    
+
     for (int i = 0; i < X.GetM(); i++)
       value += abs(X(i));
-    
+
     return value;
   }
-  
-  
+
+
   template<class T1, class Allocator1>
   T1 Norm1(const Vector<T1, VectSparse, Allocator1>& X)
   {
     T1 value(0);
-    
+
     for (int i = 0; i < X.GetSize(); i++)
       value += abs(X.Value(i));
-    
+
     return value;
   }
-  
-  
+
+
   template<class T1, class Allocator1>
   T1 Norm1(const Vector<complex<T1>, VectSparse, Allocator1>& X)
   {
     T1 value(0);
-    
+
     for (int i = 0; i < X.GetSize(); i++)
       value += abs(X.Value(i));
-    
+
     return value;
   }
-  
-  
+
+
   // NORM1 //
   ///////////
-  
-  
-  
+
+
+
   ///////////
   // NORM2 //
-  
-  
+
+
   template<class T1, class Storage1, class Allocator1>
   T1 Norm2(const Vector<T1, Storage1, Allocator1>& X)
   {
     T1 value(0);
-    
+
     for (int i = 0; i < X.GetM(); i++)
       value += X(i) * X(i);
-    
+
     return sqrt(value);
   }
-  
-  
+
+
   template<class T1, class Storage1, class Allocator1>
   T1 Norm2(const Vector<complex<T1>, Storage1, Allocator1>& X)
   {
     T1 value(0);
-    
+
     for (int i = 0; i < X.GetM(); i++)
       value += real(X(i) * conj(X(i)));
-    
+
     return sqrt(value);
   }
-  
-  
+
+
   template<class T1, class Allocator1>
   T1 Norm2(const Vector<T1, VectSparse, Allocator1>& X)
   {
     T1 value(0);
-    
+
     for (int i = 0; i < X.GetSize(); i++)
       value += X.Value(i) * X.Value(i);
-    
+
     return sqrt(value);
   }
-  
-  
+
+
   template<class T1, class Allocator1>
   T1 Norm2(const Vector<complex<T1>, VectSparse, Allocator1>& X)
   {
     T1 value(0);
-    
+
     for (int i = 0; i < X.GetSize(); i++)
       value += real(X.Value(i) * conj(X.Value(i)));
-    
+
     return sqrt(value);
   }
-  
-  
+
+
   // NORM2 //
   ///////////
-  
-  
-  
+
+
+
   ////////////////////
   // GETMAXABSINDEX //
-  
-  
+
+
   template<class T, class Storage, class Allocator>
   int GetMaxAbsIndex(const Vector<T, Storage, Allocator>& X)
   {
     return X.GetNormInfIndex();
   }
-  
-  
+
+
   // GETMAXABSINDEX //
   ////////////////////
-  
-  
-  
+
+
+
   //////////////
   // APPLYROT //
-  
-  
+
+
   //! Computation of rotation between two points.
   template<class T>
   void GenRot(T& a_in, T& b_in, T& c_, T& s_)
@@ -432,7 +432,7 @@ namespace Seldon
       roe = a_in;
     else
       roe = b_in;
-      
+
     T scal = abs(a_in) + abs(b_in);
     T r, z;
     if (scal != T(0))
@@ -442,7 +442,7 @@ namespace Seldon
 	r = scal * sqrt(a_scl * a_scl + b_scl * b_scl);
 	if (roe < T(0))
 	  r *= T(-1);
-	
+
 	c_ = a_in / r;
 	s_ = b_in / r;
 	z = T(1);
@@ -461,13 +461,13 @@ namespace Seldon
     a_in = r;
     b_in = z;
   }
-  
-  
+
+
   //! Computation of rotation between two points.
   template<class T>
   void GenRot(complex<T>& a_in, complex<T>& b_in, T& c_, complex<T>& s_)
   {
-      
+
     T a = abs(a_in), b = abs(b_in);
     if (a == T(0))
       {
@@ -481,7 +481,7 @@ namespace Seldon
 	T a_scal = abs(a_in / scale);
 	T b_scal = abs(b_in / scale);
 	T norm = sqrt(a_scal * a_scal + b_scal * b_scal) * scale;
-	
+
 	c_ = a / norm;
 	complex<T> alpha = a_in / a;
 	s_ = alpha * conj(b_in) / norm;
@@ -489,8 +489,8 @@ namespace Seldon
       }
     b_in = complex<T>(0, 0);
   }
-  
-  
+
+
   //! Rotation of a point in 2-D.
   template<class T>
   void ApplyRot(T& x, T& y, const T c_, const T s_)
@@ -499,8 +499,8 @@ namespace Seldon
     y = c_ * y - s_ * x;
     x = temp;
   }
-  
-  
+
+
   //! Rotation of a complex point in 2-D.
   template<class T>
   void ApplyRot(complex<T>& x, complex<T>& y,
@@ -510,13 +510,13 @@ namespace Seldon
     y = -conj(s_) * x + c_ * y;
     x = temp;
   }
-  
-  
+
+
   // APPLYROT //
   //////////////
-  
-  
-  
+
+
+
   //////////////
   // CHECKDIM //
 
@@ -553,11 +553,11 @@ namespace Seldon
   //////////////
 
 
-  
+
   ///////////////
   // CONJUGATE //
-  
-  
+
+
   //! Sets a vector to its conjugate.
   template<class T, class Prop, class Allocator>
   void Conjugate(Vector<T, Prop, Allocator>& X)
@@ -565,8 +565,8 @@ namespace Seldon
     for (int i = 0; i < X.GetM(); i++)
       X(i) = conj(X(i));
   }
-  
-  
+
+
   //! Sets a vector to its conjugate.
   template<class T, class Allocator>
   void Conjugate(Vector<T, VectSparse, Allocator>& X)
@@ -574,12 +574,12 @@ namespace Seldon
     for (int i = 0; i < X.GetSize(); i++)
       X.Value(i) = conj(X.Value(i));
   }
-  
-  
+
+
   // CONJUGATE //
   ///////////////
-  
-  
+
+
 } // namespace Seldon.
 
 #define SELDON_FILE_FUNCTIONS_VECTOR_CXX

@@ -35,21 +35,24 @@ __revision__ = "src/engine/SCons/Tool/sgic++.py 5110 2010/07/25 16:14:38 bdeegan
 
 import SCons.Util
 
-cplusplus = __import__('c++', globals(), locals(), [])
+cplusplus = __import__("c++", globals(), locals(), [])
+
 
 def generate(env):
     """Add Builders and construction variables for SGI MIPS C++ to an Environment."""
 
     cplusplus.generate(env)
 
-    env['CXX']         = 'CC'
-    env['CXXFLAGS']    = SCons.Util.CLVar('-LANG:std')
-    env['SHCXX']       = '$CXX'
-    env['SHOBJSUFFIX'] = '.o'
-    env['STATIC_AND_SHARED_OBJECTS_ARE_THE_SAME'] = 1
-    
+    env["CXX"] = "CC"
+    env["CXXFLAGS"] = SCons.Util.CLVar("-LANG:std")
+    env["SHCXX"] = "$CXX"
+    env["SHOBJSUFFIX"] = ".o"
+    env["STATIC_AND_SHARED_OBJECTS_ARE_THE_SAME"] = 1
+
+
 def exists(env):
-    return env.Detect('CC')
+    return env.Detect("CC")
+
 
 # Local Variables:
 # tab-width:4

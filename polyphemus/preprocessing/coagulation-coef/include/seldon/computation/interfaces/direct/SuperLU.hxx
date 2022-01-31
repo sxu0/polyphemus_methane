@@ -39,27 +39,27 @@ namespace Seldon
     superlu_options_t options; //!< options
     //! permutation array
     IVect perm_r, perm_c;
-    
+
     int permc_spec; //!< ordering scheme
     int n; //!< number of rows
     bool display_info; //!< display information about factorization ?
-    
+
   public :
     MatrixSuperLU_Base();
     ~MatrixSuperLU_Base();
-    
+
     void Clear();
     void HideMessages();
     void ShowMessages();
-    
+
   };
-  
+
   //! empty matrix
   template<class T>
   class MatrixSuperLU : public MatrixSuperLU_Base<T>
   {
   };
-  
+
   //! class interfacing SuperLU functions in double precision
   template<>
   class MatrixSuperLU<double> : public MatrixSuperLU_Base<double>
@@ -67,17 +67,17 @@ namespace Seldon
   public:
     MatrixSuperLU() : MatrixSuperLU_Base<double>() {}
     ~MatrixSuperLU() {}
-    
-    
+
+
     template<class Prop, class Storage, class Allocator>
     void FactorizeMatrix(Matrix<double,Prop,Storage,Allocator> & mat,
 			 bool keep_matrix = false);
-    
+
     template<class Allocator2>
     void Solve(Vector<double,VectFull,Allocator2>& x);
-    
+
   };
-  
+
   //! class interfacing SuperLU functions in complex double precision
   template<>
   class MatrixSuperLU<complex<double> >
@@ -86,11 +86,11 @@ namespace Seldon
   public:
     MatrixSuperLU() : MatrixSuperLU_Base<complex<double> >() {}
     ~MatrixSuperLU() {}
-    
+
     template<class Prop, class Storage,class Allocator>
     void FactorizeMatrix(Matrix<complex<double>,Prop,Storage,Allocator> & mat,
 			 bool keep_matrix = false);
-    
+
     template<class Allocator2>
     void Solve(Vector<complex<double>,VectFull,Allocator2>& x);
   };

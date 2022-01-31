@@ -1,6 +1,6 @@
 
 void initialisation_eq(model_config &config, vector<species>& surrogate, double &Temperature, double &ionic, double &chp, bool all_hydrophobic)
-{ 
+{
   int n=surrogate.size();
   int i;
   double MOW=1.0;
@@ -18,7 +18,7 @@ void initialisation_eq(model_config &config, vector<species>& surrogate, double 
     for (i=0;i<n;i++)
       if (surrogate[i].is_organic)
         if (surrogate[i].nonvolatile)
-          {            	    
+          {
             if(surrogate[i].hydrophobic and surrogate[i].hydrophilic)
               if (surrogate[i].Aaq==0.0)
                 {
@@ -27,17 +27,17 @@ void initialisation_eq(model_config &config, vector<species>& surrogate, double 
                 }
           }
         else
-          {	    
+          {
             if(surrogate[i].hydrophobic or all_hydrophobic)
-              {        
+              {
                 if (surrogate[i].kp_from_experiment)
                   surrogate[i].kpi=surrogate[i].Kp_exp_org(Temperature);
                 else if (surrogate[i].kp_from_experiment==false)
                   surrogate[i].kpi=surrogate[i].Kp_eff_org(Temperature, MOW);
-              } 
+              }
             if (surrogate[i].hydrophilic)
               if (config.compute_aqueous_phase_properties or chp == 0.0)
-                surrogate[i].kaqi=surrogate[i].Kpart_aq(Temperature,MOW);              
+                surrogate[i].kaqi=surrogate[i].Kpart_aq(Temperature,MOW);
               else
                 {
                   if (surrogate[i].aq_type=="diacid")
@@ -61,14 +61,14 @@ void initialisation_eq(model_config &config, vector<species>& surrogate, double 
                     surrogate[i].kaqi=surrogate[i].Kpart_aq(Temperature,MOW);
                 }
           }
-  
+
   if (config.compute_inorganic)
     {
       for (i=0;i<n;i++)
-        if (surrogate[i].is_inorganic_precursor)          
+        if (surrogate[i].is_inorganic_precursor)
           surrogate[i].keq=surrogate[i].Kequilibrium(Temperature);
 
-      Kpideal_inorganic(config, surrogate, Temperature);      
+      Kpideal_inorganic(config, surrogate, Temperature);
     }
 }
 
@@ -127,13 +127,13 @@ void error_org(model_config &config, vector<species>& surrogate,double &MOinit,d
                 derivative+=surrogate[i].Atot*pow(Kp,2)*MOinit/(pow(1+Kp*MOinit,2))
                   -surrogate[i].Atot*Kp/(1+Kp*MOinit);
               }
-  
+
       if (config.iH2O>=0 and config.hygroscopicity)
         if (surrogate[config.iH2O].hydrophobic) //Can H2O condense on the organic phase
           hygroscopicity_org(config, surrogate, Temperature, MOW, RH, MOinit, MO, derivative, 1.0);
 
       MO=max(MO,config.MOmin);
-      
+
       error=MOinit-MO;
     }
   else
@@ -143,31 +143,31 @@ void error_org(model_config &config, vector<species>& surrogate,double &MOinit,d
     }
 }
 
-void error_ph(model_config &config, vector<species> &surrogate, double Temperature, double &chp, 
+void error_ph(model_config &config, vector<species> &surrogate, double Temperature, double &chp,
               double organion, double &error, double &derivative, double AQinit, double LWC)
-{ 
-  //This routine is used to compute the electroneutrality conditions with a 
-  //method of newton raphson. The routine computes the error between two 
+{
+  //This routine is used to compute the electroneutrality conditions with a
+  //method of newton raphson. The routine computes the error between two
   //iterations and derivative of the error.
   //In this routine, organic ions are taken into account but are assumed not to
   //strongly impact the pH (the derivative of organic ions concentrations) do
-  //not have to be taken into account. 
+  //not have to be taken into account.
   int n=surrogate.size();
   int i;
   double inorganion=0.0;
   double total;
   double Ke=1.0e-14;
-    
+
   double conc_org=LWC;
   for (i=0;i<n;++i)
-    if (surrogate[i].is_organic or i==config.iH2O)      
+    if (surrogate[i].is_organic or i==config.iH2O)
       conc_org+=surrogate[i].Aaq;
-      
+
   conc_org=max(conc_org,config.MOmin);
 
   derivative=-1.0;
   for (i=0;i<n;++i)
-    if (surrogate[i].is_inorganic_precursor==true) 
+    if (surrogate[i].is_inorganic_precursor==true)
       //adding concentrations of inorganic ions depending on pH
       {
         if (surrogate[i].name=="NH3")
@@ -200,7 +200,7 @@ void error_ph(model_config &config, vector<species> &surrogate, double Temperatu
                   +surrogate[config.iSO4mm].Aaq/surrogate[config.iSO4mm].MM; //gas + particle concentration
             double K=surrogate[i].keq*surrogate[config.iHSO4m].gamma_aq
               /(surrogate[config.iHp].gamma_aq*surrogate[config.iSO4mm].gamma_aq);
-	    
+
             derivative-=1000.*total/conc_org*1.0/pow(1.0+K/chp,2.0)*K/(chp*chp); //HSO4-+SO4--
             inorganion+=1000.*total/AQinit*(2.0-1.0/(1.0+K/chp));
             //concentration of HSO4- + 2*SO4--
@@ -208,9 +208,9 @@ void error_ph(model_config &config, vector<species> &surrogate, double Temperatu
         else
           inorganion-=surrogate[i].Aaq/surrogate[i].MM/AQinit*1000.*surrogate[i].charge;
       }
-    else 
+    else
       //adding concentrations of nonvolatile inorganic ions (not depending on pH)
-      if (surrogate[i].name=="Na") 
+      if (surrogate[i].name=="Na")
         inorganion-=surrogate[i].Aaq/surrogate[i].MM/AQinit*1000.*surrogate[i].charge;
 
   inorganion*=AQinit/conc_org;
@@ -234,7 +234,7 @@ void error_aq(model_config &config, vector<species>& surrogate,
   // Aaq/Ag=Kaq*AQinit
   //error=0.0 when the solution is found
   //derivative=d(error)/d(AQinit)
-  
+
   //conc_inorganic: concentrations of inorganic ions
   //LWC liquid water content due to inorganic ions
   //ionic: ionic strength (mol/kg)
@@ -264,8 +264,8 @@ void error_aq(model_config &config, vector<species>& surrogate,
 
   double conc_org=LWC;
   for (i=0;i<n;++i)
-    if (surrogate[i].is_organic or i==config.iH2O)      
-      conc_org+=surrogate[i].Aaq;      
+    if (surrogate[i].is_organic or i==config.iH2O)
+      conc_org+=surrogate[i].Aaq;
   conc_org=max(conc_org,config.MOmin);
 
   //pH computation
@@ -285,12 +285,12 @@ void error_aq(model_config &config, vector<species>& surrogate,
               if (chp2-error_h/derivative_h>0.0 and derivative_h!=0.0)
 		chp2=chp2-error_h/derivative_h;
 	      else
-		{		 
+		{
 		  if (chp2+error_h<=0.0)
 		    chp2=0.99*chp2;
 		  else
 		    chp2=chp2+error_h;
-		}	    	      
+		}
             }
           chp=factor*chp2+(1.0-factor)*chp;
         }
@@ -302,7 +302,7 @@ void error_aq(model_config &config, vector<species>& surrogate,
             if (surrogate[i].is_organic==false and i!=config.iH2O and surrogate[i].is_inorganic_precursor==false)
               if (surrogate[i].name!="H")
                 inorganion-=surrogate[i].molality*surrogate[i].charge;
-      
+
           chp=factor*0.5*(organion+inorganion+pow(pow(organion+inorganion,2)+4*Ke,0.5))+(1.0-factor)*chp;
         }
     }
@@ -333,7 +333,7 @@ void error_aq(model_config &config, vector<species>& surrogate,
 
               derivative+=surrogate[i].Atot*pow(Kp,2)*AQinit/(pow(1+Kp*AQinit,2))
                 -surrogate[i].Atot*Kp/(1+Kp*AQinit);
-              //molality1: molality of ions HA- or A-  
+              //molality1: molality of ions HA- or A-
               molality1=surrogate[i].Aaq*fion1/surrogate[i].MM/conc_org*1000.0;
               //molality2: molality of ions A2-
               molality2=surrogate[i].Aaq*fion2/surrogate[i].MM/conc_org*1000.0;
@@ -358,7 +358,7 @@ void error_aq(model_config &config, vector<species>& surrogate,
             if (surrogate[i].name=="H2SO4") //sulfate
 	      {
                 total=surrogate[i].Ag+surrogate[config.iHSO4m].Aaq/surrogate[config.iHSO4m].MM*surrogate[i].MM
-                  +surrogate[config.iSO4mm].Aaq/surrogate[config.iSO4mm].MM*surrogate[i].MM; //total concentrations 
+                  +surrogate[config.iSO4mm].Aaq/surrogate[config.iSO4mm].MM*surrogate[i].MM; //total concentrations
                 double Keq=surrogate[i].keq/chp*surrogate[config.iHSO4m].gamma_aq/surrogate[config.iHp].gamma_aq/surrogate[config.iSO4mm].gamma_aq;
                 surrogate[i].Ag=(1.0-factor)*surrogate[i].Ag;
                 surrogate[config.iHSO4m].Aaq=factor*total*surrogate[config.iHSO4m].MM/surrogate[i].MM/(1.0+Keq)
@@ -414,7 +414,7 @@ void error_aq(model_config &config, vector<species>& surrogate,
     }
   else
     {
-      AQ+=LWC+conc_inorganic;  
+      AQ+=LWC+conc_inorganic;
       if (config.iH2O>=0) //compute hygroscopicity
         if (surrogate[config.iH2O].hydrophilic and config.hygroscopicity) //Can H2O condense on the organic phase
           hygroscopicity_aq(config, surrogate, Temperature, RH, AQinit, LWC,
@@ -430,7 +430,7 @@ void error_aq(model_config &config, vector<species>& surrogate,
 void error_coupled(model_config &config, vector<species>& surrogate,
                    double &MOinit, double &MOW, double &MMaq,
                    double &AQinit, double &LWC, double &conc_inorganic,
-                   double &ionic, double &ionic_organic, double &chp, double &organion, 
+                   double &ionic, double &ionic_organic, double &chp, double &organion,
                    double &Temperature, double &RH,
                    double &error1, double &deriv_error1_MO, double &deriv_error1_AQ,
                    double &error2, double &deriv_error2_MO, double &deriv_error2_AQ,
@@ -446,7 +446,7 @@ void error_coupled(model_config &config, vector<species>& surrogate,
   //MO=sum of Ap=sum(Atot*Kpi*MOinit/(1+Kaqi*AQinit+Kpi*MOinit)
   //AQ=sum of Aaq=sum(Atot*Kaqi*AQinit/(1+Kaqi*AQinit+Kpi*MOinit)+LWC+conc_inorganic
   //Kp and Kaq: partitioning constants of a species in the two phases
-  // Ap/Ag=Kp*MOinit and Aaq/Ag=Kaq*AQinit 
+  // Ap/Ag=Kp*MOinit and Aaq/Ag=Kaq*AQinit
   //error1=0.0 and error2=0.0 when the solution is found
   //derivative_error1_MO=d(error1)/d(MOinit)
   //derivative_error1_AQ=d(error1)/d(AQinit)
@@ -482,9 +482,9 @@ void error_coupled(model_config &config, vector<species>& surrogate,
 
   double conc_org=LWC;
   for (i=0;i<n;++i)
-    if (surrogate[i].is_organic or i==config.iH2O)      
+    if (surrogate[i].is_organic or i==config.iH2O)
       conc_org+=surrogate[i].Aaq;
-      
+
   conc_org=max(conc_org,config.MOmin);
 
   //compute acitivity coefficients, MOW and MMaq
@@ -496,7 +496,7 @@ void error_coupled(model_config &config, vector<species>& surrogate,
       if (config.compute_long_and_medium_range_interactions)
         activity_coefficients_LR_MR(config, surrogate, Temperature, LWC, ionic);
     }
-  
+
   if (config.compute_aqueous_phase_properties)
     {
       //If inorganic ion concentrations are computed by SOAP, used a method of
@@ -516,7 +516,7 @@ void error_coupled(model_config &config, vector<species>& surrogate,
 	      else
 		chp2=chp2+error_h;
 
-	      chp2=max(chp2,1.0e-20);	      
+	      chp2=max(chp2,1.0e-20);
 	      index++;
 	    }
 	  chp=factor*chp2+(1.0-factor)*chp;
@@ -530,11 +530,11 @@ void error_coupled(model_config &config, vector<species>& surrogate,
 	    if (surrogate[i].is_organic==false and i!=config.iH2O and surrogate[i].is_inorganic_precursor==false)
 	      if (surrogate[i].name!="H")
 		inorganion-=surrogate[i].molality*surrogate[i].charge;
-      
+
 	  chp=factor*0.5*(organion+inorganion+pow(pow(organion+inorganion,2)+4*Ke,0.5))+(1.0-factor)*chp;
 	}
     }
-  
+
   double organion_tmp=0.0;
   double fion1,fion2,molality1,molality2;
   double ionic_organic_tmp=0.0;
@@ -579,7 +579,7 @@ void error_coupled(model_config &config, vector<species>& surrogate,
               AQ+=surrogate[i].Aaq;
               surrogate[i].Ap=0.0;
             }
-  
+
           else
             {
               fion1=0.0;
@@ -592,7 +592,7 @@ void error_coupled(model_config &config, vector<species>& surrogate,
               AQ+=surrogate[i].Aaq;
               deriv_error2_AQ+=surrogate[i].Atot*pow(Kp,2)*AQinit/(pow(1+Kp*AQinit,2))
                 -surrogate[i].Atot*Kp/(1+Kp*AQinit);
-              //molality1: molality of ions HA- or A-  
+              //molality1: molality of ions HA- or A-
               molality1=surrogate[i].Aaq*fion1/surrogate[i].MM/conc_org*1000.0;
               //molality2: molality of ions A2-
               molality2=surrogate[i].Aaq*fion2/surrogate[i].MM/conc_org*1000.0;
@@ -647,7 +647,7 @@ void error_coupled(model_config &config, vector<species>& surrogate,
                 Kp_org=surrogate[i].kpi;
               else
                 Kp_org=surrogate[i].kpi/MOW/surrogate[i].gamma_org;
-          
+
               surrogate[i].Aaq=factor*surrogate[i].Atot*Kp_aq*AQinit/(1+Kp_aq*AQinit+Kp_org*MOinit)+(1.0-factor)*surrogate[i].Aaq;
               surrogate[i].Ap=factor*surrogate[i].Atot*Kp_org*MOinit/(1+Kp_aq*AQinit+Kp_org*MOinit)+(1.0-factor)*surrogate[i].Ap;
               AQ+=surrogate[i].Aaq;
@@ -675,7 +675,7 @@ void error_coupled(model_config &config, vector<species>& surrogate,
       for (i=0;i<n;++i)
         if (surrogate[i].hydrophilic and surrogate[i].is_organic)
           AQ+=surrogate[i].Aaq;
-    } 
+    }
 
   //compute inorganic ion concentrations
   if (config.compute_inorganic)
@@ -700,7 +700,7 @@ void error_coupled(model_config &config, vector<species>& surrogate,
             else if (surrogate[i].name=="NH3") //ammoniac
 	      {
                 total=surrogate[i].Ag+surrogate[config.iNH4p].Aaq/surrogate[config.iNH4p].MM*surrogate[i].MM; //gas+particle concentrations
-                surrogate[i].Ag=factor*total/(1.0+surrogate[i].Kaq_inorg*AQinit)+(1.0-factor)*surrogate[i].Ag; 
+                surrogate[i].Ag=factor*total/(1.0+surrogate[i].Kaq_inorg*AQinit)+(1.0-factor)*surrogate[i].Ag;
                 surrogate[config.iNH4p].Aaq=factor*total*surrogate[i].Kaq_inorg*AQinit/(1.0+surrogate[i].Kaq_inorg*AQinit)*surrogate[config.iNH4p].MM/surrogate[i].MM
                   +(1.0-factor)*surrogate[config.iNH4p].Aaq; //NH4+
                 deriv_error2_AQ+=total*surrogate[config.iNH4p].MM/surrogate[i].MM*pow(surrogate[i].Kaq_inorg,2)*AQinit/(pow(1.+surrogate[i].Kaq_inorg*AQinit,2))
@@ -737,29 +737,29 @@ void error_coupled(model_config &config, vector<species>& surrogate,
 	  LWC=0.0; //In the case where SOAP compute inorganics, LWC is only used for the initialization
 	  if (config.hygroscopicity)
 	    hygroscopicity_coupled(config, surrogate, Temperature, MOW, MMaq, RH, LWC, conc_inorganic,
-				   MOinit, MO, AQinit, AQ, deriv_error1_MO, 
+				   MOinit, MO, AQinit, AQ, deriv_error1_MO,
 				   deriv_error1_AQ, deriv_error2_MO, deriv_error2_AQ, factor);
         }
     }
   else
     {
-      AQ+=LWC+conc_inorganic;  
-      if (config.iH2O>=0 and config.hygroscopicity)        
+      AQ+=LWC+conc_inorganic;
+      if (config.iH2O>=0 and config.hygroscopicity)
 	if (config.hygroscopicity)
 	  hygroscopicity_coupled(config, surrogate, Temperature, MOW, MMaq, RH, LWC, conc_inorganic,
-				 MOinit, MO, AQinit, AQ, deriv_error1_MO, 
-				 deriv_error1_AQ, deriv_error2_MO, deriv_error2_AQ, factor);        
+				 MOinit, MO, AQinit, AQ, deriv_error1_MO,
+				 deriv_error1_AQ, deriv_error2_MO, deriv_error2_AQ, factor);
     }
 
   AQ=max(AQ,config.MOmin);
   MO=max(MO,config.MOmin);
-  
+
   error1=MOinit-MO;
   error2=AQinit-AQ;
   ionic_organic=ionic_organic_tmp;
   organion=organion_tmp;
 
-  
+
 
 }
 
@@ -779,8 +779,8 @@ void newton_raphson_coupled(double &MO, double &AQ,
   //    Xi+1 = Xi + inverse(Jacobian) Y
   //
   //    inverse(Jacobian) = 1/determinant * | d(error2)/d(AQ)  -d(error1)/d(AQ) |
-  //                                        | -d(error2)/d(MO) d(error1)/d(MO)  |  
-  
+  //                                        | -d(error2)/d(MO) d(error1)/d(MO)  |
+
   double MO_save=MO;
   double AQ_save=AQ;
   double determinant = deriv_error1_MO*deriv_error2_AQ- deriv_error1_AQ*deriv_error2_MO;
@@ -807,7 +807,7 @@ void newton_raphson_coupled(double &MO, double &AQ,
 }
 
 void init_saturation2(model_config &config, vector<species>& surrogate,
-                      Array<double, 1> &MOinit, 
+                      Array<double, 1> &MOinit,
                       double &AQinit, double LWC, double &conc_inorganic)
 {
   //a method to initialize saturation:
@@ -821,7 +821,7 @@ void init_saturation2(model_config &config, vector<species>& surrogate,
     MOinit(j)=0.0;
 
   MOinit(nphase-1)=1.0;
-  
+
   for (i=0;i<n;++i)
     {
       AQinit+=surrogate[i].Aaq;
@@ -833,12 +833,12 @@ void init_saturation2(model_config &config, vector<species>& surrogate,
           MOinit(j)+=surrogate[i].Ap_sat(j);
         }
       surrogate[i].Ap_sat(nphase-1)=0.0;
-    } 
+    }
 }
 
 
 void init_saturation(model_config &config, vector<species>& surrogate,
-                     Array<double, 1> &MOinit, 
+                     Array<double, 1> &MOinit,
                      double &AQinit, double &LWC, double &conc_inorganic,
                      bool all_hydrophobic)
 {
@@ -851,7 +851,7 @@ void init_saturation(model_config &config, vector<species>& surrogate,
   Array<double, 1> mean_activity,stability;
   mean_activity.resize(nphase-1);
   stability.resize(nphase-1);
-  
+
   for (i=0;i<n;++i)
     if (surrogate[i].hydrophilic)
       {
@@ -859,9 +859,9 @@ void init_saturation(model_config &config, vector<species>& surrogate,
         surrogate[i].Aaq_old=surrogate[i].Aaq;
         surrogate[i].gamma_aq_old=surrogate[i].gamma_aq;
       }
-  
+
   int jphase=0; //index of the less stable phase
-  
+
   for (j=0;j<nphase-1;++j)
     {
       double sumX=0.0;
@@ -873,7 +873,7 @@ void init_saturation(model_config &config, vector<species>& surrogate,
             surrogate[i].Xorg_sat_old(j)=surrogate[i].Ap_sat_old(j)/surrogate[i].MM;
             sumX+=surrogate[i].Xorg_sat_old(j);
           }
-	  
+
       for (i=0;i<n;++i)
         if ((surrogate[i].is_organic or i==config.iH2O)
             and (surrogate[i].hydrophobic or all_hydrophobic))
@@ -884,7 +884,7 @@ void init_saturation(model_config &config, vector<species>& surrogate,
             and (surrogate[i].hydrophobic or all_hydrophobic))
           mean_activity(j)+=surrogate[i].Xorg_sat_old(j)*surrogate[i].gamma_org_sat_old(j);
 
-	  
+
       stability(j)=0.0;
       for (i=0;i<n;++i)
         if ((surrogate[i].is_organic or i==config.iH2O)
@@ -894,11 +894,11 @@ void init_saturation(model_config &config, vector<species>& surrogate,
               stability(j)+=surrogate[i].Ap_sat_old(j)*
                 log(surrogate[i].Xorg_sat_old(j)*surrogate[i].gamma_org_sat_old(j));
             }
-	  
+
       if (j!=jphase and stability(j)>stability(jphase))
         jphase=j;
     }
-  
+
   double stability_aq=0.0;
   double mean_activity_aq=0.0;
   if (AQinit>0.0)
@@ -910,16 +910,16 @@ void init_saturation(model_config &config, vector<species>& surrogate,
             surrogate[i].Xaq_old=surrogate[i].Aaq_old/surrogate[i].MM;
             sumX+=surrogate[i].Xaq_old;
           }
-	  
+
       for (i=0;i<n;++i)
         if (surrogate[i].hydrophilic)
           surrogate[i].Xaq_old/=sumX;
-	  
+
       for (i=0;i<n;++i)
         if (surrogate[i].hydrophilic)
           mean_activity_aq+=surrogate[i].Xaq_old*surrogate[i].gamma_aq_old*surrogate[i].GAMMAinf;
-  
-	  
+
+
       for (i=0;i<n;++i)
         if (surrogate[i].hydrophilic)
           if (surrogate[i].Xaq_old>0.0 and surrogate[i].Aaq_old>0.0)
@@ -928,9 +928,9 @@ void init_saturation(model_config &config, vector<species>& surrogate,
                 log(surrogate[i].Xaq_old*surrogate[i].gamma_aq_old*surrogate[i].GAMMAinf);
             }
     }
-  
+
   if (stability_aq<=stability(jphase) or (AQinit==0.0 or config.coupled_phases==false))
-    {      
+    {
       for (i=0;i<n;++i)
         if ((surrogate[i].is_organic or i==config.iH2O)
             and (surrogate[i].hydrophobic or all_hydrophobic))
@@ -953,7 +953,7 @@ void init_saturation(model_config &config, vector<species>& surrogate,
         else
           for (j=0;j<nphase-1;++j)
             surrogate[i].Ap_sat(j)=0.0;
-	  
+
       for (j=0;j<nphase;++j)
         {
           MOinit(j)=0.0;
@@ -962,16 +962,16 @@ void init_saturation(model_config &config, vector<species>& surrogate,
                 and (surrogate[i].hydrophobic or all_hydrophobic))
               MOinit(j)+=surrogate[i].Ap_sat(j);
         }
-	  
+
       if (MOinit(jphase)-surrogate[config.iH2O].Ap_sat(jphase)<1.0e-6) //only water in this phase
         {
           double max_activity=-1.e6;
           int imax=0;
-		  
+
           for (i=0;i<n;++i)
             if ((surrogate[i].is_organic or i==config.iH2O)
                 and (surrogate[i].hydrophobic or all_hydrophobic))
-              if (surrogate[i].Xorg_sat_old(jphase)>0.0 and (i != config.iH2O) and 
+              if (surrogate[i].Xorg_sat_old(jphase)>0.0 and (i != config.iH2O) and
                   surrogate[i].Xorg_sat_old(jphase)*surrogate[i].gamma_org_sat_old(jphase)
                   >max_activity)
                 {
@@ -979,7 +979,7 @@ void init_saturation(model_config &config, vector<species>& surrogate,
                     surrogate[i].gamma_org_sat_old(jphase);
                   imax=i;
                 }
-		  
+
           surrogate[imax].Ap_sat(jphase)=surrogate[imax].Ap_sat_old(jphase);
           surrogate[imax].Ap_sat(nphase-1)=0.0;
           for (j=0;j<nphase;++j)
@@ -991,14 +991,14 @@ void init_saturation(model_config &config, vector<species>& surrogate,
                   MOinit(j)+=surrogate[i].Ap_sat(j);
             }
         }
-	  
+
       if (MOinit(nphase-1)-surrogate[config.iH2O].Ap_sat(nphase-1)<1.0e-6) //only water in this phase
         {
           double min_activity=1.e6;
           int imin=0;
           for (i=0;i<n;++i)
             if (surrogate[i].is_organic and (surrogate[i].hydrophobic or all_hydrophobic))
-              if (surrogate[i].Xorg_sat_old(jphase)>0.0 and 
+              if (surrogate[i].Xorg_sat_old(jphase)>0.0 and
                   surrogate[i].Xorg_sat_old(jphase)*surrogate[i].gamma_org_sat_old(jphase)
                   <min_activity)
                 {
@@ -1006,7 +1006,7 @@ void init_saturation(model_config &config, vector<species>& surrogate,
                     surrogate[i].gamma_org_sat_old(jphase);
                   imin=i;
                 }
-	  
+
           surrogate[imin].Ap_sat(nphase-1)=surrogate[imin].Ap_sat_old(jphase);
           surrogate[imin].Ap_sat(jphase)=0.0;
           for (j=0;j<nphase;++j)
@@ -1020,8 +1020,8 @@ void init_saturation(model_config &config, vector<species>& surrogate,
         }
     }
   else
-    {      
-      AQinit=LWC;      
+    {
+      AQinit=LWC;
       for (i=0;i<n;++i)
         {
           if (surrogate[i].hydrophobic and surrogate[i].hydrophilic)
@@ -1044,7 +1044,7 @@ void init_saturation(model_config &config, vector<species>& surrogate,
                   surrogate[i].Aaq=surrogate[i].Aaq_old;
                   surrogate[i].Ap_sat(nphase-1)=0.0;
                 }
-		  
+
               for (j=0;j<nphase-1;++j)
                 surrogate[i].Ap_sat(j)=surrogate[i].Ap_sat_old(j);
             }
@@ -1054,7 +1054,7 @@ void init_saturation(model_config &config, vector<species>& surrogate,
                 surrogate[i].Ap_sat(j)=surrogate[i].Ap_sat_old(j);
               surrogate[i].Ap_sat(nphase-1)=0.0;
             }
-		  
+
           if (surrogate[i].hydrophilic)
             AQinit+=surrogate[i].Aaq;
         }
@@ -1075,7 +1075,7 @@ void init_saturation(model_config &config, vector<species>& surrogate,
         surrogate[i].jmain_phase_old=surrogate[i].jmain_phase;
       else
         surrogate[i].jmain_phase_old=0;
-	  
+
       surrogate[i].jmain_phase=0;
       if (surrogate[i].hydrophobic and surrogate[i].is_organic)
         for (j=0;j<nphase;++j)
@@ -1087,7 +1087,7 @@ void init_saturation(model_config &config, vector<species>& surrogate,
               }
           }
     }
-  
+
   for(i=0;i<n;++i)
     if((surrogate[i].is_organic==false and i!=config.iH2O)or
        (surrogate[i].hydrophobic==false and all_hydrophobic==false))
@@ -1097,13 +1097,13 @@ void init_saturation(model_config &config, vector<species>& surrogate,
   for(i=0;i<n;++i)
     if (surrogate[i].hydrophilic==false or all_hydrophobic and surrogate[i].is_organic)
       surrogate[i].Aaq=0.0;
-  
+
 }
 
 void error_saturation(model_config &config, vector<species>& surrogate,
                       Array <double, 1> &MOinit, Array <double, 1> &MOW, double &MMaq,
                       double &AQinit, double &LWC, double &conc_inorganic,
-                      double &ionic, double &ionic_organic, double &chp, double &organion, 
+                      double &ionic, double &ionic_organic, double &chp, double &organion,
                       double &Temperature, double &RH,
                       Array <double, 1> &error, Array <double, 2> &Jacobian, double factor,
                       bool compute_activity_coefficients)
@@ -1121,7 +1121,7 @@ void error_saturation(model_config &config, vector<species>& surrogate,
   AQ=0.0;
   for (i=0;i<nphase;++i)
     {
-      MO(i)=0.0;  
+      MO(i)=0.0;
       MOinit(i)=max(MOinit(i),config.MOmin);
     }
 
@@ -1129,13 +1129,13 @@ void error_saturation(model_config &config, vector<species>& surrogate,
 
   double conc_org=LWC;
   for (i=0;i<n;++i)
-    if (surrogate[i].is_organic or i==config.iH2O)     
+    if (surrogate[i].is_organic or i==config.iH2O)
       conc_org+=surrogate[i].Aaq;
-      
+
   conc_org=max(conc_org,config.MOmin);
 
-  compute_ionic_strenght2(config, surrogate, AQinit, conc_inorganic, ionic, chp, organion, ionic_organic, factor);  
-  
+  compute_ionic_strenght2(config, surrogate, AQinit, conc_inorganic, ionic, chp, organion, ionic_organic, factor);
+
   for (i=0;i<nphase+1;++i)
     {
       for (j=0;j<nphase+1;++j)
@@ -1169,7 +1169,7 @@ void error_saturation(model_config &config, vector<species>& surrogate,
               if (chp2-error_h/derivative_h>0.0 and derivative_h!=0.0)
 		chp2=chp2-error_h/derivative_h;
 	      else
-                chp2=chp2+error_h;    
+                chp2=chp2+error_h;
             }
           chp=factor*chp2+(1.0-factor)*chp;
         }
@@ -1181,7 +1181,7 @@ void error_saturation(model_config &config, vector<species>& surrogate,
             if (surrogate[i].is_organic==false and i!=config.iH2O and surrogate[i].is_inorganic_precursor==false)
               if (surrogate[i].name!="H")
                 inorganion-=surrogate[i].molality*surrogate[i].charge;
-      
+
           chp=factor*0.5*(organion+inorganion+pow(pow(organion+inorganion,2)+4*Ke,0.5))+(1.0-factor)*chp;
         }
     }
@@ -1193,7 +1193,7 @@ void error_saturation(model_config &config, vector<species>& surrogate,
   Array<double, 1> Kp_org;
   Kp_org.resize(nphase);
   double sum;
-  
+
   for (i=0;i<n;++i)
     if (surrogate[i].hydrophobic and surrogate[i].is_organic
         and surrogate[i].hydrophilic==false)
@@ -1203,7 +1203,7 @@ void error_saturation(model_config &config, vector<species>& surrogate,
           sum=0.0;
           for (j=0;j<nphase;++j)
             sum+=MOinit(j)/surrogate[i].gamma_org_sat(j);
-		  
+
           surrogate[i].Aaq=0.0;
           for (j=0;j<nphase;++j)
             {
@@ -1216,7 +1216,7 @@ void error_saturation(model_config &config, vector<species>& surrogate,
                     -surrogate[i].Atot*MOinit(j)/(pow(sum*surrogate[i].gamma_org_sat(j),2));
                 else
                   Jacobian(j,k)+=surrogate[i].Atot*MOinit(j)/
-                    (pow(sum,2)*surrogate[i].gamma_org_sat(j)*surrogate[i].gamma_org_sat(k));	  
+                    (pow(sum,2)*surrogate[i].gamma_org_sat(j)*surrogate[i].gamma_org_sat(k));
             }
         }
       else
@@ -1226,11 +1226,11 @@ void error_saturation(model_config &config, vector<species>& surrogate,
             for (j=0;j<nphase;++j)
               if (j!=surrogate[i].jmain_phase)
                 surrogate[i].Ap_sat(j)=0.0;
-			
+
             surrogate[i].Ap_sat(surrogate[i].jmain_phase)=factor*surrogate[i].Atot*Kp*
               MOinit(surrogate[i].jmain_phase)/(1+Kp*MOinit(surrogate[i].jmain_phase))+
               (1.0-factor)*surrogate[i].Ap_sat(surrogate[i].jmain_phase);
-			
+
             surrogate[i].Aaq=0.0;
             MO(surrogate[i].jmain_phase)+=surrogate[i].Ap_sat(surrogate[i].jmain_phase);
             Jacobian(surrogate[i].jmain_phase,surrogate[i].jmain_phase)+=
@@ -1246,7 +1246,7 @@ void error_saturation(model_config &config, vector<species>& surrogate,
             sum=1.0;
             for (j=0;j<nphase;++j)
               sum+=Kp_org(j)*MOinit(j);
-			
+
             for (j=0;j<nphase;++j)
               {
                 surrogate[i].Ap_sat(j)=factor*surrogate[i].Atot*Kp_org(j)*MOinit(j)/sum+
@@ -1287,7 +1287,7 @@ void error_saturation(model_config &config, vector<species>& surrogate,
           Jacobian(nphase,nphase)+=
             surrogate[i].Atot*pow(Kp,2)*AQinit/(pow(1+Kp*AQinit,2))
             -surrogate[i].Atot*Kp/(1+Kp*AQinit);
-          //molality1: molality of ions HA- or A-  
+          //molality1: molality of ions HA- or A-
           molality1=surrogate[i].Aaq*fion1/surrogate[i].MM/conc_org*1000.0;
           //molality2: molality of ions A2-
           molality2=surrogate[i].Aaq*fion2/surrogate[i].MM/conc_org*1000.0;
@@ -1303,11 +1303,11 @@ void error_saturation(model_config &config, vector<species>& surrogate,
           sum=AQinit/surrogate[i].gamma_aq;
           for (j=0;j<nphase;++j)
             sum+=MOinit(j)/surrogate[i].gamma_org_sat(j);
-		  
+
           surrogate[i].Aaq=factor*surrogate[i].Atot*AQinit/(surrogate[i].gamma_aq*sum)
             +(1.0-factor)*surrogate[i].Aaq;
           AQ+=surrogate[i].Aaq;
-		  
+
           for (j=0;j<nphase;++j)
             {
               surrogate[i].Ap_sat(j)=(1.0-factor)*surrogate[i].Ap_sat(j)+factor*surrogate[i].Atot*
@@ -1323,7 +1323,7 @@ void error_saturation(model_config &config, vector<species>& surrogate,
               Jacobian(j,nphase)+=surrogate[i].Atot*MOinit(j)/
                 (pow(sum,2)*surrogate[i].gamma_org_sat(j)*surrogate[i].gamma_aq);
             }
-		  
+
           for (k=0;k<nphase;++k)
             Jacobian(nphase,k)+=surrogate[i].Atot*AQinit/
               (surrogate[i].gamma_aq*pow(sum,2)*surrogate[i].gamma_org_sat(k));
@@ -1355,11 +1355,11 @@ void error_saturation(model_config &config, vector<species>& surrogate,
           sum=1.0+Kp_aq*AQinit;
           for (j=0;j<nphase;++j)
             sum+=Kp_org(j)*MOinit(j);
-		  
+
           surrogate[i].Aaq=factor*surrogate[i].Atot*Kp_aq*AQinit/sum
             +(1.0-factor)*surrogate[i].Aaq;
           AQ+=surrogate[i].Aaq;
-		  
+
           for (j=0;j<nphase;++j)
             {
               surrogate[i].Ap_sat(j)=factor*surrogate[i].Atot*Kp_org(j)*MOinit(j)/sum
@@ -1375,13 +1375,13 @@ void error_saturation(model_config &config, vector<species>& surrogate,
               Jacobian(j,nphase)+=surrogate[i].Atot*
                 Kp_org(j)*MOinit(j)*Kp_aq/pow(sum,2);
             }
-		  
+
           for (k=0;k<nphase;++k)
             Jacobian(nphase,k)+=surrogate[i].Atot*AQinit*Kp_aq*Kp_org(k)/pow(sum,2);
 
           Jacobian(nphase,nphase)-=surrogate[i].Atot*Kp_aq/sum
             -surrogate[i].Atot*pow(Kp_aq,2)*AQinit/(pow(sum,2));
-		  
+
           //molality1: molality of ions HA- or A-
           molality1=surrogate[i].Aaq*fion1/surrogate[i].MM/conc_org*1000.0;
           //molality2: molality of ions A2-
@@ -1390,7 +1390,7 @@ void error_saturation(model_config &config, vector<species>& surrogate,
           ionic_organic_tmp+=0.5*molality1+0.5*molality2*4;
           organion_tmp+=molality1+2*molality2;
         }
-  
+
   //compute inorganic ion concentrations
   if (config.compute_inorganic)
     {
@@ -1399,7 +1399,7 @@ void error_saturation(model_config &config, vector<species>& surrogate,
       Kpreal_inorganic(config, surrogate, chp, MMaq);
       for (i=0;i<n;i++)
         if (surrogate[i].is_inorganic_precursor)
-          if (surrogate[i].name=="H2SO4") //sulfate 
+          if (surrogate[i].name=="H2SO4") //sulfate
             {
               total=surrogate[i].Ag+surrogate[config.iHSO4m].Aaq/surrogate[config.iHSO4m].MM*surrogate[i].MM
                 +surrogate[config.iSO4mm].Aaq/surrogate[config.iSO4mm].MM*surrogate[i].MM;
@@ -1428,7 +1428,7 @@ void error_saturation(model_config &config, vector<species>& surrogate,
               Jacobian(nphase,nphase)+=total*surrogate[config.iNO3m].MM/surrogate[i].MM*pow(surrogate[i].Kaq_inorg,2)*AQinit/(pow(1.+surrogate[i].Kaq_inorg*AQinit,2))
                 -total*surrogate[config.iNO3m].MM/surrogate[i].MM*surrogate[i].Kaq_inorg/(1.+surrogate[i].Kaq_inorg*AQinit);
             }
-      
+
           else if (surrogate[i].name=="HCl") //chloride
             {
               total=surrogate[i].Ag+surrogate[config.iClm].Aaq/surrogate[config.iClm].MM*surrogate[i].MM;
@@ -1442,38 +1442,38 @@ void error_saturation(model_config &config, vector<species>& surrogate,
       for (i=0;i<n;i++)
         if (surrogate[i].is_organic==false and i!=config.iH2O and surrogate[i].is_inorganic_precursor==false)
           conc_inorganic+=surrogate[i].Aaq; //compute total inorganic concentrations
-  
+
       AQ+=conc_inorganic;
       if (config.iH2O>=0)
         {
 	  LWC=0.0;
-	  
+
 	  if (surrogate[config.iH2O].hydrophilic)
 	    hygroscopicity_org_sat(config, surrogate, Temperature, MOW, MMaq, RH, LWC, conc_inorganic, MOinit, MO, AQinit, AQ, Jacobian,
 				   true, factor);
 	  else
 	    hygroscopicity_org_sat(config, surrogate, Temperature, MOW, MMaq, RH, LWC, conc_inorganic, MOinit, MO, AQinit, AQ, Jacobian,
-				   false, factor);	      
+				   false, factor);
         }
-      
+
     }
   else
-    {	
-      AQ+=LWC+conc_inorganic;  
+    {
+      AQ+=LWC+conc_inorganic;
       if (config.iH2O>=0 and config.hygroscopicity)
 	if (surrogate[config.iH2O].hydrophilic)
 	  hygroscopicity_org_sat(config, surrogate, Temperature, MOW, MMaq, RH, LWC, conc_inorganic, MOinit, MO, AQinit, AQ, Jacobian,
 				 true, factor);
 	else
 	  hygroscopicity_org_sat(config, surrogate, Temperature, MOW, MMaq, RH, LWC, conc_inorganic, MOinit, MO, AQinit, AQ, Jacobian,
-				 false, factor);	       
+				 false, factor);
     }
-  
+
   for (i=0;i<n;++i)
     if (surrogate[i].is_organic==false and i!=config.iH2O)
       for (j=0;j<nphase;++j)
         surrogate[i].Ap_sat(j)=0.0; //non-organic ions are not present in the organic phase
-  
+
   for (j=0;j<nphase;++j)
     {
       MO(j)=max(MO(j),config.MOmin);
@@ -1487,7 +1487,7 @@ void error_saturation(model_config &config, vector<species>& surrogate,
 }
 
 void error_saturation_hydrophobic(model_config &config, vector<species>& surrogate,
-                                  Array <double, 1> &MOinit, Array <double, 1> &MOW, 
+                                  Array <double, 1> &MOinit, Array <double, 1> &MOW,
                                   double &Temperature, double &RH,
                                   Array <double, 1> &error, Array <double, 2> &Jacobian,
                                   double factor, bool compute_activity_coefficients)
@@ -1505,22 +1505,22 @@ void error_saturation_hydrophobic(model_config &config, vector<species>& surroga
       MO(i)=0.0;
       MOinit(i)=max(MOinit(i),config.MOmin);
     }
-  
+
   for (i=0;i<nphase+1;++i)
     {
       for (j=0;j<nphase+1;++j)
         Jacobian(i,j)=0.0;
       Jacobian(i,i)=1.0;
     }
-  
+
   //compute acitivity coefficients and MOW
   if (compute_activity_coefficients)
     activity_coefficients_saturation(config, surrogate, true, Temperature, MOW);
-  
+
   Array<double, 1> Kp_org;
   Kp_org.resize(nphase);
   double sum;
-  
+
   for (i=0;i<n;++i)
     if (surrogate[i].is_organic)
       //compute absorption for compounds which are only hydrophobic
@@ -1529,7 +1529,7 @@ void error_saturation_hydrophobic(model_config &config, vector<species>& surroga
           sum=0.0;
           for (j=0;j<nphase;++j)
             sum+=MOinit(j)/surrogate[i].gamma_org_sat(j);
-		  
+
           surrogate[i].Aaq=0.0;
           for (j=0;j<nphase;++j)
             {
@@ -1542,7 +1542,7 @@ void error_saturation_hydrophobic(model_config &config, vector<species>& surroga
                     -surrogate[i].Atot*MOinit(j)/(pow(sum*surrogate[i].gamma_org_sat(j),2));
                 else
                   Jacobian(j,k)+=surrogate[i].Atot*MOinit(j)/
-                    (pow(sum,2)*surrogate[i].gamma_org_sat(j)*surrogate[i].gamma_org_sat(k));	  
+                    (pow(sum,2)*surrogate[i].gamma_org_sat(j)*surrogate[i].gamma_org_sat(k));
             }
         }
       else
@@ -1571,7 +1571,7 @@ void error_saturation_hydrophobic(model_config &config, vector<species>& surroga
             sum=1.0;
             for (j=0;j<nphase;++j)
               sum+=Kp_org(j)*MOinit(j);
-			
+
             for (j=0;j<nphase;++j)
               {
                 surrogate[i].Ap_sat(j)=factor*surrogate[i].Atot*Kp_org(j)*MOinit(j)/sum
@@ -1586,12 +1586,12 @@ void error_saturation_hydrophobic(model_config &config, vector<species>& surroga
                       Kp_org(j)*MOinit(j)*Kp_org(k)/pow(sum,2);
               }
           }
-  
+
   for (i=0;i<n;++i)
     if (surrogate[i].is_organic==false and i!=config.iH2O)
       for (j=0;j<nphase;++j)
         surrogate[i].Ap_sat(j)=0.0;  //non-organic ions are not present in the organic phase
-  
+
   if (config.iH2O>=0 and config.hygroscopicity)
     if (surrogate[config.iH2O].hydrophobic) //Can H2O condense on the organic phase
       if (config.iH2O>=0 and config.hygroscopicity)
@@ -1600,16 +1600,16 @@ void error_saturation_hydrophobic(model_config &config, vector<species>& surroga
 	  double AQ=0.0;
 	  double MMaq=18.0;
 	  hygroscopicity_org_sat(config, surrogate, Temperature, MOW, MMaq, RH, 0.0, 0.0, MOinit, MO, AQinit, AQ, Jacobian,
-				 false, factor);	  
+				 false, factor);
 	}
 
   for (j=0;j<nphase;++j)
     {
       MO(j)=max(MO(j),config.MOmin);
-      error(j)=MOinit(j)-MO(j);      
+      error(j)=MOinit(j)-MO(j);
     }
   error(nphase)=0.0;
-  
+
 }
 
 void stability(model_config &config, vector<species>& surrogate, double &Temperature,
@@ -1617,7 +1617,7 @@ void stability(model_config &config, vector<species>& surrogate, double &Tempera
 {
   //This routine compute the gibbs energy before and after phase separation
   //If gibbs energy is lower before phase separation, the system is stable and phase
-  // separation does not occur 
+  // separation does not occur
   double stability_param=0.0;
   double stability_param_old=0.0;
   int nphase=surrogate[0].Ap_sat.size();
@@ -1635,7 +1635,7 @@ void stability(model_config &config, vector<species>& surrogate, double &Tempera
     for (j=0;j<nphase;++j)
       if(MO(j)/sumMo<0.01)
         low_concentrations=true;
-  
+
   for (i=0;i<n;++i)
     if (surrogate[i].is_organic)
       if(surrogate[i].nonvolatile==false)
@@ -1651,11 +1651,11 @@ void stability(model_config &config, vector<species>& surrogate, double &Tempera
           if (surrogate[i].hydrophobic or all_hydrophobic)
             for (j=0;j<nphase;++j)
               surrogate[i].Ag-=surrogate[i].Ap_sat(j);
-		  
+
           if (surrogate[i].hydrophobic or all_hydrophobic)
             for (j=0;j<nphase-1;++j)
               surrogate[i].Ag_old-=surrogate[i].Ap_sat_old(j);
-		  
+
           surrogate[i].partial_pressure=surrogate[i].Ag/surrogate[i].MM*1.e-6*8.314*Temperature;
           surrogate[i].partial_pressure_old=surrogate[i].Ag_old/
             surrogate[i].MM*1.e-6*8.314*Temperature;
@@ -1669,7 +1669,7 @@ void stability(model_config &config, vector<species>& surrogate, double &Tempera
         }
     else if (surrogate[i].is_inorganic_precursor)
       if(surrogate[i].nonvolatile==false)
-        {	  
+        {
           surrogate[i].partial_pressure=surrogate[i].Ag/surrogate[i].MM*1.e-6*8.314*Temperature;
           surrogate[i].partial_pressure_old=surrogate[i].Ag_old/
             surrogate[i].MM*1.e-6*8.314*Temperature;
@@ -1716,7 +1716,7 @@ void stability(model_config &config, vector<species>& surrogate, double &Tempera
         if (surrogate[i].hydrophobic or all_hydrophobic)
           surrogate[i].Xorg_sat_old(j)/=sum;
     }
-  
+
   sum=0.0;
   for (i=0;i<n;++i)
     if (surrogate[i].hydrophilic and all_hydrophobic==false)
@@ -1742,7 +1742,7 @@ void stability(model_config &config, vector<species>& surrogate, double &Tempera
     for (i=0;i<n;++i)
       if (surrogate[i].hydrophilic and all_hydrophobic==false)
         surrogate[i].Xaq_old/=sum;
-  
+
   for (i=0;i<n;++i)
     {
       if (surrogate[i].is_organic)
@@ -1767,7 +1767,7 @@ void stability(model_config &config, vector<species>& surrogate, double &Tempera
           if (surrogate[i].Xorg_sat(j)*surrogate[i].gamma_org_sat(j)>0.0)
             stability_param+=surrogate[i].Ap_sat(j)/surrogate[i].MM*
               log(surrogate[i].Xorg_sat(j)*surrogate[i].gamma_org_sat(j));
-	  
+
       if (surrogate[i].is_organic)
         if (surrogate[i].partial_pressure_old>0.0)
           if (surrogate[i].kp_from_experiment)
@@ -1782,7 +1782,7 @@ void stability(model_config &config, vector<species>& surrogate, double &Tempera
         if (surrogate[i].Xaq_old*surrogate[i].gamma_aq_old*surrogate[i].GAMMAinf>0.0)
           stability_param_old+=surrogate[i].Aaq_old/surrogate[i].MM
             *log(surrogate[i].Xaq_old*surrogate[i].gamma_aq_old*surrogate[i].GAMMAinf);
-	  
+
       if ((surrogate[i].hydrophobic or all_hydrophobic) and
           (surrogate[i].is_organic or i==config.iH2O))
         for (j=0;j<nphase-1;++j)
@@ -1839,7 +1839,7 @@ void mineur(int &n, int &i, int &j, Array<double, 2> &Jacobian, Array<double, 2>
           else
             jc=index2-1;
           com_Jacobian(ic,jc)=Jacobian(index1,index2);
-		  
+
         }
 }
 
@@ -1853,7 +1853,7 @@ double determinant(int n, Array<double, 2> &Jacobian)
   Array<double, 3> Matrix,Matrix_old;
   Array<double, 2> com_Jacobian,com_Jacobian_old;
   Array<double, 1> Factor,Factor_old;
-  
+
   if (n>2)
     {
       nl=1;
@@ -1865,7 +1865,7 @@ double determinant(int n, Array<double, 2> &Jacobian)
 
       Factor_old.resize(nl);
       Factor_old(0)=1.0;
-	  
+
       while (m>2)
         {
           int index=1;
@@ -1876,13 +1876,13 @@ double determinant(int n, Array<double, 2> &Jacobian)
           Matrix.resize(index,m-1,m-1);
           int iter=0;
           com_Jacobian_old.resize(m,m);
-			
+
           for (l=0;l<nl;++l)
             {
               for (i=0;i<m;++i)
                 for (j=0;j<m;++j)
                   com_Jacobian_old(i,j)=Matrix_old(l,i,j);
-			  
+
               i=0;
               for (j=0;j<m;++j)
                 {
@@ -1891,7 +1891,7 @@ double determinant(int n, Array<double, 2> &Jacobian)
                   for (i2=0;i2<m-1;++i2)
                     for (j2=0;j2<m-1;++j2)
                       Matrix(iter,i2,j2)=com_Jacobian(i2,j2);
-                  ++iter;	
+                  ++iter;
                 }
             }
           Matrix_old.resize(index,m-1,m-1);
@@ -1914,9 +1914,9 @@ double determinant(int n, Array<double, 2> &Jacobian)
     value=Jacobian(0,0)*Jacobian(1,1)-Jacobian(0,1)*Jacobian(1,0);
   else
     value=Jacobian(0,0);
-  
+
   return value;
-  
+
 }
 
 void compute_comatrice(int &n, Array<double, 2> &Jacobian, Array<double, 2> &comatrice)
@@ -1939,7 +1939,7 @@ void inversion_matrice(int &n, Array<double, 2> &Jacobian, Array<double, 2> &inv
   compute_comatrice(n,Jacobian,comatrice);
   double det=determinant(n,Jacobian);
   inverse.resize(n,n);
-  
+
   for (i=0;i<n;++i)
     for (j=0;j<n;++j)
       inverse(i,j)=comatrice(j,i)/det;
@@ -1961,7 +1961,7 @@ void newton_raphson_sat(model_config &config, Array<double, 1> &MO_sat, double &
   //    Xi+1 = Xi + inverse(Jacobian) Y
   //
   //    inverse(Jacobian) = 1/determinant * | d(error2)/d(AQ)  -d(error1)/d(AQ) |
-  //                                        | -d(error2)/d(MO) d(error1)/d(MO)  |  
+  //                                        | -d(error2)/d(MO) d(error1)/d(MO)  |
   int n=error.size();
   int i,j;
   Array<double, 2> inverse;
@@ -1970,7 +1970,7 @@ void newton_raphson_sat(model_config &config, Array<double, 1> &MO_sat, double &
   MO_sat_old.resize(n-1);
   for (j=0;j<n-1;++j)
     MO_sat_old(j)=MO_sat(j);
-  
+
   if (determinant(n,Jacobian)!=0.0 and point_fixe==false)
     {
       inversion_matrice(n, Jacobian, inverse);
@@ -1994,7 +1994,7 @@ void newton_raphson_sat(model_config &config, Array<double, 1> &MO_sat, double &
           AQ_sat=AQ_sat_old-error(n-1);
 
         }
-	  
+
     }
   else
     {
@@ -2002,7 +2002,7 @@ void newton_raphson_sat(model_config &config, Array<double, 1> &MO_sat, double &
         MO_sat(j)-=error(j);
       AQ_sat-=error(n-1);
     }
-  
+
 }
 
 
@@ -2033,7 +2033,7 @@ void saturation(model_config &config, vector<species>& surrogate,
     else
       for (i=0;i<n;++i)
 	surrogate[i].Ap_sat_save.resize(1);
-			  
+
   while (stable_system==false and nphase <= config.max_number_of_phases)
     {
       Array<double, 1> MO_sat, MOW,error_sat;
@@ -2044,14 +2044,14 @@ void saturation(model_config &config, vector<species>& surrogate,
       MOW.resize(nphase);
       error_sat.resize(nphase+1);
       Jacobian.resize(nphase+1,nphase+1);
-				  
+
       for (i=0;i<n;++i)
         {
           surrogate[i].gamma_org_sat_old.resize(nphase-1);
           surrogate[i].Ap_sat_old.resize(nphase-1);
           surrogate[i].Xorg_sat_old.resize(nphase-1);
         }
-			  
+
       for (i=0;i<n;++i)
         if (surrogate[i].is_organic or i==config.iH2O)
           {
@@ -2073,7 +2073,7 @@ void saturation(model_config &config, vector<species>& surrogate,
               surrogate[i].gamma_org_sat_old(j)=1.0;
               surrogate[i].Ap_sat_old(j)=0.0;
             }
-	  
+
       for (i=0;i<n;++i)
         {
           surrogate[i].gamma_org_sat.resize(nphase);
@@ -2081,14 +2081,14 @@ void saturation(model_config &config, vector<species>& surrogate,
           surrogate[i].Xorg_sat.resize(nphase);
           surrogate[i].Ag_old=surrogate[i].Ag;
         }
-				  
+
       double AQ_sat;
-	  
+
       index_iter=0;
       bool reached_precision=false;
       bool point_fixe=false;
       if (config.initialized_saturation and surrogate[0].Ap_sat_save.size()>1)
-	{	  
+	{
 	  for (i=0;i<n;++i)
 	    {
 	      for (j=0;j<nphase;++j)
@@ -2108,12 +2108,12 @@ void saturation(model_config &config, vector<species>& surrogate,
 	    {
 	      MO_sat(j)=0.0;
 	      for (i=0;i<n;++i)
-		MO_sat(j)+=surrogate[i].Ap_sat(j);	      
+		MO_sat(j)+=surrogate[i].Ap_sat(j);
 	    }
 	}
       else
-	init_saturation(config,surrogate,MO_sat,AQ_sat,LWC,conc_inorganic,all_hydrophobic);      
-      
+	init_saturation(config,surrogate,MO_sat,AQ_sat,LWC,conc_inorganic,all_hydrophobic);
+
       double error_tot=0.0;
       int nh;
       if (config.compute_inorganic)
@@ -2145,11 +2145,11 @@ void saturation(model_config &config, vector<species>& surrogate,
 		  for (j=0;j<nphase+1;++j)
 		    if ((abs((vec_error(i,j)-abs(error_sat(j)))/error_sat(j))<1.0e-3 and abs(error_sat(j))*nh>config.precision) or abs(error_sat(j)>1.0))
 		      non_convergence=true;
-		  
+
 		  if ((abs((vec_error_chp(i)-abs(error3))/error3)<1.0e-3 and abs(error3)*nh>1.0e-3) or abs(error3)>1.0)
 		    non_convergence=true;
 		}
-              
+
               if (non_convergence and nh<config.nh_max)
                 {
                   ++nh;
@@ -2160,8 +2160,8 @@ void saturation(model_config &config, vector<species>& surrogate,
                 }
             }
           iiter++;
-	  
-	  chp_old=chp; 
+
+	  chp_old=chp;
           if (all_hydrophobic)
             error_saturation_hydrophobic(config,surrogate,MO_sat,MOW,
                                          Temperature,RH,error_sat,Jacobian,1.0/nh, compute_activity_coefficients);
@@ -2170,7 +2170,7 @@ void saturation(model_config &config, vector<species>& surrogate,
 			     ionic,ionic_organic,chp,organion,Temperature,RH,
 			     error_sat,Jacobian,1.0/nh, compute_activity_coefficients);
 
-	 
+
 	  if (config.compute_inorganic)
 	    error3=(chp_old-chp)/chp_old;
 	  else
@@ -2183,20 +2183,20 @@ void saturation(model_config &config, vector<species>& surrogate,
               error_tot=max(error_tot,abs(error_sat(j)));
               vec_error(index_iter,j)=abs(error_sat(j));
             }
-		  
+
           for (j=0;j<nphase;++j)
             MO_sat(j)-=error_sat(j);
-          AQ_sat-=error_sat(nphase); 
+          AQ_sat-=error_sat(nphase);
 
           reached_precision=true;
 	  if (error3*nh>1.0e-3 or error_tot*nh > config.precision)
             reached_precision=false;
-          ++index_iter;	  
-        }        
+          ++index_iter;
+        }
       stability(config,surrogate,Temperature,stable_system,all_hydrophobic,MO_sat);
       ++nphase;
     }
-  
+
   nphase=surrogate[0].Ap_sat.size();
   for (i=0;i<n;++i)
     {
@@ -2207,11 +2207,11 @@ void saturation(model_config &config, vector<species>& surrogate,
         if (surrogate[i].is_organic==false and i!=config.iH2O)
           for (j=0;j<nphase;++j)
             surrogate[i].Ap_sat(j)=0.0;
-	  
+
       if (surrogate[i].hydrophilic and all_hydrophobic)
 	surrogate[i].Aaq=0.0;
       if (surrogate[i].hydrophilic==false)
-	surrogate[i].Aaq=0.0; 
+	surrogate[i].Aaq=0.0;
     }
 
   for (i=0;i<n;++i)

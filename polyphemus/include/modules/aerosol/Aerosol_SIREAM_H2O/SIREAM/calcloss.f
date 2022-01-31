@@ -92,4 +92,3 @@ C     ******compute loss coefficient
       END DO
 
       END
-

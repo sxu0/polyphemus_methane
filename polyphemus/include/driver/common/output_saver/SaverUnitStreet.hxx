@@ -85,12 +85,12 @@ namespace Polyphemus
     Data<T, 2> Concentration_;
 
     bool text_file;
-    
+
   public:
 
     SaverUnitStreet();
     virtual ~SaverUnitStreet();
-    
+
     virtual string GetType() const;
 
     virtual void Init(ConfigStream& config_stream, ClassModel& Model);

@@ -80,24 +80,24 @@ namespace Polyphemus
     this->D3_map["Temperature"] = &Temperature_f;
     this->D3_map["Temperature_i"] = &Temperature_i;
     this->D3_map["Temperature_f"] = &Temperature_f;
-    
+
     this->D3_map["Pressure"] = &Pressure_f;
     this->D3_map["Pressure_i"] = &Pressure_i;
     this->D3_map["Pressure_f"] = &Pressure_f;
-    
+
     this->D3_map["AirDensity"] = &AirDensity_f;
     this->D3_map["AirDensity_i"] = &AirDensity_i;
     this->D3_map["AirDensity_f"] = &AirDensity_f;
-    
+
     this->D3_map["VerticalWind"] = &VerticalWind_i;
     this->D3_map["VerticalWind_i"] = &VerticalWind_i;
 
     this->D3_map["MeridionalWind"] = &MeridionalWind_i;
     this->D3_map["MeridionalWind_i"] = &MeridionalWind_i;
-    
+
     this->D3_map["ZonalWind"] = &ZonalWind_i;
     this->D3_map["ZonalWind_i"] = &ZonalWind_i;
-    
+
     this->D3_map["SpecificHumidity"] = &SpecificHumidity_f;
     this->D3_map["SpecificHumidity_i"] = &SpecificHumidity_i;
     this->D3_map["SpecificHumidity_f"] = &SpecificHumidity_f;
@@ -329,7 +329,7 @@ namespace Polyphemus
 	 i != this->input_files["scavenging_coefficient"].End(); i++)
       species_list_scav.push_back(i->first);
     Ns_scav = int(species_list_scav.size());
-   
+
     // Point emissions.
     if (this->option_process["with_point_emission"])
       {
@@ -536,7 +536,7 @@ namespace Polyphemus
 	&& this->option_process["collect_dry_flux"])
       throw string("Dry deposition fluxes cannot be collected") +
 	" without deposition.";
-    
+
     if (this->scavenging_model == "microphysical")
       {
 	// Checks if Henry constant is well initialized for each scavenged
@@ -546,7 +546,7 @@ namespace Polyphemus
 	    throw string("ERROR! Henry constant for species \"")
 	      + ScavengingName(i)
 	      + string("\" not found in section [henry].");
-	
+
 	// Checks if gas phase diffusivity constant is well initialized for
 	// all scavenged species.
 	for (int i = 0; i < Ns_scav; i++)
@@ -1113,7 +1113,7 @@ namespace Polyphemus
     CellCenterDistance_x.resize(this->Nx - 1);
     CellCenterDistance_y.resize(this->Ny - 1);
     CellCenterDistance_z.resize(this->Nz - 1);
-    
+
     /*** Boundary conditions ***/
 
     GridS_bc = RegularGrid<T>(Ns_bc);
@@ -1252,7 +1252,7 @@ namespace Polyphemus
 					      this->GridY3D, this->GridX3D);
     FileVerticalDiffusionCoefficient_f.Resize(this->GridZ3D_interf,
 					      this->GridY3D, this->GridX3D);
-    
+
     /*** Deposition velocities ***/
 
     GridS_dep = RegularGrid<T>(Ns_dep);
@@ -1357,7 +1357,7 @@ namespace Polyphemus
     if (this->option_manage["initial_condition"])
       {
 	this->Concentration.SetZero();
-	
+
 	for (int i = 0; i < Ns_ic; i++)
 	  {
 	    string filename
@@ -1406,7 +1406,7 @@ namespace Polyphemus
     Advection_.Init(*this);
     Diffusion_.Init(*this);
   }
-  
+
   //! Model initialization for each step.
   /*! It reads on file the data that are needed for the current step.
    */
@@ -1432,7 +1432,7 @@ namespace Polyphemus
       {
 	AirDensity_i.GetArray() = AirDensity_f.GetArray();
 	ComputeAirDensity(Temperature_f, Pressure_f, AirDensity_f);
-	
+
 	AirDensity_interf_z_i.GetArray() = AirDensity_interf_z_f.GetArray();
 	AirDensity_interf_y_i.GetArray() = AirDensity_interf_y_f.GetArray();
 	AirDensity_interf_x_i.GetArray() = AirDensity_interf_x_f.GetArray();
@@ -1450,7 +1450,7 @@ namespace Polyphemus
 
     /*** Specific humidity, Rain, cloud height and scavenging
 	 coefficients ***/
-    
+
     if (this->option_manage["specific_humidity"])
       this->UpdateData("meteo", "SpecificHumidity", FileSpecificHumidity_i,
 		       FileSpecificHumidity_f, SpecificHumidity_i,
@@ -1459,11 +1459,11 @@ namespace Polyphemus
     if (this->option_manage["rain"])
       this->UpdateData("meteo", "Rain", FileRain_i, FileRain_f,
 		       Rain_i, Rain_f, false);
-    
+
     if (this->option_manage["cloud_height"])
       this->UpdateData("meteo", "CloudHeight", FileCloudHeight_i,
 		       FileCloudHeight_f, CloudHeight_i, CloudHeight_f);
-    
+
     if (this->option_manage["scavenging_coefficient"]
 	&& this->scavenging_model != "none")
       {
@@ -1484,7 +1484,7 @@ namespace Polyphemus
       }
 
     /*** Diffusion coefficients ***/
-    
+
     if (this->option_manage["vertical_diffusion"])
       {
 	this->UpdateData("meteo", "VerticalDiffusion",
@@ -1649,7 +1649,7 @@ namespace Polyphemus
 						ScavengingCoefficient_
 						.GetData());
   }
-  
+
 
   //! Initializes scavenging coefficients.
   /*! Computes below-cloud scavenging coefficients of a reversibly soluble
@@ -1684,7 +1684,7 @@ namespace Polyphemus
 	henry_constant_(s) = henry_constant[ScavengingName(s)];
 	gas_phase_diffusivity_(s) = gas_phase_diffusivity[ScavengingName(s)];
       }
-    
+
     int one = 1;
     _compute_scavenging_coefficient(&Nx, &Ny, &Nz, &Ns_scav,
 				    &one, &one, &one,
@@ -1697,7 +1697,7 @@ namespace Polyphemus
 				    CloudHeight_.GetData(),
 				    ScavengingCoefficient_.GetData());
   }
-  
+
 
   //! Moves the model to a given date.
   /*! This method prepares the model for a time integration at a given
@@ -1733,7 +1733,7 @@ namespace Polyphemus
     Advection_.Backward(*this);
   }
 
-  
+
   //! Performs one diffusion step.
   template<class T, class ClassAdvection, class ClassDiffusion>
   void Polair3DTransport<T, ClassAdvection, ClassDiffusion>::Diffusion()
@@ -1776,7 +1776,7 @@ namespace Polyphemus
 	vector<int> emitted_species_index =
 	  this->PointEmissionManager->GetEmittedSpeciesIndex(emission);
 	Ns = emitted_species_index.size();
-	
+
 	for (int species = 0; species < Ns; species++)
 	  if (this->PointEmissionManager->
 	      IsEmitting(this->current_date, this->next_date, emission))
@@ -1787,7 +1787,7 @@ namespace Polyphemus
 		GetEmission(this->current_date, this->next_date, species,
 			    emission, point_emission);
 	      Npoint = point_emission.extent(0);
-	      
+
 	      for (int index = 0; index < Npoint; index++)
 		{
 		  GetCellIndices(point_emission(index, 0),
@@ -1821,7 +1821,7 @@ namespace Polyphemus
   {
 
     /*** Air density ***/
-    
+
     if (this->option_process["with_air_density"])
       {
 	InterpolateInterface_z(CellCenterDistance_z, CellWidth_z,
@@ -1833,14 +1833,14 @@ namespace Polyphemus
       }
 
     /*** Winds ***/
-    
+
     if (this->option_manage["horizontal_wind"])
       if (!option_cartesian)
 	{
 	  TransformZonalWind(ZonalWind_i);
 	  TransformMeridionalWind(MeridionalWind_i);
 	}
-    
+
     if (this->option_manage["vertical_wind"])
       if (this->option_process["with_air_density"])
 	ComputeVerticalWind(CellWidth_x, CellWidth_y, CellWidth_z,
@@ -1852,7 +1852,7 @@ namespace Polyphemus
 			    ZonalWind_i, MeridionalWind_i, VerticalWind_i);
 
     /*** Diffusion coefficients ***/
-    
+
     if (this->option_manage["vertical_diffusion"])
       {
 	// Computes rho * Kz.
@@ -1861,7 +1861,7 @@ namespace Polyphemus
 	    AirDensity_interf_z_f.GetArray()
 	    * VerticalDiffusionCoefficient_f.GetArray();
       }
-    
+
     if (this->option_manage["horizontal_diffusion"]
 	&& option_isotropic_diffusion)
       {
@@ -1976,7 +1976,7 @@ namespace Polyphemus
   {
 
     /*** Air density ***/
-    
+
     if (this->option_process["with_air_density"])
       {
 	InterpolateInterface_z(CellCenterDistance_z, CellWidth_z,
@@ -1988,14 +1988,14 @@ namespace Polyphemus
       }
 
     /*** Winds ***/
-    
+
     if (this->option_manage["horizontal_wind"])
       if (!option_cartesian)
 	{
 	  TransformZonalWind(ZonalWind_i);
 	  TransformMeridionalWind(MeridionalWind_i);
 	}
-    
+
     if (this->option_manage["vertical_wind"])
       if (this->option_process["with_air_density"])
 	ComputeVerticalWind(CellWidth_x, CellWidth_y, CellWidth_z,
@@ -2007,7 +2007,7 @@ namespace Polyphemus
 			    ZonalWind_i, MeridionalWind_i, VerticalWind_i);
 
     /*** Diffusion coefficients ***/
-    
+
     if (this->option_manage["vertical_diffusion"])
       {
 	// Computes rho * Kz.
@@ -2016,7 +2016,7 @@ namespace Polyphemus
 	    AirDensity_interf_z_f.GetArray()
 	    * VerticalDiffusionCoefficient_f.GetArray();
       }
-    
+
     if (this->option_manage["horizontal_diffusion"]
 	&& option_isotropic_diffusion)
       {
@@ -2039,7 +2039,7 @@ namespace Polyphemus
 
     int n_tap = 2;
     Array<T, 5> conc_tap(n_tap, this->Ns, this->Nz, this->Ny, this->Nx);
-    
+
     if (this->option_process["with_advection"])
       {
 	Array<T, 4> conc(&conc_tap(0, 0, 0, 0, 0),
@@ -2048,7 +2048,7 @@ namespace Polyphemus
 
 	Advection();
       }
-   
+
     if (this->option_process["with_diffusion"])
       {
 	Array<T, 4> conc(&conc_tap(1, 0, 0, 0, 0),
@@ -2130,7 +2130,7 @@ namespace Polyphemus
 
 	Diffusion_b();
       }
-    
+
     if (this->option_process["with_advection"])
       {
 	Array<T, 4> conc(&conc_tap(0, 0, 0, 0, 0),
@@ -2192,7 +2192,7 @@ namespace Polyphemus
 
     for (int i = 0; i < this->Nx; i++)
       CellWidth_x_(i) = earth_radius * Delta_x_ * pi / 180.;
-    
+
     Array<T, 1> GridY_interf_trans(this->Ny + 1);
     for (int j = 0; j < this->Ny + 1; j++)
       GridY_interf_trans(j)
@@ -2201,8 +2201,8 @@ namespace Polyphemus
     for (int j = 0; j < this->Ny; j++)
       CellWidth_y_(j) = GridY_interf_trans(j + 1) - GridY_interf_trans(j);
   }
-  
-  
+
+
   //! Computes the distances between cells centers (in meters).
   /*!
     \param Delta_x_ step along x in degrees.
@@ -2223,7 +2223,7 @@ namespace Polyphemus
 
     for (int i = 0; i < this->Nx - 1; i++)
       CellCenterDistance_x_(i) = earth_radius * Delta_x_ * pi / 180.;
-    
+
     Array<T, 1> GridY_interf_trans(this->Ny + 1), GridY_trans(this->Ny);
     for (int j = 0; j < this->Ny + 1; j++)
       GridY_interf_trans(j)
@@ -2231,11 +2231,11 @@ namespace Polyphemus
     for (int j = 0; j < this->Ny; j++)
       GridY_trans(j)
 	= (GridY_interf_trans(j) + GridY_interf_trans(j + 1)) / 2.;
-    
+
     for (int j = 0; j < this->Ny - 1; j++)
       CellCenterDistance_y_(j) = GridY_trans(j + 1) - GridY_trans(j);
   }
-  
+
 
   /*! \brief Transforms the zonal wind to ease the numerical integration of
     advection. */
@@ -2248,22 +2248,22 @@ namespace Polyphemus
   ::TransformZonalWind(Data<T, 3>& ZonalWind)
   {
     int i, j, k;
-    
+
     const T pi(3.14159265358979323846264);
     const T ratio = pi / 180.;
-    
+
     int Nx = ZonalWind.GetLength(2);
     int Ny = ZonalWind.GetLength(1);
     int Nz = ZonalWind.GetLength(0);
-    
+
     for (k=0; k<Nz; k++)
       for (j=0; j<Ny; j++)
 	for (i=0; i<Nx; i++)
 	  ZonalWind(k, j, i) /= cos(ZonalWind[1].Value(k, j, i)
 				    * ratio);
   }
-  
-  
+
+
   /*! \brief Transforms the meridional wind to ease the numerical integration
     of advection. */
   /*! Formula: MeridionalWind = MeridionalWind * cos(latitude).
@@ -2274,16 +2274,16 @@ namespace Polyphemus
   void Polair3DTransport<T, ClassAdvection, ClassDiffusion>
   ::TransformMeridionalWind(Data<T, 3>& MeridionalWind)
   {
-    
+
     int i, j, k;
-    
+
     const T pi(3.14159265358979323846264);
     const T ratio = pi / 180.;
-    
+
     int Nx = MeridionalWind.GetLength(2);
     int Ny = MeridionalWind.GetLength(1);
     int Nz = MeridionalWind.GetLength(0);
-    
+
     for (k=0; k<Nz; k++)
       for (j=0; j<Ny; j++)
 	for (i=0; i<Nx; i++)
@@ -2304,14 +2304,14 @@ namespace Polyphemus
 			    Data<T, 3>& ZonalDiffusion_)
   {
     int i, j, k;
-    
+
     const T earth_radius = 6371229.;
     const T pi(3.14159265358979323846264);
-    
+
     int Nx = ZonalDiffusion_.GetLength(2) - 1;
     int Ny = ZonalDiffusion_.GetLength(1);
     int Nz = ZonalDiffusion_.GetLength(0);
-    
+
     Array<T, 1> GridY_interf_trans(Ny + 1), GridY_trans(Ny);
     for (int j = 0; j < Ny + 1; j++)
       GridY_interf_trans(j)
@@ -2330,8 +2330,8 @@ namespace Polyphemus
 	for (i = 0; i < Nx + 1; i++)
 	  ZonalDiffusion_(k, j, i) /= factor(j);
   }
-  
-  
+
+
   /*! \brief Transforms the meridional diffusion coefficients to ease the
     numerical integration of diffusion. */
   /*!
@@ -2344,14 +2344,14 @@ namespace Polyphemus
   ::TransformMeridionalDiffusion(Data<T, 3>& MeridionalDiffusion_)
   {
     int i, j, k;
-    
+
     const T pi(3.14159265358979323846264);
     const T ratio = pi / 180.;
-    
+
     int Nx = MeridionalDiffusion_.GetLength(2);
     int Ny = MeridionalDiffusion_.GetLength(1) - 1;
     int Nz = MeridionalDiffusion_.GetLength(0);
-    
+
     Array<T, 1> factor(Ny + 1);
     for (int j = 0; j < Ny + 1; j++)
       factor(j) = cos(ratio * MeridionalDiffusion_[1].Value(0, j, 0))
@@ -2384,11 +2384,11 @@ namespace Polyphemus
     int Nz = ZonalWind_.GetLength(0);
     int Ny = ZonalWind_.GetLength(1);
     int Nx = MeridionalWind_.GetLength(2);
-    
+
     for (j = 0; j < Ny; j++)
       for (i = 0; i < Nx; i++)
 	VerticalWind_(0, j, i) = 0.;
-    
+
     for (k = 1; k < Nz + 1; k++)
       for (j = 0; j < Ny; j++)
 	for (i = 0; i < Nx; i++)
@@ -2427,11 +2427,11 @@ namespace Polyphemus
     int Nz = ZonalWind_.GetLength(0);
     int Ny = ZonalWind_.GetLength(1);
     int Nx = MeridionalWind_.GetLength(2);
-    
+
     for (j = 0; j < Ny; j++)
       for (i = 0; i < Nx; i++)
 	VerticalWind_(0, j, i) = 0.;
-    
+
     for (k = 1; k < Nz + 1; k++)
       for (j = 0; j < Ny; j++)
 	for (i = 0; i < Nx; i++)
@@ -2469,7 +2469,7 @@ namespace Polyphemus
     int Nz = AirDensity_.GetLength(0);
     int Ny = AirDensity_.GetLength(1);
     int Nx = AirDensity_.GetLength(2);
-    
+
     for (k = 0; k < Nz; k++)
       for (j = 0; j < Ny; j++)
 	for (i = 0; i < Nx; i++)
@@ -2492,7 +2492,7 @@ namespace Polyphemus
     int Nz = Data_.GetLength(0);
     int Ny = Data_.GetLength(1);
     int Nx = Data_.GetLength(2);
-    
+
     T weight_0, weight_1;
 
     for (k = 0; k < Nz + 1; k++)
@@ -2503,12 +2503,12 @@ namespace Polyphemus
 	  k_in = Nz - 1;
 	else
 	  k_in = k;
-	
+
 	weight_1 = (Data_interf_z_[0].Value(k, 0, 0)
 		    - Data_[0].Value(k_in - 1, 0, 0))
 	  / (Data_[0].Value(k_in, 0, 0) - Data_[0].Value(k_in - 1, 0, 0));
 	weight_0 = 1. - weight_1;
-    
+
 	for (j = 0; j < Ny; j++)
 	  for (i = 0; i < Nx; i++)
 	    Data_interf_z_(k, j, i) =  weight_0 * Data_(k_in - 1, j, i)
@@ -2535,7 +2535,7 @@ namespace Polyphemus
     int Nz = Data_.GetLength(0);
     int Ny = Data_.GetLength(1);
     int Nx = Data_.GetLength(2);
-    
+
     T weight;
 
     weight = CellWidth_z_(0) / (2. * CellCenterDistance_z_(0));
@@ -2543,7 +2543,7 @@ namespace Polyphemus
       for (i = 0; i < Nx; i++)
 	Data_interf_z_(0, j, i) = (1. + weight) * Data_(0, j, i)
 	  - weight * Data_(1, j, i);
-    
+
     for (k = 1; k < Nz; k++)
       for (j = 0; j < Ny; j++)
 	for (i = 0; i < Nx; i++)
@@ -2574,7 +2574,7 @@ namespace Polyphemus
     int Nz = Data_.GetLength(0);
     int Ny = Data_.GetLength(1);
     int Nx = Data_.GetLength(2);
-    
+
     // Assumption...
     T weight_0, weight_1;
 
@@ -2586,12 +2586,12 @@ namespace Polyphemus
 	  j_in = Ny - 1;
 	else
 	  j_in = j;
-	
+
 	weight_1 = (Data_interf_y_[1].Value(0, j, 0)
 		    - Data_[1].Value(0, j_in - 1, 0))
 	  / (Data_[1].Value(0, j_in, 0) - Data_[1].Value(0, j_in - 1, 0));
 	weight_0 = 1. - weight_1;
-    
+
 	for (k = 0; k < Nz; k++)
 	  for (i = 0; i < Nx; i++)
 	    Data_interf_y_(k, j, i) =  weight_0 * Data_(k, j_in - 1, i)
@@ -2620,7 +2620,7 @@ namespace Polyphemus
     int Nx = Data_.GetLength(2);
 
     T weight;
-    
+
     weight = CellWidth_y_(0) / (2. * CellCenterDistance_y_(0));
     for (k = 0; k < Nz; k++)
       for (i = 0; i < Nx; i++)
@@ -2657,7 +2657,7 @@ namespace Polyphemus
     int Nz = Data_.GetLength(0);
     int Ny = Data_.GetLength(1);
     int Nx = Data_.GetLength(2);
-    
+
     // Assumption...
     T weight_0, weight_1;
 
@@ -2669,12 +2669,12 @@ namespace Polyphemus
 	  i_in = Nx - 1;
 	else
 	  i_in = i;
-	
+
 	weight_1 = (Data_interf_x_[2].Value(0, 0, i)
 		    - Data_[2].Value(0, 0, i_in - 1))
 	  / (Data_[2].Value(0, 0, i_in) - Data_[2].Value(0, 0, i_in - 1));
 	weight_0 = 1. - weight_1;
-    
+
 	for (k = 0; k < Nz; k++)
 	  for (j = 0; j < Ny; j++)
 	    Data_interf_x_(k, j, i) =  weight_0 * Data_(k, j, i_in - 1)
@@ -2701,7 +2701,7 @@ namespace Polyphemus
     int Nz = Data_.GetLength(0);
     int Ny = Data_.GetLength(1);
     int Nx = Data_.GetLength(2);
-    
+
     T weight;
 
     weight = CellWidth_x_(0) / (2. * CellCenterDistance_x_(0));
@@ -2751,7 +2751,7 @@ namespace Polyphemus
     if (this->option_process["with_air_density"])
       {
 	ComputeAirDensity(Temperature_f, Pressure_f, AirDensity_f);
-	
+
 	InterpolateInterface_z(CellCenterDistance_z, CellWidth_z,
 			       AirDensity_f, AirDensity_interf_z_f);
 	InterpolateInterface_y(CellCenterDistance_y, CellWidth_y,
@@ -2791,7 +2791,7 @@ namespace Polyphemus
 
     /*** Specific humidity, Rain, cloud height and scavenging
 	 coefficients ***/
-    
+
     if (this->option_manage["specific_humidity"])
       this->InitData("meteo", "SpecificHumidity", FileSpecificHumidity_i,
 		     FileSpecificHumidity_f, this->current_date,
@@ -2800,12 +2800,12 @@ namespace Polyphemus
     if (this->option_manage["rain"])
       this->InitData("meteo", "Rain", FileRain_i, FileRain_f,
 		     this->current_date, Rain_f, false);
-    
+
     if (this->option_manage["cloud_height"])
       this->InitData("meteo", "CloudHeight", FileCloudHeight_i,
 		     FileCloudHeight_f, this->current_date,
 		     CloudHeight_f);
-    
+
     if (this->option_manage["scavenging_coefficient"]
 	&& this->scavenging_model != "none")
       {
@@ -2854,7 +2854,7 @@ namespace Polyphemus
 				     MeridionalDiffusionCoefficient_i);
 	  MeridionalDiffusionCoefficient_i.ThresholdMin(0.);
 	}
-    
+
     if (this->option_manage["horizontal_diffusion"] && !option_cartesian)
       {
 	TransformZonalDiffusion(this->GridY3D_interf.GetArray(),
@@ -2871,7 +2871,7 @@ namespace Polyphemus
 	    = this->input_files["boundary_condition"](species_list_bc[i]);
 	  Date date = this->input_files["boundary_condition"].GetDateMin();
 	  T Delta_t = this->input_files["boundary_condition"].GetDelta_t();
-	  
+
 	  this->InitData(find_replace(filename, "&c", "z"), date, Delta_t,
 			 FileBoundaryCondition_z_i, FileBoundaryCondition_z_f,
 			 this->current_date, i, BoundaryCondition_z_i);
@@ -2898,7 +2898,7 @@ namespace Polyphemus
 	this->InitData("surface_emission", species_list_surf_emis[i],
 		       FileSurfaceEmission_i, FileSurfaceEmission_f,
 		       this->current_date, i, SurfaceEmission_f);
-    
+
     /*** Additional surface emissions ***/
 
     if (this->option_manage["additional_surface_emission"])
@@ -2908,7 +2908,7 @@ namespace Polyphemus
 		       FileAdditionalSurfaceEmission_i,
 		       FileAdditionalSurfaceEmission_f,
 		       this->current_date, i, AdditionalSurfaceEmission_f);
-    
+
     if (this->option_manage["additional_surface_emission"])
       for (int s = 0; s < Ns_add_surf_emis; s++)
 	{

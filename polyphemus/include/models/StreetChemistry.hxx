@@ -8,7 +8,7 @@ namespace Polyphemus
   //////////////
   // INCLUDES //
   //////////////
-  
+
   using namespace std;
 
   ////////////
@@ -30,9 +30,9 @@ namespace Polyphemus
 
      /*** Constructor and destructor ***/
 
-    StreetChemistry(int street_id, int begin_inter, int end_inter, 
+    StreetChemistry(int street_id, int begin_inter, int end_inter,
                     T length, T width, T height, int ns_local, int Nr_photolysis);
-    virtual ~StreetChemistry();   
+    virtual ~StreetChemistry();
 
   };
 

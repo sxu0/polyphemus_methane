@@ -28,7 +28,9 @@ Polair3D.
 
 
 import os
+
 current_directory = os.path.dirname(os.path.abspath(__file__))
-if os.path.isfile(os.path.join(current_directory, "_polair3d.so")) \
-        and os.path.isfile(os.path.join(current_directory, "polair3d.py")):
+if os.path.isfile(os.path.join(current_directory, "_polair3d.so")) and os.path.isfile(
+    os.path.join(current_directory, "polair3d.py")
+):
     from polair3d import *

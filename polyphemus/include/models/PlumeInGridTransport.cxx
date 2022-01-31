@@ -322,7 +322,7 @@ namespace Polyphemus
     /*** Initializations ***/
     Model.Init();
     this->Concentration.Copy(Model.GetConcentration());
-    if (this->option_process["collect_dry_flux"])      
+    if (this->option_process["collect_dry_flux"])
       this->DryDepositionFlux.Copy(Model.GetDryDepositionFlux());
     if (this->option_process["collect_wet_flux"])
       {
@@ -565,7 +565,7 @@ namespace Polyphemus
   ::Forward()
   {
     this->Concentration.Copy(Model.GetConcentration());
-    if (this->option_process["collect_dry_flux"])      
+    if (this->option_process["collect_dry_flux"])
       this->DryDepositionFlux.Copy(Model.GetDryDepositionFlux());
     if (this->option_process["collect_wet_flux"])
       {
@@ -725,7 +725,7 @@ namespace Polyphemus
     if (this->option_process["collect_dry_flux"])
       this->DryDepositionFlux.Copy(Model.GetDryDepositionFlux());
     if (this->option_process["collect_wet_flux"])
-      {    
+      {
 	this->WetDepositionFlux.Copy(Model.GetWetDepositionFlux());
 	this->InCloudWetDepositionFlux.Copy(Model.GetInCloudWetDepositionFlux());
       }
@@ -1422,7 +1422,7 @@ namespace Polyphemus
   void  PlumeInGridTransport<T, ClassEulerianModel, ClassLocalModel>
   ::SetGasCompensation(int species, int z, int y, int x, T gas_compensation)
   {
-    
+
     GasCompensation(species, z, y, x) = gas_compensation;
   }
 

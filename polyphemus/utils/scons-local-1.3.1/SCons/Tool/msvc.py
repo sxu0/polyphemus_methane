@@ -50,16 +50,20 @@ import SCons.Scanner.RC
 
 from MSCommon import msvc_exists, msvc_setup_env_once
 
-CSuffixes = ['.c', '.C']
-CXXSuffixes = ['.cc', '.cpp', '.cxx', '.c++', '.C++']
+CSuffixes = [".c", ".C"]
+CXXSuffixes = [".cc", ".cpp", ".cxx", ".c++", ".C++"]
+
 
 def validate_vars(env):
     """Validate the PCH and PCHSTOP construction variables."""
-    if env.has_key('PCH') and env['PCH']:
-        if not env.has_key('PCHSTOP'):
+    if env.has_key("PCH") and env["PCH"]:
+        if not env.has_key("PCHSTOP"):
             raise SCons.Errors.UserError, "The PCHSTOP construction must be defined if PCH is defined."
-        if not SCons.Util.is_String(env['PCHSTOP']):
-            raise SCons.Errors.UserError, "The PCHSTOP construction variable must be a string: %r"%env['PCHSTOP']
+        if not SCons.Util.is_String(env["PCHSTOP"]):
+            raise SCons.Errors.UserError, "The PCHSTOP construction variable must be a string: %r" % env[
+                "PCHSTOP"
+            ]
+
 
 def pch_emitter(target, source, env):
     """Adds the object file target."""
@@ -70,17 +74,18 @@ def pch_emitter(target, source, env):
     obj = None
 
     for t in target:
-        if SCons.Util.splitext(str(t))[1] == '.pch':
+        if SCons.Util.splitext(str(t))[1] == ".pch":
             pch = t
-        if SCons.Util.splitext(str(t))[1] == '.obj':
+        if SCons.Util.splitext(str(t))[1] == ".obj":
             obj = t
 
     if not obj:
-        obj = SCons.Util.splitext(str(pch))[0]+'.obj'
+        obj = SCons.Util.splitext(str(pch))[0] + ".obj"
 
-    target = [pch, obj] # pch must be first, and obj second for the PCHCOM to work
+    target = [pch, obj]  # pch must be first, and obj second for the PCHCOM to work
 
     return (target, source)
+
 
 def object_emitter(target, source, env, parent_emitter):
     """Sets up the PCH dependencies for an object file."""
@@ -99,35 +104,42 @@ def object_emitter(target, source, env, parent_emitter):
     # See issue #2505 for a discussion of what to do if it turns
     # out this assumption causes trouble in the wild:
     # http://scons.tigris.org/issues/show_bug.cgi?id=2505
-    if env.has_key('PCH'):
-        pch = env['PCH']
-        if str(target[0]) != SCons.Util.splitext(str(pch))[0] + '.obj':
+    if env.has_key("PCH"):
+        pch = env["PCH"]
+        if str(target[0]) != SCons.Util.splitext(str(pch))[0] + ".obj":
             env.Depends(target, pch)
 
     return (target, source)
 
+
 def static_object_emitter(target, source, env):
-    return object_emitter(target, source, env,
-                          SCons.Defaults.StaticObjectEmitter)
+    return object_emitter(target, source, env, SCons.Defaults.StaticObjectEmitter)
+
 
 def shared_object_emitter(target, source, env):
-    return object_emitter(target, source, env,
-                          SCons.Defaults.SharedObjectEmitter)
+    return object_emitter(target, source, env, SCons.Defaults.SharedObjectEmitter)
 
-pch_action = SCons.Action.Action('$PCHCOM', '$PCHCOMSTR')
-pch_builder = SCons.Builder.Builder(action=pch_action, suffix='.pch',
-                                    emitter=pch_emitter,
-                                    source_scanner=SCons.Tool.SourceFileScanner)
+
+pch_action = SCons.Action.Action("$PCHCOM", "$PCHCOMSTR")
+pch_builder = SCons.Builder.Builder(
+    action=pch_action,
+    suffix=".pch",
+    emitter=pch_emitter,
+    source_scanner=SCons.Tool.SourceFileScanner,
+)
 
 
 # Logic to build .rc files into .res files (resource files)
 res_scanner = SCons.Scanner.RC.RCScan()
-res_action  = SCons.Action.Action('$RCCOM', '$RCCOMSTR')
-res_builder = SCons.Builder.Builder(action=res_action,
-                                    src_suffix='.rc',
-                                    suffix='.res',
-                                    src_builder=[],
-                                    source_scanner=res_scanner)
+res_action = SCons.Action.Action("$RCCOM", "$RCCOMSTR")
+res_builder = SCons.Builder.Builder(
+    action=res_action,
+    src_suffix=".rc",
+    suffix=".res",
+    src_builder=[],
+    source_scanner=res_scanner,
+)
+
 
 def msvc_batch_key(action, env, target, source):
     """
@@ -141,8 +153,8 @@ def msvc_batch_key(action, env, target, source):
     Returning None specifies that the specified target+source should not
     be batched with other compilations.
     """
-    b = env.subst('$MSVC_BATCH')
-    if b in (None, '', '0'):
+    b = env.subst("$MSVC_BATCH")
+    if b in (None, "", "0"):
         # We're not using batching; return no key.
         return None
     t = target[0]
@@ -153,6 +165,7 @@ def msvc_batch_key(action, env, target, source):
         return None
     return (id(action), id(env), t.dir, s.dir)
 
+
 def msvc_output_flag(target, source, env, for_signature):
     """
     Returns the correct /Fo flag for batching.
@@ -162,29 +175,31 @@ def msvc_output_flag(target, source, env, for_signature):
     we return an /Fo string that just specifies the first target's
     directory (where the Visual C/C++ compiler will put the .obj files).
     """
-    b = env.subst('$MSVC_BATCH')
-    if b in (None, '', '0') or len(source) == 1:
-        return '/Fo$TARGET'
+    b = env.subst("$MSVC_BATCH")
+    if b in (None, "", "0") or len(source) == 1:
+        return "/Fo$TARGET"
     else:
         # The Visual C/C++ compiler requires a \ at the end of the /Fo
         # option to indicate an output directory.  We use os.sep here so
         # that the test(s) for this can be run on non-Windows systems
         # without having a hard-coded backslash mess up command-line
         # argument parsing.
-        return '/Fo${TARGET.dir}' + os.sep
+        return "/Fo${TARGET.dir}" + os.sep
 
-CAction = SCons.Action.Action("$CCCOM", "$CCCOMSTR",
-                              batch_key=msvc_batch_key,
-                              targets='$CHANGED_TARGETS')
-ShCAction = SCons.Action.Action("$SHCCCOM", "$SHCCCOMSTR",
-                                batch_key=msvc_batch_key,
-                                targets='$CHANGED_TARGETS')
-CXXAction = SCons.Action.Action("$CXXCOM", "$CXXCOMSTR",
-                                batch_key=msvc_batch_key,
-                                targets='$CHANGED_TARGETS')
-ShCXXAction = SCons.Action.Action("$SHCXXCOM", "$SHCXXCOMSTR",
-                                  batch_key=msvc_batch_key,
-                                  targets='$CHANGED_TARGETS')
+
+CAction = SCons.Action.Action(
+    "$CCCOM", "$CCCOMSTR", batch_key=msvc_batch_key, targets="$CHANGED_TARGETS"
+)
+ShCAction = SCons.Action.Action(
+    "$SHCCCOM", "$SHCCCOMSTR", batch_key=msvc_batch_key, targets="$CHANGED_TARGETS"
+)
+CXXAction = SCons.Action.Action(
+    "$CXXCOM", "$CXXCOMSTR", batch_key=msvc_batch_key, targets="$CHANGED_TARGETS"
+)
+ShCXXAction = SCons.Action.Action(
+    "$SHCXXCOM", "$SHCXXCOMSTR", batch_key=msvc_batch_key, targets="$CHANGED_TARGETS"
+)
+
 
 def generate(env):
     """Add Builders and construction variables for MSVC++ to an Environment."""
@@ -208,59 +223,73 @@ def generate(env):
         static_obj.add_emitter(suffix, static_object_emitter)
         shared_obj.add_emitter(suffix, shared_object_emitter)
 
-    env['CCPDBFLAGS'] = SCons.Util.CLVar(['${(PDB and "/Z7") or ""}'])
-    env['CCPCHFLAGS'] = SCons.Util.CLVar(['${(PCH and "/Yu%s /Fp%s"%(PCHSTOP or "",File(PCH))) or ""}'])
-    env['_MSVC_OUTPUT_FLAG'] = msvc_output_flag
-    env['_CCCOMCOM']  = '$CPPFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS $CCPCHFLAGS $CCPDBFLAGS'
-    env['CC']         = 'cl'
-    env['CCFLAGS']    = SCons.Util.CLVar('/nologo')
-    env['CFLAGS']     = SCons.Util.CLVar('')
-    env['CCCOM']      = '$CC $_MSVC_OUTPUT_FLAG /c $CHANGED_SOURCES $CFLAGS $CCFLAGS $_CCCOMCOM'
-    env['SHCC']       = '$CC'
-    env['SHCCFLAGS']  = SCons.Util.CLVar('$CCFLAGS')
-    env['SHCFLAGS']   = SCons.Util.CLVar('$CFLAGS')
-    env['SHCCCOM']    = '$SHCC $_MSVC_OUTPUT_FLAG /c $CHANGED_SOURCES $SHCFLAGS $SHCCFLAGS $_CCCOMCOM'
-    env['CXX']        = '$CC'
-    env['CXXFLAGS']   = SCons.Util.CLVar('$( /TP $)')
-    env['CXXCOM']     = '$CXX $_MSVC_OUTPUT_FLAG /c $CHANGED_SOURCES $CXXFLAGS $CCFLAGS $_CCCOMCOM'
-    env['SHCXX']      = '$CXX'
-    env['SHCXXFLAGS'] = SCons.Util.CLVar('$CXXFLAGS')
-    env['SHCXXCOM']   = '$SHCXX $_MSVC_OUTPUT_FLAG /c $CHANGED_SOURCES $SHCXXFLAGS $SHCCFLAGS $_CCCOMCOM'
-    env['CPPDEFPREFIX']  = '/D'
-    env['CPPDEFSUFFIX']  = ''
-    env['INCPREFIX']  = '/I'
-    env['INCSUFFIX']  = ''
-#    env.Append(OBJEMITTER = [static_object_emitter])
-#    env.Append(SHOBJEMITTER = [shared_object_emitter])
-    env['STATIC_AND_SHARED_OBJECTS_ARE_THE_SAME'] = 1
+    env["CCPDBFLAGS"] = SCons.Util.CLVar(['${(PDB and "/Z7") or ""}'])
+    env["CCPCHFLAGS"] = SCons.Util.CLVar(
+        ['${(PCH and "/Yu%s /Fp%s"%(PCHSTOP or "",File(PCH))) or ""}']
+    )
+    env["_MSVC_OUTPUT_FLAG"] = msvc_output_flag
+    env["_CCCOMCOM"] = "$CPPFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS $CCPCHFLAGS $CCPDBFLAGS"
+    env["CC"] = "cl"
+    env["CCFLAGS"] = SCons.Util.CLVar("/nologo")
+    env["CFLAGS"] = SCons.Util.CLVar("")
+    env[
+        "CCCOM"
+    ] = "$CC $_MSVC_OUTPUT_FLAG /c $CHANGED_SOURCES $CFLAGS $CCFLAGS $_CCCOMCOM"
+    env["SHCC"] = "$CC"
+    env["SHCCFLAGS"] = SCons.Util.CLVar("$CCFLAGS")
+    env["SHCFLAGS"] = SCons.Util.CLVar("$CFLAGS")
+    env[
+        "SHCCCOM"
+    ] = "$SHCC $_MSVC_OUTPUT_FLAG /c $CHANGED_SOURCES $SHCFLAGS $SHCCFLAGS $_CCCOMCOM"
+    env["CXX"] = "$CC"
+    env["CXXFLAGS"] = SCons.Util.CLVar("$( /TP $)")
+    env[
+        "CXXCOM"
+    ] = "$CXX $_MSVC_OUTPUT_FLAG /c $CHANGED_SOURCES $CXXFLAGS $CCFLAGS $_CCCOMCOM"
+    env["SHCXX"] = "$CXX"
+    env["SHCXXFLAGS"] = SCons.Util.CLVar("$CXXFLAGS")
+    env[
+        "SHCXXCOM"
+    ] = "$SHCXX $_MSVC_OUTPUT_FLAG /c $CHANGED_SOURCES $SHCXXFLAGS $SHCCFLAGS $_CCCOMCOM"
+    env["CPPDEFPREFIX"] = "/D"
+    env["CPPDEFSUFFIX"] = ""
+    env["INCPREFIX"] = "/I"
+    env["INCSUFFIX"] = ""
+    #    env.Append(OBJEMITTER = [static_object_emitter])
+    #    env.Append(SHOBJEMITTER = [shared_object_emitter])
+    env["STATIC_AND_SHARED_OBJECTS_ARE_THE_SAME"] = 1
 
-    env['RC'] = 'rc'
-    env['RCFLAGS'] = SCons.Util.CLVar('')
-    env['RCSUFFIXES']=['.rc','.rc2']
-    env['RCCOM'] = '$RC $_CPPDEFFLAGS $_CPPINCFLAGS $RCFLAGS /fo$TARGET $SOURCES'
-    env['BUILDERS']['RES'] = res_builder
-    env['OBJPREFIX']      = ''
-    env['OBJSUFFIX']      = '.obj'
-    env['SHOBJPREFIX']    = '$OBJPREFIX'
-    env['SHOBJSUFFIX']    = '$OBJSUFFIX'
+    env["RC"] = "rc"
+    env["RCFLAGS"] = SCons.Util.CLVar("")
+    env["RCSUFFIXES"] = [".rc", ".rc2"]
+    env["RCCOM"] = "$RC $_CPPDEFFLAGS $_CPPINCFLAGS $RCFLAGS /fo$TARGET $SOURCES"
+    env["BUILDERS"]["RES"] = res_builder
+    env["OBJPREFIX"] = ""
+    env["OBJSUFFIX"] = ".obj"
+    env["SHOBJPREFIX"] = "$OBJPREFIX"
+    env["SHOBJSUFFIX"] = "$OBJSUFFIX"
 
     # Set-up ms tools paths
     msvc_setup_env_once(env)
 
-    env['CFILESUFFIX'] = '.c'
-    env['CXXFILESUFFIX'] = '.cc'
+    env["CFILESUFFIX"] = ".c"
+    env["CXXFILESUFFIX"] = ".cc"
 
-    env['PCHPDBFLAGS'] = SCons.Util.CLVar(['${(PDB and "/Yd") or ""}'])
-    env['PCHCOM'] = '$CXX /Fo${TARGETS[1]} $CXXFLAGS $CCFLAGS $CPPFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS /c $SOURCES /Yc$PCHSTOP /Fp${TARGETS[0]} $CCPDBFLAGS $PCHPDBFLAGS'
-    env['BUILDERS']['PCH'] = pch_builder
+    env["PCHPDBFLAGS"] = SCons.Util.CLVar(['${(PDB and "/Yd") or ""}'])
+    env[
+        "PCHCOM"
+    ] = "$CXX /Fo${TARGETS[1]} $CXXFLAGS $CCFLAGS $CPPFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS /c $SOURCES /Yc$PCHSTOP /Fp${TARGETS[0]} $CCPDBFLAGS $PCHPDBFLAGS"
+    env["BUILDERS"]["PCH"] = pch_builder
 
-    if not env.has_key('ENV'):
-        env['ENV'] = {}
-    if not env['ENV'].has_key('SystemRoot'):    # required for dlls in the winsxs folders
-        env['ENV']['SystemRoot'] = SCons.Platform.win32.get_system_root()
+    if not env.has_key("ENV"):
+        env["ENV"] = {}
+    if not env["ENV"].has_key("SystemRoot"):  # required for dlls in the winsxs folders
+        env["ENV"]["SystemRoot"] = SCons.Platform.win32.get_system_root()
+
 
 def exists(env):
     return msvc_exists()
+
 
 # Local Variables:
 # tab-width:4

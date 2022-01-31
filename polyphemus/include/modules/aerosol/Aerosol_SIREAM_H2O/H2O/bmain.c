@@ -181,7 +181,3 @@ void bmain(float gas[], float aero[])
 
   return;
 }
-
-
-
-

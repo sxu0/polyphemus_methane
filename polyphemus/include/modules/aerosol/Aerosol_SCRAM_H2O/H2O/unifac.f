@@ -18,7 +18,7 @@ C
 c Notes: 1. FOR DIMENSIONAL PURPOSES, WE HAVE ASSUMED THAT
 C           MAXIMUM NUMBER OF FUNCTIONAL GROUPS =50 AND
 C           MAXIMUM NUMBER OF MOLECULAR ENTITIES =50.
-C     
+C
 C        2. INPUT SUMMARY: 1) GROUP VOLUME (RG), GROUP SURFACE
 C           AREA (QG) OF EACH FUNCTIONAL GROUP IN EACH
 C           COMPONENT; 2) MOLE FRACTION OF ALL COMPONENTS
@@ -31,19 +31,19 @@ C           PROGRAM CAN HANDLE X(I) = 0 (IT SETS ACTIVITY COEFF TO 1)
 C           BUT BETTER TO AVOID IT. (note from P.Saxena.)
 c           (BKP NOTE: activity coefficient is not set to 1 at x = 0)
 C
-C        4. 3-17-98 CHANGED ALOG FUNCTION CALLS TO DLOG FOR TYPE 
+C        4. 3-17-98 CHANGED ALOG FUNCTION CALLS TO DLOG FOR TYPE
 C	    COMPATABILITY
 C
 C Revision History: Developed by Pradeep Saxena, EPRI, 95
 C                   Revised by Betty Pun, AER, Nov 99 Under EPRI/CARB
 C                   funding to comply with models-3 standards
-C ***************************************************************** 
+C *****************************************************************
 
       IMPLICIT NONE
-C      IMPLICIT REAL*8 (A-H,O-Z)     
+C      IMPLICIT REAL*8 (A-H,O-Z)
 
 C........Arguments and their description
-  
+
 C     INTEGER*4 NMOL [VALUE]
 C     INTEGER*4 NFUNC [VALUE]
 
@@ -59,8 +59,8 @@ C     REAL*8 Z [VALUE]
 C     REAL*8 TEMP [VALUE]
 C     REAL*8 GAMA [REFERENCE] (50)
 
-      INTEGER*4 NU(NMOL,NFUNC)    ! NU(I,J): VECTOR OF NO. OF A PARTICULAR 
-                             ! FUNCTIONAL GROUP J IN MOLECULE I 
+      INTEGER*4 NU(NMOL,NFUNC)    ! NU(I,J): VECTOR OF NO. OF A PARTICULAR
+                             ! FUNCTIONAL GROUP J IN MOLECULE I
                              ! (FROM STOICHIOMETRY)
       REAL*8 X(NMOl)           ! MOLE FRACTION (or amount) OF MOLECULE I
       REAL*8 A(NFUNC,NFUNC)        ! INTERACTION PARAMETER FOR GROUPS J1 & J2
@@ -71,17 +71,17 @@ C     REAL*8 GAMA [REFERENCE] (50)
 
       REAL*8 Z               ! COORDINATION NUMBER FOR THE SOLVENT = 10
       REAL*8 TEMP            ! TEMPERATURE IN DEGREES KELVIN
- 
-C ....  Parameters and their descriptions 
+
+C ....  Parameters and their descriptions
 C      DIMENSION R(50),Q(50),RL(50),RX(50),QX(50),XL(50),PHI(50)
 C      DIMENSION THETA(50),XGM(50),XGP(50,50),THTAGP(50,50),
 C     $     THTAGM(50),TTSIM(50),TTSIP(50),SI(50,50),GAMMLN(50),
 C     $     GAMPLN(50,50),YCLN(50),YRLN(50)
 
       REAL*8 R(50)           ! total volume (R) for each molecule
-      REAL*8 Q(50)           ! total surface area (Q) for each molecule 
+      REAL*8 Q(50)           ! total surface area (Q) for each molecule
       REAL*8 RL(50)
-      REAL*8 RX(50)          ! R(I) * X(I) 
+      REAL*8 RX(50)          ! R(I) * X(I)
       REAL*8 QX(50)          ! Q(I) * X(I)
       REAL*8 XL(50)          ! RL(I) * X(I)
       REAL*8 PHI(50)
@@ -118,7 +118,7 @@ C     $     GAMPLN(50,50),YCLN(50),YRLN(50)
       REAL*8 SUMTGP
       REAL*8 SUMQX          ! SUM (Q(I) * X(I))
       REAL*8 SUMRX          ! SUM (R(I) * X(I))
- 
+
       INTEGER I, J, J1, J2  ! loop counters
 
 

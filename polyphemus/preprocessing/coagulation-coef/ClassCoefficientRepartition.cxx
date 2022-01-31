@@ -99,7 +99,7 @@ namespace CoefficientRepartition
   {
     index = index_first_(i);
   }
-  
+
 
   void ClassCoefficientRepartition::CollectIndexSecond(const int &i, Vector1I &index) const
   {
@@ -135,7 +135,7 @@ namespace CoefficientRepartition
         ClassParticle particle1, particle2;
         general_section_(i1).generate_random_particle(particle1);
         general_section_(i2).generate_random_particle(particle2);
-	
+
         ClassParticle particle12 = particle1.coagulate(particle2);
 	int j;
         for (int i = 0; i < Nsize_; i++)
@@ -226,14 +226,14 @@ namespace CoefficientRepartition
          << " computes " << Ncouple_local << " couples from ("
          << couple(0)(0) << ", " << couple(0)(1) << ") to ("
          << couple(Ncouple_local - 1)(0) << ", " << couple(Ncouple_local - 1)(1) << ")" << endl;
-   
+
     // Compute starting from last computed couple.
     for (int i = Ncompute_; i < Ncouple_local; i++)
     {
       cout<<" couples: "<<i<<" out of: "<<Ncouple_local<<"("<<couple(i)(0)<<","<<couple(i)(1)<<")"<<endl;
       Compute(couple(i)(0), couple(i)(1));
     }
-   
+
   }
 
 
@@ -370,7 +370,7 @@ namespace CoefficientRepartition
   }
 
   void ClassCoefficientRepartition::WriteBIN(const string &output_file) const
-  {  
+  {
     std::ofstream outputFile (output_file.c_str(), ios::out |  ios::binary);
     for (int i = 0; i < Nsize_; i++)
       {
@@ -379,7 +379,7 @@ namespace CoefficientRepartition
 	outputFile.write((char*)&ft_tag, sizeof(int));
 	outputFile.write((char*)&Ncoef, sizeof(int));
 	outputFile.write((char*)&ft_tag, sizeof(int));
-	
+
 	for(int j=0;j<Ncoef;j++)
 	{
 	  int index1=index_first_(i).GetData()[j];
@@ -401,13 +401,13 @@ namespace CoefficientRepartition
   }
 
   void ClassCoefficientRepartition::WriteTXT(const string &output_file) const
-  {  
+  {
     std::ofstream outputFile (output_file.c_str(), ios::out );
     for (int i = 0; i < Nsize_; i++)
       {
 	int Ncoef = coefficient_(i).GetSize();
 	outputFile<<Ncoef<< endl;
-	
+
 	for(int j=0;j<Ncoef;j++)
 	{
 	  int index1=index_first_(i).GetData()[j];

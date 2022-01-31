@@ -6,7 +6,7 @@
 
 #define NRANSI
 
-#define ALF 1.0e-4 /* 1.0e-10 */ 
+#define ALF 1.0e-4 /* 1.0e-10 */
 #define EPS 1.0e-4 /* 1.0e-4 */
 #define MAXITS 100 /*400*/
 #define STPMX 100.0
@@ -66,7 +66,7 @@ void fdjac(int n, float x[], float fvec[], float **df,
 	for (j=1;j<=n;j++) {
 		temp=x[j];
 		h=EPS*fabs(temp);
-		if (h == 0.0) h=EPS;     
+		if (h == 0.0) h=EPS;
 		x[j]=temp+h;
 		h=x[j]-temp;
 		(*vecfunc)(n,x,f);
@@ -86,7 +86,7 @@ void fdjac1(int n, float x[], float fvec[], float **df,
 	for (j=1;j<=n;j++) {
 		temp=x[j];
 		h=EPS*fabs(temp);
-		if (h == 0.0) h=EPS;     
+		if (h == 0.0) h=EPS;
 		x[j]=temp+h;
 		h=x[j]-temp;
 		(*vecfunc)(n,x,f);
@@ -130,11 +130,11 @@ void lnsrch(int n, float xold[], float fold, float g[], float p[], float x[],
 	float a,alam,alam2,alamin,b,disc,f2,rhs1,rhs2,slope,sum,temp,
 		test,tmplam;
 
-	/* These initializations have been added to remove warning messages 
+	/* These initializations have been added to remove warning messages
 	   from compilers. They don't change anything to the method as
 	   f2 and alam2 are initialized later in the loop before being used. */
 	f2 = 0.;
-	alam2 = 0.; 
+	alam2 = 0.;
 
 	*check=0;
 	for (sum=0.0,i=1;i<=n;i++) sum += p[i]*p[i];
@@ -191,11 +191,11 @@ void lnsrch1(int n, float xold[], float fold, float g[], float p[], float x[],
 	float a,alam,alam2,alamin,b,disc,f2,rhs1,rhs2,slope,sum,temp,
 		test,tmplam;
 
-	/* These initializations have been added to remove warning messages 
+	/* These initializations have been added to remove warning messages
 	   from compilers. They don't change anything to the method as
 	   f2 and alam2 are initialized later in the loop before being used. */
 	f2 = 0.;
-	alam2 = 0.; 
+	alam2 = 0.;
 
 	*check=0;
 	for (sum=0.0,i=1;i<=n;i++) sum += p[i]*p[i];
@@ -309,8 +309,8 @@ void ludcmp(float **a, int n, int *indx, float *d)
                          nrerror("Singular matrix in routine ludcmp", 'b');
                          /* BKP 0900 exit(1);*/
 			 return;
-			 
-                } 
+
+                }
 		vv[i]=1.0/big;
 	}
 	for (j=1;j<=n;j++) {
@@ -570,7 +570,7 @@ void newt1(float x[], int n, int *check,
 /***************NUMERICAL RECIPES UTILITY FUNCTIONS ******************/
 
 void nrerror(char error_text[], char err_source)
-/* Numerical Recipes standard error handler, 
+/* Numerical Recipes standard error handler,
    modified to get error source BKP 08/01/00*/
 {
 	if (err_source == 'b')	bnrerrflag = 1;
@@ -1139,7 +1139,7 @@ void fdjac_double(int n, double x[], double fvec_double[], double **df,
 	for (j=1;j<=n;j++) {
 		temp=x[j];
 		h=EPS*fabs(temp);
- 		if (h == 0.0) h=EPS;     
+ 		if (h == 0.0) h=EPS;
 		x[j]=temp+h;
 		h=x[j]-temp;
 		(*vecfunc)(n,x,f);
@@ -1159,7 +1159,7 @@ void fdjac1_double(int n, double x[], double fvec_double[], double **df,
 	for (j=1;j<=n;j++) {
 		temp=x[j];
 		h=EPS*fabs(temp);
-		if (h == 0.0) h=EPS;     
+		if (h == 0.0) h=EPS;
 		x[j]=temp+h;
 		h=x[j]-temp;
 		(*vecfunc)(n,x,f);
@@ -1196,19 +1196,19 @@ double fmin1_double(double x[])
 	return 0.5*sum;
 }
 
-void lnsrch_double(int n, double xold[], double fold, double g[], 
-        double p[], double x[], double *f, double stpmax, int *check, 
+void lnsrch_double(int n, double xold[], double fold, double g[],
+        double p[], double x[], double *f, double stpmax, int *check,
         double (*func)(double []))
 {
 	int i;
 	double a,alam,alam2,alamin,b,disc,f2,rhs1,rhs2,slope,sum,temp,
 		test,tmplam;
 
-	/* These initializations have been added to remove warning messages 
+	/* These initializations have been added to remove warning messages
 	   from compilers. They don't change anything to the method as
 	   f2 and alam2 are initialized later in the loop before being used. */
 	f2 = 0.;
-	alam2 = 0.; 
+	alam2 = 0.;
 
 	*check=0;
 	for (sum=0.0,i=1;i<=n;i++) sum += p[i]*p[i];
@@ -1258,18 +1258,18 @@ void lnsrch_double(int n, double xold[], double fold, double g[],
 	}
 }
 
-void lnsrch1_double(int n, double xold[], double fold, double g[], 
-                   double p[], double x[], double *f, double stpmax, 
+void lnsrch1_double(int n, double xold[], double fold, double g[],
+                   double p[], double x[], double *f, double stpmax,
                    int *check1, double (*func)(double []))
 {
   int i;
   double a,alam,alam2,alamin,b,disc,f2,rhs1,rhs2,slope,sum,temp,test,tmplam;
 
-  /* These initializations have been added to remove warning messages 
+  /* These initializations have been added to remove warning messages
      from compilers. They don't change anything to the method as
      f2 and alam2 are initialized later in the loop before being used. */
   f2 = 0.;
-  alam2 = 0.; 
+  alam2 = 0.;
 
   *check1=0;
   for (sum=0.0,i=1;i<=n;i++) sum += p[i]*p[i];
@@ -1293,7 +1293,7 @@ void lnsrch1_double(int n, double xold[], double fold, double g[],
 
     /* BKP somehow *check1 is changed after the for statement */
     /* what if I reset it to 0  in each loop ? */
-    (*check1) = 0; 
+    (*check1) = 0;
 
     *f=(*func)(x);
 
@@ -1387,9 +1387,9 @@ void ludcmp_double(double **a, int n, int *indx, double *d)
 		for (j=1;j<=n;j++)
 		{
 			if ((temp=fabs(a[i][j])) > big) big=temp;
-			
+
 		}
-		if (big == 0.0){ 
+		if (big == 0.0){
 		  nrerror("Singular matrix in routine ludcmp_double", 'a');
                   /* BKP 0900 exit(1) ; */
 		  return;
@@ -1449,9 +1449,9 @@ void ludcmp1_double(double **a, int n, int *indx, double *d)
 		for (j=1;j<=n;j++)
 		{
 			if ((temp=fabs(a[i][j])) > big) big=temp;
-			
+
 		}
-		if (big == 0.0) 
+		if (big == 0.0)
 		{
 		  nrerror("Singular matrix in routine ludcmp_double", 'a');
                   /* BKP 0900 exit(1); */
@@ -1560,7 +1560,7 @@ void newt_double(double x[], int n, int *check,
 		    if (temp > test) test=temp;
 		  }
 		  *check=(test < TOLMIN ? 1 : 0);
-		  
+
 		  FREEDRETURN
 		}
 		test=0.0;
@@ -1569,7 +1569,7 @@ void newt_double(double x[], int n, int *check,
 			if (temp > test) test=temp;
 		}
 		if (test < TOLX) {
-		  
+
 		  FREEDRETURN
 		}
 	}
@@ -1623,7 +1623,7 @@ void newt1_double(double x[], int n, int *check1, void (*vecfunc)(int, double []
     if (anrerrflag ==1) FREEDRETURN1
     lubksb1_double(fjac_double,n,indx,p_double);
     lnsrch1_double(n,xold_double,fold,g_double,p_double,x,&f,stpmax,check1,fmin1_double);
-	  
+
     test=0.0;
     for (i=1;i<=n;i++)
       if (fabs(fvec1_double[i]) > test) test=fabs(fvec1_double[i]);

@@ -24,12 +24,13 @@ import datetime
 import math
 import numpy
 
+
 class Station:
     """
     Stores information about an observation station
     """
 
-    def __init__(self, str = "", type = ""):
+    def __init__(self, str="", type=""):
         """
         Initializes the instance in case 'str' and 'type' are not empty.
 
@@ -43,11 +44,21 @@ class Station:
             getattr(self, "From" + type.capitalize() + "String")(str)
 
     def __str__(self):
-        return self.name + " [" + self.real_name + "] (" \
-               + str(self.latitude) + ", " + str(self.longitude) + ") " \
-               + self.type + " " \
-               + self.country + " " \
-               + self.network
+        return (
+            self.name
+            + " ["
+            + self.real_name
+            + "] ("
+            + str(self.latitude)
+            + ", "
+            + str(self.longitude)
+            + ") "
+            + self.type
+            + " "
+            + self.country
+            + " "
+            + self.network
+        )
 
     def GetRealName(self):
         """
@@ -98,7 +109,7 @@ class Station:
         try:
             return self.altitude
         except:
-            return 0.
+            return 0.0
 
     def GetCountry(self):
         """
@@ -152,15 +163,15 @@ class Station:
         try:
             self.latitude = float(l[2].strip())
         except:
-            self.latitude = -1.e10
+            self.latitude = -1.0e10
         try:
             self.longitude = float(l[3].strip())
         except:
-            self.longitude = -1.e10
+            self.longitude = -1.0e10
         try:
             self.altitude = float(l[4].strip())
         except:
-            self.altitude = -1.e10
+            self.altitude = -1.0e10
         self.country = l[5].strip()
         self.type = l[6].strip()
         self.network = l[7].strip()
@@ -193,7 +204,6 @@ class Station:
         self.type = "AERONET"
         self.network = "AERONET"
 
-
     def FromAirparifString(self, str):
         """
         Sets station attributes from a string.
@@ -213,10 +223,14 @@ class Station:
         longitude = (l[1]).split(" ")
         latitude = (l[2]).split(" ")
         self.type = l[3]
-        self.latitude = float(latitude[0]) + float(latitude[1]) / 60. \
-                        + float(latitude[2]) / 3600.
-        self.longitude = float(longitude[0]) + float(longitude[1]) / 60. \
-                         + float(longitude[2]) / 3600.
+        self.latitude = (
+            float(latitude[0]) + float(latitude[1]) / 60.0 + float(latitude[2]) / 3600.0
+        )
+        self.longitude = (
+            float(longitude[0])
+            + float(longitude[1]) / 60.0
+            + float(longitude[2]) / 3600.0
+        )
         self.network = "Airparif"
         self.country = "FR"
 
@@ -233,23 +247,28 @@ class Station:
            3. the longitude (float);
            4. the type.
         """
+
         def convert(str):
             latlon = str.strip()
             pos = True
-            if latlon[0] == '-':
+            if latlon[0] == "-":
                 latlon = latlon[1:]
                 pos = False
-            latlon = latlon.split('.')[0]
+            latlon = latlon.split(".")[0]
             if len(latlon) > 6:
-                return 999.
+                return 999.0
             latlon = latlon.zfill(6)
-            res = float(latlon[0:2]) \
-                  + float(latlon[2:4]) / 60. + float(latlon[4:6]) / 3600.
+            res = (
+                float(latlon[0:2])
+                + float(latlon[2:4]) / 60.0
+                + float(latlon[4:6]) / 3600.0
+            )
             if pos:
                 return res
             else:
                 return -res
-        l = str.strip().split(',')
+
+        l = str.strip().split(",")
         self.name = l[0]
         self.real_name = l[1]
         self.latitude = convert(l[2])
@@ -277,14 +296,12 @@ class Station:
         self.country = self.name[:2]
         self.real_name = " ".join(l[1:-9])
         self.altitude = float(l[-1])
-        self.longitude = float(l[-5]) \
-                         + float(l[-4]) / 60. + float(l[-3]) / 3600.
-        if l[-2].lower() != 'e':
-            self.longitude *= -1.
-        self.latitude = float(l[-9]) \
-                        + float(l[-8]) / 60. + float(l[-7]) / 3600.
-        if l[-6].lower() != 'n':
-            self.latitude *= -1.
+        self.longitude = float(l[-5]) + float(l[-4]) / 60.0 + float(l[-3]) / 3600.0
+        if l[-2].lower() != "e":
+            self.longitude *= -1.0
+        self.latitude = float(l[-9]) + float(l[-8]) / 60.0 + float(l[-7]) / 3600.0
+        if l[-6].lower() != "n":
+            self.latitude *= -1.0
         self.network = "EMEP"
         self.type = "EMEP"
 
@@ -310,11 +327,11 @@ class Station:
         try:
             self.longitude = float(values[0])
         except ValueError:
-            self.longitude = 999.
+            self.longitude = 999.0
         try:
             self.latitude = float(values[1])
         except ValueError:
-            self.latitude = 999.
+            self.latitude = 999.0
         self.country = values[4]
         self.type = values[5]
         self.name = values[7]
@@ -333,7 +350,7 @@ class Station:
         @type type: string
         @param type: The type of station file: Pioneer or Emep.
         """
-        lines = [x for x in open(filename).readlines() if x.strip() != '']
+        lines = [x for x in open(filename).readlines() if x.strip() != ""]
         for line in lines:
             if Station(line, type).name == station_name:
                 self.FromString(line, type)
@@ -355,10 +372,12 @@ class Station:
         @rtype: Boolean
         @return: True if Station is in given area, False otherwise.
         """
-        return self.latitude >= lat_min \
-               and self.latitude <= lat_max \
-               and self.longitude >= lon_min \
-               and self.longitude <= lon_max
+        return (
+            self.latitude >= lat_min
+            and self.latitude <= lat_max
+            and self.longitude >= lon_min
+            and self.longitude <= lon_max
+        )
 
     def IsInsideGridBox(self, origins, deltas, lengths):
         """
@@ -378,10 +397,12 @@ class Station:
         @rtype: Boolean
         @return: True if station is in given area, False otherwise.
         """
-        return self.IsInsideBox(origins[0], origins[0] \
-                                + deltas[0] * float(lengths[0] - 1), \
-                                origins[1], origins[1] \
-                                + deltas[1] * float(lengths[1] - 1))
+        return self.IsInsideBox(
+            origins[0],
+            origins[0] + deltas[0] * float(lengths[0] - 1),
+            origins[1],
+            origins[1] + deltas[1] * float(lengths[1] - 1),
+        )
 
     def GetClosestIndex(self, origins, deltas):
         """
@@ -460,21 +481,27 @@ def get_simulated_at_location(origin, delta, data, point):
     index_x = int((point[1] - origin[2]) / delta[2])
 
     # Interpolation impossible.
-    if index_x >= data.shape[2] - 1 or index_y >= data.shape[1] - 1 \
-           or index_x < 0 or index_y < 0:
+    if (
+        index_x >= data.shape[2] - 1
+        or index_y >= data.shape[1] - 1
+        or index_x < 0
+        or index_y < 0
+    ):
         return numpy.array([])
 
     # Interpolation coefficients.
     coeff_y = (point[0] - origin[1] - delta[1] * index_y) / delta[1]
     coeff_x = (point[1] - origin[2] - delta[2] * index_x) / delta[2]
 
-    return (1.0 - coeff_y) * (1.0 - coeff_x) * data[:, index_y, index_x] \
-           + coeff_y * coeff_x * data[:, index_y + 1, index_x + 1] \
-           + coeff_y * (1.0 - coeff_x) * data[:, index_y + 1, index_x]  \
-           + (1.0 - coeff_y) * coeff_x * data[:, index_y, index_x + 1]
+    return (
+        (1.0 - coeff_y) * (1.0 - coeff_x) * data[:, index_y, index_x]
+        + coeff_y * coeff_x * data[:, index_y + 1, index_x + 1]
+        + coeff_y * (1.0 - coeff_x) * data[:, index_y + 1, index_x]
+        + (1.0 - coeff_y) * coeff_x * data[:, index_y, index_x + 1]
+    )
 
-def get_simulated_along_aircraft(origin, delta, data, position,
-                                 meteo_time, altitude):
+
+def get_simulated_along_aircraft(origin, delta, data, position, meteo_time, altitude):
     """
     Gets a time sequence of data at specified location
     using bilinear interpolation.
@@ -497,68 +524,79 @@ def get_simulated_along_aircraft(origin, delta, data, position,
     # Gets index of bottom right data position of specified position.
     diff_time = position[0] - origin[0]
 
-    index_t = int((diff_time.days * 86400 + diff_time.seconds)/
-                  (delta[0] * 3600.0))
+    index_t = int((diff_time.days * 86400 + diff_time.seconds) / (delta[0] * 3600.0))
     index_y = int((position[2] - origin[1]) / delta[1])
     index_x = int((position[3] - origin[2]) / delta[2])
 
     diff_time_meteo = position[0] - meteo_time[0]
-    index_t_meteo = int((diff_time_meteo.days * 86400 \
-                             + diff_time_meteo.seconds) \
-                            /(meteo_time[1]*3600.0))
+    index_t_meteo = int(
+        (diff_time_meteo.days * 86400 + diff_time_meteo.seconds)
+        / (meteo_time[1] * 3600.0)
+    )
 
     # Interpolation impossible.
-    if index_x >= data.shape[3] or index_y >= data.shape[2] \
-            or index_x < 0 or index_y < 0:
-        print 'interpolation impossible  ', index_x, data.shape[3], \
-        index_y, data.shape[2]
+    if (
+        index_x >= data.shape[3]
+        or index_y >= data.shape[2]
+        or index_x < 0
+        or index_y < 0
+    ):
+        print "interpolation impossible  ", index_x, data.shape[3], index_y, data.shape[
+            2
+        ]
         return -999
 
     # Interpolation coefficients.
-    coeff_t = (diff_time.days * 86400 + diff_time.seconds
-               - delta[0] * 3600.0 * index_t) / (delta[0] * 3600.0)
-    coeff_t_meteo = (diff_time_meteo.days * 86400 + diff_time_meteo.seconds \
-                     - meteo_time[1] * 3600.0 * index_t_meteo) \
-                     / (meteo_time[1] * 3600.0)
+    coeff_t = (
+        diff_time.days * 86400 + diff_time.seconds - delta[0] * 3600.0 * index_t
+    ) / (delta[0] * 3600.0)
+    coeff_t_meteo = (
+        diff_time_meteo.days * 86400
+        + diff_time_meteo.seconds
+        - meteo_time[1] * 3600.0 * index_t_meteo
+    ) / (meteo_time[1] * 3600.0)
     coeff_y = (position[2] - origin[1] - delta[1] * index_y) / delta[1]
     coeff_x = (position[3] - origin[2] - delta[2] * index_x) / delta[2]
 
-
-    data_t_z = (1.0 - coeff_y) * (1.0 - coeff_x) \
-        * data[:, :, index_y, index_x] \
-        + coeff_y * coeff_x * data[:, :, index_y + 1, index_x + 1] \
-        + coeff_y * (1.0 - coeff_x) * data[:, :, index_y + 1, index_x]  \
+    data_t_z = (
+        (1.0 - coeff_y) * (1.0 - coeff_x) * data[:, :, index_y, index_x]
+        + coeff_y * coeff_x * data[:, :, index_y + 1, index_x + 1]
+        + coeff_y * (1.0 - coeff_x) * data[:, :, index_y + 1, index_x]
         + (1.0 - coeff_y) * coeff_x * data[:, :, index_y, index_x + 1]
+    )
 
-
-    altitude_t_z = (1.0 - coeff_y) * (1.0 - coeff_x) \
-        * altitude[:, :, index_y, index_x] \
-        + coeff_y * coeff_x * altitude[:, :, index_y + 1, index_x + 1] \
-        + coeff_y * (1.0 - coeff_x) * altitude[:, :, index_y + 1, index_x] \
+    altitude_t_z = (
+        (1.0 - coeff_y) * (1.0 - coeff_x) * altitude[:, :, index_y, index_x]
+        + coeff_y * coeff_x * altitude[:, :, index_y + 1, index_x + 1]
+        + coeff_y * (1.0 - coeff_x) * altitude[:, :, index_y + 1, index_x]
         + (1.0 - coeff_y) * coeff_x * altitude[:, :, index_y, index_x + 1]
+    )
 
-    data_z = (1.0 - coeff_t) * data_t_z[index_t, :] \
-        + coeff_t * data_t_z[index_t + 1,:]
-    altitude_z = (1.0 - coeff_t_meteo) * altitude_t_z[index_t_meteo, :] \
-        + coeff_t_meteo * altitude_t_z[index_t_meteo + 1,:]
+    data_z = (1.0 - coeff_t) * data_t_z[index_t, :] + coeff_t * data_t_z[index_t + 1, :]
+    altitude_z = (1.0 - coeff_t_meteo) * altitude_t_z[
+        index_t_meteo, :
+    ] + coeff_t_meteo * altitude_t_z[index_t_meteo + 1, :]
 
-    if (position[1] < altitude_z[0]):
+    if position[1] < altitude_z[0]:
         data_point = data_z[0]
-        print 'lower than lowest level'
-    if (position[1] > altitude_z[data.shape[1] - 1]):
+        print "lower than lowest level"
+    if position[1] > altitude_z[data.shape[1] - 1]:
         data_point = data_z[data.shape[1] - 1]
-        print 'higher than highest level'
+        print "higher than highest level"
 
     for z in range(data.shape[1] - 1):
-        if (altitude_z[z] < position[1] < altitude_z[z + 1]):
-            coeff_z = (position[1] - altitude_z[z]) \
-                / (altitude_z[z + 1] - altitude_z[z])
+        if altitude_z[z] < position[1] < altitude_z[z + 1]:
+            coeff_z = (position[1] - altitude_z[z]) / (
+                altitude_z[z + 1] - altitude_z[z]
+            )
             data_point = (1.0 - coeff_z) * data_z[z] + coeff_z * data_z[z + 1]
 
     return data_point
 
-def get_simulated_profil_along_aircraft(origin, delta, data, position,
-                                        meteo_time, altitude):
+
+def get_simulated_profil_along_aircraft(
+    origin, delta, data, position, meteo_time, altitude
+):
     """
     Gets a time sequence of data at specified location
     using bilinear interpolation.
@@ -578,57 +616,65 @@ def get_simulated_profil_along_aircraft(origin, delta, data, position,
     @return: Time sequence of data at given position.
     """
 
-   # Gets index of bottom right data position of specified position
-    diff_time=position[0] - origin[0]
+    # Gets index of bottom right data position of specified position
+    diff_time = position[0] - origin[0]
 
-    index_t = int((diff_time.days * 86400 + diff_time.seconds) \
-                      / (delta[0]*3600.0))
+    index_t = int((diff_time.days * 86400 + diff_time.seconds) / (delta[0] * 3600.0))
     index_y = int((position[2] - origin[1]) / delta[1])
     index_x = int((position[3] - origin[2]) / delta[2])
 
     diff_time_meteo = position[0] - meteo_time[0]
-    index_t_meteo = int((diff_time_meteo.days * 86400 \
-                             + diff_time_meteo.seconds) \
-                            / (meteo_time[1] * 3600.0))
+    index_t_meteo = int(
+        (diff_time_meteo.days * 86400 + diff_time_meteo.seconds)
+        / (meteo_time[1] * 3600.0)
+    )
 
     # Interpolation impossible.
-    if index_x >= data.shape[3] or index_y >= data.shape[2] \
-           or index_x < 0 or index_y < 0:
-        print 'interpolation impossible  ',  index_x , data.shape[3], \
-            index_y, data.shape[2]
-        profil=[]
+    if (
+        index_x >= data.shape[3]
+        or index_y >= data.shape[2]
+        or index_x < 0
+        or index_y < 0
+    ):
+        print "interpolation impossible  ", index_x, data.shape[3], index_y, data.shape[
+            2
+        ]
+        profil = []
         for z in range(data.shape[1]):
             profil.append(-999)
         return profil
 
     # Interpolation coefficients.
-    coeff_t = (diff_time.days * 86400 + diff_time.seconds - delta[0] \
-                   * 3600.0 * index_t) / (delta[0] * 3600.0)
-    coeff_t_meteo = (diff_time_meteo.days * 86400 \
-                         + diff_time_meteo.seconds - meteo_time[1] \
-                         * 3600.0 * index_t_meteo) / (meteo_time[1] \
-                                                          * 3600.0)
+    coeff_t = (
+        diff_time.days * 86400 + diff_time.seconds - delta[0] * 3600.0 * index_t
+    ) / (delta[0] * 3600.0)
+    coeff_t_meteo = (
+        diff_time_meteo.days * 86400
+        + diff_time_meteo.seconds
+        - meteo_time[1] * 3600.0 * index_t_meteo
+    ) / (meteo_time[1] * 3600.0)
     coeff_y = (position[2] - origin[1] - delta[1] * index_y) / delta[1]
     coeff_x = (position[3] - origin[2] - delta[2] * index_x) / delta[2]
 
-
-    data_t_z = (1.0 - coeff_y) * (1.0 - coeff_x) * \
-        data[:, :, index_y, index_x] + coeff_y * coeff_x \
-        * data[:, :, index_y + 1, index_x + 1] + coeff_y * \
-        (1.0 - coeff_x) * data[:, :, index_y + 1, index_x] \
+    data_t_z = (
+        (1.0 - coeff_y) * (1.0 - coeff_x) * data[:, :, index_y, index_x]
+        + coeff_y * coeff_x * data[:, :, index_y + 1, index_x + 1]
+        + coeff_y * (1.0 - coeff_x) * data[:, :, index_y + 1, index_x]
         + (1.0 - coeff_y) * coeff_x * data[:, :, index_y, index_x + 1]
+    )
 
-
-    altitude_t_z  = (1.0 - coeff_y) * (1.0 - coeff_x) * \
-        altitude[:, :, index_y, index_x] + coeff_y * coeff_x * \
-        altitude[:, :, index_y + 1, index_x + 1] + coeff_y * \
-        (1.0 - coeff_x) * altitude[:, :, index_y + 1, index_x] \
+    altitude_t_z = (
+        (1.0 - coeff_y) * (1.0 - coeff_x) * altitude[:, :, index_y, index_x]
+        + coeff_y * coeff_x * altitude[:, :, index_y + 1, index_x + 1]
+        + coeff_y * (1.0 - coeff_x) * altitude[:, :, index_y + 1, index_x]
         + (1.0 - coeff_y) * coeff_x * altitude[:, :, index_y, index_x + 1]
+    )
 
     data_z = []
     for z in range(data.shape[1]):
-        data_z.append((1.0 - coeff_t) * data_t_z[index_t, z] \
-                      + coeff_t * data_t_z[index_t + 1, z])
+        data_z.append(
+            (1.0 - coeff_t) * data_t_z[index_t, z] + coeff_t * data_t_z[index_t + 1, z]
+        )
 
     return data_z
 
@@ -692,7 +738,7 @@ def get_simulated_at_location_closest(origins, deltas, data, point):
     # point is on top border
     if index_y == data.shape[1]:
         index_y = index_y - 1
-    return data[:,index_y, index_x]
+    return data[:, index_y, index_x]
 
 
 def get_simulated_at_locations_closest(origins, deltas, data, point_list):
@@ -716,8 +762,7 @@ def get_simulated_at_locations_closest(origins, deltas, data, point_list):
     """
     ret = numpy.array([])
     for i in point_list:
-        ret.append(get_simulated_at_location_closest(origins, deltas, \
-                                                     data, i))
+        ret.append(get_simulated_at_location_closest(origins, deltas, data, i))
     return ret
 
 
@@ -743,9 +788,9 @@ def get_simulated_at_station(origins, deltas, data, station):
     # point: (latitude, longitude)
     # origins: (t_min, y_min, x_min)
     # deltas: (delta_t, delta_y, delta_x)
-    return get_simulated_at_location(origins, deltas, \
-                                     data, (station.latitude, \
-                                            station.longitude))
+    return get_simulated_at_location(
+        origins, deltas, data, (station.latitude, station.longitude)
+    )
 
 
 def get_simulated_at_station_closest(origins, deltas, data, station):
@@ -766,9 +811,9 @@ def get_simulated_at_station_closest(origins, deltas, data, station):
     @rtype: 1D numpy.array
     @return: Time sequence of data at given point.
     """
-    return get_simulated_at_location_closest(origins, deltas, \
-                                             data, (station.latitude, \
-                                                    station.longitude))
+    return get_simulated_at_location_closest(
+        origins, deltas, data, (station.latitude, station.longitude)
+    )
 
 
 def get_simulated_at_stations(origins, deltas, data, stations):
@@ -855,8 +900,7 @@ def map_stations(bool_func, station_list):
     return map(bool_func, station_list)
 
 
-def filter_stations_observations(filter_func, station_list,
-                                 observations_list):
+def filter_stations_observations(filter_func, station_list, observations_list):
     """
     Filters a station list and corresponding observations list in
     place according to the given filter which takes a station and an
@@ -910,7 +954,7 @@ class Aircraft:
     Stores information about aircraft measurement.
     """
 
-    def __init__(self, filename = "", type = "", num_colonne_species=0):
+    def __init__(self, filename="", type="", num_colonne_species=0):
         """
         Initializes the instance in case 'str' and 'type' are not empty.
 
@@ -921,8 +965,9 @@ class Aircraft:
         It could be Falcon.
         """
         if filename != "" and type != "":
-            getattr(self, "From" + type.capitalize() \
-                        + "Aircraft")(filename, num_colonne_species)
+            getattr(self, "From" + type.capitalize() + "Aircraft")(
+                filename, num_colonne_species
+            )
 
         else:
             self.time = []
@@ -930,7 +975,6 @@ class Aircraft:
             self.latitude = []
             self.altitude = []
             self.meas = []
-
 
     def FromFalconAircraft(self, filename, num_colonne_species):
         """
@@ -966,23 +1010,20 @@ class Aircraft:
 
         l = lines[6].strip().split()
 
-        aircraftdate = datetime.datetime(int(l[0]),int(l[1]),int(l[2]))
-
+        aircraftdate = datetime.datetime(int(l[0]), int(l[1]), int(l[2]))
 
         for i in range(len(lines) - int(nheader) - 1):
             line = lines[i + 1 + int(nheader)].strip().split()
-            self.time.append(aircraftdate \
-                                 + datetime.timedelta \
-                                 (seconds = float(line[0])))
+            self.time.append(aircraftdate + datetime.timedelta(seconds=float(line[0])))
             self.latitude.append(float(line[1]))
             self.longitude.append(float(line[2]))
             self.altitude.append(float(line[3]))
             self.meas.append(float(line[num_colonne_species - 1]))
 
-        self.meas = numpy.array(self.meas, 'Float32')
-        self.latitude = numpy.array(self.latitude, 'Float32')
-        self.longitude = numpy.array(self.longitude, 'Float32')
-        self.altitude = numpy.array(self.altitude, 'Float32')
+        self.meas = numpy.array(self.meas, "Float32")
+        self.latitude = numpy.array(self.latitude, "Float32")
+        self.longitude = numpy.array(self.longitude, "Float32")
+        self.altitude = numpy.array(self.altitude, "Float32")
 
     def FromMozaicAircraft(self, filename, num_colonne_species):
         """
@@ -1022,31 +1063,31 @@ class Aircraft:
         nheader = 1
 
         for i in range(len(lines) - nheader):
-            line = lines[i + int(nheader)].strip().split(',')
-            date_moz = line[2].split('-')
+            line = lines[i + int(nheader)].strip().split(",")
+            date_moz = line[2].split("-")
             if int(date_moz[2]) == 4:
                 date_moz[2] = 2004
-            aircraftdate = datetime.datetime \
-                (int(date_moz[2]), int(date_moz[1]), int(date_moz[0]))
-            time_moz=line[1].split(':')
-            self.time.append(aircraftdate + datetime.timedelta \
-                                 (hours = float(time_moz[0])) \
-                                 + datetime.timedelta \
-                                 (minutes = float(time_moz[1])) \
-                                 + datetime.timedelta \
-                                 (seconds=float(time_moz[2])))
+            aircraftdate = datetime.datetime(
+                int(date_moz[2]), int(date_moz[1]), int(date_moz[0])
+            )
+            time_moz = line[1].split(":")
+            self.time.append(
+                aircraftdate
+                + datetime.timedelta(hours=float(time_moz[0]))
+                + datetime.timedelta(minutes=float(time_moz[1]))
+                + datetime.timedelta(seconds=float(time_moz[2]))
+            )
             self.latitude.append(float(line[4]))
             self.longitude.append(float(line[3]))
             self.altitude.append(float(line[5]))
             self.meas.append(float(line[num_colonne_species - 1]))
 
-        self.meas = numpy.array(self.meas, 'Float32')
-        self.latitude = numpy.array(self.latitude, 'Float32')
-        self.longitude = numpy.array(self.longitude, 'Float32')
-        self.altitude = numpy.array(self.altitude, 'Float32')
+        self.meas = numpy.array(self.meas, "Float32")
+        self.latitude = numpy.array(self.latitude, "Float32")
+        self.longitude = numpy.array(self.longitude, "Float32")
+        self.altitude = numpy.array(self.altitude, "Float32")
 
-
-    def Copy(self, aircraft, ind_init = -1, ind_end = -1):
+    def Copy(self, aircraft, ind_init=-1, ind_end=-1):
 
         import copy
 
@@ -1060,69 +1101,72 @@ class Aircraft:
         self.time = copy.copy(aircraft.time[ind_init:ind_end])
         self.meas = copy.copy(aircraft.meas[ind_init:ind_end])
 
+
 def average_aircraft(aircraft, averaging_time, missing_value):
 
-     N_aircraft = len(aircraft.time)
+    N_aircraft = len(aircraft.time)
 
-     aircraft_bis = Aircraft()
-     aircraft_bis.Copy(aircraft)
+    aircraft_bis = Aircraft()
+    aircraft_bis.Copy(aircraft)
 
-     for i in range(len(aircraft_bis.meas)):
-         aircraft_bis.longitude[i] = 0
-         aircraft_bis.latitude[i] = 0
-         aircraft_bis.altitude[i] = 0
-         aircraft_bis.meas[i] = 0
+    for i in range(len(aircraft_bis.meas)):
+        aircraft_bis.longitude[i] = 0
+        aircraft_bis.latitude[i] = 0
+        aircraft_bis.altitude[i] = 0
+        aircraft_bis.meas[i] = 0
 
-     if (averaging_time < (aircraft.time[1] - aircraft.time[0])):
-         raise ValueError, "Error on averaging aircraft data," \
-             + "the averaging time is smaller than the timestep " \
-             + "between 2 aircraft data"
+    if averaging_time < (aircraft.time[1] - aircraft.time[0]):
+        raise ValueError, "Error on averaging aircraft data," + "the averaging time is smaller than the timestep " + "between 2 aircraft data"
 
+    endtime_in_ss = (
+        aircraft.time[-1].hour * 3600
+        + aircraft.time[-1].minute * 60
+        + aircraft.time[-1].second
+    )
+    startime_in_ss = (
+        aircraft.time[1].hour * 3600
+        + aircraft.time[1].minute * 60
+        + aircraft.time[1].second
+    )
 
-     endtime_in_ss = aircraft.time[-1].hour*3600 \
-         + aircraft.time[-1].minute * 60 + aircraft.time[-1].second
-     startime_in_ss = aircraft.time[1].hour * 3600 \
-         + aircraft.time[1].minute * 60 + aircraft.time[1].second
+    N_average = int((endtime_in_ss - startime_in_ss) / float(averaging_time.seconds))
+    i = 0
+    k = 0
+    i_withdata = 0
+    for i in range(N_average):
+        count = 0
+        l = 0
+        while aircraft.time[k] < aircraft.time[0] + (i + 1) * averaging_time:
+            if int(aircraft.meas[k]) != missing_value:
+                aircraft_bis.longitude[i_withdata] += aircraft.longitude[k]
+                aircraft_bis.latitude[i_withdata] += aircraft.latitude[k]
+                aircraft_bis.altitude[i_withdata] += aircraft.altitude[k]
+                aircraft_bis.meas[i_withdata] += aircraft.meas[k]
+                count += 1
+            k += 1
 
-     N_average = int((endtime_in_ss-startime_in_ss) \
-                     / float(averaging_time.seconds))
-     i = 0
-     k = 0
-     i_withdata = 0
-     for i in range(N_average):
-         count = 0
-         l = 0
-         while(aircraft.time[k] < aircraft.time[0] + (i + 1) \
-                   * averaging_time):
-             if (int(aircraft.meas[k]) != missing_value):
-                 aircraft_bis.longitude[i_withdata] += aircraft.longitude[k]
-                 aircraft_bis.latitude[i_withdata] += aircraft.latitude[k]
-                 aircraft_bis.altitude[i_withdata] += aircraft.altitude[k]
-                 aircraft_bis.meas[i_withdata] += aircraft.meas[k]
-                 count += 1
-             k += 1
+            aircraft_bis.time[i_withdata] = aircraft.time[0] + datetime.timedelta(
+                seconds=(i + 0.5) * averaging_time.seconds
+            )
+        if count != 0:
+            aircraft_bis.meas[i_withdata] = aircraft_bis.meas[i_withdata] / float(count)
+            aircraft_bis.longitude[i_withdata] = aircraft_bis.longitude[
+                i_withdata
+            ] / float(count)
+            aircraft_bis.latitude[i_withdata] = aircraft_bis.latitude[
+                i_withdata
+            ] / float(count)
+            aircraft_bis.altitude[i_withdata] = aircraft_bis.altitude[
+                i_withdata
+            ] / float(count)
+        else:
+            aircraft_bis.longitude[i_withdata] = -9999
+            aircraft_bis.latitude[i_withdata] = -9999
+            aircraft_bis.altitude[i_withdata] = -9999
+            aircraft_bis.meas[i_withdata] = -9999
+        i_withdata += 1
 
-             aircraft_bis.time[i_withdata] = aircraft.time[0] \
-                 + datetime.timedelta(seconds = (i + 0.5) * \
-                                          averaging_time.seconds)
-         if count != 0:
-             aircraft_bis.meas[i_withdata] = \
-                 aircraft_bis.meas[i_withdata] / float(count)
-             aircraft_bis.longitude[i_withdata] = \
-                 aircraft_bis.longitude[i_withdata] / float(count)
-             aircraft_bis.latitude[i_withdata] = \
-                 aircraft_bis.latitude[i_withdata] / float(count)
-             aircraft_bis.altitude[i_withdata] = \
-                 aircraft_bis.altitude[i_withdata] / float(count)
-         else :
-             aircraft_bis.longitude[i_withdata] = -9999
-             aircraft_bis.latitude[i_withdata] = -9999
-             aircraft_bis.altitude[i_withdata] = -9999
-             aircraft_bis.meas[i_withdata] = -9999
-         i_withdata += 1
-
-     aircraft.Copy(aircraft_bis,0,i_withdata - 1)
-
+    aircraft.Copy(aircraft_bis, 0, i_withdata - 1)
 
 
 def compute_height(surfacepressure, pressure, temperature, height):
@@ -1146,23 +1190,24 @@ def compute_height(surfacepressure, pressure, temperature, height):
     r = 287.0
 
     Nx = height.shape[3]
-    Ny = height.shape[2];
-    Nz = height.shape[1];
-    Nt = height.shape[0];
+    Ny = height.shape[2]
+    Nz = height.shape[1]
+    Nt = height.shape[0]
 
     for h in range(Nt):
         for k in range(Nz):
             for j in range(Ny):
                 for i in range(Nx):
                     if k == 0:
-                        height[h, k, j, i] = r / g \
-                            * temperature[h, k, j, i] \
-                            * math.log(surfacepressure[h, j, i] \
-                                       / pressure[h, k, j, i]);
+                        height[h, k, j, i] = (
+                            r
+                            / g
+                            * temperature[h, k, j, i]
+                            * math.log(surfacepressure[h, j, i] / pressure[h, k, j, i])
+                        )
                     else:
-                        height[h, k, j, i] = height[h, k - 1, j, i] \
-                            - r / g * temperature[h, k, j, i] \
-                            * math.log(pressure[h, k, j, i] \
-                                       / pressure[h, k - 1, j, i]);
-
-
+                        height[h, k, j, i] = height[
+                            h, k - 1, j, i
+                        ] - r / g * temperature[h, k, j, i] * math.log(
+                            pressure[h, k, j, i] / pressure[h, k - 1, j, i]
+                        )

@@ -58,14 +58,16 @@ import UserList
 # SConscript files out there may have referred to them directly as
 # SCons.Script.SConscript.*.  This is now supported by some special
 # handling towards the bottom of the SConscript.__init__.py module.
-#Arguments = {}
-#ArgList = []
-#BuildTargets = TargetList()
-#CommandLineTargets = []
-#DefaultTargets = []
+# Arguments = {}
+# ArgList = []
+# BuildTargets = TargetList()
+# CommandLineTargets = []
+# DefaultTargets = []
+
 
 class SConscriptReturn(Exception):
     pass
+
 
 launch_dir = os.path.abspath(os.curdir)
 
@@ -77,11 +79,13 @@ global_exports = {}
 # chdir flag
 sconscript_chdir = 1
 
+
 def get_calling_namespaces():
     """Return the locals and globals for the function that called
     into this module in the current call stack."""
-    try: 1/0
-    except ZeroDivisionError: 
+    try:
+        1 / 0
+    except ZeroDivisionError:
         # Don't start iterating with the current stack-frame to
         # prevent creating reference cycles (f_back is safe).
         frame = sys.exc_info()[2].tb_frame.f_back
@@ -116,12 +120,14 @@ def compute_exports(exports):
                 except KeyError:
                     retval[export] = glob[export]
     except KeyError, x:
-        raise SCons.Errors.UserError, "Export of non-existent variable '%s'"%x
+        raise SCons.Errors.UserError, "Export of non-existent variable '%s'" % x
 
     return retval
 
+
 class Frame:
     """A frame on the SConstruct/SConscript call stack"""
+
     def __init__(self, fs, exports, sconscript):
         self.globals = BuildDefaultGlobals()
         self.retval = None
@@ -130,15 +136,17 @@ class Frame:
         # make sure the sconscript attr is a Node.
         if isinstance(sconscript, SCons.Node.Node):
             self.sconscript = sconscript
-        elif sconscript == '-':
+        elif sconscript == "-":
             self.sconscript = None
         else:
             self.sconscript = fs.File(str(sconscript))
+
 
 # the SConstruct/SConscript call stack:
 call_stack = []
 
 # For documentation on the methods in this file, see the scons man-page
+
 
 def Return(*vars, **kw):
     retval = []
@@ -148,25 +156,26 @@ def Return(*vars, **kw):
             for v in string.split(var):
                 retval.append(call_stack[-1].globals[v])
     except KeyError, x:
-        raise SCons.Errors.UserError, "Return of non-existent variable '%s'"%x
+        raise SCons.Errors.UserError, "Return of non-existent variable '%s'" % x
 
     if len(retval) == 1:
         call_stack[-1].retval = retval[0]
     else:
         call_stack[-1].retval = tuple(retval)
 
-    stop = kw.get('stop', True)
+    stop = kw.get("stop", True)
 
     if stop:
         raise SConscriptReturn
 
 
-stack_bottom = '% Stack boTTom %' # hard to define a variable w/this name :)
+stack_bottom = "% Stack boTTom %"  # hard to define a variable w/this name :)
+
 
 def _SConscript(fs, *files, **kw):
     top = fs.Top
     sd = fs.SConstruct_dir.rdir()
-    exports = kw.get('exports', [])
+    exports = kw.get("exports", [])
 
     # evaluate each SConscript file
     results = []
@@ -216,7 +225,7 @@ def _SConscript(fs, *files, **kw):
                     # in different Repositories.  For now, cross that
                     # bridge when someone comes to it.
                     try:
-                        src_dir = kw['src_dir']
+                        src_dir = kw["src_dir"]
                     except KeyError:
                         ldir = fs.Dir(f.dir.get_path(sd))
                     else:
@@ -242,7 +251,7 @@ def _SConscript(fs, *files, **kw):
                     # Append the SConscript directory to the beginning
                     # of sys.path so Python modules in the SConscript
                     # directory can be easily imported.
-                    sys.path = [ f.dir.get_abspath() ] + sys.path
+                    sys.path = [f.dir.get_abspath()] + sys.path
 
                     # This is the magic line that actually reads up
                     # and executes the stuff in the SConscript file.
@@ -251,10 +260,10 @@ def _SConscript(fs, *files, **kw):
                     # exceptions that occur when processing this
                     # SConscript can base the printed frames at this
                     # level and not show SCons internals as well.
-                    call_stack[-1].globals.update({stack_bottom:1})
-                    old_file = call_stack[-1].globals.get('__file__')
+                    call_stack[-1].globals.update({stack_bottom: 1})
+                    old_file = call_stack[-1].globals.get("__file__")
                     try:
-                        del call_stack[-1].globals['__file__']
+                        del call_stack[-1].globals["__file__"]
                     except KeyError:
                         pass
                     try:
@@ -264,10 +273,12 @@ def _SConscript(fs, *files, **kw):
                             pass
                     finally:
                         if old_file is not None:
-                            call_stack[-1].globals.update({__file__:old_file})
+                            call_stack[-1].globals.update({__file__: old_file})
                 else:
-                    SCons.Warnings.warn(SCons.Warnings.MissingSConscriptWarning,
-                             "Ignoring missing SConscript '%s'" % f.path)
+                    SCons.Warnings.warn(
+                        SCons.Warnings.MissingSConscriptWarning,
+                        "Ignoring missing SConscript '%s'" % f.path,
+                    )
 
         finally:
             SCons.Script.sconscript_reading = SCons.Script.sconscript_reading - 1
@@ -305,6 +316,7 @@ def _SConscript(fs, *files, **kw):
     else:
         return tuple(results)
 
+
 def SConscript_exception(file=sys.stderr):
     """Print an exception stack trace just for the SConscript file(s).
     This will show users who have Python errors where the problem is,
@@ -325,10 +337,11 @@ def SConscript_exception(file=sys.stderr):
         type = str(exc_type)
         if type[:11] == "exceptions.":
             type = type[11:]
-    file.write('%s: %s:\n' % (type, exc_value))
+    file.write("%s: %s:\n" % (type, exc_value))
     for fname, line, func, text in stack:
         file.write('  File "%s", line %d:\n' % (fname, line))
-        file.write('    %s\n' % text)
+        file.write("    %s\n" % text)
+
 
 def annotate(node):
     """Annotate a node with the stack frame describing the
@@ -341,10 +354,12 @@ def annotate(node):
         raise SCons.Errors.InternalError, "could not find SConscript stack frame"
     node.creator = traceback.extract_stack(tb)[0]
 
+
 # The following line would cause each Node to be annotated using the
 # above function.  Unfortunately, this is a *huge* performance hit, so
 # leave this disabled until we find a more efficient mechanism.
-#SCons.Node.Annotate = annotate
+# SCons.Node.Annotate = annotate
+
 
 class SConsEnvironment(SCons.Environment.Base):
     """An Environment subclass that contains all of the methods that
@@ -361,7 +376,7 @@ class SConsEnvironment(SCons.Environment.Base):
     def _exceeds_version(self, major, minor, v_major, v_minor):
         """Return 1 if 'major' and 'minor' are greater than the version
         in 'v_major' and 'v_minor', and 0 otherwise."""
-        return (major > v_major or (major == v_major and minor > v_minor))
+        return major > v_major or (major == v_major and minor > v_minor)
 
     def _get_major_minor_revision(self, version_string):
         """Split a version string into major, minor and (optionally)
@@ -369,11 +384,11 @@ class SConsEnvironment(SCons.Environment.Base):
 
         This is complicated by the fact that a version string can be
         something like 3.2b1."""
-        version = string.split(string.split(version_string, ' ')[0], '.')
+        version = string.split(string.split(version_string, " ")[0], ".")
         v_major = int(version[0])
-        v_minor = int(re.match('\d+', version[1]).group())
+        v_minor = int(re.match("\d+", version[1]).group())
         if len(version) >= 3:
-            v_revision = int(re.match('\d+', version[2]).group())
+            v_revision = int(re.match("\d+", version[2]).group())
         else:
             v_revision = 0
         return v_major, v_minor, v_revision
@@ -391,16 +406,15 @@ class SConsEnvironment(SCons.Environment.Base):
             try:
                 dirs = kw["dirs"]
             except KeyError:
-                raise SCons.Errors.UserError, \
-                      "Invalid SConscript usage - no parameters"
+                raise SCons.Errors.UserError, "Invalid SConscript usage - no parameters"
 
             if not SCons.Util.is_List(dirs):
-                dirs = [ dirs ]
+                dirs = [dirs]
             dirs = map(str, dirs)
 
-            name = kw.get('name', 'SConscript')
+            name = kw.get("name", "SConscript")
 
-            files = map(lambda n, name = name: os.path.join(n, name), dirs)
+            files = map(lambda n, name=name: os.path.join(n, name), dirs)
 
         elif len(ls) == 1:
 
@@ -408,27 +422,25 @@ class SConsEnvironment(SCons.Environment.Base):
 
         elif len(ls) == 2:
 
-            files   = ls[0]
+            files = ls[0]
             exports = self.Split(ls[1])
 
         else:
 
-            raise SCons.Errors.UserError, \
-                  "Invalid SConscript() usage - too many arguments"
+            raise SCons.Errors.UserError, "Invalid SConscript() usage - too many arguments"
 
         if not SCons.Util.is_List(files):
-            files = [ files ]
+            files = [files]
 
-        if kw.get('exports'):
-            exports.extend(self.Split(kw['exports']))
+        if kw.get("exports"):
+            exports.extend(self.Split(kw["exports"]))
 
-        variant_dir = kw.get('variant_dir') or kw.get('build_dir')
+        variant_dir = kw.get("variant_dir") or kw.get("build_dir")
         if variant_dir:
             if len(files) != 1:
-                raise SCons.Errors.UserError, \
-                    "Invalid SConscript() usage - can only specify one SConscript with a variant_dir"
-            duplicate = kw.get('duplicate', 1)
-            src_dir = kw.get('src_dir')
+                raise SCons.Errors.UserError, "Invalid SConscript() usage - can only specify one SConscript with a variant_dir"
+            duplicate = kw.get("duplicate", 1)
+            src_dir = kw.get("src_dir")
             if not src_dir:
                 src_dir, fname = os.path.split(str(files[0]))
                 files = [os.path.join(str(variant_dir), fname)]
@@ -444,7 +456,7 @@ class SConsEnvironment(SCons.Environment.Base):
                     files = [os.path.join(str(variant_dir), fname)]
                 else:
                     files = [fn.abspath]
-                kw['src_dir'] = variant_dir
+                kw["src_dir"] = variant_dir
             self.fs.VariantDir(variant_dir, src_dir, duplicate)
 
         return (files, exports)
@@ -458,8 +470,8 @@ class SConsEnvironment(SCons.Environment.Base):
     def Configure(self, *args, **kw):
         if not SCons.Script.sconscript_reading:
             raise SCons.Errors.UserError, "Calling Configure from Builders is not supported."
-        kw['_depth'] = kw.get('_depth', 0) + 1
-        return apply(SCons.Environment.Base.Configure, (self,)+args, kw)
+        kw["_depth"] = kw.get("_depth", 0) + 1
+        return apply(SCons.Environment.Base.Configure, (self,) + args, kw)
 
     def Default(self, *targets):
         SCons.Script._Set_Default_Targets(self, targets)
@@ -469,11 +481,13 @@ class SConsEnvironment(SCons.Environment.Base):
         scons_ver = self._get_major_minor_revision(SCons.__version__)
         if scons_ver < (major, minor, revision):
             if revision:
-                scons_ver_string = '%d.%d.%d' % (major, minor, revision)
+                scons_ver_string = "%d.%d.%d" % (major, minor, revision)
             else:
-                scons_ver_string = '%d.%d' % (major, minor)
-            print "SCons %s or greater required, but you have SCons %s" % \
-                  (scons_ver_string, SCons.__version__)
+                scons_ver_string = "%d.%d" % (major, minor)
+            print "SCons %s or greater required, but you have SCons %s" % (
+                scons_ver_string,
+                SCons.__version__,
+            )
             sys.exit(2)
 
     def EnsurePythonVersion(self, major, minor):
@@ -485,7 +499,11 @@ class SConsEnvironment(SCons.Environment.Base):
             python_ver = self._get_major_minor_revision(sys.version)[:2]
         if python_ver < (major, minor):
             v = string.split(sys.version, " ", 1)[0]
-            print "Python %d.%d or greater required, but you have Python %s" %(major,minor,v)
+            print "Python %d.%d or greater required, but you have Python %s" % (
+                major,
+                minor,
+                v,
+            )
             sys.exit(2)
 
     def Exit(self, value=0):
@@ -516,7 +534,7 @@ class SConsEnvironment(SCons.Environment.Base):
             for var in vars:
                 var = self.Split(var)
                 for v in var:
-                    if v == '*':
+                    if v == "*":
                         globals.update(global_exports)
                         globals.update(exports)
                     else:
@@ -524,8 +542,8 @@ class SConsEnvironment(SCons.Environment.Base):
                             globals[v] = exports[v]
                         else:
                             globals[v] = global_exports[v]
-        except KeyError,x:
-            raise SCons.Errors.UserError, "Import of non-existent variable '%s'"%x
+        except KeyError, x:
+            raise SCons.Errors.UserError, "Import of non-existent variable '%s'" % x
 
     def SConscript(self, *ls, **kw):
         def subst_element(x, subst=self.subst):
@@ -534,6 +552,7 @@ class SConsEnvironment(SCons.Environment.Base):
             else:
                 x = subst(x)
             return x
+
         ls = map(subst_element, ls)
         subst_kw = {}
         for key, val in kw.items():
@@ -549,8 +568,15 @@ class SConsEnvironment(SCons.Environment.Base):
             subst_kw[key] = val
 
         files, exports = self._get_SConscript_filenames(ls, subst_kw)
-        subst_kw['exports'] = exports
-        return apply(_SConscript, [self.fs,] + files, subst_kw)
+        subst_kw["exports"] = exports
+        return apply(
+            _SConscript,
+            [
+                self.fs,
+            ]
+            + files,
+            subst_kw,
+        )
 
     def SConscriptChdir(self, flag):
         global sconscript_chdir
@@ -560,16 +586,19 @@ class SConsEnvironment(SCons.Environment.Base):
         name = self.subst(name)
         SCons.Script.Main.SetOption(name, value)
 
+
 #
 #
 #
 SCons.Environment.Environment = SConsEnvironment
 
+
 def Configure(*args, **kw):
     if not SCons.Script.sconscript_reading:
         raise SCons.Errors.UserError, "Calling Configure from Builders is not supported."
-    kw['_depth'] = 1
+    kw["_depth"] = 1
     return apply(SCons.SConf.SConf, args, kw)
+
 
 # It's very important that the DefaultEnvironmentCall() class stay in this
 # file, with the get_calling_namespaces() function, the compute_exports()
@@ -588,12 +617,14 @@ def Configure(*args, **kw):
 
 _DefaultEnvironmentProxy = None
 
+
 def get_DefaultEnvironmentProxy():
     global _DefaultEnvironmentProxy
     if not _DefaultEnvironmentProxy:
         default_env = SCons.Defaults.DefaultEnvironment()
         _DefaultEnvironmentProxy = SCons.Environment.NoSubstitutionProxy(default_env)
     return _DefaultEnvironmentProxy
+
 
 class DefaultEnvironmentCall:
     """A class that implements "global function" calls of
@@ -604,12 +635,14 @@ class DefaultEnvironmentCall:
     thereby prevent expansion of construction variables (since from
     the user's point of view this was called as a global function,
     with no associated construction environment)."""
+
     def __init__(self, method_name, subst=0):
         self.method_name = method_name
         if subst:
             self.factory = SCons.Defaults.DefaultEnvironment
         else:
             self.factory = get_DefaultEnvironmentProxy
+
     def __call__(self, *args, **kw):
         env = self.factory()
         method = getattr(env, self.method_name)
@@ -627,13 +660,17 @@ def BuildDefaultGlobals():
         GlobalDict = {}
 
         import SCons.Script
+
         d = SCons.Script.__dict__
+
         def not_a_module(m, d=d, mtype=type(SCons.Script)):
-             return type(d[m]) != mtype
+            return type(d[m]) != mtype
+
         for m in filter(not_a_module, dir(SCons.Script)):
-             GlobalDict[m] = d[m]
+            GlobalDict[m] = d[m]
 
     return GlobalDict.copy()
+
 
 # Local Variables:
 # tab-width:4

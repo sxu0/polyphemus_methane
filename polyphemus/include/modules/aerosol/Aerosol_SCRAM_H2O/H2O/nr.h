@@ -517,9 +517,9 @@ void zrhqr(float a[], int m, float rtr[], float rti[]);
 float zriddr(float (*func)(float), float x1, float x2, float xacc);
 void zroots(fcomplex a[], int m, fcomplex roots[], int polish);
 
-/* 
+/*
 Betty Pun 1/99
-added twins of these functions because they are used in 
+added twins of these functions because they are used in
 nested loops
 */
 void fdjac1(int n, float x[], float fvec[], float **df,
@@ -533,4 +533,3 @@ void newt1(float x[], int n, int *check, void (*vecfunc)(int, float [], float []
 
 
 #endif /* _NR_H_ */
-

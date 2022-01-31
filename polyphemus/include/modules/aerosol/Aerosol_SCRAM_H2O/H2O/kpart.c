@@ -29,13 +29,13 @@ Purpose: Kpart routine used in Type B particles calculation
 Preconditions: called by TypeB or Typeaabs
 
 Revisions:  1. Developed by Betty Pun, AER, Jan 99 under EPRI for
-               prototype SOA module with one compound octandecanoic acid       
+               prototype SOA module with one compound octandecanoic acid
             2. Modified to comply with Models-3 coding standard, Betty Pun,
                AER, Nov 99, under ARB funding, incorporated into SOA module
                for 5 condensable compounds
-	    3. Modified July 2005 to add temperature correction 
-	       use clausius-clapeyron equation.  Alternative method 
-	       may be to estimate BP of surrogate and use 
+	    3. Modified July 2005 to add temperature correction
+	       use clausius-clapeyron equation.  Alternative method
+	       may be to estimate BP of surrogate and use
 	       Schwarzenbach et al. equation 4-33
 ***************************************************************************/
 void Kpart (int n, double ac[], double mwom, double KB[], double VPB[], double HVAP[], double K0[], int oligoflag)
@@ -49,7 +49,7 @@ void Kpart (int n, double ac[], double mwom, double KB[], double VPB[], double H
   float T;              /* local temperature variable */
   double R = 8.206e-5;  /* gas constant in units of m3-atm/mol/K */
   double RKJMOLK = 8.314e-3 ; /* gas constant in units of kJ/mol/K*/
-  double Tref = 298.;   /* temperature at which group contribution method 
+  double Tref = 298.;   /* temperature at which group contribution method
                            applied to individual products */
   double VPCORR;
 
@@ -60,7 +60,3 @@ void Kpart (int n, double ac[], double mwom, double KB[], double VPB[], double H
 	if (oligoflag==1) KB[i]=KB[i]*(1+K0[i]);
   }
 }
-
-
-
-

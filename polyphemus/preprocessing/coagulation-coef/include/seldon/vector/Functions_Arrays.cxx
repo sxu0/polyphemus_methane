@@ -22,7 +22,7 @@
 
 /*
   Functions defined in this file
-  
+
   QuickSort(m, n, X);
   QuickSort(m, n, X, Y);
   QuickSort(m, n, X, Y, Z);
@@ -43,7 +43,7 @@
 
   Assemble(m, X);
   Assemble(m, X, Y);
-  
+
   RemoveDuplicate(m, X);
   RemoveDuplicate(m, X, Y);
   RemoveDuplicate(X);
@@ -52,12 +52,12 @@
 
 namespace Seldon
 {
-  
-  
+
+
   ////////////
   //  SORT  //
-  
-  
+
+
   //! Intermediary function used for quick sort algorithm.
   template<class T, class Storage, class Allocator>
   int PartitionQuickSort(int m, int n,
@@ -67,7 +67,7 @@ namespace Seldon
     v = t(m);
     int i = m - 1;
     int j = n + 1;
-    
+
     while (true)
       {
 	do
@@ -75,13 +75,13 @@ namespace Seldon
 	    j--;
 	  }
 	while (t(j) > v);
-	
+
 	do
 	  {
 	    i++;
 	  }
 	while (t(i) < v);
-	
+
 	if (i < j)
 	  {
 	    temp = t(i);
@@ -94,8 +94,8 @@ namespace Seldon
 	  }
       }
   }
-  
-  
+
+
   //! Vector \a t is sorted by using QuickSort algorithm.
   /*!
     Sorts array \a t between position m and n.
@@ -111,8 +111,8 @@ namespace Seldon
 	QuickSort(p+1, n, t);
       }
   }
-  
-  
+
+
   //! Intermediary function used for quick sort algorithm.
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
@@ -125,7 +125,7 @@ namespace Seldon
     v = t1(m);
     int i = m - 1;
     int j = n + 1;
-    
+
     while (true)
       {
 	do
@@ -138,7 +138,7 @@ namespace Seldon
 	    i++;
 	  }
 	while (t1(i) < v);
-	
+
 	if (i < j)
 	  {
 	    temp1 = t1(i);
@@ -154,8 +154,8 @@ namespace Seldon
 	  }
       }
   }
-  
-  
+
+
   //! Vector \a t1 is sorted by using QuickSort algorithm.
   /*! Sorts array \a t2 between position m and n, the sorting operation
     affects vector \a t2.
@@ -173,8 +173,8 @@ namespace Seldon
 	QuickSort(p+1, n, t1, t2);
       }
   }
-  
-  
+
+
   //! Intermediary function used for quick sort algorithm.
   template<class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2,
@@ -190,7 +190,7 @@ namespace Seldon
     v = t1(m);
     int i = m - 1;
     int j = n + 1;
-    
+
     while (true)
       {
 	do
@@ -198,13 +198,13 @@ namespace Seldon
 	    j--;
 	  }
 	while (t1(j) > v);
-	
+
 	do
 	  {
 	    i++;
 	  }
 	while (t1(i) < v);
-	
+
 	if (i < j)
 	  {
 	    temp1 = t1(i);
@@ -223,8 +223,8 @@ namespace Seldon
 	  }
       }
   }
-  
-  
+
+
   //! Vector \a t1 is sorted by using QuickSort algorithm.
   /*! Sorts array \a t1 between position m and n, the sorting operation
     affects vectors \a t2 and \a t3.
@@ -244,8 +244,8 @@ namespace Seldon
 	QuickSort(p+1, n, t1, t2, t3);
       }
   }
-  
-  
+
+
   //! Vector \a tab1 is sorted by using MergeSort algorithm.
   /*!
     Sorts array \a tab1 between position m and n.
@@ -255,7 +255,7 @@ namespace Seldon
   {
     if (m <= n)
       return;
-    
+
     int inc = 1, ind = 0, current, i, j, sup;
     Vector<T, Storage, Allocator> tab1t(m-n+1);
     // Performs a merge sort with a recurrence.
@@ -316,15 +316,15 @@ namespace Seldon
 		  }
 	      }
 	  }
-	
+
 	for (i = m; i < ind; i++)
 	  tab1(i) = tab1t(i - m);
-	
+
 	inc = 2 * inc;
       }
   }
-  
-  
+
+
   //! Vector \a tab1 is sorted by using MergeSort algorithm.
   /*! Sorts array \a tab1 between position m and n. The sort operation affects
     \a tab2.
@@ -336,11 +336,11 @@ namespace Seldon
   {
     if (m <= n)
       return;
-    
+
     int inc = 1, ind = 0, current, i, j, sup;
     Vector<T1, Storage1, Allocator1> tab1t(m - n + 1);
     Vector<T2, Storage2, Allocator2> tab2t(m - n + 1);
-    
+
     while (inc < n)
       {
 	for (i = 0; i < n - inc; i += 2 * inc)
@@ -396,8 +396,8 @@ namespace Seldon
 	inc = 2 * inc;
       }
   }
-  
-  
+
+
   //! Vector \a tab1 is sorted by using MergeSort algorithm.
   /*! Sorts array \a tab1 between position m and n. The sort operation affects
     \a tab2 and \a tab3.
@@ -411,12 +411,12 @@ namespace Seldon
   {
     if (m <= n)
       return;
-    
+
     int inc = 1, ind = 0, current, i, j, sup;
     Vector<T1, Storage1, Allocator1> tab1t(n - m + 1);
     Vector<T2, Storage2, Allocator2> tab2t(n - m + 1);
     Vector<T3, Storage3, Allocator3> tab3t(n - m + 1);
-    
+
     while (inc < n)
       {
 	for (i = 0; i < n - inc; i += 2 * inc)
@@ -477,8 +477,8 @@ namespace Seldon
 	inc = 2 * inc;
       }
   }
-  
-  
+
+
   //! Assembles a sparse vector.
   /*! The function sorts the indices in \a Node and adds the corresponding
     values of \a Vect corresponding.
@@ -499,7 +499,7 @@ namespace Seldon
   {
     if (n <= 1)
       return;
-    
+
     Sort(n, Node, Vect);
     int prec = Node(0);
     int nb = 0;
@@ -517,8 +517,8 @@ namespace Seldon
 	}
     n = nb + 1;
   }
-  
-  
+
+
   //! Sorts and removes duplicate entries of a vector.
   /*!
     \param[in,out] n on entry, the number of elements to assemble; on exit,
@@ -531,7 +531,7 @@ namespace Seldon
   {
     if (n <= 1)
       return;
-    
+
     Sort(n, Node);
     T prec = Node(0);
     int nb = 1;
@@ -544,7 +544,7 @@ namespace Seldon
 	}
     n = nb;
   }
-  
+
 
   //! Sorts and removes duplicate entries of a vector.
   template<class T, class Storage1, class Allocator1>
@@ -554,8 +554,8 @@ namespace Seldon
     Assemble(nb, Node);
     Node.Resize(nb);
   }
-  
-  
+
+
   //! Sorts and removes duplicate entries of a vector.
   /*!
     Sorting operations on \a Node also affect \a Node2.
@@ -567,7 +567,7 @@ namespace Seldon
   {
     if (n <= 1)
       return;
-    
+
     Sort(n, Node, Node2);
     T prec = Node(0);
     int nb = 1;
@@ -581,16 +581,16 @@ namespace Seldon
 	}
     n = nb;
   }
-  
-  
+
+
   //! Sorts and removes duplicate entries of a vector.
   template<class T, class Storage1, class Allocator1>
   void RemoveDuplicate(int& n, Vector<T, Storage1, Allocator1>& Node)
   {
     Assemble(n, Node);
   }
-  
-  
+
+
   //! Sorts and removes duplicate entries of a vector.
   /*!
     Sorting operations of \a Node also affect \a Node2.
@@ -603,13 +603,13 @@ namespace Seldon
     int n = Node.GetM();
     if (n <= 1)
       return;
-    
+
     RemoveDuplicate(n, Node, Node2);
     Node.Resize(n);
     Node2.Resize(n);
   }
 
-  
+
   //! Sorts and removes duplicate entries of a vector.
   template<class T, class Storage1, class Allocator1>
   void RemoveDuplicate(Vector<T, Storage1, Allocator1>& Node)
@@ -617,20 +617,20 @@ namespace Seldon
     int n = Node.GetM();
     if (n <= 1)
       return;
-    
+
     Assemble(n, Node);
     Node.Resize(n);
   }
-  
-  
+
+
   //! Sorts vector \a V between a start position and an end position.
   template<class T, class Storage, class Allocator>
   void Sort(int m, int n, Vector<T, Storage, Allocator>& V)
   {
     QuickSort(m, n, V);
   }
-  
-  
+
+
   //! Sorts vector \a V between a start position and an end position.
   /*!
     The sorting operation of \a V also affects \a V2.
@@ -642,8 +642,8 @@ namespace Seldon
   {
     QuickSort(m, n, V, V2);
   }
-  
-  
+
+
   //! Sorts vector \a V between a start position and an end position.
   /*!
     The sorting operation of \a V also affects \a V2 and \a V3.
@@ -657,16 +657,16 @@ namespace Seldon
   {
     QuickSort(m, n, V, V2, V3);
   }
-  
-  
+
+
   //! Sorts the \a n first elements of \a V.
   template<class T, class Storage, class Allocator>
   void Sort(int n, Vector<T, Storage, Allocator>& V)
   {
     Sort(0, n - 1, V);
   }
-  
-  
+
+
   //! Sorts the \a n first elements of \a V.
   /*!
     The sorting operation of \a V also affects \a V2.
@@ -678,8 +678,8 @@ namespace Seldon
   {
     Sort(0, n - 1, V, V2);
   }
-  
-  
+
+
   //! Sorts the \a n first elements of \a V.
   /*!
     The sorting operation of \a V also affects \a V2 and \a V3.
@@ -693,16 +693,16 @@ namespace Seldon
   {
     Sort(0, n - 1, V, V2, V3);
   }
-  
-  
+
+
   //! Sorts vector \a V.
   template<class T, class Storage, class Allocator>
   void Sort(Vector<T, Storage, Allocator>& V)
   {
     Sort(0, V.GetM() - 1, V);
   }
-  
-  
+
+
   //! Sorts vector \a V.
   /*!
     The sorting operation of \a V also affects \a V2.
@@ -714,8 +714,8 @@ namespace Seldon
   {
     Sort(0, V.GetM() - 1, V, V2);
   }
-  
-  
+
+
   //! Sorts vector \a V.
   /*!
     The sorting operation of \a V also affects \a V2 and \a V3.
@@ -729,12 +729,12 @@ namespace Seldon
   {
     Sort(0, V.GetM() - 1, V, V2, V3);
   }
-  
-  
+
+
   //  SORT  //
   ////////////
-  
-  
+
+
 } // namespace Seldon
 
 #define SELDON_FILE_FUNCTIONS_ARRAYS_CXX

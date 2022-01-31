@@ -34,16 +34,20 @@ Usage example:
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-__revision__ = "src/engine/SCons/Variables/BoolVariable.py 5110 2010/07/25 16:14:38 bdeegan"
+__revision__ = (
+    "src/engine/SCons/Variables/BoolVariable.py 5110 2010/07/25 16:14:38 bdeegan"
+)
 
-__all__ = ['BoolVariable',]
+__all__ = [
+    "BoolVariable",
+]
 
 import string
 
 import SCons.Errors
 
-__true_strings  = ('y', 'yes', 'true', 't', '1', 'on' , 'all' )
-__false_strings = ('n', 'no', 'false', 'f', '0', 'off', 'none')
+__true_strings = ("y", "yes", "true", "t", "1", "on", "all")
+__false_strings = ("n", "no", "false", "f", "0", "off", "none")
 
 
 def _text2bool(val):
@@ -58,20 +62,23 @@ def _text2bool(val):
     This is usable as 'converter' for SCons' Variables.
     """
     lval = string.lower(val)
-    if lval in __true_strings: return True
-    if lval in __false_strings: return False
+    if lval in __true_strings:
+        return True
+    if lval in __false_strings:
+        return False
     raise ValueError("Invalid value for boolean option: %s" % val)
 
 
 def _validator(key, val, env):
     """
     Validates the given value to be either '0' or '1'.
-    
+
     This is usable as 'validator' for SCons' Variables.
     """
     if not env[key] in (True, False):
         raise SCons.Errors.UserError(
-            'Invalid value for boolean option %s: %s' % (key, env[key]))
+            "Invalid value for boolean option %s: %s" % (key, env[key])
+        )
 
 
 def BoolVariable(key, help, default):
@@ -81,8 +88,8 @@ def BoolVariable(key, help, default):
     'help' text will by appended by '(yes|no) to show the valid
     valued. The result is usable for input to opts.Add().
     """
-    return (key, '%s (yes|no)' % help, default,
-            _validator, _text2bool)
+    return (key, "%s (yes|no)" % help, default, _validator, _text2bool)
+
 
 # Local Variables:
 # tab-width:4

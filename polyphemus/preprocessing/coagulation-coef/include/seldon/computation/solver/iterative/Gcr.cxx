@@ -27,11 +27,11 @@ namespace Seldon
   /*!
     Solves the linear system Ax = b with restarted Preconditioned
     Generalized Conjugate Residual Algorithm.
-    
+
     return value of 0 indicates convergence within the
     maximum number of iterations (determined by the iter object).
     return value of 1 indicates a failure to converge.
-    
+
     See: Y. Saad, Iterative Methods for Sparse Linear System, PWS Publishing
     Company, 1996
 
@@ -49,20 +49,20 @@ namespace Seldon
     const int N = A.GetM();
     if (N <= 0)
       return 0;
-    
+
     typedef typename Vector1::value_type Complexe;
     int m = outer.GetRestart();
     // we initialize outer
     int success_init = outer.Init(b);
     if (success_init != 0)
       return outer.ErrorCode();
-    
+
     std::vector<Vector1> p(m+1, b), w(m+1, b);
-    
+
     Vector<Complexe> beta(m+1);
-    
+
     Vector1 r(b), q(b), u(b);
-    
+
     for (int i = 0; i < (m+1); i++)
       {
 	p[i].Zero();
@@ -75,11 +75,11 @@ namespace Seldon
       MltAdd(Complexe(-1), A, x, Complexe(1), u);
     else
       x.Zero();
-    
+
     M.Solve(A, u, r);
-    
+
     Complexe alpha,delta;
-    
+
     Titer normr = Norm2(r);
     outer.SetNumberIteration(0);
     // Loop until the stopping criteria are satisfied
@@ -91,36 +91,36 @@ namespace Seldon
 	inner.SetMaxNumberIteration(outer.GetNumberIteration()+m);
 	Copy(r, p[0]);
 	Mlt(Titer(1)/normr, p[0]);
-	
+
 	int j = 0;
-	
+
 	while (! inner.Finished(r) )
 	  {
 	    // product matrix vector u=A*p(j)
 	    Mlt(A, p[j], u);
-	    
+
 	    // preconditioning
 	    M.Solve(A, u, w[j]);
-	    
+
 	    beta(j) = DotProdConj(w[j], w[j]);
 	    if (beta(j) == Complexe(0))
 	      {
 		outer.Fail(1, "Gcr breakdown #1");
 		break;
 	      }
-	    
+
 	    // new iterate x = x + alpha*p(j) new residual r = r - alpha*w(j)
 	    // where alpha = (conj(r_j),A*p_j)/(A*p_j,A*p_j)
 	    alpha = DotProdConj(w[j], r) / beta(j);
 	    Add(alpha, p[j], x);
 	    Add(-alpha, w[j], r);
-	    
+
 	    ++inner;
 	    ++outer;
 	    // product Matrix vector u = A*r
 	    Mlt(A, r, u);
 	    M.Solve(A, u, q);
-	    
+
 	    Copy(r, p[j+1]);
 	    // we compute direction p(j+1) = r(j+1) +
 	    // \sum_{i=0..j} ( -(A*r_j+1,A*p_i)/(A*p_i,A*p_i) p(i))
@@ -129,17 +129,17 @@ namespace Seldon
 		delta = -DotProdConj(w[i], q)/beta(i);
 		Add(delta, p[i], p[j+1]);
 	      }
-	    
+
 	    ++inner;
 	    ++outer;
 	    ++j;
 	  }
 	normr = Norm2(r);
       }
-    
+
     return outer.ErrorCode();
   }
-  
+
 } // end namespace
 
 #define SELDON_FILE_ITERATIVE_GCR_CXX

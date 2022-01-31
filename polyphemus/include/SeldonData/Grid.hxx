@@ -284,4 +284,3 @@ namespace SeldonData
 
 #define FILE_SELDONDATA_GRID_HXX
 #endif
-

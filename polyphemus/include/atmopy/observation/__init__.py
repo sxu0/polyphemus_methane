@@ -36,7 +36,9 @@ from temporal import *
 from space_time import *
 
 import os
+
 current_directory = os.path.dirname(os.path.abspath(__file__))
-if os.path.isfile(os.path.join(current_directory, "_manager.so")) \
-        and os.path.isfile(os.path.join(current_directory, "manager.py")):
+if os.path.isfile(os.path.join(current_directory, "_manager.so")) and os.path.isfile(
+    os.path.join(current_directory, "manager.py")
+):
     from manager import *

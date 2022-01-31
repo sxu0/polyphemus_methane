@@ -34,4 +34,3 @@ namespace Polyphemus
 
 #define POLYPHEMUS_FILE_MODELS_STREETCHEMISTRY_CXX
 #endif
-

@@ -1,81 +1,81 @@
 C-----------------------------------------------------------------------
 C     Copyright (C) 2003-2007, ENPC - INRIA - EDF R&D
 C     Author(s): Kathleen Fahey
-C     
+C
 C     This file is part of the Variable Size Resolved Model (VSRM),
 C     based on the VSRM model of Carnegie Melon University.  It is a
 C     component of the air quality modeling system Polyphemus.
-C    
+C
 C     Polyphemus is developed in the INRIA - ENPC joint project-team
 C     CLIME and in the ENPC - EDF R&D joint laboratory CEREA.
-C    
+C
 C     Polyphemus is free software; you can redistribute it and/or modify
 C     it under the terms of the GNU General Public License as published
 C     by the Free Software Foundation; either version 2 of the License,
 C     or (at your option) any later version.
-C     
+C
 C     Polyphemus is distributed in the hope that it will be useful, but
 C     WITHOUT ANY WARRANTY; without even the implied warranty of
 C     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 C     General Public License for more details.
-C     
+C
 C     For more information, visit the Polyphemus web site:
 C     http://cerea.enpc.fr/polyphemus/
 C-----------------------------------------------------------------------
 
       subroutine aqrates(yaq, iph, aqprod, aqdest, yaqprime,ph)
-      
+
 C------------------------------------------------------------------------
-C     
-C     -- DESCRIPTION 
-C     
+C
+C     -- DESCRIPTION
+C
 C     This routine computes the time derivatives for the aqueous-phase
-C     system in the bulk case (one cloud section), the production term 
+C     system in the bulk case (one cloud section), the production term
 C     and the destruction rate.
 C     If IPH=1, we only compute pH.
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- INPUT VARIABLES
-C     
+C
 C     YAQ: concentration of the aqueous-phase system ([...]).
 C     IPH: 0 for all computations, 1 for pH only.
-C     
+C
 C     -- INPUT/OUTPUT VARIABLES
-C     
-C     
+C
+C
 C     -- OUTPUT VARIABLES
-C     
+C
 C     AQPROD  : production term.
 C     AQDEST  : destruction rate.
-C     YAQPRIME: first-order derivative defined as 
+C     YAQPRIME: first-order derivative defined as
 C     AQPROD-AQDEST*YAQ  ([...]).
 C     PH      : pH.
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- REMARKS
-C     
+C
 C     The vector YAQ is defined in the following way (in ug/m3):
-C     
-C     YAQ(1) : total HCHO 
-C     YAQ(2) : total HCOOH 
-C     YAQ(3) : total SO2 
+C
+C     YAQ(1) : total HCHO
+C     YAQ(2) : total HCOOH
+C     YAQ(3) : total SO2
 C     YAQ(4) : total H2O2
-C     YAQ(5) : NH3(g)   
+C     YAQ(5) : NH3(g)
 C     YAQ(6) : SO2 (aq)
 C     YAQ(7) : H2O2 (aq)
 C     YAQ(8) : NITRATE (aq)
 C     YAQ(9) : CHLORIDE (aq)
 C     YAQ(10): AMMONIUM (aq)
-C     YAQ(11): SULFATE (aq) 
+C     YAQ(11): SULFATE (aq)
 C     YAQ(12): HSO5-
-C     YAQ(13): HMSA 
-C     
+C     YAQ(13): HMSA
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- MODIFICATIONS
-C     
+C
 C     1) Remove call to QSATURATION.
 C     2) Remove initialization to 0 (computed anyhow).
 C     3) Remove many debbuging tests.
@@ -101,13 +101,13 @@ C     19)gmol, wmol no more in dropcom.inc.
 C     20)Replace form by formald (F77 function otherwise ??).
 C     21)Add pH tricks.
 C------------------------------------------------------------------------
-C     
+C
 C     -- AUTHOR(S)
-C     
+C
 C     Kathleen Fahey, CEREA, , on the basis of the VSRM model
 C     (Carneggie Mellon University).
 C     2005/10/3, cleaning and update, Bruno Sportisse, CEREA.
-C     
+C
 C------------------------------------------------------------------------
 
       IMPLICIT NONE
@@ -117,20 +117,20 @@ C------------------------------------------------------------------------
       include 'droppar.inc'
       include 'aqrates.inc'
       include 'num_aq.inc'
-c     
+c
       double precision coefloc,coefloc2
       double precision yaq(13),yaqprime(13)
       double precision aqprod(13), aqdest(13)
       double precision con(28),cmet(4), c(46), gascon(ngas_aq)
       double precision spres(21), gcon(21)
-      double precision fgl(21), flg(21), gfgl(21), gflg(21) 
+      double precision fgl(21), flg(21), gfgl(21), gflg(21)
       double precision rp(28), rl(28)
       double precision rr(120)
       double precision ph
-      
+
       double precision hc1, hc2, vlwc, hyd
       double precision arytm, hno2, af
-      double precision ah, chen, rad, wvol 
+      double precision ah, chen, rad, wvol
       double precision formald, crustal, salt, cph
       double precision pressure, watvap, watcont
       double precision temp,therm
@@ -138,35 +138,35 @@ c
       double precision wmol(29),gmol(22)
 
       integer i,iph
-      
+
       common/aqrate/pressure,therm
       common/gascon/gascon      ! in ppm
-      common/aqchem1/watcont,watvap,crustal,salt  
+      common/aqchem1/watcont,watvap,crustal,salt
                                 ! lwc,wat. vapor in g/m3
                                 ! crustal species concentration INSIDE DROPLETS (ug/m3)
                                 ! Na concentration INSIDE DROPLETS (ug/m3)
       common/sstate/gcon,con,cmet,rad, wvol, cph
 !$OMP THREADPRIVATE(/aqrate/, /gascon/, /aqchem1/, /sstate/)
 
-c     
+c
 c     MOLECULAR WEIGHTS
-c     
+c
       data wmol/81.0d0,  96.0d0,  47.0d0, 62.0d0, 62.0d0,
      &     34.0d0,  48.0d0,  46.0d0, 30.0d0, 46.0d0,
      &     48.0d0,  121.0d0, 76.0d0, 48.0d0, 35.5d0,
      &     17.0d0,  33.0d0,  62.0d0, 18.0d0, 47.0d0,
      &     32.0d0,  35.5d0,  52.5d0, 96.0d0, 112.0d0,
      &     113.0d0, 111.0d0, 60.0d0, 18.0d0/
-c     
+c
       data gmol/64.0d0,  98.08d0,  47.02d0, 63.02d0, 44.01d0,
      &     34.02d0, 30.03d0,  46.00d0, 30.01d0, 46.01d0,
      &     48.00d0, 121.05d0, 76.00d0, 48.00d0, 36.50d0,
      &     17.00d0, 33.01d0,  62.01d0, 17.00d0, 47.00d0,
      &     32.00d0, 18.00d0/
 
-      
-c     1) Meteorological/thermodynamics conditions  
-c     -------------------------------------------     
+
+c     1) Meteorological/thermodynamics conditions
+c     -------------------------------------------
       temp = therm
       vlwc = watcont*1.d-6      ! vol/vol
       wvol = vlwc
@@ -180,7 +180,7 @@ c     and in mol/l (GCON)
 c     (SOME ARE ASSUMED TO REMAIN CONSTANT DURING THE AQUEOUS-PHASE
 c     CHEMICAL PROCESSES, THE REST ARE UPDATED)
 c     ALL HCHO AND HCOOH ARE STILL IN THE GAS-PHASE
-c     -------------------------------------------------------------    
+c     -------------------------------------------------------------
       coefloc = 8.314d-5*temp/pressure
 
       spres(1)  = yaq(3)*coefloc/mmSO2 ! SO2 (g)
@@ -223,17 +223,17 @@ c     -----------------------------------------------------------------
       cmet(2) = fman*crustal*coefloc/54.9d0 ! Mn(2+) mol/l
       cmet(3) = salt*coefloc/23.d0 ! Na(+)  mol/l
       cmet(4) = caratio*crustal*coefloc/40.08d0 ! Ca(2+) mol/l
-c     
+c
 c     DO NOT LET THE Fe(3+) AND Mn(2+) CONCENTRATIONS EXCEED A
 c     CERTAIN LIMIT BECAUSE THEY CAUSE EXTREME STIFFNESS DUE TO
-c     THE REACTION S(IV)->S(VI) 
-c     
+c     THE REACTION S(IV)->S(VI)
+c
 c     if (cmet(1) .gt. 1.0e-5) cmet(1)=1.0e-5
 c     if (cmet(2) .gt. 1.0e-5) cmet(2)=1.0e-5
-c     
+c
 c     4) Compute the aqueous concentrations ([M])
 c     -------------------------------------------
-      
+
       con(1) = yaq(6)*coefloc/wmol(1) ! S(IV)
       con(2) = yaq(11)*coefloc/wmol(2) ! S(VI)
       con(3) = 0.d0             ! N(III) (LATER)
@@ -269,23 +269,23 @@ c     -------------------------------------------
 
 c     5) CALCULATION OF pH and VOLATILE CONCENTRATIONS (CO2, N(III), HCOOH)
 c     ---------------------------------------------------------------------
-      
-      call fullequil(con,spres,cmet,akeq,akhen,vlwc,temp,hyd) 
+
+      call fullequil(con,spres,cmet,akeq,akhen,vlwc,temp,hyd)
       ph=-DLOG10(hyd)
 
 C     Stop if only pH required
-C     
+C
       IF (IPH.EQ.0) THEN
-c     N(III) (HNO2)     
+c     N(III) (HNO2)
          ah = 8.314d-2*temp*vlwc*akhen(3)*(1.d0+akeq(7)/hyd)/pressure
          hno2=spres(3)/(1.d0+ah)
          con(3)=akhen(3)*(1.d0+akeq(7)/hyd)*1.d-6*hno2
 
-c     CO2 (Tot)aq ([M])    
+c     CO2 (Tot)aq ([M])
          chen=akhen(5)*(1.d0+akeq(8)/hyd+akeq(8)*akeq(9)/hyd**2d0)
-         con(5)=chen*spres(5)*1.d-6 
+         con(5)=chen*spres(5)*1.d-6
 
-c     HCOOH     
+c     HCOOH
          af=8.314d-2*temp*vlwc*akhen(8)*(1.d0+akeq(13)/hyd)/pressure
          formald=spres(8)/(1.d0+af) ! NEW HCOOH(g) ppm
          con(8)=akhen(8)*(1.d0+akeq(13)/hyd)*1.d-6*formald
@@ -296,14 +296,14 @@ c     -------------------------------------
          con(16)=1.d-5*TINYAQ   !OH(g)
          con(17)=con(16)        !HO2(g)
          con(18)=con(16)        !NO3(g)
-         con(23)=con(16)        !ClOH- 
+         con(23)=con(16)        !ClOH-
          con(24)=con(16)        !SO4-
          con(25)=con(16)        !SO5-
          con(28)=con(16)        !CO3-
 
 c     7) Compute ionic species
 c     ------------------------
-         
+
          call values(hyd, con, akeq, c)
 
 c     8) Compute reaction rates
@@ -318,14 +318,14 @@ c     -------------------------------------------------------------
 
 c     10) Compute mass transfer rates
 c     -------------------------------
-         
+
          call mass(wvol,rad,temp,pressure,
      &        gcon,con,c,akeq,akhen,fgl,flg,gfgl,gflg)
 
-c     11) Compute first derivative, production/consumption term     
+c     11) Compute first derivative, production/consumption term
 c     ---------------------------------------------------------
 
-C     SULFATE SPECIES 
+C     SULFATE SPECIES
          if (gascon(ngso2) .le. minso2) then
 
             aqprod(3) = 0.d0
@@ -348,9 +348,9 @@ C     SO2(g)
             coefloc = 1.d9*gmol(1)
             aqprod(3) = coefloc*gflg(1)
             aqdest(3) = coefloc*gfgl(1)
-c     
+c
 c     ** AQUEOUS-PHASE SPECIES **
-c     
+c
 
 C     S(IV)
             coefloc = coefloc2*wmol(1)
@@ -361,7 +361,7 @@ C     S(VI)
             coefloc = coefloc2*wmol(2)
             aqprod(11) = coefloc*(rp(2)+fgl(2))
             aqdest(11) = coefloc*(rl(2)+flg(2))
-            
+
 C     HSO5-
             coefloc = coefloc2*wmol(26)
             aqprod(12) = coefloc*rp(26)
@@ -396,10 +396,10 @@ C     NH3(g)
          coefloc = 1.d9*gmol(19)
          aqprod(5) = coefloc*gflg(19)
          aqdest(5) = coefloc*gfgl(19)
-         
-c     
+
+c
 c     ** AQUEOUS-PHASE SPECIES **
-c     
+c
 C     H2O2
          coefloc = coefloc2*wmol(6)
          aqprod(7) = coefloc*(rp(6)+fgl(6))
@@ -409,7 +409,7 @@ C     N(V)
          coefloc = coefloc2*wmol(4)
          aqprod(8) = coefloc*rp(4)
          aqdest(8) = coefloc*rl(4)
-         
+
 C     Cl-
          coefloc = coefloc2*wmol(15)
          aqprod(9) = coefloc*(rp(15)+fgl(15))
@@ -419,16 +419,16 @@ C     NH4+
          coefloc = coefloc2*wmol(19)
          aqprod(10) = coefloc*(rp(19)+fgl(19))
          aqdest(10) = coefloc*(rl(19)+flg(19))
-c     
+c
 c     CALCULATION OF DERIVATIVES
-C     AND OF THE APPROPRIATE DESTRUCTION RATE 
+C     AND OF THE APPROPRIATE DESTRUCTION RATE
 C     (in place of the destruction flux).
-c     
+c
          do i=1, 13
-            yaqprime(i) =  aqprod(i)-aqdest(i) 
+            yaqprime(i) =  aqprod(i)-aqdest(i)
             if (yaq(i) .le.TINYAQ) then
                aqdest(i) = TINYAQ*100.d0
-            else 
+            else
                aqdest(i) = aqdest(i)/yaq(i)
                aqdest(i) = dmax1(aqdest(i), TINYAQ*100.d0)
             endif

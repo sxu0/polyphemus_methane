@@ -110,8 +110,3 @@ void partfunc2(int n, double aero[], double gamma[], double f[])
     }         /* end while ieq */
   return;
 }
-
-
-
-
-

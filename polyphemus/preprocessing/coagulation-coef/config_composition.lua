@@ -11,7 +11,7 @@ default = {
    diameter = { min = 0.01, max = 10.0, Nb = 5, Nf = 2},
    -- Nb is the number of size bins
    -- Nf is the number of fraction descretization for each species
-   
+
    --section_definition_auto = false,
 
 

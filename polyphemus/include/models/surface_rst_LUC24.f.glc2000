@@ -1,21 +1,21 @@
 C-----------------------------------------------------------------------
 C     Copyright (C) 2001-2007, ENPC - INRIA - EDF R&D
-C     
+C
 C     This file is part of the air quality modeling system Polyphemus.
-C     
+C
 C     Polyphemus is developed in the INRIA - ENPC joint project-team
 C     CLIME and in the ENPC - EDF R&D joint laboratory CEREA.
-C     
+C
 C     Polyphemus is free software; you can redistribute it and/or modify
 C     it under the terms of the GNU General Public License as published
 C     by the Free Software Foundation; either version 2 of the License,
 C     or (at your option) any later version.
-C     
+C
 C     Polyphemus is distributed in the hope that it will be useful, but
 C     WITHOUT ANY WARRANTY; without even the implied warranty of
 C     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 C     General Public License for more details.
-C     
+C
 C     For more information, visit the Polyphemus web site:
 C     http://cerea.enpc.fr/polyphemus/
 C-----------------------------------------------------------------------
@@ -27,15 +27,15 @@ C-----------------------------------------------------------------------
      $     LargeRadius, Rsol)
 
 C------------------------------------------------------------------------
-C     
+C
 C     -- DESCRIPTION
-C     
+C
 C     This routine computes surface resistance.
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- INPUT VARIABLES
-C     
+C
 C     Nland: Number of land use coverage.
 C     LUC: Land Use Coverage percentages in the cell. ([0,1])
 C     Iseason: season index.
@@ -49,13 +49,13 @@ C     Gamma: Zhang model coefficient.
 C     Alpha: Zhang model coefficient.
 C     SmallRadius: Characteristic radius of small receptors. ([m])
 C     LargeRadius: Characteristic radius of large receptors. ([m])
-C     
+C
 C     -- OUTPUT VARIABLES
-C     
+C
 C     Rsol: Surface resistance. ([s/m]) (Zhang)
-C     
+C
 C------------------------------------------------------------------------
-      
+
       IMPLICIT NONE
 
 C     -- Input.
@@ -109,7 +109,7 @@ C----------------------------------------------------------------------
       Ilandunknown=23
       Ilandice=21
       Ilandburnt=10
-      
+
       MMair = 2.897D-02
       RGAS = 8.314D0
       PI=3.14159265358979323846D0
@@ -130,10 +130,10 @@ C     Cuningham correction.
 
 C     Computation of Brownian diffusivity coefficient.
       Dbrownian = CC * Temperature/(3.d0*Pi*Muair*Diameter)*Kboltz
-      
+
 C-----------------------------------------------------------------------
 C     1 - Computing Eint and  Stokes number
-      
+
       DO Iland=1,Nland
          Rsol(Iland) = 0.d0
          IF (LUC(Iland).GT.0.D0) THEN
@@ -142,7 +142,7 @@ C     1 - Computing Eint and  Stokes number
                Eint = 0.d0
                St = SettlingVelocity * FrictionVelocity(Iland)**2.d0
                St = St / (g * nuair)
-               
+
             ELSEIF ( (Iland.EQ.Ilandbarren).OR.
      &              (Iland.EQ.Ilandsparse).OR.
      &              (Iland.EQ.Ilandunknown).OR.
@@ -152,7 +152,7 @@ C     1 - Computing Eint and  Stokes number
                Eint = 0.d0
                St = SettlingVelocity * FrictionVelocity(Iland)**2.d0
                St = st / (g * nuair)
-               
+
             ELSE
 
                Eint = 0.99d0*

@@ -42,7 +42,7 @@ MODULE dPhysicalbalance
 !
 !     -- INPUT VARIABLES
 !
-!------------------------------------------------------------------------   
+!------------------------------------------------------------------------
     implicit none
     integer::k,s,j,jesp
     double precision::mass_total
@@ -92,7 +92,7 @@ MODULE dPhysicalbalance
 !
 !     -- INPUT VARIABLES
 !
-!------------------------------------------------------------------------  
+!------------------------------------------------------------------------
     implicit none
     integer::k,s,j,fr,jesp
     double precision::mass_sizebin(N_sizebin),number_sizebin(N_sizebin)
@@ -129,7 +129,7 @@ MODULE dPhysicalbalance
 	size_diam_av(k)=diam_bound(k)
       endif
     enddo
-    
+
   end  subroutine compute_average_bin_diameter
 
   subroutine computer_number()
@@ -143,7 +143,7 @@ MODULE dPhysicalbalance
 !
 !     -- INPUT VARIABLES
 !
-!------------------------------------------------------------------------  
+!------------------------------------------------------------------------
     implicit none
     integer::k,s,j,jesp
     double precision::volum_cell
@@ -177,7 +177,7 @@ MODULE dPhysicalbalance
 !
 !     -- INPUT VARIABLES
 !
-!------------------------------------------------------------------------  
+!------------------------------------------------------------------------
     implicit none
 
     integer::k,s,j,f,jesp
@@ -206,7 +206,7 @@ MODULE dPhysicalbalance
 
     !calculate everage rho of each size bins
     ! do f =1, N_fracmax
-    !   do j = 1, N_sizebin !!!!!! FIXED A BUG !!!!! YK 
+    !   do j = 1, N_sizebin !!!!!! FIXED A BUG !!!!! YK
     do j =1, N_sizebin
       do f = 1, N_fracmax
         k=concentration_index_iv(j,f)
@@ -241,7 +241,7 @@ MODULE dPhysicalbalance
 !     c_gas: aerosol gas phase concentration(µg/m^3)
 !     t_mass: total mass of each species both gas phase and aerosol(µg/m^3)
 !
-!------------------------------------------------------------------------     
+!------------------------------------------------------------------------
     implicit none
 
     integer::j,jesp,k,s
@@ -308,7 +308,7 @@ MODULE dPhysicalbalance
 
     do s=1,(N_aerosol-1)
       jesp=List_species(s)
-      if (aerosol_species_interact(jesp).gt.0) then      
+      if (aerosol_species_interact(jesp).gt.0) then
 	!renew the gas_consentration (reduce into aerosol)
 	  c_gas(jesp)=t_mass(jesp)-total_aero_mass(jesp)
       else
@@ -381,7 +381,7 @@ MODULE dPhysicalbalance
       endif
     enddo
 
-  end subroutine aerosol_conservation   
+  end subroutine aerosol_conservation
 
   subroutine check_mass_number()
 !------------------------------------------------------------------------
@@ -394,7 +394,7 @@ MODULE dPhysicalbalance
 !
 !     -- INPUT VARIABLES
 !
-!------------------------------------------------------------------------             
+!------------------------------------------------------------------------
     implicit none
     integer:: j,jesp,s
     double precision:: tmp_cell_mass
@@ -418,7 +418,7 @@ MODULE dPhysicalbalance
     enddo
 
   end subroutine
-   
+
   subroutine check_av_diam(c_mass,c_number)
 !------------------------------------------------------------------------
 !
@@ -432,7 +432,7 @@ MODULE dPhysicalbalance
 !
 !     c_mass: aerosol mass concentration(µg/m^3)
 !     c_number: aerosol number concentration(#/m^3)
-!------------------------------------------------------------------------   
+!------------------------------------------------------------------------
     implicit none
 
     integer:: j,k,jesp,s,fr
@@ -510,7 +510,7 @@ MODULE dPhysicalbalance
       enddo
     endif
   end subroutine check_av_diam
-     
+
   subroutine check_diam_fraction(c_mass,c_number)
 !------------------------------------------------------------------------
 !
@@ -524,7 +524,7 @@ MODULE dPhysicalbalance
 !
 !     c_mass: aerosol mass concentration(µg/m^3)
 !     c_number: aerosol number concentration(#/m^3)
-!------------------------------------------------------------------------   
+!------------------------------------------------------------------------
     implicit none
     integer::k,g,j,jesp,s,f
     double precision:: mass_groups(N_size,N_groups)!mass by groups
@@ -541,9 +541,9 @@ MODULE dPhysicalbalance
     do j= 1, N_size
 	mass_total_grid (j)=0.d0
 	do s= 1, (N_aerosol-1)
-	  jesp=List_species(s)	  
+	  jesp=List_species(s)
 	  mass_total_grid (j)=mass_total_grid (j) + c_mass(j,jesp)
-	enddo       
+	enddo
     enddo
 
     if(N_fracmax.gt.1) then
@@ -597,7 +597,7 @@ MODULE dPhysicalbalance
 	  endif
 	endif
     enddo
-      
+
   end subroutine check_diam_fraction
 
   subroutine mass_to_number(c_mass,c_number)
@@ -612,12 +612,12 @@ MODULE dPhysicalbalance
 !
 !     c_mass: aerosol mass concentration(µg/m^3)
 !     c_number: aerosol number concentration(#/m^3)
-!------------------------------------------------------------------------   
+!------------------------------------------------------------------------
     implicit none
     integer::k,j,jesp,s
     double precision::c_mass(N_size,N_aerosol)
     double precision::c_number(N_size)
-    
+
     do j= 1, N_size
       k=concentration_index(j, 1)!size bins
       mass_total_grid (j)=0.d0
@@ -668,7 +668,7 @@ MODULE dPhysicalbalance
 ! 	stop
 !       endif
 !     enddo
-    
+
   end subroutine check_nan_inf
- 
+
 end MODULE dPhysicalbalance

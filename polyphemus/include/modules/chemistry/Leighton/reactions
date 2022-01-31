@@ -1,15 +1,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % File for gas-phase mechanism CB05
 %
-% Reference:CB05_Final_Report_120805 
+% Reference:CB05_Final_Report_120805
 %
 % Modifications:
 %
-% 2010/02/26(Youngseob KIM): 
+% 2010/02/26(Youngseob KIM):
 % - The reaction no.20 is excluded by the recommendation of IUPAC
-%   (http://www.iupac-kinetic.ch.cam.ac.uk) 
-% - The rate constant of the reaction no.19 is corrected 
-%   by the recommendation of IUPAC from 2.50E-22 to 1.00E-22   
+%   (http://www.iupac-kinetic.ch.cam.ac.uk)
+% - The rate constant of the reaction no.19 is corrected
+%   by the recommendation of IUPAC from 2.50E-22 to 1.00E-22
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -32,8 +32,8 @@ KINETIC TB O2 SPEC -1
 O3 + NO -> NO2
 KINETIC  ARR2  3.0E-12  1500.0
 % NASA/JPL 2003
-% 
+%
 END
 
 
-                        
+

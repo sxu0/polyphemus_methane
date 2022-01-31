@@ -312,7 +312,7 @@ namespace Polyphemus
                 BoundaryCondition_x_i = 0;
                 BoundaryCondition_y_i = 0;
                 BoundaryCondition_z_i = 0;
-                
+
                 with_bc = 0;
               }
 
@@ -355,7 +355,7 @@ namespace Polyphemus
 							  Model.GetNx()));
             Array<T, 2> NumberBoundaryCondition_z_i(shape(Model.GetNy(),
                                                           Model.GetNx()));
-		
+
             if (Model.HasNumberBoundaryCondition_aer(b))
               {
                 bc_b = Model.NumberBoundaryConditionIndex_aer(b);
@@ -373,7 +373,7 @@ namespace Polyphemus
                   = Model.A3("NumberBoundaryCondition_z_aer")(bc_b,
                                                               Range::all(),
                                                               Range::all()).copy();
-                
+
                 with_number_bc = 1;
               }
             else
@@ -381,7 +381,7 @@ namespace Polyphemus
                 NumberBoundaryCondition_x_i = 0;
                 NumberBoundaryCondition_y_i = 0;
                 NumberBoundaryCondition_z_i = 0;
-		
+
                 with_number_bc = 0;
               }
 
@@ -413,7 +413,7 @@ namespace Polyphemus
 			      NumberBoundaryCondition_x_i, NumberBoundaryCondition_y_i,
 			      NumberBoundaryCondition_z_i, Model.GetDelta_t(),
 			      Nt_x, Nt_y, Nt_z, NumberConcentration);
-            
+
 #endif
           }
       }

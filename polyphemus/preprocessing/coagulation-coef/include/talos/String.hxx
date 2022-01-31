@@ -61,10 +61,10 @@ namespace Talos
 
   template <class T>
   T convert(const string& s);
-  
+
   string lower_case(string str);
   string upper_case(string str);
-  
+
   bool is_num(const string& s);
 
   // The functions with 'char*' and 'const char*' are provided for convenience
@@ -95,10 +95,10 @@ namespace Talos
   template <class T>
   void split_markup(string str, vector<T>& elements, vector<bool>& is_markup,
 		    string delimiters = "$");
-  
+
   template <class T>
   void print(const vector<T>& v);
-  
+
 }  // namespace Talos.
 
 

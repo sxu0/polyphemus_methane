@@ -45,34 +45,38 @@ PDFTeXAction = None
 # labels and bibtex.
 PDFLaTeXAction = None
 
-def PDFLaTeXAuxAction(target = None, source= None, env=None):
-    result = SCons.Tool.tex.InternalLaTeXAuxAction( PDFLaTeXAction, target, source, env )
+
+def PDFLaTeXAuxAction(target=None, source=None, env=None):
+    result = SCons.Tool.tex.InternalLaTeXAuxAction(PDFLaTeXAction, target, source, env)
     return result
 
-def PDFTeXLaTeXFunction(target = None, source= None, env=None):
+
+def PDFTeXLaTeXFunction(target=None, source=None, env=None):
     """A builder for TeX and LaTeX that scans the source file to
     decide the "flavor" of the source and then executes the appropriate
     program."""
     basedir = os.path.split(str(source[0]))[0]
     abspath = os.path.abspath(basedir)
 
-    if SCons.Tool.tex.is_LaTeX(source,env,abspath):
-        result = PDFLaTeXAuxAction(target,source,env)
+    if SCons.Tool.tex.is_LaTeX(source, env, abspath):
+        result = PDFLaTeXAuxAction(target, source, env)
         if result != 0:
-            print env['PDFLATEX']," returned an error, check the log file"
+            print env["PDFLATEX"], " returned an error, check the log file"
     else:
-        result = PDFTeXAction(target,source,env)
+        result = PDFTeXAction(target, source, env)
         if result != 0:
-            print env['PDFTEX']," returned an error, check the log file"
+            print env["PDFTEX"], " returned an error, check the log file"
     return result
 
+
 PDFTeXLaTeXAction = None
+
 
 def generate(env):
     """Add Builders and construction variables for pdftex to an Environment."""
     global PDFTeXAction
     if PDFTeXAction is None:
-        PDFTeXAction = SCons.Action.Action('$PDFTEXCOM', '$PDFTEXCOMSTR')
+        PDFTeXAction = SCons.Action.Action("$PDFTEXCOM", "$PDFTEXCOMSTR")
 
     global PDFLaTeXAction
     if PDFLaTeXAction is None:
@@ -80,26 +84,30 @@ def generate(env):
 
     global PDFTeXLaTeXAction
     if PDFTeXLaTeXAction is None:
-        PDFTeXLaTeXAction = SCons.Action.Action(PDFTeXLaTeXFunction,
-                              strfunction=SCons.Tool.tex.TeXLaTeXStrFunction)
+        PDFTeXLaTeXAction = SCons.Action.Action(
+            PDFTeXLaTeXFunction, strfunction=SCons.Tool.tex.TeXLaTeXStrFunction
+        )
 
     env.AppendUnique(LATEXSUFFIXES=SCons.Tool.LaTeXSuffixes)
 
     import pdf
+
     pdf.generate(env)
 
-    bld = env['BUILDERS']['PDF']
-    bld.add_action('.tex', PDFTeXLaTeXAction)
-    bld.add_emitter('.tex', SCons.Tool.tex.tex_pdf_emitter)
+    bld = env["BUILDERS"]["PDF"]
+    bld.add_action(".tex", PDFTeXLaTeXAction)
+    bld.add_emitter(".tex", SCons.Tool.tex.tex_pdf_emitter)
 
-    # Add the epstopdf builder after the pdftex builder 
+    # Add the epstopdf builder after the pdftex builder
     # so pdftex is the default for no source suffix
     pdf.generate2(env)
 
     SCons.Tool.tex.generate_common(env)
 
+
 def exists(env):
-    return env.Detect('pdftex')
+    return env.Detect("pdftex")
+
 
 # Local Variables:
 # tab-width:4

@@ -55,7 +55,7 @@ namespace Polyphemus
     release_time_(release_time), quantity_(quantity),
     source_velocity_(velocity), source_temperature_(temperature),
     source_diameter_(diameter), source_abscissa_(abscissa),
-    source_ordinate_(ordinate), source_height_(height), 
+    source_ordinate_(ordinate), source_height_(height),
     source_water_(source_water), volume_prev_(volume_prev),
     source_id_(source_id),
     z_above_(0.), penetration_factor_(0.),
@@ -115,7 +115,7 @@ namespace Polyphemus
   */
   template<class T>
   Puff<T>::Puff(T release_time, T velocity, T temperature, T diameter, T width,
-                T length, 
+                T length,
 		T quantity, T abscissa, T ordinate, T height, T source_water,
 		T volume_prev,
 		int species_index, bool is_volume_source, string source_id):
@@ -123,7 +123,7 @@ namespace Polyphemus
     source_velocity_(velocity), source_temperature_(temperature),
     source_diameter_(diameter), source_abscissa_(abscissa),
     source_ordinate_(ordinate), source_water_(source_water),
-    volume_prev_(volume_prev), source_id_(source_id), 
+    volume_prev_(volume_prev), source_id_(source_id),
     z_above_(0.), penetration_factor_(0.),
     sigma_x_(0.), sigma_y_(0.), sigma_z_(0.),
     Ns(1), species_index_(species_index),
@@ -619,7 +619,7 @@ namespace Polyphemus
 
     throw string("\"Puff<T>::SetQuantity(T&, int&, int&)\"")
       + " is not defined.";
-  
+
   }
 
   //! Sets the puff aerosol quantity.
@@ -629,7 +629,7 @@ namespace Polyphemus
 
     throw string("\"Puff<T>::SetQuantity(T&, int&, int&)\"")
       + " is not defined.";
-  
+
   }
 
   //! Sets the horizontal standard deviation in the downwind direction.

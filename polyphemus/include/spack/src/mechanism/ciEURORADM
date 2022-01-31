@@ -26,13 +26,13 @@ BTI           58.
 PTN           72.
 PTI           72.
 HC            114.
-ETE           28. 
+ETE           28.
 PRE           42.
 BTE           56.
 OLT           42.
 OLI           68.
 ISO           68.
-API           136.	
+API           136.
 LIM           136.
 ACT           26.
 TOL           92.
@@ -47,9 +47,9 @@ GLY           58.
 MGLY          72.
 DCB           87.
 MVK           70.
-MAC           70. 
+MAC           70.
 PAN           121.
-TPAN          147. 
+TPAN          147.
 ONIT          119.
 OP1           48.
 OP2           62.
@@ -87,7 +87,7 @@ XO2           44.
 
 ! The following species are not taken into account for gas-phase:
 ! CO2 (mass = 44.)
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! NH3 and HCL : not in RADM (BUT TO BE ADDED FOR AEROSOLS !!!!)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -101,4 +101,3 @@ XO2           44.
 ! HALD, HKET, PRO, BTN, HC.
 
 ! Substitution: PROP instead of HC3P, BTNP of HC5P, HCP of HC8P, ETEP of OL2P.
-

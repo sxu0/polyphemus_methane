@@ -22,10 +22,11 @@
 
 # Note that the SWIG module in 'atmopy.observation' must be compiled.
 from atmopy import observation
+
 # The Seldon SWIG interface is also needed.
 from seldon import *
 
-om = observation.GroundNetworkOM("observation.lua");
+om = observation.GroundNetworkOM("observation.lua")
 
 obs = VectorDouble()
 om.SetDate("2001-06-15 09:00")

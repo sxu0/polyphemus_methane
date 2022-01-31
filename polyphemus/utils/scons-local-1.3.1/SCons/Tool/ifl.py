@@ -37,33 +37,44 @@ import SCons.Defaults
 from SCons.Scanner.Fortran import FortranScan
 from FortranCommon import add_all_to_env
 
+
 def generate(env):
     """Add Builders and construction variables for ifl to an Environment."""
     fscan = FortranScan("FORTRANPATH")
-    SCons.Tool.SourceFileScanner.add_scanner('.i', fscan)
-    SCons.Tool.SourceFileScanner.add_scanner('.i90', fscan)
+    SCons.Tool.SourceFileScanner.add_scanner(".i", fscan)
+    SCons.Tool.SourceFileScanner.add_scanner(".i90", fscan)
 
-    if not env.has_key('FORTRANFILESUFFIXES'):
-        env['FORTRANFILESUFFIXES'] = ['.i']
+    if not env.has_key("FORTRANFILESUFFIXES"):
+        env["FORTRANFILESUFFIXES"] = [".i"]
     else:
-        env['FORTRANFILESUFFIXES'].append('.i')
+        env["FORTRANFILESUFFIXES"].append(".i")
 
-    if not env.has_key('F90FILESUFFIXES'):
-        env['F90FILESUFFIXES'] = ['.i90']
+    if not env.has_key("F90FILESUFFIXES"):
+        env["F90FILESUFFIXES"] = [".i90"]
     else:
-        env['F90FILESUFFIXES'].append('.i90')
+        env["F90FILESUFFIXES"].append(".i90")
 
     add_all_to_env(env)
 
-    env['FORTRAN']        = 'ifl'
-    env['SHFORTRAN']      = '$FORTRAN'
-    env['FORTRANCOM']     = '$FORTRAN $FORTRANFLAGS $_FORTRANINCFLAGS /c $SOURCES /Fo$TARGET'
-    env['FORTRANPPCOM']   = '$FORTRAN $FORTRANFLAGS $CPPFLAGS $_CPPDEFFLAGS $_FORTRANINCFLAGS /c $SOURCES /Fo$TARGET'
-    env['SHFORTRANCOM']   = '$SHFORTRAN $SHFORTRANFLAGS $_FORTRANINCFLAGS /c $SOURCES /Fo$TARGET'
-    env['SHFORTRANPPCOM'] = '$SHFORTRAN $SHFORTRANFLAGS $CPPFLAGS $_CPPDEFFLAGS $_FORTRANINCFLAGS /c $SOURCES /Fo$TARGET'
+    env["FORTRAN"] = "ifl"
+    env["SHFORTRAN"] = "$FORTRAN"
+    env[
+        "FORTRANCOM"
+    ] = "$FORTRAN $FORTRANFLAGS $_FORTRANINCFLAGS /c $SOURCES /Fo$TARGET"
+    env[
+        "FORTRANPPCOM"
+    ] = "$FORTRAN $FORTRANFLAGS $CPPFLAGS $_CPPDEFFLAGS $_FORTRANINCFLAGS /c $SOURCES /Fo$TARGET"
+    env[
+        "SHFORTRANCOM"
+    ] = "$SHFORTRAN $SHFORTRANFLAGS $_FORTRANINCFLAGS /c $SOURCES /Fo$TARGET"
+    env[
+        "SHFORTRANPPCOM"
+    ] = "$SHFORTRAN $SHFORTRANFLAGS $CPPFLAGS $_CPPDEFFLAGS $_FORTRANINCFLAGS /c $SOURCES /Fo$TARGET"
+
 
 def exists(env):
-    return env.Detect('ifl')
+    return env.Detect("ifl")
+
 
 # Local Variables:
 # tab-width:4

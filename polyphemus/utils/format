@@ -29,35 +29,72 @@ from tempfile import mkstemp
 from shutil import copyfile
 from os.path import basename
 
-usage = "%prog [options] [file(s) to be formatted]\n\nFormats C++ or " \
-        + "Fortran code.\nRemoves trailing spaces and then indents the " \
-        + "code.\nIt finally checks that no line goes beyond a given " \
-        + "limit-column."
-parser = optparse.OptionParser(usage = usage)
+usage = (
+    "%prog [options] [file(s) to be formatted]\n\nFormats C++ or "
+    + "Fortran code.\nRemoves trailing spaces and then indents the "
+    + "code.\nIt finally checks that no line goes beyond a given "
+    + "limit-column."
+)
+parser = optparse.OptionParser(usage=usage)
 
 ### Options.
 
-parser.add_option("-I", "--no-indentation", help = "Skip indentation step.",
-                  action = "store_false", dest = "indentation",
-                  default = True)
-parser.add_option("-L", "--no-line-limit", help = "Skip line-length checks.",
-                  action = "store_false", dest = "check_line_length",
-                  default = True)
-parser.add_option("-S", "--keep-spaces", help = "Do not remove trailing.",
-                  action = "store_false", dest = "remove_spaces",
-                  default = True)
-parser.add_option("-b", "--backup-file", help = "Create a backup file "
-                  + "before changes.", action = "store_true",
-                  dest = "backup_files", default = False)
-parser.add_option("-e", "--process-empty-lines", help = "Also remove "
-                  + "trailing spaces in empty lines.", action = "store_true",
-                  dest = "remove_empty", default = False)
-parser.add_option("-i", "--interactive", help = "Interactive mode.",
-                  action = "store_true", dest = "interactive",
-                  default = False)
-parser.add_option("-r", "--reverse", help = "Indents before removing "
-                  "trailing spaces.", action = "store_true",
-                  dest = "reverse", default = False)
+parser.add_option(
+    "-I",
+    "--no-indentation",
+    help="Skip indentation step.",
+    action="store_false",
+    dest="indentation",
+    default=True,
+)
+parser.add_option(
+    "-L",
+    "--no-line-limit",
+    help="Skip line-length checks.",
+    action="store_false",
+    dest="check_line_length",
+    default=True,
+)
+parser.add_option(
+    "-S",
+    "--keep-spaces",
+    help="Do not remove trailing.",
+    action="store_false",
+    dest="remove_spaces",
+    default=True,
+)
+parser.add_option(
+    "-b",
+    "--backup-file",
+    help="Create a backup file " + "before changes.",
+    action="store_true",
+    dest="backup_files",
+    default=False,
+)
+parser.add_option(
+    "-e",
+    "--process-empty-lines",
+    help="Also remove " + "trailing spaces in empty lines.",
+    action="store_true",
+    dest="remove_empty",
+    default=False,
+)
+parser.add_option(
+    "-i",
+    "--interactive",
+    help="Interactive mode.",
+    action="store_true",
+    dest="interactive",
+    default=False,
+)
+parser.add_option(
+    "-r",
+    "--reverse",
+    help="Indents before removing " "trailing spaces.",
+    action="store_true",
+    dest="reverse",
+    default=False,
+)
 
 ### Parses arguments.
 
@@ -78,17 +115,22 @@ if options.indentation and commands.getstatusoutput("which emacs")[0] != 0:
 local_directory = os.path.dirname(os.path.abspath(__file__))
 
 # Checks that there remains an action to be performed.
-if not options.indentation and not options.check_line_length \
-       and not options.remove_spaces:
+if (
+    not options.indentation
+    and not options.check_line_length
+    and not options.remove_spaces
+):
     print "[WARNING] Nothing to do."
 
 ### Removing trailing spaces.
 
-def remove_trailing_spaces(filename, remove_empty = True):
+
+def remove_trailing_spaces(filename, remove_empty=True):
     import fileinput
+
     for line in fileinput.input(filename, 1):
         if line:
-            if line[-1] == '\n':
+            if line[-1] == "\n":
                 clean = line[:-1].rstrip(" \t")
                 if remove_empty or clean:
                     print clean
@@ -103,15 +145,22 @@ def remove_trailing_spaces(filename, remove_empty = True):
         else:  # 'line' is empty.
             print
 
+
 ### Indenting.
+
 
 def indent(filename):
     # Determines the langage.
-    extension = filename.split('.')[-1].lower()
+    extension = filename.split(".")[-1].lower()
     # C++ indentation is also suited for C.
-    if extension == "c" or extension == "h" \
-           or extension == "cpp" or extension == "hpp" \
-           or extension == "cxx" or extension == "hxx":
+    if (
+        extension == "c"
+        or extension == "h"
+        or extension == "cpp"
+        or extension == "hpp"
+        or extension == "cxx"
+        or extension == "hxx"
+    ):
         langage = "cpp"
     # ".f" and ".F" files are assumed to be Fortran 77 files.
     elif extension == "f77" or extension == "f":
@@ -120,23 +169,33 @@ def indent(filename):
         langage = None
     if langage:
         import os
-        command = "emacs -batch " + filename + " -l " \
-                  + os.path.join(local_directory, langage + "_indent.lisp ") \
-                  + "-f " + langage + "_indent"
+
+        command = (
+            "emacs -batch "
+            + filename
+            + " -l "
+            + os.path.join(local_directory, langage + "_indent.lisp ")
+            + "-f "
+            + langage
+            + "_indent"
+        )
         if options.interactive:
             import os
+
             os.system(command)
         else:
             status, o = commands.getstatusoutput(command)
             if status != 0:
-                raise Exception, "Indentation of \"" + filename \
-                      + "\" has failed with output:\n" + o
+                raise Exception, 'Indentation of "' + filename + '" has failed with output:\n' + o
     return langage
+
 
 ### Lines lengths.
 
-def check_lines_lengths(filename, limit_length = 78):
+
+def check_lines_lengths(filename, limit_length=78):
     import fileinput
+
     lines = []
     count = 1
     for line in file(filename).readlines():
@@ -146,19 +205,23 @@ def check_lines_lengths(filename, limit_length = 78):
         count += 1
     return lines
 
+
 ### Printing facility.
+
 
 class PrintInPlace:
     """
     PrintInPlace enables to write and overwrite data on screen.
     """
-    def __init__(self, length = 0):
+
+    def __init__(self, length=0):
         """
         @type length: integer
         @param length: Number of characters to be overwritten next time
         something is printed on screen.
         """
         self.length = length
+
     def __call__(self, elt):
         """
         Prints a string on screen.
@@ -166,10 +229,12 @@ class PrintInPlace:
         @type elt: string
         @param elt: String to be printed on screen.
         """
-        sys.stdout.write(chr(8) * self.length + ' ' * self.length
-                         + chr(8) * self.length + str(elt))
+        sys.stdout.write(
+            chr(8) * self.length + " " * self.length + chr(8) * self.length + str(elt)
+        )
         sys.stdout.flush()
         self.length = len(str(elt))
+
     def Print(self, elt):
         """
         Prints a string on screen.
@@ -178,13 +243,15 @@ class PrintInPlace:
         @param elt: String to be printed on screen.
         """
         self.__call__(elt)
+
     def Reinit(self):
         """
         Reinits the instance: no character is removed next time something is
         printed on screen.
         """
         self.length = 0
-    def Clear(self, elt = ''):
+
+    def Clear(self, elt=""):
         """
         Reinits the instance: no character is removed next time something is
         printed on screen, and the characters that were supposed to be
@@ -193,10 +260,12 @@ class PrintInPlace:
         @type elt: string
         @param elt: The last string to be printed.
         """
-        sys.stdout.write(chr(8) * self.length + ' ' * self.length
-                         + chr(8) * self.length + str(elt))
+        sys.stdout.write(
+            chr(8) * self.length + " " * self.length + chr(8) * self.length + str(elt)
+        )
         sys.stdout.flush()
         self.length = 0
+
 
 prt = PrintInPlace()
 
@@ -205,22 +274,22 @@ prt = PrintInPlace()
 for filename in args:
 
     # Determines the langage.
-    extension = filename.split('.')[-1].lower()
+    extension = filename.split(".")[-1].lower()
     if extension == "f77" or extension == "f":
         limit_length = 72
     else:
         limit_length = 78
 
     if options.interactive:
-        print "Processing \"" + filename + "\"..."
+        print 'Processing "' + filename + '"...'
     else:
-        prt("Processing \"" + filename + "\"...")
+        prt('Processing "' + filename + '"...')
 
     if options.backup_files:
         copyfile(filename, filename + "~")
 
     if options.indentation or (options.remove_spaces and options.reverse):
-        temporary_filename = mkstemp(suffix = basename(filename))[1]
+        temporary_filename = mkstemp(suffix=basename(filename))[1]
         copyfile(filename, temporary_filename)
 
     if options.remove_spaces and not options.reverse:
@@ -231,16 +300,14 @@ for filename in args:
         if langage == None:
             if not options.interactive:
                 prt.Clear()
-            print "[WARNING] \"" + filename + "\" has not been indented: " \
-                  + "its langage cannot be determined or is not suited " \
-                  + "for automatic indentation."
+            print '[WARNING] "' + filename + '" has not been indented: ' + "its langage cannot be determined or is not suited " + "for automatic indentation."
 
     if options.remove_spaces and options.reverse:
         remove_trailing_spaces(temporary_filename, options.remove_empty)
 
-    if (options.indentation or (options.remove_spaces and options.reverse)) \
-           and (open(temporary_filename).readlines()
-                != open(filename).readlines()):
+    if (options.indentation or (options.remove_spaces and options.reverse)) and (
+        open(temporary_filename).readlines() != open(filename).readlines()
+    ):
         copyfile(temporary_filename, filename)
 
     if options.check_line_length:
@@ -248,8 +315,14 @@ for filename in args:
         if len(lines) != 0:
             if not options.interactive:
                 prt.Clear()
-            message = "[ERROR] In \"" + filename + "\", characters are " \
-                      + "beyond column " + str(limit_length) + " at line(s): "
+            message = (
+                '[ERROR] In "'
+                + filename
+                + '", characters are '
+                + "beyond column "
+                + str(limit_length)
+                + " at line(s): "
+            )
             message += str(lines[0])
             for i in lines[1:]:
                 message += ", " + str(i)

@@ -40,9 +40,10 @@ import SCons.Warnings
 
 from SCons.Tool.FortranCommon import isfortran
 
-cplusplus = __import__('c++', globals(), locals(), [])
+cplusplus = __import__("c++", globals(), locals(), [])
 
 issued_mixed_link_warning = False
+
 
 def smart_link(source, target, env, for_signature):
     has_cplusplus = cplusplus.iscplusplus(source)
@@ -50,69 +51,80 @@ def smart_link(source, target, env, for_signature):
     if has_cplusplus and has_fortran:
         global issued_mixed_link_warning
         if not issued_mixed_link_warning:
-            msg = "Using $CXX to link Fortran and C++ code together.\n\t" + \
-              "This may generate a buggy executable if the '%s'\n\t" + \
-              "compiler does not know how to deal with Fortran runtimes."
-            SCons.Warnings.warn(SCons.Warnings.FortranCxxMixWarning,
-                                msg % env.subst('$CXX'))
+            msg = (
+                "Using $CXX to link Fortran and C++ code together.\n\t"
+                + "This may generate a buggy executable if the '%s'\n\t"
+                + "compiler does not know how to deal with Fortran runtimes."
+            )
+            SCons.Warnings.warn(
+                SCons.Warnings.FortranCxxMixWarning, msg % env.subst("$CXX")
+            )
             issued_mixed_link_warning = True
-        return '$CXX'
+        return "$CXX"
     elif has_fortran:
-        return '$FORTRAN'
+        return "$FORTRAN"
     elif has_cplusplus:
-        return '$CXX'
-    return '$CC'
+        return "$CXX"
+    return "$CC"
+
 
 def shlib_emitter(target, source, env):
     for tgt in target:
         tgt.attributes.shared = 1
     return (target, source)
 
+
 def generate(env):
     """Add Builders and construction variables for gnulink to an Environment."""
     SCons.Tool.createSharedLibBuilder(env)
     SCons.Tool.createProgBuilder(env)
 
-    env['SHLINK']      = '$LINK'
-    env['SHLINKFLAGS'] = SCons.Util.CLVar('$LINKFLAGS -shared')
-    env['SHLINKCOM']   = '$SHLINK -o $TARGET $SHLINKFLAGS $SOURCES $_LIBDIRFLAGS $_LIBFLAGS'
+    env["SHLINK"] = "$LINK"
+    env["SHLINKFLAGS"] = SCons.Util.CLVar("$LINKFLAGS -shared")
+    env[
+        "SHLINKCOM"
+    ] = "$SHLINK -o $TARGET $SHLINKFLAGS $SOURCES $_LIBDIRFLAGS $_LIBFLAGS"
     # don't set up the emitter, cause AppendUnique will generate a list
     # starting with None :-(
-    env.Append(SHLIBEMITTER = [shlib_emitter])
-    env['SMARTLINK']   = smart_link
-    env['LINK']        = "$SMARTLINK"
-    env['LINKFLAGS']   = SCons.Util.CLVar('')
-    env['LINKCOM']     = '$LINK -o $TARGET $LINKFLAGS $SOURCES $_LIBDIRFLAGS $_LIBFLAGS'
-    env['LIBDIRPREFIX']='-L'
-    env['LIBDIRSUFFIX']=''
-    env['_LIBFLAGS']='${_stripixes(LIBLINKPREFIX, LIBS, LIBLINKSUFFIX, LIBPREFIXES, LIBSUFFIXES, __env__)}'
-    env['LIBLINKPREFIX']='-l'
-    env['LIBLINKSUFFIX']=''
+    env.Append(SHLIBEMITTER=[shlib_emitter])
+    env["SMARTLINK"] = smart_link
+    env["LINK"] = "$SMARTLINK"
+    env["LINKFLAGS"] = SCons.Util.CLVar("")
+    env["LINKCOM"] = "$LINK -o $TARGET $LINKFLAGS $SOURCES $_LIBDIRFLAGS $_LIBFLAGS"
+    env["LIBDIRPREFIX"] = "-L"
+    env["LIBDIRSUFFIX"] = ""
+    env[
+        "_LIBFLAGS"
+    ] = "${_stripixes(LIBLINKPREFIX, LIBS, LIBLINKSUFFIX, LIBPREFIXES, LIBSUFFIXES, __env__)}"
+    env["LIBLINKPREFIX"] = "-l"
+    env["LIBLINKSUFFIX"] = ""
 
-    if env['PLATFORM'] == 'hpux':
-        env['SHLIBSUFFIX'] = '.sl'
-    elif env['PLATFORM'] == 'aix':
-        env['SHLIBSUFFIX'] = '.a'
+    if env["PLATFORM"] == "hpux":
+        env["SHLIBSUFFIX"] = ".sl"
+    elif env["PLATFORM"] == "aix":
+        env["SHLIBSUFFIX"] = ".a"
 
     # For most platforms, a loadable module is the same as a shared
     # library.  Platforms which are different can override these, but
     # setting them the same means that LoadableModule works everywhere.
     SCons.Tool.createLoadableModuleBuilder(env)
-    env['LDMODULE'] = '$SHLINK'
+    env["LDMODULE"] = "$SHLINK"
     # don't set up the emitter, cause AppendUnique will generate a list
     # starting with None :-(
-    env.Append(LDMODULEEMITTER='$SHLIBEMITTER')
-    env['LDMODULEPREFIX'] = '$SHLIBPREFIX' 
-    env['LDMODULESUFFIX'] = '$SHLIBSUFFIX' 
-    env['LDMODULEFLAGS'] = '$SHLINKFLAGS'
-    env['LDMODULECOM'] = '$LDMODULE -o $TARGET $LDMODULEFLAGS $SOURCES $_LIBDIRFLAGS $_LIBFLAGS'
-
+    env.Append(LDMODULEEMITTER="$SHLIBEMITTER")
+    env["LDMODULEPREFIX"] = "$SHLIBPREFIX"
+    env["LDMODULESUFFIX"] = "$SHLIBSUFFIX"
+    env["LDMODULEFLAGS"] = "$SHLINKFLAGS"
+    env[
+        "LDMODULECOM"
+    ] = "$LDMODULE -o $TARGET $LDMODULEFLAGS $SOURCES $_LIBDIRFLAGS $_LIBFLAGS"
 
 
 def exists(env):
     # This module isn't really a Tool on its own, it's common logic for
     # other linkers.
     return None
+
 
 # Local Variables:
 # tab-width:4

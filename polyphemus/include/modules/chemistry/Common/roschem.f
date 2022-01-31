@@ -125,7 +125,7 @@ C     Compute chemical production terms at initial time (DLb1).
       ELSEIF (option_chemistry .eq. 4) then
          CALL fexchem_leighton (ns,nr,DLconc,DLRki,
      s        ZCsourc,convers_factor,DLb1)
-      ENDIF   
+      ENDIF
 
 C     Compute the Jacobian at initial time (DLRDC).
 

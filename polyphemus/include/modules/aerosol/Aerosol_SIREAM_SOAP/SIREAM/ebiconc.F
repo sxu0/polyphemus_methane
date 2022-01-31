@@ -1,23 +1,23 @@
 C-----------------------------------------------------------------------
 C     Copyright (C) 2003-2007, ENPC - INRIA - EDF R&D
 C     Author(s): Kathleen Fahey and Bruno Sportisse
-C     
+C
 C     This file is part of the Size Resolved Aerosol Model (SIREAM), a
 C     component of the air quality modeling system Polyphemus.
-C    
+C
 C     Polyphemus is developed in the INRIA - ENPC joint project-team
 C     CLIME and in the ENPC - EDF R&D joint laboratory CEREA.
-C    
+C
 C     Polyphemus is free software; you can redistribute it and/or modify
 C     it under the terms of the GNU General Public License as published
 C     by the Free Software Foundation; either version 2 of the License,
 C     or (at your option) any later version.
-C     
+C
 C     Polyphemus is distributed in the hope that it will be useful, but
 C     WITHOUT ANY WARRANTY; without even the implied warranty of
 C     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 C     General Public License for more details.
-C     
+C
 C     For more information, visit the Polyphemus web site:
 C     http://cerea.enpc.fr/polyphemus/
 C-----------------------------------------------------------------------
@@ -26,17 +26,17 @@ C-----------------------------------------------------------------------
      s      XSF,MSF,DSF,XSD,MSD,DSD)
 
 C------------------------------------------------------------------------
-C     
-C     -- DESCRIPTION 
-C     
+C
+C     -- DESCRIPTION
+C
 C     This subroutine solves the lagrangian condensation/evaporation
-C     equations together with nucleation with a simplified version of 
+C     equations together with nucleation with a simplified version of
 C     the EBI (Euler Backward Iterative scheme).
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- INPUT VARIABLES
-C     
+C
 C     NEQ : number of equations.
 C     nbin_aer: number of aerosol bins.
 C     XSF: neperian logarithm of fixed aerosol bin mass ([adim]).
@@ -46,33 +46,33 @@ C     XSD: neperian logarithm of moving aerosol bin mass ([adim]).
 C     MSD: moving aerosol bin dry mass ([\mu g]).
 C     DSD: moving aerosol bin dry diameter ([\mu m]).
 C     IQ: aerosol pointers.
-C    
+C
 C     -- INPUT/OUTPUT VARIABLES
-C     
+C
 C     Q : gas/aerosol concentrations ([µg.m-3]).
 C     QT: total aerosol concentration per bin ([\mu g.m^-3]).
-C     
+C
 C     -- OUTPUT VARIABLES
-C     
+C
 C     Q1: first-order arbitrary aerosol concentation ([µg.m-3])
-C     # (needed for adaptive timestepping, not to be used in this case).     
+C     # (needed for adaptive timestepping, not to be used in this case).
 C------------------------------------------------------------------------
-C     
+C
 C     -- REMARKS
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- MODIFICATIONS
-C     
+C
 C     2005/3/23: cleaning (Bruno Sportisse, CEREA).
 C     2005/11/21: Add nucleation (Karine Sartelet, CEREA).
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- AUTHOR(S)
-C     
+C
 C     2004: Kathleen Fahey and Bruno Sportisse, CEREA.
-C     
+C
 C------------------------------------------------------------------------
 
       IMPLICIT NONE
@@ -112,12 +112,12 @@ C     compute inital aerosol mass per species
       DO jesp=E1,E2
          IF (aerosol_species_interact(jesp).GT.0) THEN
 #ifdef WITHOUT_NACL_IN_THERMODYNAMICS
-         IF (jesp.NE.ECl) THEN 
+         IF (jesp.NE.ECl) THEN
 #endif
             qaero(jesp)=0.D0
             DO js=1,nbin_aer
                jj=IQ(jesp,js)
-               qaero(jesp)=qaero(jesp)+q(jj)  
+               qaero(jesp)=qaero(jesp)+q(jj)
             END DO
 #ifdef WITHOUT_NACL_IN_THERMODYNAMICS
          ENDIF
@@ -143,7 +143,7 @@ C     Number
             q(jj)=(q(jj)+kcpos(jj)*dt2)
             q1(jj)=2.d0*q(jj)
 
-C    Sulfate 
+C    Sulfate
             jj = IQ(ESO4,1)
             q(jj)=(q(jj)+kcpos(jj)*dt2)
             q1(jj)=2.d0*q(jj)
@@ -153,12 +153,12 @@ C     Ammonium
             q(jj)=(q(jj)+kcpos(jj)*dt2)
             q1(jj)=2.d0*q(jj)
 
-            
+
          ELSE
 
             DO js=nbin_aer,ICUT2+1,-1
 
-C     compute c/e kernels in dynamic sections 
+C     compute c/e kernels in dynamic sections
                CALL EQPART(nesp_aer,nbin_aer,js,js,neq,q,iq,QT,
      s                  XSF,MSF,DSF,XSD,MSD,DSD,
      s                  QINT,QGEQ,VSW,MSW,DSW,RHOW)
@@ -166,15 +166,15 @@ C     compute c/e kernels in dynamic sections
                IKV2=IKELV
                CALL KERCD2(nesp_aer,nbin_aer,js,js,neq,q,iq,QT,
      s                  QINT,QGEQ,VSW,DSW,AA,CKV,KERCD)
-     
+
                DO jesp=E1,E2
                   IF (aerosol_species_interact(jesp).GT.0) THEN
                      IF (jesp.NE.GLOC) THEN
 #ifdef WITHOUT_NACL_IN_THERMODYNAMICS
-                  IF (jesp.NE.ECl) THEN 
+                  IF (jesp.NE.ECl) THEN
 #endif
                      jj=IQ(jesp,js)
-                     
+
 C     replace q(IG(jesp)) by qtot(jesp)-qaero(jesp)+q(jj) in kcpos
 C     replace qgeq/q(jj) by qgeq/q(jj)+1 in kcneg
                      kcpos(jj) = aa(jesp,js)
@@ -203,7 +203,7 @@ C     nucleation
                   IF (jesp.NE.ECl) THEN
 #endif
 C     prepare update aerosol mass per species
-                     qaero(jesp)=qaero(jesp)-q(jj)  
+                     qaero(jesp)=qaero(jesp)-q(jj)
                      q(jj)=(q(jj)+kcpos(jj)*dt2)/(1.d0+kcneg(jj)*dt2)
                      q1(jj)=2.d0*q(jj)
 C     update aerosol mass per species
@@ -222,7 +222,7 @@ C     Compute mass conservation
          CALL MASSCNSRV(neq,nesp_aer,nbin_aer,q,iq)
 
       ENDDO
-      
+
       TIN2=TIN2+DT2
 
       END

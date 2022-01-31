@@ -30,7 +30,7 @@
 
 namespace Seldon
 {
-  
+
 
   //! Hermitian matrix stored in a full matrix.
   template <class T, class Prop, class Storage,
@@ -68,7 +68,7 @@ namespace Seldon
     void SetData(int i, int j, pointer data);
     void Nullify();
     void Resize(int i, int j);
-    
+
     // Element access and affectation.
     value_type operator() (int i, int j);
     value_type operator() (int i, int j) const;
@@ -103,7 +103,7 @@ namespace Seldon
     void Read(istream& FileStream);
     void ReadText(string FileName);
     void ReadText(istream& FileStream);
-    
+
   };
 
 
@@ -120,7 +120,7 @@ namespace Seldon
     Matrix<T, Prop, ColHerm, Allocator>& operator= (const T0& x);
     template<class T0>
     Matrix<T, Prop, ColHerm, Allocator>& operator*= (const T0& x);
-    
+
   };
 
 
@@ -137,7 +137,7 @@ namespace Seldon
     Matrix<T, Prop, RowHerm, Allocator>& operator= (const T0& x);
     template<class T0>
     Matrix<T, Prop, RowHerm, Allocator>& operator*= (const T0& x);
-    
+
   };
 
 

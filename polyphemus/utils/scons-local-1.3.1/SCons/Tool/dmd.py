@@ -73,13 +73,15 @@ def isD(source):
     for s in source:
         if s.sources:
             ext = os.path.splitext(str(s.sources[0]))[1]
-            if ext == '.d':
+            if ext == ".d":
                 return 1
     return 0
+
 
 smart_link = {}
 
 smart_lib = {}
+
 
 def generate(env):
     global smart_link
@@ -87,25 +89,31 @@ def generate(env):
 
     static_obj, shared_obj = SCons.Tool.createObjBuilders(env)
 
-    DAction = SCons.Action.Action('$DCOM', '$DCOMSTR')
+    DAction = SCons.Action.Action("$DCOM", "$DCOMSTR")
 
-    static_obj.add_action('.d', DAction)
-    shared_obj.add_action('.d', DAction)
-    static_obj.add_emitter('.d', SCons.Defaults.StaticObjectEmitter)
-    shared_obj.add_emitter('.d', SCons.Defaults.SharedObjectEmitter)
+    static_obj.add_action(".d", DAction)
+    shared_obj.add_action(".d", DAction)
+    static_obj.add_emitter(".d", SCons.Defaults.StaticObjectEmitter)
+    shared_obj.add_emitter(".d", SCons.Defaults.SharedObjectEmitter)
 
-    dc = env.Detect(['dmd', 'gdmd'])
-    env['DC'] = dc
-    env['DCOM'] = '$DC $_DINCFLAGS $_DVERFLAGS $_DDEBUGFLAGS $_DFLAGS -c -of$TARGET $SOURCES'
-    env['_DINCFLAGS'] = '$( ${_concat(DINCPREFIX, DPATH, DINCSUFFIX, __env__, RDirs, TARGET, SOURCE)}  $)'
-    env['_DVERFLAGS'] = '$( ${_concat(DVERPREFIX, DVERSIONS, DVERSUFFIX, __env__)}  $)'
-    env['_DDEBUGFLAGS'] = '$( ${_concat(DDEBUGPREFIX, DDEBUG, DDEBUGSUFFIX, __env__)} $)'
-    env['_DFLAGS'] = '$( ${_concat(DFLAGPREFIX, DFLAGS, DFLAGSUFFIX, __env__)} $)'
+    dc = env.Detect(["dmd", "gdmd"])
+    env["DC"] = dc
+    env[
+        "DCOM"
+    ] = "$DC $_DINCFLAGS $_DVERFLAGS $_DDEBUGFLAGS $_DFLAGS -c -of$TARGET $SOURCES"
+    env[
+        "_DINCFLAGS"
+    ] = "$( ${_concat(DINCPREFIX, DPATH, DINCSUFFIX, __env__, RDirs, TARGET, SOURCE)}  $)"
+    env["_DVERFLAGS"] = "$( ${_concat(DVERPREFIX, DVERSIONS, DVERSUFFIX, __env__)}  $)"
+    env[
+        "_DDEBUGFLAGS"
+    ] = "$( ${_concat(DDEBUGPREFIX, DDEBUG, DDEBUGSUFFIX, __env__)} $)"
+    env["_DFLAGS"] = "$( ${_concat(DFLAGPREFIX, DFLAGS, DFLAGSUFFIX, __env__)} $)"
 
-    env['DPATH'] = ['#/']
-    env['DFLAGS'] = []
-    env['DVERSIONS'] = []
-    env['DDEBUG'] = []
+    env["DPATH"] = ["#/"]
+    env["DFLAGS"] = []
+    env["DVERSIONS"] = []
+    env["DDEBUG"] = []
 
     if dc:
         # Add the path to the standard library.
@@ -113,37 +121,43 @@ def generate(env):
         dmd_path = env.WhereIs(dc)
         if dmd_path:
             x = string.rindex(dmd_path, dc)
-            phobosDir = dmd_path[:x] + '/../src/phobos'
+            phobosDir = dmd_path[:x] + "/../src/phobos"
             if os.path.isdir(phobosDir):
-                env.Append(DPATH = [phobosDir])
+                env.Append(DPATH=[phobosDir])
 
-    env['DINCPREFIX'] = '-I'
-    env['DINCSUFFIX'] = ''
-    env['DVERPREFIX'] = '-version='
-    env['DVERSUFFIX'] = ''
-    env['DDEBUGPREFIX'] = '-debug='
-    env['DDEBUGSUFFIX'] = ''
-    env['DFLAGPREFIX'] = '-'
-    env['DFLAGSUFFIX'] = ''
-    env['DFILESUFFIX'] = '.d'
+    env["DINCPREFIX"] = "-I"
+    env["DINCSUFFIX"] = ""
+    env["DVERPREFIX"] = "-version="
+    env["DVERSUFFIX"] = ""
+    env["DDEBUGPREFIX"] = "-debug="
+    env["DDEBUGSUFFIX"] = ""
+    env["DFLAGPREFIX"] = "-"
+    env["DFLAGSUFFIX"] = ""
+    env["DFILESUFFIX"] = ".d"
 
     # Need to use the Digital Mars linker/lib on windows.
     # *nix can just use GNU link.
-    if env['PLATFORM'] == 'win32':
-        env['DLINK'] = '$DC'
-        env['DLINKCOM'] = '$DLINK -of$TARGET $SOURCES $DFLAGS $DLINKFLAGS $_DLINKLIBFLAGS'
-        env['DLIB'] = 'lib'
-        env['DLIBCOM'] = '$DLIB $_DLIBFLAGS -c $TARGET $SOURCES $_DLINKLIBFLAGS'
+    if env["PLATFORM"] == "win32":
+        env["DLINK"] = "$DC"
+        env[
+            "DLINKCOM"
+        ] = "$DLINK -of$TARGET $SOURCES $DFLAGS $DLINKFLAGS $_DLINKLIBFLAGS"
+        env["DLIB"] = "lib"
+        env["DLIBCOM"] = "$DLIB $_DLIBFLAGS -c $TARGET $SOURCES $_DLINKLIBFLAGS"
 
-        env['_DLINKLIBFLAGS'] = '$( ${_concat(DLIBLINKPREFIX, LIBS, DLIBLINKSUFFIX, __env__, RDirs, TARGET, SOURCE)} $)'
-        env['_DLIBFLAGS'] = '$( ${_concat(DLIBFLAGPREFIX, DLIBFLAGS, DLIBFLAGSUFFIX, __env__)} $)'
-        env['DLINKFLAGS'] = []
-        env['DLIBLINKPREFIX'] = ''
-        env['DLIBLINKSUFFIX'] = '.lib'
-        env['DLIBFLAGPREFIX'] = '-'
-        env['DLIBFLAGSUFFIX'] = ''
-        env['DLINKFLAGPREFIX'] = '-'
-        env['DLINKFLAGSUFFIX'] = ''
+        env[
+            "_DLINKLIBFLAGS"
+        ] = "$( ${_concat(DLIBLINKPREFIX, LIBS, DLIBLINKSUFFIX, __env__, RDirs, TARGET, SOURCE)} $)"
+        env[
+            "_DLIBFLAGS"
+        ] = "$( ${_concat(DLIBFLAGPREFIX, DLIBFLAGS, DLIBFLAGSUFFIX, __env__)} $)"
+        env["DLINKFLAGS"] = []
+        env["DLIBLINKPREFIX"] = ""
+        env["DLIBLINKSUFFIX"] = ".lib"
+        env["DLIBFLAGPREFIX"] = "-"
+        env["DLIBFLAGSUFFIX"] = ""
+        env["DLINKFLAGPREFIX"] = "-"
+        env["DLINKFLAGSUFFIX"] = ""
 
         SCons.Tool.createStaticLibBuilder(env)
 
@@ -151,71 +165,78 @@ def generate(env):
         # these builders check for the presence of D source, and swap out
         # the system's defaults for the Digital Mars tools.  If there's no D
         # source, then we silently return the previous settings.
-        linkcom = env.get('LINKCOM')
+        linkcom = env.get("LINKCOM")
         try:
-            env['SMART_LINKCOM'] = smart_link[linkcom]
+            env["SMART_LINKCOM"] = smart_link[linkcom]
         except KeyError:
-            def _smartLink(source, target, env, for_signature,
-                           defaultLinker=linkcom):
+
+            def _smartLink(source, target, env, for_signature, defaultLinker=linkcom):
                 if isD(source):
                     # XXX I'm not sure how to add a $DLINKCOMSTR variable
                     # so that it works with this _smartLink() logic,
                     # and I don't have a D compiler/linker to try it out,
                     # so we'll leave it alone for now.
-                    return '$DLINKCOM'
+                    return "$DLINKCOM"
                 else:
                     return defaultLinker
-            env['SMART_LINKCOM'] = smart_link[linkcom] = _smartLink
 
-        arcom = env.get('ARCOM')
+            env["SMART_LINKCOM"] = smart_link[linkcom] = _smartLink
+
+        arcom = env.get("ARCOM")
         try:
-            env['SMART_ARCOM'] = smart_lib[arcom]
+            env["SMART_ARCOM"] = smart_lib[arcom]
         except KeyError:
-            def _smartLib(source, target, env, for_signature,
-                         defaultLib=arcom):
+
+            def _smartLib(source, target, env, for_signature, defaultLib=arcom):
                 if isD(source):
                     # XXX I'm not sure how to add a $DLIBCOMSTR variable
                     # so that it works with this _smartLib() logic, and
                     # I don't have a D compiler/archiver to try it out,
                     # so we'll leave it alone for now.
-                    return '$DLIBCOM'
+                    return "$DLIBCOM"
                 else:
                     return defaultLib
-            env['SMART_ARCOM'] = smart_lib[arcom] = _smartLib
+
+            env["SMART_ARCOM"] = smart_lib[arcom] = _smartLib
 
         # It is worth noting that the final space in these strings is
         # absolutely pivotal.  SCons sees these as actions and not generators
         # if it is not there. (very bad)
-        env['ARCOM'] = '$SMART_ARCOM '
-        env['LINKCOM'] = '$SMART_LINKCOM '
-    else: # assuming linux
-        linkcom = env.get('LINKCOM')
+        env["ARCOM"] = "$SMART_ARCOM "
+        env["LINKCOM"] = "$SMART_LINKCOM "
+    else:  # assuming linux
+        linkcom = env.get("LINKCOM")
         try:
-            env['SMART_LINKCOM'] = smart_link[linkcom]
+            env["SMART_LINKCOM"] = smart_link[linkcom]
         except KeyError:
-            def _smartLink(source, target, env, for_signature,
-                           defaultLinker=linkcom, dc=dc):
+
+            def _smartLink(
+                source, target, env, for_signature, defaultLinker=linkcom, dc=dc
+            ):
                 if isD(source):
                     try:
-                        libs = env['LIBS']
+                        libs = env["LIBS"]
                     except KeyError:
                         libs = []
-                    if 'phobos' not in libs and 'gphobos' not in libs:
-                        if dc is 'dmd':
-                            env.Append(LIBS = ['phobos'])
-                        elif dc is 'gdmd':
-                            env.Append(LIBS = ['gphobos'])
-                    if 'pthread' not in libs:
-                        env.Append(LIBS = ['pthread'])
-                    if 'm' not in libs:
-                        env.Append(LIBS = ['m'])
+                    if "phobos" not in libs and "gphobos" not in libs:
+                        if dc is "dmd":
+                            env.Append(LIBS=["phobos"])
+                        elif dc is "gdmd":
+                            env.Append(LIBS=["gphobos"])
+                    if "pthread" not in libs:
+                        env.Append(LIBS=["pthread"])
+                    if "m" not in libs:
+                        env.Append(LIBS=["m"])
                 return defaultLinker
-            env['SMART_LINKCOM'] = smart_link[linkcom] = _smartLink
 
-        env['LINKCOM'] = '$SMART_LINKCOM '
+            env["SMART_LINKCOM"] = smart_link[linkcom] = _smartLink
+
+        env["LINKCOM"] = "$SMART_LINKCOM "
+
 
 def exists(env):
-    return env.Detect(['dmd', 'gdmd'])
+    return env.Detect(["dmd", "gdmd"])
+
 
 # Local Variables:
 # tab-width:4

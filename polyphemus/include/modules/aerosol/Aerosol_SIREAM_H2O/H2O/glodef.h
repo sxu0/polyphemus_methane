@@ -20,9 +20,3 @@
 /* No. of type B partitioning species, some may have zero concentrations */
 #define NBSPAOM 5
 /* no. of non-volatile species in the organic absorbing medium */
-
-
-
-
-
-

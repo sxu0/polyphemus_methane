@@ -38,6 +38,7 @@ import SCons.Action
 import SCons.Builder
 import SCons.Util
 
+
 def generate(env):
     """Add a Builder factory function and construction variables for
     BitKeeper to an Environment."""
@@ -45,18 +46,20 @@ def generate(env):
     def BitKeeperFactory(env=env):
         """ """
         act = SCons.Action.Action("$BITKEEPERCOM", "$BITKEEPERCOMSTR")
-        return SCons.Builder.Builder(action = act, env = env)
+        return SCons.Builder.Builder(action=act, env=env)
 
-    #setattr(env, 'BitKeeper', BitKeeperFactory)
+    # setattr(env, 'BitKeeper', BitKeeperFactory)
     env.BitKeeper = BitKeeperFactory
 
-    env['BITKEEPER']         = 'bk'
-    env['BITKEEPERGET']      = '$BITKEEPER get'
-    env['BITKEEPERGETFLAGS'] = SCons.Util.CLVar('')
-    env['BITKEEPERCOM']      = '$BITKEEPERGET $BITKEEPERGETFLAGS $TARGET'
+    env["BITKEEPER"] = "bk"
+    env["BITKEEPERGET"] = "$BITKEEPER get"
+    env["BITKEEPERGETFLAGS"] = SCons.Util.CLVar("")
+    env["BITKEEPERCOM"] = "$BITKEEPERGET $BITKEEPERGETFLAGS $TARGET"
+
 
 def exists(env):
-    return env.Detect('bk')
+    return env.Detect("bk")
+
 
 # Local Variables:
 # tab-width:4

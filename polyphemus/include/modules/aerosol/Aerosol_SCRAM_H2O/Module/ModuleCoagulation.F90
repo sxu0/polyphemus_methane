@@ -29,7 +29,7 @@ Module gCoagulation
   use dPhysicalbalance
   use bCoefficientRepartition
   use aInitialization
-  use omp_lib, only: omp_get_thread_num  
+  use omp_lib, only: omp_get_thread_num
   implicit none
 
 contains
@@ -50,18 +50,18 @@ contains
 !     -- OUTPUT VARIABLES
 !
 !     coagulation_rate_gain: the gain rate of coagulation(~/m^3/s)
-!------------------------------------------------------------------------   
+!------------------------------------------------------------------------
     implicit none
     integer::k,i,j,l
     double precision::distribution(N_size)
     double precision::coagulation_rate_gain(N_size)
     double precision ::c_number(N_size)
     double precision :: gain_term
-    
-    coagulation_rate_gain = 0.d0
-    
 
-    do k=1,N_size 
+    coagulation_rate_gain = 0.d0
+
+
+    do k=1,N_size
       gain_term=0.d0
       do l=1,repartition_coefficient(k)%n
 	!check all possible repartition_coefficient combination of grid 1 and grid 2 into grid k
@@ -82,11 +82,11 @@ contains
 ! 	    endif
 	endif
       enddo
-       
+
       coagulation_rate_gain(k) =gain_term
     enddo
   end subroutine Gain
-  
+
   subroutine Loss(distribution, coagulation_rate_loss,c_number)
 !------------------------------------------------------------------------
 !
@@ -103,17 +103,17 @@ contains
 !     -- OUTPUT VARIABLES
 !
 !     coagulation_rate_loss: the loss rate of coagulation(~/m^3/s)
-!------------------------------------------------------------------------   
-    implicit none 
+!------------------------------------------------------------------------
+    implicit none
     integer::j,i
     double precision:: distribution(N_size)
     double precision:: coagulation_rate_loss(N_size)
     double precision :: loss_term
     double precision ::c_number(N_size)
-    
+
     coagulation_rate_loss= 0.d0
-    
-    do j=1,N_size 
+
+    do j=1,N_size
       loss_term=0.d0
       do i=1,N_size
 	if(c_number(i).gt.0.d0) then
@@ -133,9 +133,9 @@ contains
 !       endif
       coagulation_rate_loss(j) =loss_term*distribution(j)
     enddo
-     
+
   end subroutine loss
- 
+
   subroutine Rate(rate_number,rate_mass,c_number,c_mass)
 !------------------------------------------------------------------------
 !
@@ -153,7 +153,7 @@ contains
 !
 !     rate_number: the coagulation rate of number concentration(#/m^3/s)
 !     rate_mass: the loss rate of mass concentration(µg/m^3/s)
-!------------------------------------------------------------------------   
+!------------------------------------------------------------------------
     implicit none
     integer :: j,i,jesp
     double precision::distribution(N_size)
@@ -164,7 +164,7 @@ contains
     double precision ::rate_number(N_size)
     double precision ::rate_mass(N_size,N_aerosol)
     double precision ::total_mass_tmp
-	
+
     do i=1,(N_aerosol-1)!loop by species
       jesp=List_species(i)
       do j = 1,N_size! Reassigned distribution by mass of each species
@@ -199,10 +199,10 @@ contains
 	enddo
 	rate_number(j) = total_mass_tmp/cell_diam_av(j)
       enddo
-    endif    
-    
+    endif
+
   end subroutine Rate
-  
+
 !   subroutine Ratebalance(rate_gain,rate_loss)
 !     implicit none
 !     integer :: j,jesp
@@ -217,7 +217,7 @@ contains
 !       enddo
 !       d_rate=total_g-total_l
 !       if(d_rate.ne.0.d0) rate_gain(N_size)=rate_gain(N_size)-d_rate
-! 
+!
 !   end subroutine Ratebalance
- 
+
 end module gCoagulation

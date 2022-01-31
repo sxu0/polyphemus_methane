@@ -243,11 +243,11 @@ c      DO iter = 1,NITER_AEC_AQ
       qaero(ENa) = qaerona
       qaero(ECl) = qaerocl
       qgas(ECl) = qgascl
-#endif 
+#endif
 !! YK as SCRAM
 
          if (ISOAPDYN.EQ.0) CALL soap_eq(nesp_aer, nbin_aer,
-     &        neq, q, lwcorg, lwc, rh, ionic, proton, 
+     &        neq, q, lwcorg, lwc, rh, ionic, proton,
      &        temp, qaero, qgas, liquid, psoap_config,psurrogate)
 
 c      ENDDO

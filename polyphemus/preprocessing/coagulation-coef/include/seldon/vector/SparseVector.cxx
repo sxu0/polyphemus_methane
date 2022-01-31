@@ -24,8 +24,8 @@
 
 namespace Seldon
 {
-  
-  
+
+
   /****************
    * CONSTRUCTORS *
    ****************/
@@ -51,14 +51,14 @@ namespace Seldon
   Vector<T, VectSparse, Allocator>::Vector(int i):
     Vector<T, VectFull, Allocator>(i)
   {
-    
+
 #ifdef SELDON_CHECK_MEMORY
     try
       {
 #endif
-	  
+
 	this->index_ = index_allocator_.allocate(i, this);
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -67,13 +67,13 @@ namespace Seldon
 	this->index_ = NULL;
 	this->data_ = NULL;
       }
-    
+
     if (this->index_ == NULL)
       {
 	this->m_ = 0;
 	this->data_ = NULL;
       }
-    
+
     if (this->data_ == NULL && i != 0)
       throw NoMemory("Vector<VectSparse>::Vector(int)",
 		     string("Unable to allocate memory for a vector of size ")
@@ -82,8 +82,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   //! Copy constructor.
   /*! Builds a copy of a vector.
     \param V vector to be copied.
@@ -97,12 +97,12 @@ namespace Seldon
     Copy(V);
   }
 
-  
+
   /**************
    * DESTRUCTOR *
    **************/
-  
-  
+
+
   //! Destructor.
   template <class T, class Allocator>
   Vector<T, VectSparse, Allocator>::~Vector()
@@ -117,15 +117,15 @@ namespace Seldon
 	    this->vect_allocator_.deallocate(this->data_, this->m_);
 	    this->data_ = NULL;
 	  }
-	
+
 	if (index_ != NULL)
 	  {
 	    index_allocator_.deallocate(index_, this->m_);
 	    index_ = NULL;
 	  }
-	
+
 	this->m_ = 0;
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -167,7 +167,7 @@ namespace Seldon
   template <class T, class Allocator>
   inline void Vector<T, VectSparse, Allocator>::Reallocate(int i)
   {
-    
+
     if (i != this->m_)
       {
 
@@ -205,8 +205,8 @@ namespace Seldon
 
       }
   }
-  
-  
+
+
   //! Changes the number of non-zero entries of the vector.
   /*! Changes the number of non-zero entries to \a n. If \a n non-zero entries
     are available before resizing, they are all kept. Otherwise, only the
@@ -216,10 +216,10 @@ namespace Seldon
   template <class T, class Allocator>
   inline void Vector<T, VectSparse, Allocator>::Resize(int n)
   {
-    
+
     if (n == this->m_)
       return;
-    
+
     Vector<T, VectFull, Allocator> new_value(n);
     Vector<int> new_index(n);
     int Nmin = min(this->m_, n);
@@ -228,11 +228,11 @@ namespace Seldon
 	new_value(i) = this->data_[i];
 	new_index(i) = index_[i];
       }
-    
+
     SetData(new_value, new_index);
   }
-  
-  
+
+
   /*! \brief Changes the length of the vector and sets its data array (low
     level method). */
   /*!
@@ -256,12 +256,12 @@ namespace Seldon
     this->Clear();
 
     this->m_ = i;
-    
+
     this->data_ = data;
     this->index_ = index;
   }
-  
-  
+
+
   /*! \brief Changes the length of the vector and sets its data array (low
     level method). */
   /*!
@@ -312,7 +312,7 @@ namespace Seldon
    * ELEMENT ACCESS AND AFFECTATION *
    **********************************/
 
-  
+
   //! Access operator.
   /*!
     \param i index.
@@ -322,18 +322,18 @@ namespace Seldon
   inline typename Vector<T, VectSparse, Allocator>::reference
   Vector<T, VectSparse, Allocator>::Value(int i)
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongIndex("Vector<VectSparse>::Value(int)",
 		       string("Index should be in [0, ") + to_str(this->m_-1)
 		       + "], but is equal to " + to_str(i) + ".");
 #endif
-    
+
     return this->data_[i];
   }
-  
-  
+
+
   //! Access operator.
   /*!
     \param i index.
@@ -350,11 +350,11 @@ namespace Seldon
 		       string("Index should be in [0, ") + to_str(this->m_-1)
 		       + "], but is equal to " + to_str(i) + ".");
 #endif
-    
+
     return this->data_[i];
   }
-  
-  
+
+
   //! Access operator.
   /*!
     \param i index.
@@ -370,11 +370,11 @@ namespace Seldon
 		       string("Index should be in [0, ") + to_str(this->m_-1)
 		       + "], but is equal to " + to_str(i) + ".");
 #endif
-    
+
     return this->index_[i];
   }
-  
-  
+
+
   //! Access operator.
   /*!
     \param i index.
@@ -390,11 +390,11 @@ namespace Seldon
 		       string("Index should be in [0, ") + to_str(this->m_-1)
 		       + "], but is equal to " + to_str(i) + ".");
 #endif
-    
+
     return this->index_[i];
   }
-  
-  
+
+
   //! Access operator.
   /*!
     \param i index.
@@ -408,11 +408,11 @@ namespace Seldon
     // Searching for the entry.
     while (k < this->m_ && index_[k] < i)
       k++;
-    
+
     if (k >= this->m_ || index_[k] != i)
       // The entry does not exist yet, so a zero entry is introduced.
       AddInteraction(i, T(0));
-    
+
     return this->data_[k];
   }
 
@@ -430,15 +430,15 @@ namespace Seldon
     // Searching for the entry.
     while (k < this->m_ && index_[k] < i)
       k++;
-    
+
     if (k >= this->m_ || index_[k] != i)
       // The entry does not exist, a zero is returned.
       return T(0);
-    
+
     return this->data_[k];
   }
-  
-  
+
+
   //! Duplicates a vector (assignment operator).
   /*!
     \param X vector to be copied.
@@ -453,7 +453,7 @@ namespace Seldon
 
     return *this;
   }
-  
+
 
   //! Duplicates a vector.
   /*!
@@ -466,16 +466,16 @@ namespace Seldon
   ::Copy(const Vector<T, VectSparse, Allocator>& X)
   {
     this->Reallocate(X.GetLength());
-    
+
     this->vect_allocator_.memorycpy(this->data_, X.GetData(), this->m_);
     this->index_allocator_.memorycpy(this->index_, X.GetIndex(), this->m_);
   }
-  
-  
+
+
   /*******************
    * BASIC FUNCTIONS *
    *******************/
-  
+
 
   /*! \brief Returns a pointer to the array containing the indices of the
     non-zero entries. */
@@ -493,7 +493,7 @@ namespace Seldon
    * CONVENIENT FUNCTIONS *
    ************************/
 
-  
+
   //! Fills the vector with a given value.
   /*!
     \param x value to fill the vector with.
@@ -507,8 +507,8 @@ namespace Seldon
 
     return *this;
   }
-  
-  
+
+
   //! Displays the vector.
   template <class T, class Allocator>
   void Vector<T, VectSparse, Allocator>::Print() const
@@ -516,8 +516,8 @@ namespace Seldon
     for (int i = 0; i < this->GetLength(); i++)
       cout << (Index(i) + 1) << ' ' << Value(i) << '\n';
   }
-  
-  
+
+
   //! Assembles the vector.
   /*!
     \warning If you use the method AddInteraction, you don't need to call
@@ -534,14 +534,14 @@ namespace Seldon
 	values(i) = this->data_[i];
 	index(i) = index_[i];
       }
-    
+
     Seldon::Assemble(new_size, index, values);
     index.Resize(new_size);
     values.Resize(new_size);
     SetData(values, index);
   }
-  
-  
+
+
   //! Removes small entries.
   /*! Any number whose absolute value is below (or equal) to \a epsilon is
     removed.
@@ -561,13 +561,13 @@ namespace Seldon
 	  index(new_size) = index_[i];
 	  new_size++;
 	}
-    
+
     index.Resize(new_size);
     values.Resize(new_size);
     SetData(values, index);
   }
-  
-  
+
+
   //! Adds \a val to the vector component #\a i.
   /*! If the vector has no entry at \a i, a new entry with value \a val is
     introduced. Otherwise, this method sums the existing value and \a val.
@@ -581,14 +581,14 @@ namespace Seldon
     int pos = 0;
     while (pos < this->m_ && index_[pos] < i)
       pos++;
-    
+
     // If the entry already exists, adds 'val'.
     if (pos < this->m_ && index_[pos] == i)
       {
 	this->data_[pos] += val;
 	return;
       }
-    
+
     int k;
 
     // If the entry does not exist, the vector is reallocated.
@@ -599,21 +599,21 @@ namespace Seldon
 	new_ind(k) = index_[k];
 	new_val(k) = this->data_[k];
       }
-    
+
     // The new entry.
     new_ind(pos) = i;
     new_val(pos) = val;
-    
+
     // Other values in the vector.
     for (k = pos + 1; k <= this->m_; k++)
       {
 	new_ind(k) = index_[k - 1];
 	new_val(k) = this->data_[k - 1];
       }
-    
+
     SetData(new_val, new_ind);
   }
-  
+
 
   //! Adds given values to several components of the vector.
   /*! This method sorts the values to be added (according to their indices)
@@ -637,8 +637,8 @@ namespace Seldon
     ind.Nullify();
     val.Nullify();
   }
-  
-  
+
+
   //! Adds given values to several components of the vector.
   /*! This method sorts the values to be added (according to their indices)
     and adds them with the vector values. For every component, if the vector
@@ -659,7 +659,7 @@ namespace Seldon
     if (!already_sorted)
       // Sorts the values to be added according to their indices.
       Seldon::Assemble(n, index, value);
-    
+
     /***  Values that already have an entry ***/
 
     // Number of values to be added without entry.
@@ -671,7 +671,7 @@ namespace Seldon
       {
 	while (k < this->m_ && index_[k] < index(j))
 	  k++;
-	
+
 	if (k < this->m_ && index(j) == index_[k])
 	  {
 	    new_index(j) = false;
@@ -680,7 +680,7 @@ namespace Seldon
 	else
 	  Nnew++;
       }
-    
+
     if (Nnew > 0)
       {
 	// Some values to be added have no entry yet.
@@ -698,13 +698,13 @@ namespace Seldon
 		  k++;
 		  nb++;
 		}
-	      
+
 	      // The new entry.
 	      new_ind(nb) = index(j);
 	      new_val(nb) = value(j);
 	      nb++;
 	    }
-	
+
 	// Last entries.
 	while (k < this->m_)
 	  {
@@ -713,17 +713,17 @@ namespace Seldon
 	    k++;
 	    nb++;
 	  }
-	
+
 	SetData(new_val, new_ind);
       }
   }
-  
-  
+
+
   /**************************
    * OUTPUT/INPUT FUNCTIONS *
    **************************/
-  
-  
+
+
   //! Writes the vector in a file.
   /*! It stores in binary format: (1) the number of non-zero entries in the
     vector (integer), (2) the indices of the non-zero entries (integers), and
@@ -744,7 +744,7 @@ namespace Seldon
 #endif
 
     this->Write(FileStream);
-    
+
     FileStream.close();
   }
 
@@ -768,7 +768,7 @@ namespace Seldon
 
     stream.write(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
 		 sizeof(int));
-    
+
     stream.write(reinterpret_cast<char*>(this->index_),
 		 this->m_ * sizeof(int));
 
@@ -805,7 +805,7 @@ namespace Seldon
       throw IOError("Vector<VectSparse>::WriteText(string FileName)",
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
-    
+
     this->WriteText(FileStream);
 
     FileStream.close();
@@ -828,23 +828,23 @@ namespace Seldon
       throw IOError("Vector<VectSparse>::WriteText(ostream& stream)",
                     "Stream is not ready.");
 #endif
-    
+
     // First entries.
     for (int i = 0; i < this->m_ - 1; i++)
       stream << (Index(i) + 1) << " " << Value(i) << '\n';
-    
+
     // Last entry is a special case: there should be no empty line at the end
     // of the stream.
     if (this->m_ > 0)
       stream << (Index(this->m_ - 1) + 1) << " " << Value(this->m_ - 1);
-    
+
 #ifdef SELDON_CHECK_IO
     // Checks if data was written.
     if (!stream.good())
       throw IOError("Vector<VectSparse>::WriteText(ostream& stream)",
                     "Output operation failed.");
 #endif
-    
+
   }
 
 
@@ -891,12 +891,12 @@ namespace Seldon
     int m;
     stream.read(reinterpret_cast<char*>(&m), sizeof(int));
     this->Reallocate(m);
-    
+
     stream.read(reinterpret_cast<char*>(this->index_), m * sizeof(int));
 
     stream.read(reinterpret_cast<char*>(this->data_),
 		m * sizeof(value_type));
-    
+
 #ifdef SELDON_CHECK_IO
     // Checks if data was read.
     if (!stream.good())
@@ -906,7 +906,7 @@ namespace Seldon
 
   }
 
-  
+
   //! Sets the vector from a text file.
   /*! Sets the vector according to a text file that stores the data like
     method WriteText(string).
@@ -940,14 +940,14 @@ namespace Seldon
   void Vector<T, VectSparse, Allocator>::ReadText(istream& stream)
   {
     Clear();
-    
+
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!stream.good())
       throw IOError("Vector<VectSparse>::ReadText(istream& stream)",
                     "Stream is not ready.");
 #endif
-    
+
     Vector<T, VectFull, Allocator> values;
     Vector<int> index;
     T entry;
@@ -957,7 +957,7 @@ namespace Seldon
       {
 	// New entry is read.
 	stream >> ind >> entry;
-	
+
 	if (stream.fail())
 	  break;
 	else
@@ -969,22 +969,22 @@ namespace Seldon
 			    string("Index should be greater ")
 			    + "than 0 but is equal to " + to_str(ind) + ".");
 #endif
-	
+
 	    nb_elt++;
 	    ind--;
-	    
+
 	    // Inserting a new element.
 	    if (nb_elt > values.GetM())
 	      {
 		values.Resize(2 * nb_elt);
 		index.Resize(2 * nb_elt);
 	      }
-	    
+
 	    values(nb_elt - 1) = entry;
 	    index(nb_elt - 1) = ind;
 	  }
       }
-    
+
     if (nb_elt > 0)
       {
 	// Allocating to the right size.
@@ -996,8 +996,8 @@ namespace Seldon
 	  }
       }
   }
-  
-  
+
+
   //! operator<< overloaded for sparse vectors.
   /*!
     \param out output stream.
@@ -1010,11 +1010,11 @@ namespace Seldon
   {
     for (int i = 0; i < V.GetLength(); i++)
       out << (V.Index(i) + 1) << ' ' << V.Value(i) << '\n';
-    
+
     return out;
   }
-  
-  
+
+
 } // namespace Seldon.
 
 #define SELDON_FILE_SPARSE_VECTOR_CXX

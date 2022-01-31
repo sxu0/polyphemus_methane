@@ -1,23 +1,23 @@
 C-----------------------------------------------------------------------
 C     Copyright (C) 2001-2007, ENPC - INRIA - EDF R&D
 C     Author(s): Denis Quélo
-C     
+C
 C     This file is part of the Size Resolved Aerosol Model (SIREAM), a
 C     component of the air quality modeling system Polyphemus.
-C     
+C
 C     Polyphemus is developed in the INRIA - ENPC joint project-team
 C     CLIME and in the ENPC - EDF R&D joint laboratory CEREA.
-C     
+C
 C     Polyphemus is free software; you can redistribute it and/or modify
 C     it under the terms of the GNU General Public License as published
 C     by the Free Software Foundation; either version 2 of the License,
 C     or (at your option) any later version.
-C     
+C
 C     Polyphemus is distributed in the hope that it will be useful, but
 C     WITHOUT ANY WARRANTY; without even the implied warranty of
 C     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 C     General Public License for more details.
-C     
+C
 C     For more information, visit the Polyphemus web site:
 C     http://cerea.enpc.fr/polyphemus/
 C-----------------------------------------------------------------------
@@ -35,14 +35,14 @@ C-----------------------------------------------------------------------
      $     ,DLnumconc_aer,mass_density_aer)
 
 C------------------------------------------------------------------------
-C     
-C     -- DESCRIPTION 
-C     
+C
+C     -- DESCRIPTION
+C
 C     This routine computes one timestep for gas-phase chemistry RADM.
 C     Chemical kinetics is solved in each grid cell.
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- INPUT VARIABLES
 C
 C     NS: number of gas species.
@@ -91,36 +91,36 @@ C     INUM = 1 if the number concentration is followed in the CTM
 C     = 0 if the number concentration is not followed.
 C     IDENS = 1 for varying aerosol density
 C     = 0 for fixed aerosol density.
-C     
+C
 C     -- INPUT/OUTPUT VARIABLES
 C
 C     DLCONC: gas concentrations ([\mu.g/m^3]).
 C     DLCONC_AER: aerosol concentrations ([\mu.g/m^3]).
 C     # Before entry, it is given at initial time of the timestep.
 C     # On exit, it is computed at final time of the timestep.
-C     
+C
 C     -- OUTPUT VARIABLES
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- REMARKS
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- MODIFICATIONS
-C     
+C
 C     2002/02/26: new treatment of sources (Jaouad Boutahar, CEREA).
 C     2006/09/29: updated header (Edouard Debry).
-C     
+C
 C     2009/01/22: added adaptatif time stepping (K. Sartelet, CEREA)
 C     2010/03/05: added option_photolysis index (Youngseob KIM)
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- AUTHOR(S)
-C     
+C
 C     Denis Quélo, CEREA, June 2001.
-C     
+C
 C------------------------------------------------------------------------
 
       IMPLICIT NONE
@@ -194,7 +194,7 @@ c     DOUBLE PRECISION wet_diameter_aer_loc(Nbin_aer)
       DOUBLE PRECISION EPSDLK
       PARAMETER (EPSDLK = 1.D-15)
       DOUBLE PRECISION supEdtstep, Edtstep(NS),ATOL
-      DOUBLE PRECISION tstep,tstep_new,tstep_min,tfchem_tmp  
+      DOUBLE PRECISION tstep,tstep_new,tstep_min,tfchem_tmp
 
       INTEGER option_adaptive_time_step
       INTEGER option_photolysis
@@ -216,7 +216,7 @@ C     Aerosol discretization converted in microm.
       DO Jb=1,nbin_aer
 	  idx_bs(Jb)=(Jb-1)/ncomp_aer+1!relations between bin idx and size idx
       ENDDO
-      
+
 C     With real number concentration.
       IF (INUM.EQ.1) THEN
 C     Compute aerosol density
@@ -240,7 +240,7 @@ C     Compute mass and diameter of each section
                MSF(Jb) = 0.d0
             ENDIF
 
-            if ((DLnumconc_aer(Jb).GT. TINYN .or. 
+            if ((DLnumconc_aer(Jb).GT. TINYN .or.
      s           conc_tot.GT.TINYM)
      s           .AND. IDENS .EQ. 1) then
                DSF(Jb) = (MSF(Jb)/cst_PI6/rho_dry(Jb))**cst_FRAC3
@@ -249,7 +249,7 @@ C     Compute mass and diameter of each section
                DSF(Jb) = DSQRT(DBF(idx_bs(Jb))* DBF(idx_bs(Jb)+1))!sz
             endif
 
-            if (DSF(Jb) .LT. DBF(idx_bs(Jb)) .or. 
+            if (DSF(Jb) .LT. DBF(idx_bs(Jb)) .or.
      &          DSF(Jb) .GT. DBF(idx_bs(Jb)+1)) THEN
                DSF(Jb) =  DSQRT(DBF(idx_bs(Jb)) * DBF(idx_bs(Jb)+1))
             endif
@@ -292,30 +292,30 @@ c     endif
       endif
 
 C     Cloud attenuation.
-      
+
       Zatt = DLattenuation
       Zattf = DLattenuationf
-      
+
 C     Projection.
       DO Jsp=1,Ns
          ZC(Jsp) = DLconc(Jsp)
       ENDDO
 
 C     Initialization of granulo for kinetic cte of heterogeneous rxns
-      
+
       DO Jb=1,Nbin_aer
          conc_tot=0.0D0
          tot_before(Jb) = 0.D0
          DO Jsp=1,Ns_aer-1
-            conc_tot = conc_tot + DLconc_aer(Jb,Jsp) 
-            tot_before(Jb) = tot_before(Jb) +  DLconc_aer(Jb,Jsp) 
+            conc_tot = conc_tot + DLconc_aer(Jb,Jsp)
+            tot_before(Jb) = tot_before(Jb) +  DLconc_aer(Jb,Jsp)
          ENDDO
 C     compute the particle number (mass/geometric mean diameter)
          IF (INUM.EQ.1) THEN
             granulo_aer(Jb) = DLnumconc_aer(Jb)
          ELSE
             if (MSF(Jb) .GT. 0.D0) THEN
-               granulo_aer(Jb) = conc_tot/MSF(Jb)               
+               granulo_aer(Jb) = conc_tot/MSF(Jb)
             else
                write(*,*) , "chem.f : error "
                stop
@@ -334,7 +334,7 @@ C     Integration of chemistry with adaptive time stepping
                   tfchem_tmp = tfchem
                   tstep = delta_t/Ncycle
 
-         Do while (tschem.LT.tfchem) 
+         Do while (tschem.LT.tfchem)
 ! Compute zenithal angles
             DLmuzero=muzero(tschem,Dlon,Dlat)
             Zangzen=dabs(DACOS(DLmuzero)*180.D0/PI)
@@ -371,11 +371,11 @@ c     IF (Nrphot.GT.0) THEN
      $                 DLCphotolysis_ratesf(i)
                ENDDO
             ENDIF
-            
+
             CALL roschem (NS,Nr,nemis,ZC,ZCsourc,ZCsourcf,
      s           convers_factor, convers_factor_jac,tschem,
      s           tfchem_tmp,DLRki,DLRkf,ZC_old,DLK1,DLK2)
-            
+
             IF (jBiPER/=0) THEN
                DO Jb=1,nbin_aer
                   saveDLBiPER(Jb)=max(DLconc_aer(Jb,
@@ -384,7 +384,7 @@ c     IF (Nrphot.GT.0) THEN
      s                 DLconc_aer(Jb,jBiPER),0.0)
                ENDDO
             ENDIF
-            
+
             IF(option_adaptive_time_step.EQ.1) then
 C     Check that the time step was ok
                supEdtstep = 0.D0
@@ -393,10 +393,10 @@ C     Check that the time step was ok
      &                 .OR.DLK2(Jsp).GT.EPSDLK)
      &                 .AND.ZC(Jsp).GT.EPSDLK) then
 !     Estimate the relative error
-                     Edtstep(Jsp) = 0.5D0 * 
+                     Edtstep(Jsp) = 0.5D0 *
      &                    dabs(DLk1(Jsp) + DLk2(Jsp))
      &                    / ZC(Jsp)
-                     If(Edtstep(Jsp).GT.supEdtstep) then 
+                     If(Edtstep(Jsp).GT.supEdtstep) then
                         supEdtstep = Edtstep(Jsp)
                      Endif
                   Endif
@@ -438,7 +438,7 @@ c     supEdtstep = supEdtstep/ATOL
                       DO Jb=1,nbin_aer
                   DLconc_aer(Jb,jBiPER)=saveDLBiPER(Jb)
                       ENDDO
-               ENDIF  
+               ENDIF
             ENDIF
 
          Enddo                  !End loop Do while for time stepping

@@ -51,7 +51,7 @@ module aInitialization
     parameter (N_solid=9,N_inside_aer=21)
     parameter(N_hydrophilic=9)
 
-    !!part 2: parameters of system option    
+    !!part 2: parameters of system option
     integer :: tag_thrm!method for wet diameter computation0 h2o 1 isorropia
     integer :: dynamic_solver  !KDSLV Tag type of solver
     integer :: sulfate_computation !ISULFCOND tag of sulfate condensation method
@@ -77,7 +77,7 @@ module aInitialization
 !$omp threadprivate(section_pass,with_oligomerization,thermodynamic_model,with_number)
 #endif
     integer NITER_PKW,NITER_AEC_AQ
-    integer NITER_POA,NITER_AEC_DRY    
+    integer NITER_POA,NITER_AEC_DRY
     double precision ::  ALFHP! percentage of H+ allowed to c/e(0.1)
     double precision ::  EPSER
     double precision ::  TINYM,TINYN,MTSBL
@@ -108,7 +108,7 @@ module aInitialization
     Parameter (IH=1,INa=2,INH4=3,ICl=4,ISO4=5,IHSO4=6,INO3=7,IH2O=8,INH3=9)
     Parameter (IHCl=10,IHNO3=11,IOH=12,SNaNO3=13,SNH4NO3=14,SNACl=15)
     Parameter (SNH4Cl=16,SNa2SO4=17,SNH42S4=18,SNaHSO4=19,SNH4HS4=20,SLC=21)
-    
+
     Integer :: nesp, nesp_isorropia, nesp_aec, nesp_pankow, nesp_pom!Number of different species group
     Integer, dimension(:), allocatable :: isorropia_species
     Integer, dimension(:), allocatable :: aec_species
@@ -118,7 +118,7 @@ module aInitialization
 !$omp threadprivate(nesp, nesp_isorropia, nesp_aec, nesp_pankow, nesp_pom)
 #endif
 
-    !!part 4: System state parameters    
+    !!part 4: System state parameters
     integer :: tagrho
     integer :: tag_coag,tag_cond,tag_nucl
     integer :: kind_composition
@@ -149,7 +149,7 @@ module aInitialization
 !$omp threadprivate(DQLIMIT,record_time,p_fact,k_fact)
 #endif
 
-    !!part5: 1 dimension data array    
+    !!part5: 1 dimension data array
     integer, dimension(:), allocatable :: Index_groups!index of which group the species belongs to
     integer, dimension(:), allocatable :: List_species!read species defined in cfg files
     Integer, dimension(:), allocatable :: aerosol_species_interact
@@ -331,7 +331,7 @@ module aInitialization
     allocate(Kelvin_effect_ext(N_size,N_aerosol))
     allocate(frac_grid(N_size,N_aerosol))
     allocate(dqdt(N_size,N_aerosol))
-    
+
     total_mass=0.d0
     concentration_gas=0.d0
     concentration_number=0.d0
@@ -357,7 +357,7 @@ module aInitialization
     log_bound=0.d0
     density_aer_bin=0.d0
     density_aer_size=0.d0
-    
+
     !!read relations between species and chemical groups
     do jesp =1,(N_aerosol-1)
       Index_groups(jesp)=aerosol_species_group_relation(jesp)+1
@@ -404,7 +404,7 @@ module aInitialization
     ELSE
       section_pass=1
     ENDIF
-    
+
     E1=1
     E2=nesp_aer-1 ! to avoid water
 
@@ -429,7 +429,7 @@ module aInitialization
     EMD=md_species_loc
     EBC=bc_species_loc
     EH2O=nesp_aer ! water always at the end
-    
+
     !initialized the aerosol species pointer list without water
     List_species(1)=EMD
     List_species(2)=EBC
@@ -451,11 +451,11 @@ module aInitialization
 
     do jesp=1,nesp_pom
       poa_species(jesp) = poa_species_loc(jesp)
-      List_species(2+nesp_isorropia+nesp_aec+nesp_pankow+jesp)=poa_species_loc(jesp)	
+      List_species(2+nesp_isorropia+nesp_aec+nesp_pankow+jesp)=poa_species_loc(jesp)
     enddo
 
     List_species(N_aerosol)=EH2O
-    
+
     G1=ESO4
     G2=ECl
 
@@ -551,12 +551,12 @@ module aInitialization
     mass_density_solid(SNH42S4)=1.770D-06
     mass_density_solid(SNaHSO4)=2.740D-06
     mass_density_solid(SNH4HS4)=1.780D-06
-    mass_density_solid(SLC)=1.770D-06    
+    mass_density_solid(SLC)=1.770D-06
 
   END subroutine Init_global_parameters
 
   subroutine free_allocated_memory()
-    
+
     integer ierr
 
     deallocate(total_mass)

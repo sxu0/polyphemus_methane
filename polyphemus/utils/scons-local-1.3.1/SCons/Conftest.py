@@ -108,8 +108,8 @@ from types import IntType
 # PUBLIC VARIABLES
 #
 
-LogInputFiles = 1    # Set that to log the input files in case of a failed test
-LogErrorMessages = 1 # Set that to log Conftest-generated error messages
+LogInputFiles = 1  # Set that to log the input files in case of a failed test
+LogErrorMessages = 1  # Set that to log Conftest-generated error messages
 
 #
 # PUBLIC FUNCTIONS
@@ -121,7 +121,7 @@ LogErrorMessages = 1 # Set that to log Conftest-generated error messages
 #   message are available yet (chicken-egg problem).
 
 
-def CheckBuilder(context, text = None, language = None):
+def CheckBuilder(context, text=None, language=None):
     """
     Configure check to see if the compiler works.
     Note that this uses the current value of compiler and linker flags, make
@@ -148,6 +148,7 @@ int main() {
     _YesNoResult(context, ret, None, text)
     return ret
 
+
 def CheckCC(context):
     """
     Configure check for a working C compiler.
@@ -164,9 +165,10 @@ int main()
     return 0;
 }
 """
-    ret = _check_empty_program(context, 'CC', text, 'C')
+    ret = _check_empty_program(context, "CC", text, "C")
     _YesNoResult(context, ret, None, text)
     return ret
+
 
 def CheckSHCC(context):
     """
@@ -184,9 +186,10 @@ int foo()
     return 0;
 }
 """
-    ret = _check_empty_program(context, 'SHCC', text, 'C', use_shared = True)
+    ret = _check_empty_program(context, "SHCC", text, "C", use_shared=True)
     _YesNoResult(context, ret, None, text)
     return ret
+
 
 def CheckCXX(context):
     """
@@ -204,9 +207,10 @@ int main()
     return 0;
 }
 """
-    ret = _check_empty_program(context, 'CXX', text, 'C++')
+    ret = _check_empty_program(context, "CXX", text, "C++")
     _YesNoResult(context, ret, None, text)
     return ret
+
 
 def CheckSHCXX(context):
     """
@@ -224,11 +228,12 @@ int main()
     return 0;
 }
 """
-    ret = _check_empty_program(context, 'SHCXX', text, 'C++', use_shared = True)
+    ret = _check_empty_program(context, "SHCXX", text, "C++", use_shared=True)
     _YesNoResult(context, ret, None, text)
     return ret
 
-def _check_empty_program(context, comp, text, language, use_shared = False):
+
+def _check_empty_program(context, comp, text, language, use_shared=False):
     """Return 0 on success, 1 otherwise."""
     if not context.env.has_key(comp) or not context.env[comp]:
         # The compiler construction variable is not set or empty
@@ -244,7 +249,7 @@ def _check_empty_program(context, comp, text, language, use_shared = False):
         return context.CompileProg(text, suffix)
 
 
-def CheckFunc(context, function_name, header = None, language = None):
+def CheckFunc(context, function_name, header=None, language=None):
     """
     Configure check for a function "function_name".
     "language" should be "C" or "C++" and is used to select the compiler.
@@ -274,13 +279,16 @@ def CheckFunc(context, function_name, header = None, language = None):
     if context.headerfilename:
         includetext = '#include "%s"' % context.headerfilename
     else:
-        includetext = ''
+        includetext = ""
     if not header:
-        header = """
+        header = (
+            """
 #ifdef __cplusplus
 extern "C"
 #endif
-char %s();""" % function_name
+char %s();"""
+            % function_name
+        )
 
     lang, suffix, msg = _lang2suffix(language)
     if msg:
@@ -301,20 +309,25 @@ int main() {
 
   return 0;
 }
-""" % { 'name': function_name,
-        'include': includetext,
-        'hdr': header }
+""" % {
+        "name": function_name,
+        "include": includetext,
+        "hdr": header,
+    }
 
     context.Display("Checking for %s function %s()... " % (lang, function_name))
     ret = context.BuildProg(text, suffix)
-    _YesNoResult(context, ret, "HAVE_" + function_name, text,
-                 "Define to 1 if the system has the function `%s'." %\
-                 function_name)
+    _YesNoResult(
+        context,
+        ret,
+        "HAVE_" + function_name,
+        text,
+        "Define to 1 if the system has the function `%s'." % function_name,
+    )
     return ret
 
 
-def CheckHeader(context, header_name, header = None, language = None,
-                                                        include_quotes = None):
+def CheckHeader(context, header_name, header=None, language=None, include_quotes=None):
     """
     Configure check for a C or C++ header file "header_name".
     Optional "header" can be defined to do something before including the
@@ -338,31 +351,39 @@ def CheckHeader(context, header_name, header = None, language = None,
     if context.headerfilename:
         includetext = '#include "%s"\n' % context.headerfilename
     else:
-        includetext = ''
+        includetext = ""
     if not header:
         header = ""
 
     lang, suffix, msg = _lang2suffix(language)
     if msg:
-        context.Display("Cannot check for header file %s: %s\n"
-                                                          % (header_name, msg))
+        context.Display("Cannot check for header file %s: %s\n" % (header_name, msg))
         return msg
 
     if not include_quotes:
         include_quotes = "<>"
 
-    text = "%s%s\n#include %s%s%s\n\n" % (includetext, header,
-                             include_quotes[0], header_name, include_quotes[1])
+    text = "%s%s\n#include %s%s%s\n\n" % (
+        includetext,
+        header,
+        include_quotes[0],
+        header_name,
+        include_quotes[1],
+    )
 
     context.Display("Checking for %s header file %s... " % (lang, header_name))
     ret = context.CompileProg(text, suffix)
-    _YesNoResult(context, ret, "HAVE_" + header_name, text, 
-                 "Define to 1 if you have the <%s> header file." % header_name)
+    _YesNoResult(
+        context,
+        ret,
+        "HAVE_" + header_name,
+        text,
+        "Define to 1 if you have the <%s> header file." % header_name,
+    )
     return ret
 
 
-def CheckType(context, type_name, fallback = None,
-                                               header = None, language = None):
+def CheckType(context, type_name, fallback=None, header=None, language=None):
     """
     Configure check for a C or C++ type "type_name".
     Optional "header" can be defined to include a header file.
@@ -378,7 +399,7 @@ def CheckType(context, type_name, fallback = None,
     if context.headerfilename:
         includetext = '#include "%s"' % context.headerfilename
     else:
-        includetext = ''
+        includetext = ""
     if not header:
         header = ""
 
@@ -408,14 +429,21 @@ int main() {
   if (sizeof (%(name)s))
     return 0;
 }
-""" % { 'include': includetext,
-        'header': header,
-        'name': type_name }
+""" % {
+        "include": includetext,
+        "header": header,
+        "name": type_name,
+    }
 
     context.Display("Checking for %s type %s... " % (lang, type_name))
     ret = context.BuildProg(text, suffix)
-    _YesNoResult(context, ret, "HAVE_" + type_name, text,
-                 "Define to 1 if the system has the type `%s'." % type_name)
+    _YesNoResult(
+        context,
+        ret,
+        "HAVE_" + type_name,
+        text,
+        "Define to 1 if the system has the type `%s'." % type_name,
+    )
     if ret and fallback and context.headerfilename:
         f = open(context.headerfilename, "a")
         f.write("typedef %s %s;\n" % (fallback, type_name))
@@ -423,7 +451,8 @@ int main() {
 
     return ret
 
-def CheckTypeSize(context, type_name, header = None, language = None, expect = None):
+
+def CheckTypeSize(context, type_name, header=None, language=None, expect=None):
     """This check can be used to get the size of a given type, or to check whether
     the type is of expected size.
 
@@ -441,12 +470,12 @@ def CheckTypeSize(context, type_name, header = None, language = None, expect = N
         Returns:
             status : int
                 0 if the check failed, or the found size of the type if the check succeeded."""
-    
+
     # Include "confdefs.h" first, so that the header can use HAVE_HEADER_H.
     if context.headerfilename:
         includetext = '#include "%s"' % context.headerfilename
     else:
-        includetext = ''
+        includetext = ""
 
     if not header:
         header = ""
@@ -456,15 +485,17 @@ def CheckTypeSize(context, type_name, header = None, language = None, expect = N
         context.Display("Cannot check for %s type: %s\n" % (type_name, msg))
         return msg
 
-    src = includetext + header 
+    src = includetext + header
     if not expect is None:
         # Only check if the given size is the right one
-        context.Display('Checking %s is %d bytes... ' % (type_name, expect))
+        context.Display("Checking %s is %d bytes... " % (type_name, expect))
 
         # test code taken from autoconf: this is a pretty clever hack to find that
         # a type is of a given size using only compilation. This speeds things up
         # quite a bit compared to straightforward code using TryRun
-        src = src + r"""
+        src = (
+            src
+            + r"""
 typedef %s scons_check_type;
 
 int main()
@@ -475,12 +506,17 @@ int main()
     return 0;
 }
 """
+        )
 
         st = context.CompileProg(src % (type_name, expect), suffix)
         if not st:
             context.Display("yes\n")
-            _Have(context, "SIZEOF_%s" % type_name, expect, 
-                  "The size of `%s', as computed by sizeof." % type_name)
+            _Have(
+                context,
+                "SIZEOF_%s" % type_name,
+                expect,
+                "The size of `%s', as computed by sizeof." % type_name,
+            )
             return expect
         else:
             context.Display("no\n")
@@ -488,7 +524,7 @@ int main()
             return 0
     else:
         # Only check if the given size is the right one
-        context.Message('Checking size of %s ... ' % type_name)
+        context.Message("Checking size of %s ... " % type_name)
 
         # We have to be careful with the program we wish to test here since
         # compilation will be attempted using the current environment's flags.
@@ -497,14 +533,19 @@ int main()
         # '-Wall -Werror' flags since the variables argc and argv would not be
         # used in the program...
         #
-        src = src + """
+        src = (
+            src
+            + """
 #include <stdlib.h>
 #include <stdio.h>
 int main() {
-    printf("%d", (int)sizeof(""" + type_name + """));
+    printf("%d", (int)sizeof("""
+            + type_name
+            + """));
     return 0;
 }
     """
+        )
         st, out = context.RunProg(src, suffix)
         try:
             size = int(out)
@@ -516,8 +557,12 @@ int main() {
 
         if not st:
             context.Display("yes\n")
-            _Have(context, "SIZEOF_%s" % type_name, size,
-                  "The size of `%s', as computed by sizeof." % type_name)
+            _Have(
+                context,
+                "SIZEOF_%s" % type_name,
+                size,
+                "The size of `%s', as computed by sizeof." % type_name,
+            )
             return size
         else:
             context.Display("no\n")
@@ -526,7 +571,8 @@ int main() {
 
     return 0
 
-def CheckDeclaration(context, symbol, includes = None, language = None):
+
+def CheckDeclaration(context, symbol, includes=None, language=None):
     """Checks whether symbol is declared.
 
     Use the same test as autoconf, that is test whether the symbol is defined
@@ -543,12 +589,12 @@ def CheckDeclaration(context, symbol, includes = None, language = None):
     Returns:
         status : bool
             True if the check failed, False if succeeded."""
-    
+
     # Include "confdefs.h" first, so that the header can use HAVE_HEADER_H.
     if context.headerfilename:
         includetext = '#include "%s"' % context.headerfilename
     else:
-        includetext = ''
+        includetext = ""
 
     if not includes:
         includes = ""
@@ -558,10 +604,12 @@ def CheckDeclaration(context, symbol, includes = None, language = None):
         context.Display("Cannot check for declaration %s: %s\n" % (type_name, msg))
         return msg
 
-    src = includetext + includes 
-    context.Display('Checking whether %s is declared... ' % symbol)
+    src = includetext + includes
+    context.Display("Checking whether %s is declared... " % symbol)
 
-    src = src + r"""
+    src = (
+        src
+        + r"""
 int main()
 {
 #ifndef %s
@@ -570,16 +618,28 @@ int main()
     ;
     return 0;
 }
-""" % (symbol, symbol)
+"""
+        % (symbol, symbol)
+    )
 
     st = context.CompileProg(src, suffix)
-    _YesNoResult(context, st, "HAVE_DECL_" + symbol, src,
-                 "Set to 1 if %s is defined." % symbol)
+    _YesNoResult(
+        context, st, "HAVE_DECL_" + symbol, src, "Set to 1 if %s is defined." % symbol
+    )
     return st
 
-def CheckLib(context, libs, func_name = None, header = None,
-             extra_libs = None, call = None, language = None, autoadd = 1,
-             append = True):
+
+def CheckLib(
+    context,
+    libs,
+    func_name=None,
+    header=None,
+    extra_libs=None,
+    call=None,
+    language=None,
+    autoadd=1,
+    append=True,
+):
     """
     Configure check for a C or C++ libraries "libs".  Searches through
     the list of libraries, until one is found where the test succeeds.
@@ -604,42 +664,53 @@ def CheckLib(context, libs, func_name = None, header = None,
     if context.headerfilename:
         includetext = '#include "%s"' % context.headerfilename
     else:
-        includetext = ''
+        includetext = ""
     if not header:
         header = ""
 
     text = """
 %s
-%s""" % (includetext, header)
+%s""" % (
+        includetext,
+        header,
+    )
 
     # Add a function declaration if needed.
     if func_name and func_name != "main":
         if not header:
-            text = text + """
+            text = (
+                text
+                + """
 #ifdef __cplusplus
 extern "C"
 #endif
 char %s();
-""" % func_name
+"""
+                % func_name
+            )
 
         # The actual test code.
         if not call:
             call = "%s();" % func_name
 
     # if no function to test, leave main() blank
-    text = text + """
+    text = (
+        text
+        + """
 int
 main() {
   %s
 return 0;
 }
-""" % (call or "")
+"""
+        % (call or "")
+    )
 
     if call:
         i = string.find(call, "\n")
         if i > 0:
             calltext = call[:i] + ".."
-        elif call[-1] == ';':
+        elif call[-1] == ";":
             calltext = call[:-1]
         else:
             calltext = call
@@ -653,15 +724,15 @@ return 0;
 
         # if a function was specified to run in main(), say it
         if call:
-                context.Display("Checking for %s in %s library %s... "
-                                % (calltext, lang, lib_name))
+            context.Display(
+                "Checking for %s in %s library %s... " % (calltext, lang, lib_name)
+            )
         # otherwise, just say the name of library and language
         else:
-                context.Display("Checking for %s library %s... "
-                                % (lang, lib_name))
+            context.Display("Checking for %s library %s... " % (lang, lib_name))
 
         if lib_name:
-            l = [ lib_name ]
+            l = [lib_name]
             if extra_libs:
                 l.extend(extra_libs)
             if append:
@@ -675,21 +746,28 @@ return 0;
 
         ret = context.BuildProg(text, suffix)
 
-        _YesNoResult(context, ret, sym, text,
-                     "Define to 1 if you have the `%s' library." % lib_name)
+        _YesNoResult(
+            context,
+            ret,
+            sym,
+            text,
+            "Define to 1 if you have the `%s' library." % lib_name,
+        )
         if oldLIBS != -1 and (ret or not autoadd):
             context.SetLIBS(oldLIBS)
-            
+
         if not ret:
             return ret
 
     return ret
 
+
 #
 # END OF PUBLIC FUNCTIONS
 #
 
-def _YesNoResult(context, ret, key, text, comment = None):
+
+def _YesNoResult(context, ret, key, text, comment=None):
     """
     Handle the result of a test with a "yes" or "no" result.
     "ret" is the return value: empty if OK, error message when not.
@@ -707,7 +785,7 @@ def _YesNoResult(context, ret, key, text, comment = None):
         context.Display("yes\n")
 
 
-def _Have(context, key, have, comment = None):
+def _Have(context, key, have, comment=None):
     """
     Store result of a test in context.havedict and context.headerfilename.
     "key" is a "HAVE_abc" name.  It is turned into all CAPITALS and non-
@@ -724,7 +802,7 @@ def _Have(context, key, have, comment = None):
              when desired and escape special characters!
     """
     key_up = string.upper(key)
-    key_up = re.sub('[^A-Z0-9_]', '_', key_up)
+    key_up = re.sub("[^A-Z0-9_]", "_", key_up)
     context.havedict[key_up] = have
     if have == 1:
         line = "#define %s 1\n" % key_up
@@ -734,7 +812,7 @@ def _Have(context, key, have, comment = None):
         line = "#define %s %d\n" % (key_up, have)
     else:
         line = "#define %s %s\n" % (key_up, str(have))
-    
+
     if comment is not None:
         lines = "\n/* %s */\n" % comment + line
     else:
@@ -744,7 +822,7 @@ def _Have(context, key, have, comment = None):
         f = open(context.headerfilename, "a")
         f.write(lines)
         f.close()
-    elif hasattr(context,'config_h'):
+    elif hasattr(context, "config_h"):
         context.config_h = context.config_h + lines
 
 
@@ -755,9 +833,9 @@ def _LogFailed(context, text, msg):
     """
     if LogInputFiles:
         context.Log("Failed program was:\n")
-        lines = string.split(text, '\n')
-        if len(lines) and lines[-1] == '':
-            lines = lines[:-1]              # remove trailing empty line
+        lines = string.split(text, "\n")
+        if len(lines) and lines[-1] == "":
+            lines = lines[:-1]  # remove trailing empty line
         n = 1
         for line in lines:
             context.Log("%d: %s\n" % (n, line))

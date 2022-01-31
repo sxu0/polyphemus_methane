@@ -89,7 +89,7 @@ headers_dir=$script_dir/headers
 $script_dir/LU_generator ${SPECIES}_preprocessed non_zero.dat $headers_dir/header_license.txt $headers_dir/header_decompose.txt $headers_dir/header_solve.txt $headers_dir/header_solve_tr.txt $function_suffix
 
 echo "======= 3 - Generating Polyphemus configuration files..."
-$script_dir/make_config.py ${SPECIES}_preprocessed $REACT 
+$script_dir/make_config.py ${SPECIES}_preprocessed $REACT
 set +e
 
 echo "Done."

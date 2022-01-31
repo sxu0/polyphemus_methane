@@ -60,7 +60,7 @@ import sys
 # Check to see if the python version is > 3.0 which is currently unsupported
 # If so exit with error message
 try:
-    if  sys.version_info >= (3,0,0):
+    if sys.version_info >= (3, 0, 0):
         msg = "scons: *** SCons version %s does not run under Python version %s.\n"
         sys.stderr.write(msg % (__version__, sys.version.split()[0]))
         sys.exit(1)
@@ -79,33 +79,33 @@ libs = []
 if os.environ.has_key("SCONS_LIB_DIR"):
     libs.append(os.environ["SCONS_LIB_DIR"])
 
-local_version = 'scons-local-' + __version__
-local = 'scons-local'
+local_version = "scons-local-" + __version__
+local = "scons-local"
 if script_dir:
     local_version = os.path.join(script_dir, local_version)
     local = os.path.join(script_dir, local)
 libs.append(os.path.abspath(local_version))
 libs.append(os.path.abspath(local))
 
-scons_version = 'scons-%s' % __version__
+scons_version = "scons-%s" % __version__
 
 prefs = []
 
-if sys.platform == 'win32':
+if sys.platform == "win32":
     # sys.prefix is (likely) C:\Python*;
     # check only C:\Python*.
     prefs.append(sys.prefix)
-    prefs.append(os.path.join(sys.prefix, 'Lib', 'site-packages'))
+    prefs.append(os.path.join(sys.prefix, "Lib", "site-packages"))
 else:
     # On other (POSIX) platforms, things are more complicated due to
     # the variety of path names and library locations.  Try to be smart
     # about it.
-    if script_dir == 'bin':
+    if script_dir == "bin":
         # script_dir is `pwd`/bin;
         # check `pwd`/lib/scons*.
         prefs.append(os.getcwd())
     else:
-        if script_dir == '.' or script_dir == '':
+        if script_dir == "." or script_dir == "":
             script_dir = os.getcwd()
         head, tail = os.path.split(script_dir)
         if tail == "bin":
@@ -137,12 +137,15 @@ else:
         # check only /foo/lib/scons*.
         prefs.append(sys.prefix)
 
-    temp = map(lambda x: os.path.join(x, 'lib'), prefs)
-    temp.extend(map(lambda x: os.path.join(x,
-                                           'lib',
-                                           'python' + sys.version[:3],
-                                           'site-packages'),
-                           prefs))
+    temp = map(lambda x: os.path.join(x, "lib"), prefs)
+    temp.extend(
+        map(
+            lambda x: os.path.join(
+                x, "lib", "python" + sys.version[:3], "site-packages"
+            ),
+            prefs,
+        )
+    )
     prefs = temp
 
     # Add the parent directory of the current python's library to the
@@ -165,9 +168,9 @@ else:
     except ImportError:
         pass
     else:
-        # when running from an egg add the egg's directory 
+        # when running from an egg add the egg's directory
         try:
-            d = pkg_resources.get_distribution('scons')
+            d = pkg_resources.get_distribution("scons")
         except pkg_resources.DistributionNotFound:
             pass
         else:
@@ -176,7 +179,7 @@ else:
 # Look first for 'scons-__version__' in all of our preference libs,
 # then for 'scons'.
 libs.extend(map(lambda x: os.path.join(x, scons_version), prefs))
-libs.extend(map(lambda x: os.path.join(x, 'scons'), prefs))
+libs.extend(map(lambda x: os.path.join(x, "scons"), prefs))
 
 sys.path = libs + sys.path
 
@@ -186,6 +189,7 @@ sys.path = libs + sys.path
 
 if __name__ == "__main__":
     import SCons.Script
+
     # this does all the work, and calls sys.exit
     # with the proper exit status when done.
     SCons.Script.main()

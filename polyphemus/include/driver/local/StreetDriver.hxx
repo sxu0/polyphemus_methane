@@ -38,12 +38,12 @@ namespace Polyphemus
   //////////////////
 
 
-  /*! \brief This class provides a driver for a street-network model that describes 
+  /*! \brief This class provides a driver for a street-network model that describes
     the the atmospheric concentrations of pollutants in an urban street network.
   */
   /*! The driver is responsible for the model initialization, for the loop
-    over all time steps, and for the calls to the output saver. 
-    Its reference floating-point precision is 'T'. 
+    over all time steps, and for the calls to the output saver.
+    Its reference floating-point precision is 'T'.
     The model is an instance of 'ClassModel' and the output saver is an
     instance of 'ClassOutputSaver'.
   */

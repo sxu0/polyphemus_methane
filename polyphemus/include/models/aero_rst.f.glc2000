@@ -1,21 +1,21 @@
 C-----------------------------------------------------------------------
 C     Copyright (C) 2001-2007, ENPC - INRIA - EDF R&D
-C     
+C
 C     This file is part of the air quality modeling system Polyphemus.
-C    
+C
 C     Polyphemus is developed in the INRIA - ENPC joint project-team
 C     CLIME and in the ENPC - EDF R&D joint laboratory CEREA.
-C    
+C
 C     Polyphemus is free software; you can redistribute it and/or modify
 C     it under the terms of the GNU General Public License as published
 C     by the Free Software Foundation; either version 2 of the License,
 C     or (at your option) any later version.
-C     
+C
 C     Polyphemus is distributed in the hope that it will be useful, but
 C     WITHOUT ANY WARRANTY; without even the implied warranty of
 C     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 C     General Public License for more details.
-C     
+C
 C     For more information, visit the Polyphemus web site:
 C     http://cerea.enpc.fr/polyphemus/
 C-----------------------------------------------------------------------
@@ -27,15 +27,15 @@ C-----------------------------------------------------------------------
      $     FrictionVelocity, Ra)
 
 C------------------------------------------------------------------------
-C     
-C     -- DESCRIPTION 
-C     
+C
+C     -- DESCRIPTION
+C
 C     This routine computes aerodynamic resistances.
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- INPUT VARIABLES
-C     
+C
 C     Iseason: season index.
 C     Nland: Number of land use coverage.
 C     LUC: Land Use Coverage percentage in the cell. ([0,1])
@@ -47,12 +47,12 @@ C     SurfacePressure: Surface pressure in the cell. ([Pa])
 C     SnowHeight: Snow height in the cell. ([m])
 C     FirstLevelWindModule: First level wind module in the cell. ([m/s])
 C     RoughnessHeight: Roughness height in the cell. ([m])
-C     
+C
 C     -- OUTPUT VARIABLES
-C     
+C
 C     FrictionVelocity: Friction velocity. ([m/s])
 C     Ra: aerodynamic resistance ([s/m])
-C     
+C
 C------------------------------------------------------------------------
 
       IMPLICIT NONE
@@ -148,7 +148,7 @@ C     iteratively using Charnock formula.
 
                z0 = RoughnessHeight(Iland,Iseason)
                z0t = z0 * DEXP(-2.d0)
-               
+
                DO i=1,5        ! 5 loops are necessary to converge
                   CALL ustar(Richardson, FirstLevelWindModule, Zref, z0,
      $                 z0t, FrictionVelocity(Iland))
@@ -159,7 +159,7 @@ C     iteratively using Charnock formula.
 
 C     When snow depth is > 1cm, ground's characteristics change,
 C     we take then Iseason=5.
-            ELSEIF(SnowHeight.GE.1.D-2) THEN ! Case of snow 
+            ELSEIF(SnowHeight.GE.1.D-2) THEN ! Case of snow
                z0 = RoughnessHeight(Iland,5)
                z0t = z0 * DEXP(-2.d0)
             ELSE

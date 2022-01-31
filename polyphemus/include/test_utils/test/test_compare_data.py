@@ -43,12 +43,11 @@ def create_file(path, content="dummy file"):
 
 def test_file_list(tmprundir):
     # Some valid files:
-    valid_file_list = ['a.bin', 'b.bin', 'A/c.bin', 'A/B/d.bin']
+    valid_file_list = ["a.bin", "b.bin", "A/c.bin", "A/B/d.bin"]
     valid_file_list.sort()
 
     # Some garbage files:
-    garbage_file_list = ['A/B/bad.txt', 'A/.git/bad.bin', 'A/B/bad.bin2',\
-                         'A/B/badbin']
+    garbage_file_list = ["A/B/bad.txt", "A/.git/bad.bin", "A/B/bad.bin2", "A/B/badbin"]
 
     for f in valid_file_list + garbage_file_list:
         create_file(f)
@@ -65,7 +64,9 @@ def create_config(config_dir, result_dir, **domain):
 [save]
 
 Output_file: {result_dir}/&f.bin
-""".format(result_dir=result_dir)
+""".format(
+        result_dir=result_dir
+    )
     create_file(saver_config, saver_config_content)
 
     config = config_dir + "/config.cfg"
@@ -77,7 +78,9 @@ Nz = {Nz}
 Nt = {Nt}
 [output]
 Configuration_file: {saver_config}
-""".format(saver_config=saver_config, **domain)
+""".format(
+        saver_config=saver_config, **domain
+    )
 
     create_file(config, config_content)
     return config
@@ -109,8 +112,13 @@ def test_compare_result(tmprundir):
     create_file(result_path + "sameB.bin", dataB)
 
     # Should not detect any difference at this stage:
-    difference = compare_result(config, base_path, ref_base_path,
-                                show_figure=False, task_runner=ParallelTaskRunner(1))
+    difference = compare_result(
+        config,
+        base_path,
+        ref_base_path,
+        show_figure=False,
+        task_runner=ParallelTaskRunner(1),
+    )
 
     if difference:
         print "Difference found:"
@@ -125,7 +133,7 @@ def test_compare_result(tmprundir):
 
     # Different domain:
     bad_domain = domain.copy()
-    bad_domain['Nt'] = domain['Nt'] * 2
+    bad_domain["Nt"] = domain["Nt"] * 2
     create_file(ref_result_path + "bad_domain.bin", default_data)
     create_file(result_path + "bad_domain.bin", dummy_data(**bad_domain))
 
@@ -133,24 +141,42 @@ def test_compare_result(tmprundir):
     create_file(ref_result_path + "diffA.bin", dummy_data(speed=0.3, **domain))
     create_file(result_path + "diffA.bin", dummy_data(speed=0.2, **domain))
 
-    create_file(ref_result_path + "diffB.bin", dummy_data(amplitude=-1,
-                                                          **domain))
+    create_file(ref_result_path + "diffB.bin", dummy_data(amplitude=-1, **domain))
     create_file(result_path + "diffB.bin", dummy_data(amplitude=1, **domain))
 
-    run_dir = str(tmprundir) + '/'
-    expected_report = { run_dir + 'results': {
-        'different': {'bad_domain.bin': 'Size of 2,097,152 bytes whereas reference file has 1,048,576 bytes.',
-                      'diffB.bin': {'different sign': {'cur': 'contains some strictly positive values',
-                                                       'ref': 'all values are negative or null'},
-                                    'mean (rtol=1.00e-02)': {'cur': 0.12500029871238896,
-                                                             'quotient': -1.0,
-                                                             'ref': -0.12500029871238896},
-                                                             'plot': run_dir + 'results/diffB.png'}},
-        'lacking': {'lacking.bin': 'Cannot find "lacking.bin" (1,048,576 bytes).'},
-        'unexpected': {'unexpected.bin': 'Unexpected "unexpected.bin" (1,048,576 bytes).'}}}
+    run_dir = str(tmprundir) + "/"
+    expected_report = {
+        run_dir
+        + "results": {
+            "different": {
+                "bad_domain.bin": "Size of 2,097,152 bytes whereas reference file has 1,048,576 bytes.",
+                "diffB.bin": {
+                    "different sign": {
+                        "cur": "contains some strictly positive values",
+                        "ref": "all values are negative or null",
+                    },
+                    "mean (rtol=1.00e-02)": {
+                        "cur": 0.12500029871238896,
+                        "quotient": -1.0,
+                        "ref": -0.12500029871238896,
+                    },
+                    "plot": run_dir + "results/diffB.png",
+                },
+            },
+            "lacking": {"lacking.bin": 'Cannot find "lacking.bin" (1,048,576 bytes).'},
+            "unexpected": {
+                "unexpected.bin": 'Unexpected "unexpected.bin" (1,048,576 bytes).'
+            },
+        }
+    }
 
-    report = compare_result(config, base_path, ref_base_path,
-                            show_figure=False, task_runner=ParallelTaskRunner(1))
+    report = compare_result(
+        config,
+        base_path,
+        ref_base_path,
+        show_figure=False,
+        task_runner=ParallelTaskRunner(1),
+    )
     pprint(report)
     pprint(expected_report)
     assert recursive_equal(report, expected_report)

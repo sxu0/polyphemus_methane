@@ -1,23 +1,23 @@
 C-----------------------------------------------------------------------
 C     Copyright (C) 2003-2007, ENPC - INRIA - EDF R&D
 C     Author(s): Edouard Debry
-C     
+C
 C     This file is part of the Size Resolved Aerosol Model (SIREAM), a
 C     component of the air quality modeling system Polyphemus.
-C    
+C
 C     Polyphemus is developed in the INRIA - ENPC joint project-team
 C     CLIME and in the ENPC - EDF R&D joint laboratory CEREA.
-C    
+C
 C     Polyphemus is free software; you can redistribute it and/or modify
 C     it under the terms of the GNU General Public License as published
 C     by the Free Software Foundation; either version 2 of the License,
 C     or (at your option) any later version.
-C     
+C
 C     Polyphemus is distributed in the hope that it will be useful, but
 C     WITHOUT ANY WARRANTY; without even the implied warranty of
 C     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 C     General Public License for more details.
-C     
+C
 C     For more information, visit the Polyphemus web site:
 C     http://cerea.enpc.fr/polyphemus/
 C-----------------------------------------------------------------------
@@ -27,16 +27,16 @@ C-----------------------------------------------------------------------
      s     coefficient_coag,QT,XSF,MSF,DSF,XSD,MSD,DSD, bin_density)
 
 C------------------------------------------------------------------------
-C     
-C     -- DESCRIPTION 
-C     
+C
+C     -- DESCRIPTION
+C
 C     This subroutine performs the initialization of the timestep
 C     for the integration of the GDE. The criterion is related to
 C     the timescales of the aerosol processes.
 C------------------------------------------------------------------------
-C     
+C
 C     -- INPUT VARIABLES
-C     
+C
 C     NEQ : number of equations.
 C     nbin_aer: number of aerosol bins.
 C     Q   : gas/aerosol concentrations ([\mu.g.m^-3]).
@@ -48,37 +48,37 @@ C     coefficient_coag: coagulation partition coefficient ([adim]).
 C     XSF: neperian logarithm of fixed aerosol bin mass ([adim]).
 C     MSF: fixed aerosol bin dry mass ([\mu g]).
 C     DSF: fixed aerosol bin dry diameter ([\mu m]).
-C     
+C
 C     -- INPUT/OUTPUT VARIABLES
 C
 C     Q   : gas/aerosol concentrations ([\mu.g.m^-3]).
 C     XSD: neperian logarithm of moving aerosol bin mass ([adim]).
 C     MSD: moving aerosol bin dry mass ([\mu g]).
 C     DSD: moving aerosol bin dry diameter ([\mu m]).
-C     QT: total aerosol concentration per bin ([\mu g.m^-3]).   
-C     
+C     QT: total aerosol concentration per bin ([\mu g.m^-3]).
+C
 C     -- OUTPUT VARIABLES
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- REMARKS
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- MODIFICATIONS
-C     
+C
 C     2005/3/23: cleaning (Bruno Sportisse, CEREA).
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- AUTHOR(S)
-C     
+C
 C     2004: Edouard Debry, CEREA.
-C     
+C
 C------------------------------------------------------------------------
 
       IMPLICIT NONE
-      
+
       INCLUDE 'param.inc'
       INCLUDE 'dynaero.inc'
       INCLUDE 'time.inc'
@@ -130,12 +130,12 @@ C     Coagulation time step.
             ENDIF
          END DO
       ENDIF
-      
+
 C     Cond/evap time step.
       IF (ICOND.EQ.1) THEN
          ICG2=0
          ICE2=1
-         INU2=INUCL             
+         INU2=INUCL
          ICUT2=ICUT             ! current cutting size
 
          CALL FGDE(neq,nesp_aer,nbin_aer,q,iq,dqdt,couples_coag,
@@ -146,7 +146,7 @@ C     Cond/evap time step.
          DO jj=1,neq
             tmp=q(jj)*dqdt(jj)
             IF (tmp.NE.0.D0) THEN
-               
+
                tscale=q(jj)/DABS(dqdt(jj))
                TCE=DMIN1(TCE,tscale)
             ENDIF
@@ -154,19 +154,19 @@ C     Cond/evap time step.
       ENDIF
 
 C     Minimal time step.
-                                ! it is assumed that coagulation is 
+                                ! it is assumed that coagulation is
                                 ! always the slowest process
       DT=TCG
       DT=DMIN1(DT,TOUT-TIN)
-      
+
 
                                 ! if only one process then set
-                                ! splitting step to whole timestep     
+                                ! splitting step to whole timestep
 
       DT = DMAX1(DT,DTAEROMIN)
       TCE = DMIN1(DT,DMAX1(TCE,DTAEROMIN))
       TCG = DMIN1(DT,DMAX1(TCG,DTAEROMIN))
-      IF(ICOAG.EQ.0.OR.ICOND.EQ.0)  DT=TOUT-TIN     
+      IF(ICOAG.EQ.0.OR.ICOND.EQ.0)  DT=TOUT-TIN
       IF(ICUT.EQ.nbin_aer) DT=TOUT-TIN
-      
+
       END

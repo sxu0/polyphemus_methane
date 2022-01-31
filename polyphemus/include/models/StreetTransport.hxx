@@ -8,7 +8,7 @@ namespace Polyphemus
   //////////////
   // INCLUDES //
   //////////////
-  
+
   using namespace std;
 
   ////////////
@@ -37,7 +37,7 @@ namespace Polyphemus
 
     //! End intersection id
     int end_inter_;
-    
+
     //! Street length (m)
     T length_;
 
@@ -47,7 +47,7 @@ namespace Polyphemus
     //! Building height in the street (m)
     T height_;
 
-    //! Street angle (rad). 
+    //! Street angle (rad).
     T street_angle_;
 
     //! Street angle for the intersection (rad)
@@ -71,7 +71,7 @@ namespace Polyphemus
     //! Number of species.
     int ns_local_;
 
-    //! Emission rate (ug/s). 
+    //! Emission rate (ug/s).
     Array<T, 1> emission_;
 
     //! Inflow rate to the street (ug/s).
@@ -127,9 +127,9 @@ namespace Polyphemus
 
      /*** Constructor and destructor ***/
 
-    Street(int street_id, int begin_inter, int end_inter, 
+    Street(int street_id, int begin_inter, int end_inter,
            T length, T width, T height, int ns_local, int nr_photolysis);
-    virtual ~Street();   
+    virtual ~Street();
 
     /*** Methods ***/
 
@@ -167,13 +167,13 @@ namespace Polyphemus
     T GetWindDirection() const;
     T GetPBLH() const;
     T GetLMO() const;
-    void SetMeteo(T wind_direction, T wind_speed, 
+    void SetMeteo(T wind_direction, T wind_speed,
                   T pblh, T ust, T lmo);
     T GetAttenuation() const;
     T GetSpecificHumidity() const;
     T GetPressure() const;
     T GetTemperature() const;
-    void SetMeteoChemistry(T attenuation, T specific_humidity, 
+    void SetMeteoChemistry(T attenuation, T specific_humidity,
                   T pressure, T temperature);
     T GetInflowRate(int s) const;
     void SetInflowRate(T inflow_rate, int s);
@@ -246,7 +246,7 @@ namespace Polyphemus
     Intersection(int id, T x, T y, int nstreet,
                  Array<int, 1> street_list, bool is_virtual,
                  Array<T, 2> flux_matrix, Array<T, 2> gaussian_matrix);
-    virtual ~Intersection();   
+    virtual ~Intersection();
 
     /*** Methods ***/
 
@@ -260,8 +260,8 @@ namespace Polyphemus
     void SetFluxMatrix(Array<T, 2> flux_matrix);
     Array<T, 2>& GetGaussianMatrix();
     void SetGaussianMatrix(Array<T, 2> gaussian_matrix);
-    void SetMeteo(T wind_direction, T wind_speed, 
-                  T pblh, T ust, T lmo);    
+    void SetMeteo(T wind_direction, T wind_speed,
+                  T pblh, T ust, T lmo);
     T GetPBLH() const;
     T GetUST() const;
     T GetLMO() const;

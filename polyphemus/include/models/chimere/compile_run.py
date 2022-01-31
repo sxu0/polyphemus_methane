@@ -58,11 +58,21 @@ else:
 
 np = nzdoms * nmdoms + 1
 
-os.execvp("mpirun", ("mpirun", "-np", "%d" % np,) +
-          tuple(mpi_arguments.split()) + (main_program_path,
-                                          main_configuration_file,))
+os.execvp(
+    "mpirun",
+    (
+        "mpirun",
+        "-np",
+        "%d" % np,
+    )
+    + tuple(mpi_arguments.split())
+    + (
+        main_program_path,
+        main_configuration_file,
+    ),
+)
 
 # To debug.
-#os.execvp("mpirun", ("mpirun", "-np", "%d" % np,) +
+# os.execvp("mpirun", ("mpirun", "-np", "%d" % np,) +
 #          tuple(mpi_arguments.split())
 #          + ("/usr/bin/urxvt -e /usr/bin/gdb " + main_program_path,))

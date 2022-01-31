@@ -44,6 +44,7 @@ http://www.enpc.fr/cerea/polyphemus/atmopy.html
 
 
 import display
+
 try:
     import ensemble
 except:
@@ -65,26 +66,28 @@ def atmopy_test():
     # Configuration file.
     o, name = tempfile.mkstemp()
     o = open(name, "w")
-    o.write("x_min = -10.5 Delta_x = 0.5 Nx = 67\n"
-            + "y_min = 35. Delta_y = 0.5 Ny = 48\n")
+    o.write(
+        "x_min = -10.5 Delta_x = 0.5 Nx = 67\n" + "y_min = 35. Delta_y = 0.5 Ny = 48\n"
+    )
     o.close()
 
     # Generates data.
     def f(x_, y_):
-        return (1. - x / 2. + x**5 + y**3) * numpy.exp(- x**2 - y**2)
-    x = numpy.arange(67., dtype = 'f') * .1 - 3.
-    y = numpy.arange(48., dtype = 'f') * .1 - 2.5
+        return (1.0 - x / 2.0 + x ** 5 + y ** 3) * numpy.exp(-(x ** 2) - y ** 2)
+
+    x = numpy.arange(67.0, dtype="f") * 0.1 - 3.0
+    y = numpy.arange(48.0, dtype="f") * 0.1 - 2.5
     x, y = numpy.meshgrid(x, y)
     d = f(x, y)
-    d = numpy.array([d for i in range(3)], dtype = 'f') + 1.
+    d = numpy.array([d for i in range(3)], dtype="f") + 1.0
     # Saves data in a binary file.
     o, name_data = tempfile.mkstemp()
     d.tofile(name_data)
 
     # Tests Talos and display capabilities.
     m = display.getm(name)
-    d = display.getd(name, name_data, Nt = 0, Nz = 1)
-    display.dispcf(m, stat.spatial_distribution(d, "mean")[0], V = 25)
+    d = display.getd(name, name_data, Nt=0, Nz=1)
+    display.dispcf(m, stat.spatial_distribution(d, "mean")[0], V=25)
 
     # Removes temporary files.
     os.remove(name)

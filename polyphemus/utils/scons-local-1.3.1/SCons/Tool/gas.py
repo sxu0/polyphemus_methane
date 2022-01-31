@@ -33,18 +33,21 @@ selection method.
 
 __revision__ = "src/engine/SCons/Tool/gas.py 5110 2010/07/25 16:14:38 bdeegan"
 
-as_module = __import__('as', globals(), locals(), [])
+as_module = __import__("as", globals(), locals(), [])
 
-assemblers = ['as', 'gas']
+assemblers = ["as", "gas"]
+
 
 def generate(env):
     """Add Builders and construction variables for as to an Environment."""
     as_module.generate(env)
 
-    env['AS']        = env.Detect(assemblers) or 'as'
+    env["AS"] = env.Detect(assemblers) or "as"
+
 
 def exists(env):
     return env.Detect(assemblers)
+
 
 # Local Variables:
 # tab-width:4

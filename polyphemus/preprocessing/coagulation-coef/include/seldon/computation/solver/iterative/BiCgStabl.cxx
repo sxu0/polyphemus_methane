@@ -28,11 +28,11 @@ namespace Seldon
     return value of 0 indicates convergence within the
     maximum number of iterations (determined by the iter object).
     return value of 1 indicates a failure to converge.
-    
+
     See G L.G. Sleijpen, D. R. Fokkema
     BICGSTAB(l) For Linear Equations Involving Unsymmetric Matrices With
     Complex Spectrum
-    
+
     \param[in] A  Complex General Matrix
     \param[in,out] x  Vector on input it is the initial guess
     on output it is the solution
@@ -47,13 +47,13 @@ namespace Seldon
     const int N = A.GetM();
     if (N <= 0)
       return 0;
-    
+
     typedef typename Vector1::value_type Complexe;
     int m = iter.GetRestart();
     int l = m;
     Complexe rho_0, rho_1, alpha, beta, omega, sigma, zero, unity;
     zero = 0.0; unity = 1.0;
-    
+
     // q temporary vector before preconditioning, r0 initial residual
     Vector1 q(b), r0(b);
     Vector<Complexe> gamma(l+1), gamma_prime(l+1), gamma_twice(l+1);
@@ -66,30 +66,30 @@ namespace Seldon
 	u[i].Zero();
       }
     tau.Zero(); gamma.Zero(); gamma_prime.Zero(); gamma_twice.Zero();
-    
+
     // we compute the residual r = (b - Ax)
     Copy(b, r[0]);
     if (!iter.IsInitGuess_Null())
       MltAdd(Complexe(-1), A, x, Complexe(1), r[0]);
     else
       x.Zero();
-    
+
     // we initialize iter
     int success_init = iter.Init(b);
     if (success_init !=0 )
       return iter.ErrorCode();
-    
+
     Copy(r[0], r0); // we keep the first residual
-    
+
     // we initialize constants
     rho_0 = unity; alpha = zero; omega = unity; tau.Zero();
-    
+
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are satisfied
     while (! iter.Finished(r[0]))
       {
 	rho_0 *= -omega;
-	
+
 	// Bi-CG Part
 	for (int j = 0; j < l; j++)
 	  {
@@ -107,7 +107,7 @@ namespace Seldon
 	      }
 	    M.Solve(A, u[j], q); // preconditioning
 	    Mlt(A, q, u[j+1]); // product Matrix Vector
-	    
+
 	    ++iter;
 	    sigma = DotProd(u[j+1], r0);
 	    if (sigma == zero)
@@ -119,13 +119,13 @@ namespace Seldon
 	    Add(alpha, u[0], x);
 	    for (int i = 0; i <= j; i++)
 	      Add(-alpha, u[i+1], r[i]);
-	    
+
 	    M.Solve(A, r[j], q); // preconditioning
 	    Mlt(A, q, r[j+1]); // product matrix vector
-	    
+
 	    ++iter;
 	  }
-	  
+
 	// MR Part  modified Gram-Schmidt
 	for (int j = 1; j <= l; j++)
 	  {
@@ -141,7 +141,7 @@ namespace Seldon
 	    if (gamma(j) != zero)
 	      gamma_prime(j) = DotProd(r[0], r[j])/gamma(j);
 	  }
-	
+
 	// gamma = tau-1 * gamma_prime
 	gamma(l) = gamma_prime(l); omega = gamma(l);
 	for (int j = l-1; j >= 1; j--)
@@ -149,20 +149,20 @@ namespace Seldon
 	    sigma = zero;
 	    for (int i = j+1; i <= l; i++)
 	      sigma += tau(j,i)*gamma(i);
-	      
+
 	    gamma(j) = gamma_prime(j)-sigma;
 	  }
-	  
+
 	// gamma_twice=T*S*gamma
 	for (int j = 1; j <= l-1; j++)
 	  {
 	    sigma = zero;
 	    for (int i = j+1; i <= l-1; i++)
 	      sigma += tau(j,i)*gamma(i+1);
-	      
+
 	    gamma_twice(j) = gamma(j+1)+sigma;
 	  }
-	  
+
 	// update
 	Add(gamma(1), r[0], x);
 	Add(-gamma_prime(l), r[l], r[0]);
@@ -178,7 +178,7 @@ namespace Seldon
     Copy(x,q); M.Solve(A, q, x);
     return iter.ErrorCode();
   }
-  
+
 }
 
 #define SELDON_FILE_ITERATIVE_BICGSTABL_CXX

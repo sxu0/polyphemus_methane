@@ -7,7 +7,7 @@
 
 // INCLUDES //
 //////////////
-  
+
 namespace Polyphemus
 {
 
@@ -46,7 +46,7 @@ namespace Polyphemus
   {
     this->D2_map["StreetConcentration"] = &StreetConcentration;
   }
-  
+
 
   //! Destructor.
   template<class T>
@@ -194,7 +194,7 @@ namespace Polyphemus
 	input_data = value;
 	return;
       }
-    FormatBinary<float>().Read(input_file, input_data);    
+    FormatBinary<float>().Read(input_file, input_data);
 
   }
 
@@ -223,7 +223,7 @@ namespace Polyphemus
         InitData(filename, ust_arr);
         filename = this->input_files["meteo"]("LMO");
         InitData(filename, lmo_arr);
-    
+
         /*** Meteo for the intersections ***/
         wind_direction_inter.resize(Nt_meteo, nintersection);
         wind_speed_inter.resize(Nt_meteo, nintersection);
@@ -293,7 +293,7 @@ namespace Polyphemus
     total_nstreet = 0;
     ExtStream StreetStream(file_street);
     if (!StreetStream.is_open())
-      throw string("File ") + file_street + " doesn't exist."; 
+      throw string("File ") + file_street + " doesn't exist.";
 
     //! Get the number of the streets.
     while (has_element(StreetStream))
@@ -343,18 +343,18 @@ namespace Polyphemus
     int nr_photolysis = 24;
     for (int i = 0; i < total_nstreet; ++i)
       {
-        Street<T>* street = 
+        Street<T>* street =
           new Street<T>(id_street(i), begin_inter(i), end_inter(i),
                         length(i), width(i), height(i),
                         this->Ns, nr_photolysis);
         for (int s = 0; s < this->Ns; s++)
-            street->SetStreetConcentration(init_conc(s), s); 
+            street->SetStreetConcentration(init_conc(s), s);
 
         StreetVector.push_back(street);
       }
     current_street = StreetVector.begin();
   }
-  
+
   //! Method called at each time step to initialize the model.
   /*!
     \note Empty method.
@@ -376,8 +376,8 @@ namespace Polyphemus
     delta_t = this->input_files["emission"].GetDelta_t();
     int emis_index = 9999;
     if (time_distance < 0.0)
-      throw string("Error: missing emission input data: ") 
-        + "the current date is " + to_str(this->current_date) 
+      throw string("Error: missing emission input data: ")
+        + "the current date is " + to_str(this->current_date)
         + "\n but the beginning date for the street emission data is " + to_str(date_min);
     else
       {
@@ -387,7 +387,7 @@ namespace Polyphemus
       }
 
     if (this->option_process["with_local_data"])
-      {    
+      {
         date_min = this->input_files["meteo"].GetDateMin();
         time_distance = this->current_date.GetSecondsFrom(date_min);
         delta_t = this->input_files["meteo"].GetDelta_t();
@@ -410,7 +410,7 @@ namespace Polyphemus
         Street<T>* street = *iter;
 
         //! Set the emission data
-        emission_rate = 0.0; 
+        emission_rate = 0.0;
         for (int i = 0; i < this->Ns; ++i)
           for (int j = 0; j < Ns_emis; ++j)
             if (this->species_list[i] == species_list_emis[j])
@@ -432,7 +432,7 @@ namespace Polyphemus
                 if (this->species_list[i] == species_list_background[j])
                   street->SetBackgroundConcentration(background_concentration(j, background_index, st), i);
           }
-        ++st; 
+        ++st;
       }
 
     //! Initilialize the inflow rate.
@@ -616,10 +616,10 @@ namespace Polyphemus
     T quantity_delta = street->GetStreetQuantityDelta(s);
 
     T mass_transfer_to_background;
-    
+
     T roof_to_background, intersection_to_backgroud, intersection_from_background;
     roof_to_background = street->GetMassfluxRoofToBackground(s);
-    
+
     intersection_to_backgroud = street->GetMassfluxToBackground(s);
     intersection_from_background = street->GetMassfluxFromBackground(s);
 
@@ -639,7 +639,7 @@ namespace Polyphemus
   {
     SetCurrentStreet(index);
     Street<T>* street = *current_street;
-    
+
     T temp1, temp3, temp4;
     temp1 = street->GetMassfluxRoofToBackground(s);
     temp3 = street->GetMassfluxToBackground(s);
@@ -683,7 +683,7 @@ namespace Polyphemus
 
     ExtStream IntersectionStream(file_intersection);
     if (!IntersectionStream.is_open())
-      throw string("File ") + file_intersection + " doesn't exist."; 
+      throw string("File ") + file_intersection + " doesn't exist.";
 
     //! Get the number of intersections.
     while (has_element(IntersectionStream))
@@ -712,8 +712,8 @@ namespace Polyphemus
         nstreet(i) = to_num<T>(v[3]);
         int ndata = v.size();
         if (ndata != nstreet(i) + 4)
-          throw string("Number of data is invalid in ") + file_intersection + 
-            + ". " + to_str(nstreet(i) + 4) + " are needed but " 
+          throw string("Number of data is invalid in ") + file_intersection +
+            + ". " + to_str(nstreet(i) + 4) + " are needed but "
             + to_str(ndata) + " are given.";
 
         for (int j = 0; j < nstreet(i); ++j)
@@ -734,7 +734,7 @@ namespace Polyphemus
         flux_matrix = 0.0;
         Array<T, 2> gaussian_matrix(nstreet(i) + 1, nstreet(i) + 1);
         gaussian_matrix = 0.0;
-        Intersection<T>* intersection = 
+        Intersection<T>* intersection =
           new Intersection<T>(id_inter(i), x_inter(i), y_inter(i),
                               nstreet(i), street_list_inter, is_virtual(i),
                               flux_matrix, gaussian_matrix);
@@ -867,11 +867,11 @@ namespace Polyphemus
     \param intersection intersection object
   */
   template<class T>
-  void StreetNetworkTransport<T>::ComputeIntersection(T wind_dir_inter, 
+  void StreetNetworkTransport<T>::ComputeIntersection(T wind_dir_inter,
                                                       Intersection<T>* intersection)
   {
     //! Streets which are connected to the intersection.
-    int nstreet_inter = intersection->GetNStreet(); 
+    int nstreet_inter = intersection->GetNStreet();
     Array<T, 2> extended_matrix(nstreet_inter + 1, nstreet_inter + 1);
     extended_matrix = 0.0;
     Array<int, 1> street_list_inter(nstreet_inter);
@@ -883,7 +883,7 @@ namespace Polyphemus
           {
             int end_inter_id = 0;
             int begin_inter_id = 0;
-            for (typename vector<Street<T>* >::iterator iter2 = StreetVector.begin(); 
+            for (typename vector<Street<T>* >::iterator iter2 = StreetVector.begin();
                  iter2 != StreetVector.end(); iter2++)
               {
                 Street<T>* street = *iter2;
@@ -893,11 +893,11 @@ namespace Polyphemus
                     break;
                   }
               }
-            
-            /* When the street angle was calculated, the begining intersection of 
+
+            /* When the street angle was calculated, the begining intersection of
                the street was considered as the origin point.
-               Therefore if the intersection is the ending intersection of 
-               the street the street angle should be corrected by 
+               Therefore if the intersection is the ending intersection of
+               the street the street angle should be corrected by
                addtion or subtraction by pi.
             */
             Street<T>* street = StreetVectorInter[j];
@@ -908,7 +908,7 @@ namespace Polyphemus
                 else
                   street->SetStreetAngleIntersection(street->GetStreetAngle() + pi);
               }
-            else if (intersection->GetID() == 
+            else if (intersection->GetID() ==
                      street->GetBeginIntersectionID())
               street->SetStreetAngleIntersection(street->GetStreetAngle());
             else
@@ -919,7 +919,7 @@ namespace Polyphemus
 
         intersection->SetFluxMatrix(extended_matrix);
 
-        //! Clear the street vector for the intersection. 
+        //! Clear the street vector for the intersection.
         StreetVectorInter.clear();
       } // IsVirtual: false
     else // End-node case
@@ -929,7 +929,7 @@ namespace Polyphemus
           throw string("Error: the virtual intersection corresponds to a single street: ") + to_str(nstreet_inter) + " given.";
         Array<int, 1> street_list_inter(nstreet_inter);
         street_list_inter = intersection->GetStreetList();
-       
+
         // Virtual intersections
         for (typename vector<Street<T>* >::iterator iter2 = StreetVector.begin(); iter2 != StreetVector.end(); iter2++)
           {
@@ -943,20 +943,20 @@ namespace Polyphemus
                     else
                       street->SetStreetAngleIntersection(street->GetStreetAngle() + pi);
                   }
-                else if (intersection->GetID() == 
+                else if (intersection->GetID() ==
                          street->GetBeginIntersectionID())
                   street->SetStreetAngleIntersection(street->GetStreetAngle());
                 else
                   throw string("Error: unknown ID") + to_str(intersection->GetID());
 
                 T dangle = abs(street->GetStreetAngleIntersection() - wind_dir_inter);
-                T flux = street->GetHeight() * 
+                T flux = street->GetHeight() *
                   street->GetWidth() * street->GetStreetWindSpeed();
 
                 if (dangle > (pi / 2.0) and dangle < (pi * 3.0 / 2.0))
                   {
-                    //! Incoming flow to the atmosphere, 
-                    //! i.e., outgoing flow from the street. 
+                    //! Incoming flow to the atmosphere,
+                    //! i.e., outgoing flow from the street.
                     extended_matrix(1, 0) = flux;
                   }
                 else
@@ -977,7 +977,7 @@ namespace Polyphemus
   template<class T>
   void StreetNetworkTransport<T>::InitInflowRate()
   {
-    for (typename vector<Street<T>* >::iterator iter = StreetVector.begin(); 
+    for (typename vector<Street<T>* >::iterator iter = StreetVector.begin();
          iter != StreetVector.end(); iter++)
       {
         Street<T>* street = *iter;
@@ -1167,7 +1167,7 @@ namespace Polyphemus
 
             //! Check the stationarity
             T delta_concentration = abs(street_conc_new - street_conc);
-            if ((street_conc != 0.0) and 
+            if ((street_conc != 0.0) and
                 (delta_concentration > delta_concentration_min))
               is_stationary_local = false;
 
@@ -1192,7 +1192,7 @@ namespace Polyphemus
         street->SetStationary(is_stationary_local);
       }
   }
-    
+
 
   //! Compute the concentrations in the street-canyon using the flux balance equation.
   template<class T>
@@ -1218,7 +1218,7 @@ namespace Polyphemus
   {
     int i, j;
 
-    int nstreet_inter = StreetVectorInter.size(); 
+    int nstreet_inter = StreetVectorInter.size();
 
     // Compute wind speed and flux in the streets
     Array<double, 1> flux(nstreet_inter); // Volume flux in m3/s
@@ -1250,9 +1250,9 @@ namespace Polyphemus
       }
 
     //! Additional arrays
-    Array<T, 2> alpha(nstreet_in, nstreet_out); // Flux ratio 
+    Array<T, 2> alpha(nstreet_in, nstreet_out); // Flux ratio
     alpha = 0.0;
-    Array<T, 1> P_in(nstreet_in), P_out(nstreet_out); // Flux 
+    Array<T, 1> P_in(nstreet_in), P_out(nstreet_out); // Flux
 
     //! Set the reference incoming street: first upwind(incoming) street in the counterclockwise.
     Array<int, 1> ind_street_in(nstreet_in);
@@ -1272,7 +1272,7 @@ namespace Polyphemus
       {
         int a1 = ind_street_in(i);
         int a2 = ind_street_in(j);
-        if (StreetVectorInter[a1]->GetStreetAngleIntersection() < 
+        if (StreetVectorInter[a1]->GetStreetAngleIntersection() <
             StreetVectorInter[a2]->GetStreetAngleIntersection())
           {
             ind_street_in(i) = a2;
@@ -1324,7 +1324,7 @@ namespace Polyphemus
     while ((nstreet_out > 1) and (!sorted))
       {
         if (((StreetVectorInter[ind_street_out(nstreet_out - 1)]->
-              GetStreetAngleIntersection()) - 
+              GetStreetAngleIntersection()) -
              (StreetVectorInter[ind_street_out(nstreet_out - 2)]->
               GetStreetAngleIntersection())) <= pi)
           sorted = true;
@@ -1356,7 +1356,7 @@ namespace Polyphemus
     P0 = sum_P_in - sum_P_out;
 
     //! Distribution of P0
-    Array<T, 2> flux_matrix(nstreet_in + 1, nstreet_out + 1); 
+    Array<T, 2> flux_matrix(nstreet_in + 1, nstreet_out + 1);
     flux_matrix = 0.0;
     T alpha0 = 0;
     if (P0 > 0) // outgoing flux
@@ -1364,7 +1364,7 @@ namespace Polyphemus
         alpha0 = P0 / sum_P_in;
         for (int i = 0; i < nstreet_in; i++)
           {
-            flux_matrix(i + 1, 0) = alpha0 * P_in(i); 
+            flux_matrix(i + 1, 0) = alpha0 * P_in(i);
             P_in(i) = (1 - alpha0) * P_in(i);
           }
       }
@@ -1373,7 +1373,7 @@ namespace Polyphemus
         alpha0 = abs(P0) / sum_P_out;
         for (int i = 0; i < nstreet_out; i++)
           {
-            flux_matrix(0, i + 1) = alpha0 * P_out(i); 
+            flux_matrix(0, i + 1) = alpha0 * P_out(i);
             P_out(i) = (1 - alpha0) * P_out(i);
           }
       }
@@ -1388,7 +1388,7 @@ namespace Polyphemus
     //! Compute flux among the streets.
     ComputeAlpha(nstreet_in, nstreet_out, P_in, P_out, alpha, flux_matrix);
 
-    CreateExtendedMatrix(ind_street_in, ind_street_out, flux_matrix, 
+    CreateExtendedMatrix(ind_street_in, ind_street_out, flux_matrix,
                          extended_matrix);
   }
 
@@ -1396,11 +1396,11 @@ namespace Polyphemus
   //! Compute fluxes at the intersection using the gaussian distribution
   //! in the horizontal wind direction.
   /*!
-    \param gaussian_factor 
+    \param gaussian_factor
     \param intersection intersection object
   */
   template<class T>
-  void StreetNetworkTransport<T>::ComputeGaussianFluxMatrix(T gaussian_factor, 
+  void StreetNetworkTransport<T>::ComputeGaussianFluxMatrix(T gaussian_factor,
                                                             Intersection<T>* intersection)
   {
     int nstreet_inter = intersection->GetNStreet();
@@ -1412,8 +1412,8 @@ namespace Polyphemus
     intersection->SetGaussianMatrix(gaussian_matrix);
   }
 
-  //! Compute the street angle which is defined as the angle 
-  //! bewteen the intersections which the street connects 
+  //! Compute the street angle which is defined as the angle
+  //! bewteen the intersections which the street connects
   //! (begin intersection to end intersection).
   /*!
     \param ind_street_in
@@ -1438,7 +1438,7 @@ namespace Polyphemus
           else if (j == 0 and i != 0)
             extended_matrix(ind_street_in(i - 1) + 1, j) = flux_matrix(i, j);
           else
-            extended_matrix(ind_street_in(i - 1) + 1, ind_street_out(j - 1) + 1) 
+            extended_matrix(ind_street_in(i - 1) + 1, ind_street_out(j - 1) + 1)
               = flux_matrix(i, j);
         }
   }
@@ -1476,7 +1476,7 @@ namespace Polyphemus
               }
           }
         if ((!begin_matched) or (!end_matched))
-          throw string("Wrong intersection index is given.");      
+          throw string("Wrong intersection index is given.");
 
         //! Set the coordinate
         street->SetCoordinate((x1 + x2) * 0.5, (y1 + y2) * 0.5);
@@ -1484,7 +1484,7 @@ namespace Polyphemus
         T dx = x2 - x1;
         T x_distance = abs(earth_radius * dx * pi / 180.);
         T dy = y2 - y1;
-        T y_distance = abs(earth_radius * (sin(y2 * pi / 180.) - 
+        T y_distance = abs(earth_radius * (sin(y2 * pi / 180.) -
                                                 sin(y1 * pi / 180.)));
         T dl = sqrt(pow(x_distance, 2) + pow(y_distance, 2));
         if (dl == 0.0)
@@ -1499,40 +1499,40 @@ namespace Polyphemus
         //! ********** Street angle **********
         //! Begin intersection: the intersection 1.
         //! End intersection: the intersection 2.
-        //! When the intersection 2 is located north of the intersectoin 1, 
+        //! When the intersection 2 is located north of the intersectoin 1,
         //! the street angle is defined as zero. And it increases clockwise from north.
         //! **********************************
 
         //! Case 1: the intersection 2 is located northeast of the intersection 1
         //! (0 =< street_angle =< PI/2 in radian)
         //! When x is 1 (x_distance is equal to dl), gamma is 0 radian.
-        //! ---> It represents east and the street angle is PI/2 clockwise from north. 
+        //! ---> It represents east and the street angle is PI/2 clockwise from north.
         //! When x is 0 (x_distance is 0), gamma is PI/2 radian.
-        //! ---> It represents north and the street angle is 0 from north. 
+        //! ---> It represents north and the street angle is 0 from north.
         if ((dx >= 0.0) and (dy >= 0.0))
           street->SetStreetAngle(pi / 2.0 - gamma);
         //! Case 2: the intersection 2 is located southeast of the intersection 1
         //! (PI/2 < street_angle =< PI in radian)
         //! When x is 1 (x_distance is equal to dl), gamma is 0 radian.
-        //! ---> It represents east and the street angle is PI/2 clockwise from north. 
+        //! ---> It represents east and the street angle is PI/2 clockwise from north.
         //! When x is 0 (x_distance is 0), gamma is PI/2 radian.
-        //! ---> It represents south and the street angle is PI clockwise from north. 
+        //! ---> It represents south and the street angle is PI clockwise from north.
         else if ((dx >= 0.0) and (dy < 0.0))
           street->SetStreetAngle(pi / 2.0 + gamma);
         //! Case 3: the intersection 2 is located southwest of the intersection 1
         //! (PI < street_angle =< PI*3/2 in radian)
         //! When x is 1 (x_distance is equal to dl), gamma is 0 radian.
-        //! ---> It represents west and the street angle is PI*3/2 clockwise from north. 
+        //! ---> It represents west and the street angle is PI*3/2 clockwise from north.
         //! When x is 0 (x_distance is 0), gamma is PI/2 radian.
-        //! ---> It represents south and the street angle is PI clockwise from north. 
+        //! ---> It represents south and the street angle is PI clockwise from north.
         else if ((dx < 0.0) and (dy <= 0.0))
           street->SetStreetAngle(pi * 1.5 - gamma);
         //! Case 4: the intersection 2 is located northwest of the intersection 1
         //! (PI*3/2 < street_angle =< PI*2 in radian)
         //! When x is 1 (x_distance is equal to dl), gamma is 0 radian.
-        //! ---> It represents west and the street angle is PI*3/2 clockwise from north. 
+        //! ---> It represents west and the street angle is PI*3/2 clockwise from north.
         //! When x is 0 (x_distance is 0), gamma is PI/2 radian.
-        //! ---> It represents north and the street angle is PI*2 clockwise from north. 
+        //! ---> It represents north and the street angle is PI*2 clockwise from north.
         else if ((dx < 0.0) and (dy > 0.0))
           street->SetStreetAngle(pi * 1.5 + gamma);
       }
@@ -1540,7 +1540,7 @@ namespace Polyphemus
 
   //! Compute the factor for the Gaussian distribution.
   template<class T>
-  T StreetNetworkTransport<T>::ComputeGaussian(double theta, double sigma_theta, 
+  T StreetNetworkTransport<T>::ComputeGaussian(double theta, double sigma_theta,
                                       double theta0)
   {
     double gaussian = 1.0 / (sigma_theta * sqrt(2 * pi)) * exp(-0.5 * pow((theta - theta0) / sigma_theta, 2));
@@ -1562,7 +1562,7 @@ namespace Polyphemus
         if (lmo < 0.0)
           {
             T wst = ust * pow((pblh / (karman * abs(lmo))), (1.0 / 3.0));
-            sigma_v_ += sqrt(0.3 * pow(wst, 2.0) + 
+            sigma_v_ += sqrt(0.3 * pow(wst, 2.0) +
                              pow((2.0 * ust * (1.0 - 0.8 * z(k) / pblh)), 2.0));
           }
         else if (lmo >= 0.0 and lmo < pblh)
@@ -1572,7 +1572,7 @@ namespace Polyphemus
       }
     sigma_v_ /= nz;
 
-    return sigma_v_; 
+    return sigma_v_;
   }
 
   //! Compute the standard deviation of the vertical wind speed at a roof.
@@ -1628,7 +1628,7 @@ namespace Polyphemus
             const T beta = 0.45;
             T velocity = beta * sigma_w * (1.0 / (1.0 + aspect_ratio));
             street->SetTransferVelocity(velocity);
-          }               
+          }
       }
   }
 
@@ -1659,7 +1659,7 @@ namespace Polyphemus
 
         delta_i = min(h, w / 2.0);
         phi = abs(wind_direction - ang);
-        
+
         T solutionC = ComputeBesselC(z0_build, delta_i);
         T u_h = ComputeUH(solutionC, ustar);
 
@@ -1668,7 +1668,7 @@ namespace Polyphemus
             if (( h == 0.0) or (w == 0.0))
               throw string("Street height or width is zero. ") + to_str(h) + " " + to_str(w);
             beta = h / (2.0 * w);
-            ustreet = 0.0;      
+            ustreet = 0.0;
             for (int k = 0; k < nz; ++k)
               {
                 z(k) = h / (nz - 1) * k;
@@ -1690,7 +1690,7 @@ namespace Polyphemus
                   }
                 else
                   throw("Error: ComputeUstreet");
-                ustreet += ustreet_z(k); 
+                ustreet += ustreet_z(k);
               }
             ustreet /= nz;
           }
@@ -1703,13 +1703,13 @@ namespace Polyphemus
             T temp3 = 1.0 - pow(solutionC, 2.0) / 3.0 + pow(solutionC, 4.0) / 45.0;
             T temp4 = beta * (2.0 * alpha - 3.0) / alpha;
             T temp5 = (w / delta_i - 2.0) * (alpha - 1.0) / alpha;
-            ustreet = u_h * abs(cos(phi)) * temp1 * 
+            ustreet = u_h * abs(cos(phi)) * temp1 *
               (temp2 * temp3 + temp4 + temp5);
           }
         else
           throw("Wrong option given. Choose Lemonsu or Sirane");
 
-        street->SetStreetWindSpeed(max(ustreet, ustreet_min)); 
+        street->SetStreetWindSpeed(max(ustreet, ustreet_min));
       }
   }
 
@@ -1729,9 +1729,9 @@ namespace Polyphemus
     T term2 = y0C - (j0C * y1C) / j1C;
     return ustar * sqrt(term1 * term2);
   }
-  
+
   //! Compute the solution C of the equation (1) in Soulhac et al. (2011).
-  //! y1(C) and j1(C): the Bessel function of the first kind of order 0 and 1 (see 
+  //! y1(C) and j1(C): the Bessel function of the first kind of order 0 and 1 (see
   //! http://www.gnu.org/software/libc/manual/html_node/Special-Functions.html)
   /*!
     \param z0_build  Wall roughness length
@@ -1754,7 +1754,7 @@ namespace Polyphemus
         listC(i) = tempC;
         T y1C = y1(tempC);
         T j1C = j1(tempC);
-        temp(i) = abs(2.0 / tempC * exp(pi / 2.0 * y1C / j1C - gamma) - 
+        temp(i) = abs(2.0 / tempC * exp(pi / 2.0 * y1C / j1C - gamma) -
                       z0_build / delta_i);
       }
 
@@ -1779,7 +1779,7 @@ namespace Polyphemus
       if (minimum > arr(i))
         {
           minimum = arr(i);
-          index = i; 
+          index = i;
         }
   }
 
@@ -1787,16 +1787,16 @@ namespace Polyphemus
   template<class T>
   void StreetNetworkTransport<T>::ComputeWindDirectionFluctuation()
   {
-    //! Maximum sigma_theta: 10° based on Ben Salem et al. (2015) 
+    //! Maximum sigma_theta: 10° based on Ben Salem et al. (2015)
     //! Maximum fluctuation of +/-20° (2 * sigma_theta)
     //! in radian
-    const double max_sigma_theta(pi / 18.); 
+    const double max_sigma_theta(pi / 18.);
 
     for (typename vector<Intersection<T>* >::iterator iter = IntersectionVector.begin(); iter != IntersectionVector.end(); iter++)
       {
         //! Get the intersection class object.
         Intersection<T>* intersection = *iter;
-        T theta0 = intersection->GetWindDirection();        
+        T theta0 = intersection->GetWindDirection();
 
         if (this->option_process["with_horizontal_fluctuation"])
           {
@@ -1819,7 +1819,7 @@ namespace Polyphemus
                     gaussian(i) = ComputeGaussian(theta(i), sigma_theta, theta0);
                     if (theta(i) < 0.0)
                       theta(i) += (2.0 * pi);
-                    
+
                     //! Compute the flux at the intersection.
                     ComputeIntersection(theta(i), intersection);
 
@@ -1839,11 +1839,11 @@ namespace Polyphemus
   //! Compute the flux distribution rate in the intersection.
   //! This is not indispensable for the model.
   template<class T>
-  void StreetNetworkTransport<T>::ComputeAlpha(int nstreet_in, int nstreet_out, 
+  void StreetNetworkTransport<T>::ComputeAlpha(int nstreet_in, int nstreet_out,
                                Array<double, 1> P_in, Array<double, 1> P_out,
                                Array<double, 2>& alpha, Array<double, 2>& flux_matrix)
   {
-    // General parameters and options 
+    // General parameters and options
     int i, j;
     double sum_alpha = 0.0;
     double temp_in;
@@ -1877,9 +1877,9 @@ namespace Polyphemus
         //! Get the intersection class object.
         Intersection<T>* intersection = *iter;
 
-        //! Get the number of streets that are connected to the intersection 
+        //! Get the number of streets that are connected to the intersection
         //! and their list.
-        int nstreet_inter = intersection->GetNStreet(); 
+        int nstreet_inter = intersection->GetNStreet();
         Array<int, 1> street_list_inter(nstreet_inter);
         street_list_inter = intersection->GetStreetList();
 
@@ -1919,9 +1919,9 @@ namespace Polyphemus
               {
                 T old_outgoing_flux = StreetVectorInter[i - 1]->GetOutgoingFlux();
                 T outgoing_flux = extended_matrix(i, j) + old_outgoing_flux;
-                
+
                 StreetVectorInter[i - 1]->SetOutgoingFlux(outgoing_flux);
-                
+
               }
 
 
@@ -1959,7 +1959,7 @@ namespace Polyphemus
                         }
                     }
               }
-            //! Clear the street vector for the intersection. 
+            //! Clear the street vector for the intersection.
             StreetVectorInter.clear();
       }
   }
@@ -1980,12 +1980,12 @@ namespace Polyphemus
         hour = sh.str();
         sm << setw(2) << setfill('0') << previous_date.GetMinutes();
         minute = sm.str();
-        string output_date = to_str(previous_date.GetDate()) + "_" +  
+        string output_date = to_str(previous_date.GetDate()) + "_" +
           hour + "-" + minute;
 
         string file_name_date = output_dir + "/" + output_date;
         output_file_date.open(file_name_date.c_str(), ios_base::trunc);
-        for (typename vector<Street<T>* >::iterator iter = StreetVector.begin(); 
+        for (typename vector<Street<T>* >::iterator iter = StreetVector.begin();
              iter != StreetVector.end(); iter++)
           {
             Street<T>* street = *iter;
@@ -1996,19 +1996,19 @@ namespace Polyphemus
                 // Leighton
                 if (this->Ns == 4)
                   {
-                    // NO2: s = 2 
+                    // NO2: s = 2
                     // NO: s = 3
                     // O3: s = 1
-                    if (s == 1 or s == 2 or s == 3) 
+                    if (s == 1 or s == 2 or s == 3)
                       output_file_date << street->GetStreetConcentration(s) << "\t" ;
                   }
                 // CB05
                 else
                   {
-                    // NO2: s = 51 
+                    // NO2: s = 51
                     // NO: s = 47
                     // O3: s = 46
-                    if (s == 46 or s == 47 or s == 51) 
+                    if (s == 46 or s == 47 or s == 51)
                       output_file_date << street->GetStreetConcentration(s) << "\t" ;
                   }
               }

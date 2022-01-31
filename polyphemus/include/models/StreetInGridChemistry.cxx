@@ -40,7 +40,7 @@ namespace Polyphemus
   */
   template<class T, class ClassEulerianModel, class ClassLocalModel>
   StreetInGridChemistry<T, ClassEulerianModel, ClassLocalModel>
-  ::StreetInGridChemistry(string config_file): 
+  ::StreetInGridChemistry(string config_file):
     StreetInGridTransport<T, ClassEulerianModel, ClassLocalModel>(config_file)
   {
   }
@@ -75,7 +75,7 @@ namespace Polyphemus
     this->config.PeekValue("With_chemistry", option_chemistry);
     this->config.PeekValue("With_photolysis", option_photolysis);
     option_chemistry = (option_chemistry && option_photolysis);
-    
+
     this->config.PeekValue("Option_chemistry", chemical_mechanism);
   }
 
@@ -123,7 +123,7 @@ namespace Polyphemus
 	// Extracts information useful for chemistry from Eulerian model.
 	Nr_photolysis = this->Model.GetNr_photolysis();
 	photolysis_reaction_list = this->Model.GetPhotolysisReactionList();
-	
+
 	// Photolysis rates.
 	if (this->Model.HasField("PhotolysisRate"))
 	  PhotolysisRate_i.Copy(this->Model.D4("PhotolysisRate_i"));
@@ -154,7 +154,7 @@ namespace Polyphemus
 
   //! Model initialization for each step.
   /*! It reads on file the data that are is needed for the current step.
-   */  
+   */
   template<class T, class ClassEulerianModel, class ClassLocalModel>
   void StreetInGridChemistry<T, ClassEulerianModel, ClassLocalModel>
   ::InitStep()
@@ -247,7 +247,7 @@ namespace Polyphemus
     this->Model.DiffusionSplitZ();
 
     this->Model.ChemistrySplit();
- 
+
     if (rank == 0)
       {
 
@@ -275,7 +275,7 @@ namespace Polyphemus
                 this->cell_quantity(s, iy, ix) += quantity_street;
               }
           }
-	
+
         //! Adding street concentration to the Concentration Data.
         this->StreetTransfer(this->Concentration);
 
@@ -298,13 +298,13 @@ namespace Polyphemus
     ::UpdateStreetData(street_index);
 
      if (option_chemistry)
-       { 
+       {
          // Street center coordinates.
          T lon_c, lat_c;
-         T z_c = 2.0; 
+         T z_c = 2.0;
          this->StreetNetworkModel->
            GetStreetCoordinate(street_index, lon_c, lat_c);
-    
+
          // Extracting meteorological data.
          map<string, T> meteorological_data;
          ExtractAdditionalMeteo(z_c, lat_c, lon_c, meteorological_data);
@@ -360,7 +360,7 @@ namespace Polyphemus
     met_data["specific_humidity"] = specific_humidity;
     met_data["temperature"] = temperature;
   }
-  
+
 } // namespace Polyphemus.
 
 

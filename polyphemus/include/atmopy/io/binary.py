@@ -24,8 +24,8 @@
 import numpy
 import datetime
 import sys, os
-sys.path.insert(0,
-                os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])
+
+sys.path.insert(0, os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])
 import observation
 
 
@@ -43,7 +43,7 @@ def get_filesize(filename):
     try:
         f = open(filename, "r", 0)
         try:
-            f.seek(0,2)
+            f.seek(0, 2)
             fileSize = f.tell()
         finally:
             f.close()
@@ -67,12 +67,12 @@ def get_timesteps(filename, recordLength):
     @return: Number of timesteps.
     """
     ts = 0
-    if (recordLength != 0):
+    if recordLength != 0:
         ts = get_filesize(filename) / recordLength
     return ts
 
 
-def load_binary(filename, shape, type = 'f'):
+def load_binary(filename, shape, type="f"):
     """
     Loads a binary file into an array using specified shape.
     Returns numpy.
@@ -94,14 +94,13 @@ def load_binary(filename, shape, type = 'f'):
         length *= l
     d = numpy.fromfile(filename, type, length)
     if d.shape[0] != length:
-        raise Exception, "File \"" + filename \
-              + "\" does not contain enough elements."
+        raise Exception, 'File "' + filename + '" does not contain enough elements.'
     d.shape = shape
-    d = d.astype('d')
+    d = d.astype("d")
     return d
 
 
-def load_binary_first_level(filename, shape, type = 'f'):
+def load_binary_first_level(filename, shape, type="f"):
     """
     Loads a binary file into an array using specified 3D shape for
     X, Y and T dimensions (a time sequence of planes).
@@ -122,9 +121,9 @@ def load_binary_first_level(filename, shape, type = 'f'):
     from specified file.
     """
     res = []
-    zsize = get_filesize(filename) \
-            / (numerictypes.getType(type).bytes * shape[0] \
-               * shape[1] * shape[2])
+    zsize = get_filesize(filename) / (
+        numerictypes.getType(type).bytes * shape[0] * shape[1] * shape[2]
+    )
     if zsize != 1:
         res = load_binary(filename, shape, type)
     else:
@@ -132,12 +131,12 @@ def load_binary_first_level(filename, shape, type = 'f'):
         newshape.insert(1, zsize)
         # Use temp array to be sure that memory is freed
         temp = load_binary(filename, newshape, type)
-        res = temp[:,0,:,:]
+        res = temp[:, 0, :, :]
         del temp
     return res
 
 
-def save_binary(arrayToSave, filename, type = 'f'):
+def save_binary(arrayToSave, filename, type="f"):
     """
     Saves a numpy in a binary file using specified type.
 
@@ -150,7 +149,8 @@ def save_binary(arrayToSave, filename, type = 'f'):
     @type type: string
     @param type: Format of data to save the array in file.
     """
-    numpy.array(arrayToSave, dtype = type).tofile(filename)
+    numpy.array(arrayToSave, dtype=type).tofile(filename)
+
 
 def filter_config(config, data):
     """
@@ -173,18 +173,28 @@ def filter_config(config, data):
        2. the cells to be removed in the domain edges according to
        'config.discarded_cells'.
     """
-    dates = observation.get_simulation_dates(config.t_min, config.Delta_t,
-                                             config.Nt)
+    dates = observation.get_simulation_dates(config.t_min, config.Delta_t, config.Nt)
     if config.discarded_days >= 0:
         dates, data = observation.remove_incomplete_days(dates, data)
-        dates, data \
-               = observation.remove_days(dates, data, config.discarded_days)
+        dates, data = observation.remove_days(dates, data, config.discarded_days)
     if config.discarded_cells <= 0:
         return dates, data
-    if len(data.shape) == 4:   # Z included.
-        return dates, \
-               data[:, :, config.discarded_cells:-config.discarded_cells,
-                    config.discarded_cells:-config.discarded_cells]
-    else:   # Only X and Y.
-        return dates, data[:, config.discarded_cells:-config.discarded_cells,
-                           config.discarded_cells:-config.discarded_cells]
+    if len(data.shape) == 4:  # Z included.
+        return (
+            dates,
+            data[
+                :,
+                :,
+                config.discarded_cells : -config.discarded_cells,
+                config.discarded_cells : -config.discarded_cells,
+            ],
+        )
+    else:  # Only X and Y.
+        return (
+            dates,
+            data[
+                :,
+                config.discarded_cells : -config.discarded_cells,
+                config.discarded_cells : -config.discarded_cells,
+            ],
+        )

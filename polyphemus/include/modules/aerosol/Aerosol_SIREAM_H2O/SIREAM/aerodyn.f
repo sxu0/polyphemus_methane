@@ -67,7 +67,7 @@ C     -- INPUT/OUTPUT VARIABLES
 C
 C     ZA: vector of gas and aerosol concentrations ([\mu g.m^-3]).
 C     ZNA: vector of aerosol number concentrations ([m^-3]).
-C     
+C
 C     -- OUTPUT VARIABLES
 C
 C------------------------------------------------------------------------
@@ -288,7 +288,7 @@ C     compute the total dry mass
          ENDDO
 
 C     compute the particle number (mass/geometric mean diameter)
-C     Number concentration 
+C     Number concentration
 
          bin_density(js) = RHOA
          IF (IDENS.EQ.1) THEN
@@ -302,9 +302,9 @@ C     Number concentration
          IF(INUM.EQ.1) THEN
             q(js)=ZNA(js)       ! real value
          ELSE
-            q(js)=QT(js)/MSD(js) ! approximate value 
+            q(js)=QT(js)/MSD(js) ! approximate value
          ENDIF
- 
+
       ENDDO
 
 C     compute total gas/aerosol mass in cell.
@@ -344,20 +344,20 @@ C     Compute timestep for each process
      s        bin_density)
 
          conc = 0.d0
-         DO js = 1,nbin_aer 
+         DO js = 1,nbin_aer
             DO jesp = E1,E2
                conc(js, jesp) = q(IQ(jesp,js))
             ENDDO
             numconc(js) = q(js)
          ENDDO
-         
+
          DO jk=1, nbin_aer
             IF (IDENS.EQ.1) THEN
                CALL compute_density(nbin_aer,nesp_aer,EH2O, TINYM,conc,
      &              LMD,jk,bin_density(jk))
             ELSE
                bin_density(jk) = RHOA
-            ENDIF            
+            ENDIF
          ENDDO
 
 C     Begin with the slowest process (coagulation).
@@ -393,9 +393,9 @@ c     # through mass conservation for C/E
             ENDDO
 
             DO js = 1,nbin_aer
-               QT(js) = 0.d0 
+               QT(js) = 0.d0
                DO jesp = E1,E2
-                  QT(js) = QT(js)+q(IQ(jesp,js)) 
+                  QT(js) = QT(js)+q(IQ(jesp,js))
                ENDDO
             ENDDO
 
@@ -432,14 +432,14 @@ C     Compute size bounds
             CALL SIZEBND(nbin_aer,XSF,XBF,XSD,XBD,MBD,DBD,HSD)
 
 C     Redistribution onto the fixed grid
-            
+
 ! array of concentration at the same length of the code
-                          
+
                IF (IREDIST.EQ.1) CALL REDIST_NEW(neq,nesp_aer,
      s           nbin_aer,q,iq,QT,MSD,MSF,DSF,XBF,
      s           MBF,DBF,HSF,XBD,MBD,DBD,HSD)
-            
-                        
+
+
                IF (IREDIST.EQ.2) CALL REDIST(neq,nesp_aer,nbin_aer,q,
      s           iq,QT,XBF,MBF,DBF,HSF,XBD,MBD,DBD,HSD)
 
@@ -447,7 +447,7 @@ C     Redistribution onto the fixed grid
 
 C     Eulerian redistributions
 
-            IF (IREDIST.EQ.3 .OR. IREDIST.EQ.4  
+            IF (IREDIST.EQ.3 .OR. IREDIST.EQ.4
      s           .OR. IREDIST.EQ.5 .OR. IREDIST.EQ.6
      s           .OR. IREDIST.EQ.7 .OR. IREDIST.EQ.8
      s           .OR. IREDIST.EQ.9 .OR. IREDIST.EQ.10) THEN
@@ -461,7 +461,7 @@ C     Eulerian redistributions
                   ENDDO
                   numconc(js)=q(js)
                ENDDO
-               
+
                CALL REDISTRIBUTION(nbin_aer,nesp_aer,EH2O,DBF,
      &              fixed_diameter,RHOA,IDENS,IREDIST,section_pass,LMD,
      &              DQLIMIT,conc,numconc,QT)

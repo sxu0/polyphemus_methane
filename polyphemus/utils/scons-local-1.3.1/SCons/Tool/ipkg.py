@@ -6,7 +6,7 @@ There normally shouldn't be any need to import this module directly.
 It will usually be imported through the generic SCons.Tool.Tool()
 selection method.
 
-The ipkg tool calls the ipkg-build. Its only argument should be the 
+The ipkg tool calls the ipkg-build. Its only argument should be the
 packages fake_root.
 """
 
@@ -40,29 +40,34 @@ import string
 
 import SCons.Builder
 
+
 def generate(env):
     """Add Builders and construction variables for ipkg to an Environment."""
     try:
-        bld = env['BUILDERS']['Ipkg']
+        bld = env["BUILDERS"]["Ipkg"]
     except KeyError:
-        bld = SCons.Builder.Builder( action  = '$IPKGCOM',
-                                     suffix  = '$IPKGSUFFIX',
-                                     source_scanner = None,
-                                     target_scanner = None)
-        env['BUILDERS']['Ipkg'] = bld
+        bld = SCons.Builder.Builder(
+            action="$IPKGCOM",
+            suffix="$IPKGSUFFIX",
+            source_scanner=None,
+            target_scanner=None,
+        )
+        env["BUILDERS"]["Ipkg"] = bld
 
-    env['IPKG']       = 'ipkg-build'
-    env['IPKGCOM']    = '$IPKG $IPKGFLAGS ${SOURCE}'
+    env["IPKG"] = "ipkg-build"
+    env["IPKGCOM"] = "$IPKG $IPKGFLAGS ${SOURCE}"
     # TODO(1.5)
-    #env['IPKGUSER']   = os.popen('id -un').read().strip()
-    #env['IPKGGROUP']  = os.popen('id -gn').read().strip()
-    env['IPKGUSER']   = string.strip(os.popen('id -un').read())
-    env['IPKGGROUP']  = string.strip(os.popen('id -gn').read())
-    env['IPKGFLAGS']  = SCons.Util.CLVar('-o $IPKGUSER -g $IPKGGROUP')
-    env['IPKGSUFFIX'] = '.ipk'
+    # env['IPKGUSER']   = os.popen('id -un').read().strip()
+    # env['IPKGGROUP']  = os.popen('id -gn').read().strip()
+    env["IPKGUSER"] = string.strip(os.popen("id -un").read())
+    env["IPKGGROUP"] = string.strip(os.popen("id -gn").read())
+    env["IPKGFLAGS"] = SCons.Util.CLVar("-o $IPKGUSER -g $IPKGGROUP")
+    env["IPKGSUFFIX"] = ".ipk"
+
 
 def exists(env):
-    return env.Detect('ipkg-build')
+    return env.Detect("ipkg-build")
+
 
 # Local Variables:
 # tab-width:4

@@ -10,7 +10,7 @@ void compute_gamma_infini(model_config &config, vector<species>& surrogate)
   //     the saturation vapour pressure if the Henry's law constant was not specified
   //
   //   H = 1000*760/(18.0*GAMMAinf*Psat)
-  
+
   int n=surrogate.size();
   int i,j;
   Array<double, 1> X_unifac;
@@ -33,7 +33,7 @@ void compute_gamma_infini(model_config &config, vector<species>& surrogate)
                  config.QG_aq,config.Rparam_aq,config.Qparam_aq,config.Lparam_aq,
                  config.Z,surrogate[i].Tref,gamma_unifac,config.temperature_dependancy);
           surrogate[i].GAMMAinf=gamma_unifac(surrogate[i].index_gamma_aq);
-          
+
           if (surrogate[i].Henry <= tiny)
             surrogate[i].Henry=1000.0*760.0/(18.0*surrogate[i].GAMMAinf*surrogate[i].Psat_ref);
         }
@@ -56,7 +56,7 @@ void compute_density_aqueous_phase(model_config &config, vector<species>& surrog
   double temp,hcl;
   temp=0.0;
   sumW=0.0;
-  
+
   for (i=0;i<n;++i)
     if (surrogate[i].hydrophilic and surrogate[i].is_organic)
       {
@@ -70,20 +70,20 @@ void compute_density_aqueous_phase(model_config &config, vector<species>& surrog
         surrogate[i].Waq=surrogate[i].Aaq+LWC;
         sumW+=surrogate[i].Waq;
       }
-  
+
   double avail_nh4,avail_na;
   if (config.iNH4p>=0)
     {
       avail_nh4=surrogate[config.iNH4p].Aaq;
     }
-  else 
+  else
     avail_nh4=0.0;
 
   if (config.iNa>=0)
     {
       avail_na=surrogate[config.iNa].Aaq;
     }
-  else 
+  else
     avail_na=0.0;
 
   double waq_NaHSO4=0.0;
@@ -109,7 +109,7 @@ void compute_density_aqueous_phase(model_config &config, vector<species>& surrog
           avail_hso4-=waq_NaHSO4/120.0*surrogate[config.iHSO4m].MM;
           avail_na-=waq_NaHSO4/120.0*surrogate[config.iNa].MM;
         }
-      
+
       if (avail_hso4>0.0 and avail_nh4>0.0)
         {
           waq_NH4HSO4=115.0*min(avail_hso4/surrogate[config.iHSO4m].MM,
@@ -119,11 +119,11 @@ void compute_density_aqueous_phase(model_config &config, vector<species>& surrog
         }
 
       if (avail_hso4>0.0)
-        waq_H2SO4=98.0*avail_hso4/surrogate[config.iHSO4m].MM;  
+        waq_H2SO4=98.0*avail_hso4/surrogate[config.iHSO4m].MM;
     }
 
   if (config.iSO4mm>=0)
-    {      
+    {
       double avail_so4=surrogate[config.iSO4mm].Aaq;
 
       if (avail_so4>0.0 and avail_na>0.0)
@@ -143,12 +143,12 @@ void compute_density_aqueous_phase(model_config &config, vector<species>& surrog
         }
 
       if (avail_so4>0.0)
-        waq_H2SO4+=98.0*avail_so4/surrogate[config.iSO4mm].MM;  
+        waq_H2SO4+=98.0*avail_so4/surrogate[config.iSO4mm].MM;
 
     }
 
   if (config.iNO3m>=0)
-    {      
+    {
       double avail_no3=surrogate[config.iNO3m].Aaq;
 
       if (avail_no3>0.0 and avail_na>0.0)
@@ -168,11 +168,11 @@ void compute_density_aqueous_phase(model_config &config, vector<species>& surrog
         }
 
       if (avail_no3>0.0)
-        waq_HNO3=63.0*avail_no3/surrogate[config.iNO3m].MM;  
+        waq_HNO3=63.0*avail_no3/surrogate[config.iNO3m].MM;
     }
 
   if (config.iClm>=0)
-    {      
+    {
       double avail_cl=surrogate[config.iClm].Aaq;
 
       if (avail_cl>0.0 and avail_na>0.0)
@@ -192,7 +192,7 @@ void compute_density_aqueous_phase(model_config &config, vector<species>& surrog
         }
 
       if (avail_cl>0.0)
-        waq_HCl=36.5*avail_cl/surrogate[config.iClm].MM;  
+        waq_HCl=36.5*avail_cl/surrogate[config.iClm].MM;
     }
 
   double waq_Na=avail_na;
@@ -217,7 +217,7 @@ void compute_density_aqueous_phase(model_config &config, vector<species>& surrog
             temp_rho=18.0/(17.89+1.815*Tr)*1000;
             temp+=surrogate[config.iH2O].Waq/temp_rho;
           }
-      
+
       double w;
       //H2SO4
       w=waq_H2SO4/sumW;
@@ -244,19 +244,19 @@ void compute_density_aqueous_phase(model_config &config, vector<species>& surrog
                      -28.7432*Tr+155.419*Tr*w-157.049*Tr*w*w+
                      161.094*Tr*Tr-585.880*Tr*Tr*w+541.843*Tr*Tr*w*w)*1000;
       temp+=w/temp_rho;
-                     
+
       //NH4HSO4
       w=waq_NH4HSO4/sumW;
       temp_rho=115.0/(47.6267+28.2931*w-8.90139*w*w
                       +32.3616*Tr-45.8649*Tr*w)*1000;
       temp+=w/temp_rho;
-      
+
       //NaHSO4
       temp+=waq_NaHSO4/2740.0/sumW;
-      
+
       //Na2SO4
       temp+=waq_Na2SO4/2700.0/sumW;
-      
+
       //NaNO3
       temp+=waq_NaNO3/2260.0/sumW;
 
@@ -271,14 +271,14 @@ void compute_density_aqueous_phase(model_config &config, vector<species>& surrog
 
       //Na
       temp+=waq_Na/970.0/sumW;
-      
+
       //NH3
       temp+=waq_NH3/910.0/sumW;
 
       //H2O
       temp+=(surrogate[i].Aaq+LWC)/1000.0/sumW;
     }
-  
+
 
   if (temp>0.0)
     config.rho_aqueous=1.0/temp;
@@ -294,7 +294,7 @@ void density_aqueous_phase(model_config &config, vector<species>& surrogate,
   //the volume of other compounds
   int n=surrogate.size();
   int b,i;
-  
+
   if (config.compute_rho_aqueous)
     {
       for (b=0;b<config.nbins;++b)
@@ -302,7 +302,7 @@ void density_aqueous_phase(model_config &config, vector<species>& surrogate,
           for (i=0;i<n;++i)
             if (surrogate[i].hydrophilic)
               surrogate[i].Aaq=surrogate[i].Aaq_bins_init(b);
-   
+
           compute_density_aqueous_phase(config, surrogate, LWC(b), Temperature);
           config.AQrho(b)=config.rho_aqueous;
         }
@@ -346,8 +346,8 @@ void compute_viscosity(model_config &config, vector<species>& surrogate,
       for (i=0;i<n;++i)
 	if (surrogate[i].hydrophobic)
 	  for (iphase=0;iphase<config.nphase(b,ilayer);++iphase)
-	    mo+=surrogate[i].Ap_layer_init(b,ilayer,iphase);	       
-      
+	    mo+=surrogate[i].Ap_layer_init(b,ilayer,iphase);
+
       double dorg;
       if (mo>config.MOmin*config.Vlayer(ilayer))
 	{
@@ -391,7 +391,7 @@ void compute_viscosity(model_config &config, vector<species>& surrogate,
 	    for (i=0;i<n;++i)
 	      surrogate[i].KDiffusion_p=1.0e-12;
 	  }
-      
+
     }
 }
 
@@ -406,7 +406,7 @@ void water_concentration(model_config &config, vector<species>& surrogate,
 				-sum(surrogate[config.iH2O].Aaq_bins_init)
 				-sum(surrogate[config.iH2O].Ap_layer_init)
 				,0.0);
-  
+
 }
 
 double species::knudsen_function(double &Temperature, double diameter)
@@ -429,15 +429,15 @@ void tau_kmt(model_config &config,vector<species>& surrogate, double &temperatur
   double pi=3.14159265358979323846;
   double R=8.314;
 
-  for (b=0;b<config.nbins;++b)	  
+  for (b=0;b<config.nbins;++b)
     for (i=0;i<n;++i)
-      if (number(b)>0.0)        
+      if (number(b)>0.0)
 	surrogate[i].tau_air(b)=1.0/
 	  (2.0*pi*surrogate[i].KDiffusion_air*
 	   config.diameters(b)*1.0e-6*number(b)*
-	   surrogate[i].knudsen_function(temperature, config.diameters(b)*1.0e-6));	         
+	   surrogate[i].knudsen_function(temperature, config.diameters(b)*1.0e-6));
       else
-        surrogate[i].tau_air(b)=1.0e19; 
+        surrogate[i].tau_air(b)=1.0e19;
 }
 
 void tau_dif(model_config &config, vector<species>& surrogate,
@@ -451,12 +451,12 @@ void tau_dif(model_config &config, vector<species>& surrogate,
   double morphology_factor;
   //morphology_factor is a factor to take into account the morphology of the particle and that
   // particles are not entirely organic
-  
+
   //here it is assumed that the center of the particle is solid and that the aqueous phase
   // does not impact the characteristic time for diffusion in the organic phase
   //the particle is still assumed spheric
   //fs: fraction of the volume which is solid
-  
+
   for (b=0;b<config.nbins;++b)
     {
       if (number(b)>0.0)
@@ -491,14 +491,14 @@ void tau_dif(model_config &config, vector<species>& surrogate,
 		    (4.0*pi*pi*surrogate[i].KDiffusion_p*config.alpha_layer(ilayer+1))
 		    *morphology_factor2
 		    +surrogate[i].tau_diffusion(b,ilayer+1,iphase);
-	      }	      
+	      }
 	  }
     }
 }
-  
+
 double species::Psat(double &Temperature)
 {
-  //Compute the saturation vapor pressure at the specified temperature 
+  //Compute the saturation vapor pressure at the specified temperature
   double R=8.314; //ideal gas constant (J/K/mol)
   double value;
   if (name=="H2O")
@@ -642,7 +642,7 @@ double species::Kp_eff_aq(model_config &config, double &Temperature, double &ion
         cout << "WARNING: aq_type "+aq_type+" of species " +name+ " not defined." << endl;
       value=Kpart_aq(Temperature, MMaq);
     }
-  
+
   return value;
 }
 
@@ -690,7 +690,7 @@ double species::Kp_eff_aqreal(model_config &config,
             (1.0+Kacidity1/(ratio_gamma1*chp)*(1.0+Kacidity2/(ratio_gamma2*chp)));
         }
       else
-        {          
+        {
           value=kaqi/MMaq;
           fion1=fioni1;
           fion2=fioni2;
@@ -707,7 +707,7 @@ double species::Kp_eff_aqreal(model_config &config,
             /(1.0+Kacidity1/(ratio_gamma*chp));
         }
       else
-        {          
+        {
           value=kaqi/MMaq;
           fion1=fioni1;
         }
@@ -715,10 +715,10 @@ double species::Kp_eff_aqreal(model_config &config,
   else if (aq_type=="aldehyde")
     {
       //effective partitioning based on Pun and Seigneur (2007)
-      if (config.compute_aqueous_phase_properties) //config.compute_long_and_medium_range_interactions)        
-        value=kaqi/MMaq*(1.0+Koligo_aq*pow(gammaH_LR*gammaH_SRMR*chp/pow(10,-pHref),beta));        
-      else        
-        value=kaqi/MMaq;        
+      if (config.compute_aqueous_phase_properties) //config.compute_long_and_medium_range_interactions)
+        value=kaqi/MMaq*(1.0+Koligo_aq*pow(gammaH_LR*gammaH_SRMR*chp/pow(10,-pHref),beta));
+      else
+        value=kaqi/MMaq;
     }
   else if (aq_type=="none") //Kp_effective=Kp_theoric
     value=kaqi/MMaq;
@@ -728,7 +728,7 @@ double species::Kp_eff_aqreal(model_config &config,
         cout << "WARNING: aq_type "+aq_type+" of species " +name+ " not defined." << endl;
       value=kaqi/MMaq;
     }
-  
+
   return value;
 }
 
@@ -745,7 +745,7 @@ void activity_coefficients_org(model_config &config, vector<species>& surrogate,
   Array<double, 1> X_unifac,gamma_unifac;
 
   //initialization of X_unifac
-  
+
   if (all_hydrophobic==false)
     {
       X_unifac.resize(config.nmol_org);
@@ -758,10 +758,10 @@ void activity_coefficients_org(model_config &config, vector<species>& surrogate,
       gamma_unifac.resize(config.nmol_tot);
       n_unifac=config.nmol_tot;
     }
-  
+
   sum=0.0;
   sumX_unifac=0.0;
-  
+
   for (i=0;i<n_unifac;++i)
     X_unifac(i)=0.0;
 
@@ -788,7 +788,7 @@ void activity_coefficients_org(model_config &config, vector<species>& surrogate,
               X_unifac(surrogate[i].index_gamma_tot)+=surrogate[i].Xorg;
             }
       }
-  
+
   if (sum>0.0)
     {
       MOW=0.0;
@@ -805,9 +805,9 @@ void activity_coefficients_org(model_config &config, vector<species>& surrogate,
 
   // YK
   if (MOW < 1.0) MOW = 200.0;
-  
 
-  //Call of unifac 
+
+  //Call of unifac
   if (sumX_unifac>0.0 and config.activity_model=="unifac")
     {
       for (i=0;i<n_unifac;++i)
@@ -826,15 +826,15 @@ void activity_coefficients_org(model_config &config, vector<species>& surrogate,
               itemp=max(itemp,0);
               itemp=min(itemp,config.ntemp);
               double alpha;
-              if (Temperature<=263.15) 
-                alpha=0.0;            
+              if (Temperature<=263.15)
+                alpha=0.0;
               else if (Temperature>=263.15+1.0*config.ntemp)
                 alpha=1.0;
               else
-                alpha=Temperature-263.15-1.0*itemp;                           
+                alpha=Temperature-263.15-1.0*itemp;
 
               for (i=0;i<n;i++)
-                if (surrogate[i].index_gamma_org>=0)                                     
+                if (surrogate[i].index_gamma_org>=0)
                   spec_activity(surrogate[i].index_gamma_org)=
                     (1.0-alpha)*surrogate[i].species_activity(itemp)+alpha*surrogate[i].species_activity(itemp+1);
 
@@ -859,23 +859,23 @@ void activity_coefficients_org(model_config &config, vector<species>& surrogate,
               itemp=max(itemp,0);
               itemp=min(itemp,config.ntemp);
               double alpha;
-              if (Temperature<=263.15) 
-                alpha=0.0;            
+              if (Temperature<=263.15)
+                alpha=0.0;
               else if (Temperature>=263.15+1.0*config.ntemp)
                 alpha=1.0;
               else
-                alpha=Temperature-263.15-itemp*1.0;              
+                alpha=Temperature-263.15-itemp*1.0;
 
               for (i=0;i<n;i++)
-                if (surrogate[i].index_gamma_tot>=0)   
-                  {                                  
+                if (surrogate[i].index_gamma_tot>=0)
+                  {
                     spec_activity(surrogate[i].index_gamma_tot)=
                       (1.0-alpha)*surrogate[i].species_activity(itemp)+alpha*surrogate[i].species_activity(itemp+1);
                   }
 
               tab_unifac(config.nmol_tot,config.nfunc_tot,config.groups_tot,
                          X_unifac,config.Inter_tot,config.InterB_tot,config.InterC_tot,config.RG_tot,
-                         config.QG_tot,config.Rparam_tot,config.Qparam_tot,config.Lparam_tot,         
+                         config.QG_tot,config.Rparam_tot,config.Qparam_tot,config.Lparam_tot,
                          spec_activity,config.Z,Temperature,gamma_unifac,
 			 config.temperature_dependancy);
 
@@ -887,14 +887,14 @@ void activity_coefficients_org(model_config &config, vector<species>& surrogate,
                     surrogate[i].gamma_org=1.0;
                 }
             }
-        }	  
+        }
       else
         {
           if (all_hydrophobic==false)
             {
               unifac(config.nmol_org,config.nfunc_org,config.groups_org,
                      X_unifac,config.Inter_org,config.InterB_org,config.InterC_org,config.RG_org,
-                     config.QG_org,config.Rparam_org,config.Qparam_org,config.Lparam_org,                 
+                     config.QG_org,config.Rparam_org,config.Qparam_org,config.Lparam_org,
                      config.Z,Temperature,gamma_unifac,config.temperature_dependancy);
 
               for (i=0;i<n;++i)
@@ -909,7 +909,7 @@ void activity_coefficients_org(model_config &config, vector<species>& surrogate,
             {
               unifac(config.nmol_tot,config.nfunc_tot,config.groups_tot,
                      X_unifac,config.Inter_tot,config.InterB_tot,config.InterC_tot,config.RG_tot,
-                     config.QG_tot,config.Rparam_tot,config.Qparam_tot,config.Lparam_tot,         
+                     config.QG_tot,config.Rparam_tot,config.Qparam_tot,config.Lparam_tot,
                      config.Z,Temperature,gamma_unifac,config.temperature_dependancy);
 
               for (i=0;i<n;++i)
@@ -940,7 +940,7 @@ void activity_coefficients_dyn_org(model_config &config, vector<species>& surrog
   Array<double, 1> X_unifac,gamma_unifac;
 
   int b,ilayer,iphase;
-  
+
   if (config.use_global_dynamic_parameters)
     {
       for (iphase=0;iphase<config.max_number_of_phases;++iphase)
@@ -954,12 +954,12 @@ void activity_coefficients_dyn_org(model_config &config, vector<species>& surrog
                   surrogate[i].Ap+=surrogate[i].Ap_layer_init(b,ilayer,iphase);
             }
           activity_coefficients_org(config, surrogate, false, Temperature, MOWtemp);
-		  
+
           for (i=0;i<n;++i)
             for (ilayer=0;ilayer<config.nlayer;++ilayer)
               for (b=0;b<config.nbins;++b)
                 surrogate[i].gamma_org_layer(b,ilayer,iphase)=surrogate[i].gamma_org;
-		  
+
           for (ilayer=0;ilayer<config.nlayer;++ilayer)
             for (b=0;b<config.nbins;++b)
               MOW(b,ilayer,iphase)=MOWtemp;
@@ -973,7 +973,7 @@ void activity_coefficients_dyn_org(model_config &config, vector<species>& surrog
             {
               for (i=0;i<n;++i)
                 surrogate[i].Ap=surrogate[i].Ap_layer_init(b,ilayer,iphase);
-			  
+
               activity_coefficients_org(config, surrogate, false, Temperature,
                                         MOW(b,ilayer,iphase));
               for (i=0;i<n;++i)
@@ -995,7 +995,7 @@ void activity_coefficients_dyn_sat(model_config &config, vector<species>& surrog
   Array<double, 1> X_unifac,gamma_unifac;
 
   int b,ilayer,iphase;
-  
+
   if (config.use_global_dynamic_parameters)
     {
       for (iphase=0;iphase<config.max_number_of_phases;++iphase)
@@ -1009,12 +1009,12 @@ void activity_coefficients_dyn_sat(model_config &config, vector<species>& surrog
                   surrogate[i].Ap+=surrogate[i].Ap_layer_init(b,ilayer,iphase);
             }
           activity_coefficients_org(config, surrogate, false, Temperature, MOWtemp);
-		  
+
           for (i=0;i<n;++i)
             for (ilayer=0;ilayer<config.nlayer;++ilayer)
               for (b=0;b<config.nbins;++b)
                 surrogate[i].gamma_org_layer(b,ilayer,iphase)=surrogate[i].gamma_org;
-		  
+
           for (ilayer=0;ilayer<config.nlayer;++ilayer)
             for (b=0;b<config.nbins;++b)
               MOW(b,ilayer,iphase)=MOWtemp;
@@ -1026,7 +1026,7 @@ void activity_coefficients_dyn_sat(model_config &config, vector<species>& surrog
         {
           for (i=0;i<n;++i)
             surrogate[i].Ap=surrogate[i].Ap_layer_init(b2,ilayer2,iphase);
-		  
+
           activity_coefficients_org(config, surrogate, false, Temperature,
                                     MOW(b2,ilayer2,iphase));
           for (i=0;i<n;++i)
@@ -1050,9 +1050,9 @@ void compute_ionic_strenght(model_config &config, vector<species>& surrogate,
     {
       double Ke=1.0e-14; //Dissociation constant of water Ke=a(H+)*a(HO-)
       conc_inorganic=0.0;
-      ionic=ionic_organic;      
+      ionic=ionic_organic;
       double chp_old=chp;
-      
+
       //modify the pH of the aqueous phase to take into account organion
       double inorganion=0.0;
       double conc_org=0.0;
@@ -1060,11 +1060,11 @@ void compute_ionic_strenght(model_config &config, vector<species>& surrogate,
       for (i=0;i<n;++i)
         if (surrogate[i].is_organic==false and i!=config.iH2O and surrogate[i].is_inorganic_precursor==false)
           {
-            surrogate[i].molality=surrogate[i].Aaq/surrogate[i].MM/conc_org*1000.0;           
+            surrogate[i].molality=surrogate[i].Aaq/surrogate[i].MM/conc_org*1000.0;
             if (surrogate[i].name!="H")
               inorganion-=surrogate[i].molality*surrogate[i].charge;
           }
-      
+
       chp=factor*0.5*(organion+inorganion+pow(pow(organion+inorganion,2)+4*Ke,0.5))+(1.0-factor)*chp;
       if (chp==0.0)
         chp=pow(10.0,-5.6);
@@ -1075,7 +1075,7 @@ void compute_ionic_strenght(model_config &config, vector<species>& surrogate,
           {
             ionic=ionic+0.5*surrogate[i].molality*pow(surrogate[i].charge,2);
             conc_inorganic+=surrogate[i].Aaq;
-          }      
+          }
     }
   else
     {
@@ -1099,36 +1099,36 @@ void compute_ionic_strenght2(model_config &config, vector<species>& surrogate,
   int i;
   int n=surrogate.size();
   double conc_org=0.0;
-  
+
   conc_org=max(AQinit-conc_inorganic,config.MOmin);
-     
+
   if (config.compute_aqueous_phase_properties)
     {
       double Ke=1.0e-14; //Dissociation constant of water Ke=a(H+)*a(HO-)
       conc_inorganic=0.0;
-      ionic=ionic_organic;      
-      
+      ionic=ionic_organic;
+
       //modify the pH of the aqueous phase to take into account organion
       for (i=0;i<n;++i)
-        if (surrogate[i].is_organic==false and i!=config.iH2O and surrogate[i].is_inorganic_precursor==false)          
-	  surrogate[i].molality=surrogate[i].Aaq/surrogate[i].MM/conc_org*1000.0;                   
+        if (surrogate[i].is_organic==false and i!=config.iH2O and surrogate[i].is_inorganic_precursor==false)
+	  surrogate[i].molality=surrogate[i].Aaq/surrogate[i].MM/conc_org*1000.0;
 
       //compute the ionic strength
       for (i=0;i<n;++i)
         if (surrogate[i].is_inorganic_precursor==false and surrogate[i].is_organic==false and i!=config.iH2O)
           {
             if (surrogate[i].name=="H")
-              {                                
+              {
                 surrogate[i].Aaq=chp/1000.*surrogate[i].MM*conc_org;
-		surrogate[i].molality=chp; 
+		surrogate[i].molality=chp;
               }
             ionic=ionic+0.5*surrogate[i].molality*pow(surrogate[i].charge,2);
             conc_inorganic+=surrogate[i].Aaq;
-	    
-          }     	  
+
+          }
     }
   else
-    {      
+    {
       for (i=0;i<n;++i)
         if (surrogate[i].is_organic==false and i!=config.iH2O and surrogate[i].is_inorganic_precursor==false)
           {
@@ -1172,7 +1172,7 @@ void activity_coefficients_saturation(model_config &config, vector<species>& sur
       sumX_unifac=0.0;
       for (i=0;i<n_unifac;++i)
         X_unifac(i)=0.0;
-	   
+
       //computation of X_unifac (molar fraction of compounds used in the computation of activity
       // coefficients)
       for (i=0;i<n;++i)
@@ -1196,7 +1196,7 @@ void activity_coefficients_saturation(model_config &config, vector<species>& sur
                   X_unifac(surrogate[i].index_gamma_tot)+=surrogate[i].Xorg_sat(j);
                 }
           }
-  
+
       if (sum>0.0)
         {
           MOW(j)=0.0;
@@ -1222,7 +1222,7 @@ void activity_coefficients_saturation(model_config &config, vector<species>& sur
               X_unifac(i)/=sumX_unifac;
               X_unifac(i)=max(1.0e-11, X_unifac(i));
             }
-	  
+
           if (config.tabulation_unifac)
             {
               if (all_hydrophobic==false)
@@ -1233,15 +1233,15 @@ void activity_coefficients_saturation(model_config &config, vector<species>& sur
                   itemp=max(itemp,0);
                   itemp=min(itemp,config.ntemp);
                   double alpha;
-                  if (Temperature<=263.15) 
-                    alpha=0.0;            
+                  if (Temperature<=263.15)
+                    alpha=0.0;
                   else if (Temperature>=263.15+1.0*config.ntemp)
                     alpha=1.0;
                   else
-                    alpha=Temperature-263.15-1.0*itemp;                  
+                    alpha=Temperature-263.15-1.0*itemp;
 
                   for (i=0;i<n;i++)
-                    if (surrogate[i].index_gamma_org>=0)                                     
+                    if (surrogate[i].index_gamma_org>=0)
                       spec_activity(surrogate[i].index_gamma_org)=
                         (1.0-alpha)*surrogate[i].species_activity(itemp)+alpha*surrogate[i].species_activity(itemp+1);
 
@@ -1266,21 +1266,21 @@ void activity_coefficients_saturation(model_config &config, vector<species>& sur
                   itemp=max(itemp,0);
                   itemp=min(itemp,config.ntemp);
                   double alpha;
-                  if (Temperature<=263.15) 
-                    alpha=0.0;            
+                  if (Temperature<=263.15)
+                    alpha=0.0;
                   else if (Temperature>=263.15+1.0*config.ntemp)
                     alpha=1.0;
                   else
-                    alpha=Temperature-263.15-1.0*itemp;                  
+                    alpha=Temperature-263.15-1.0*itemp;
 
                   for (i=0;i<n;i++)
-                    if (surrogate[i].index_gamma_tot>=0)                                     
+                    if (surrogate[i].index_gamma_tot>=0)
                       spec_activity(surrogate[i].index_gamma_tot)=
                         (1.0-alpha)*surrogate[i].species_activity(itemp)+alpha*surrogate[i].species_activity(itemp+1);
 
                   tab_unifac(config.nmol_tot,config.nfunc_tot,config.groups_tot,
                              X_unifac,config.Inter_tot,config.InterB_tot,config.InterC_tot,config.RG_tot,
-                             config.QG_tot,config.Rparam_tot,config.Qparam_tot,config.Lparam_tot,         
+                             config.QG_tot,config.Rparam_tot,config.Qparam_tot,config.Lparam_tot,
                              spec_activity,config.Z,Temperature,gamma_unifac,config.temperature_dependancy);
 
                   for (i=0;i<n;++i)
@@ -1316,7 +1316,7 @@ void activity_coefficients_saturation(model_config &config, vector<species>& sur
                          X_unifac,config.Inter_tot,config.InterB_tot,config.InterC_tot,config.RG_tot,
                          config.QG_tot,config.Rparam_tot,config.Qparam_tot,config.Lparam_tot,
                          config.Z,Temperature,gamma_unifac,config.temperature_dependancy);
-              
+
                   for (i=0;i<n;++i)
                     {
                       if (surrogate[i].index_gamma_tot >=0)
@@ -1333,12 +1333,12 @@ void activity_coefficients_saturation(model_config &config, vector<species>& sur
     }
 }
 
-void hygroscopicity_coupled(model_config &config, vector<species>& surrogate, 
+void hygroscopicity_coupled(model_config &config, vector<species>& surrogate,
 			    double &Temperature, double &MOW, double &MMaq,
 			    double &RH, double &LWC, double &conc_inorganic,
-			    double &MOinit, double &MO, 
+			    double &MOinit, double &MO,
 			    double &AQinit, double &AQ,
-			    double &deriv_error1_MO, 
+			    double &deriv_error1_MO,
 			    double &deriv_error1_AQ,
 			    double &deriv_error2_MO,
 			    double &deriv_error2_AQ,
@@ -1350,29 +1350,29 @@ void hygroscopicity_coupled(model_config &config, vector<species>& surrogate,
   //surrogate[config.iH2O].Ap : mass of water in the organic phase
   //at equilibrium according to Raoult's law:
   // Xwater = RH/gamma_water
-  // with Xwater = moles water/(sum of moles) = Ap/MMwater * MOW/MOinit  
+  // with Xwater = moles water/(sum of moles) = Ap/MMwater * MOW/MOinit
 
   if (config.activity_model=="unifac" or config.compute_inorganic)
-    {     
+    {
       double Pwater=exp(13.7-5120.0/Temperature)*1.013e5;
       double alpha_org;
       if (surrogate[config.iH2O].hydrophobic)
 	alpha_org=surrogate[config.iH2O].MM/MOW/surrogate[config.iH2O].gamma_org;
-      else 
+      else
 	alpha_org=0.0;
       double beta_org=alpha_org*8.314*Temperature/(surrogate[config.iH2O].MM*Pwater)*1.0e-6;
       double alpha_aq,beta_aq;
       if (surrogate[config.iH2O].hydrophilic)
 	{
 	  alpha_aq=surrogate[config.iH2O].MM/MMaq/surrogate[config.iH2O].gamma_aq;
-	  beta_aq=alpha_aq*8.314*Temperature/(surrogate[config.iH2O].MM*Pwater)*1.0e-6; 
+	  beta_aq=alpha_aq*8.314*Temperature/(surrogate[config.iH2O].MM*Pwater)*1.0e-6;
 	}
       else
 	{
 	  alpha_aq=0.0;
 	  beta_aq=0.0;
 	}
-      
+
       surrogate[config.iH2O].Ap=factor*alpha_org*RH*MOinit/(1.0+beta_org*MOinit+beta_aq*AQinit)+(1.0-factor)*surrogate[config.iH2O].Ap;
       if (config.compute_inorganic)
 	surrogate[config.iH2O].Aaq=factor*alpha_aq*RH*AQinit/(1.0+beta_org*MOinit+beta_aq*AQinit)+(1.0-factor)*surrogate[config.iH2O].Aaq;
@@ -1396,7 +1396,7 @@ void hygroscopicity_coupled(model_config &config, vector<species>& surrogate,
       double Pwater=exp(13.7-5120.0/Temperature)*1.013e5;
       double alpha_org=0.0;
       if (surrogate[config.iH2O].hydrophobic)
-	alpha_org=surrogate[config.iH2O].MM/MOW;      
+	alpha_org=surrogate[config.iH2O].MM/MOW;
       else
 	alpha_org=0.0;
       double beta_org=alpha_org*8.314*Temperature/(surrogate[config.iH2O].MM*Pwater)*1.0e-6;
@@ -1404,15 +1404,15 @@ void hygroscopicity_coupled(model_config &config, vector<species>& surrogate,
       if (surrogate[config.iH2O].hydrophilic)
 	{
 	  alpha_aq=surrogate[config.iH2O].MM/MMaq;
-	  beta_aq=alpha_aq*8.314*Temperature/(surrogate[config.iH2O].MM*Pwater)*1.0e-6; 
-	}      
+	  beta_aq=alpha_aq*8.314*Temperature/(surrogate[config.iH2O].MM*Pwater)*1.0e-6;
+	}
       else
 	{
 	  alpha_aq=0.0;
 	  beta_aq=0.0;
-	}          
+	}
       double fdispo=1.0-LWC*beta_aq/(alpha_aq*RH);
- 
+
       surrogate[config.iH2O].Ap=factor*alpha_org*RH*MOinit/(1.0+beta_org*MOinit+beta_aq*Mads)*fdispo+(1.0-factor)*surrogate[config.iH2O].Ap;
       surrogate[config.iH2O].Aaq=factor*alpha_aq*RH*Mads/(1.0+beta_org*MOinit+beta_aq*Mads)*fdispo+(1.0-factor)*surrogate[config.iH2O].Aaq;
       MO+=surrogate[config.iH2O].Ap;
@@ -1423,7 +1423,7 @@ void hygroscopicity_coupled(model_config &config, vector<species>& surrogate,
 
       deriv_error2_AQ-=(alpha_aq*RH/(1.0+beta_aq*Mads+beta_org*MOinit)-alpha_aq*RH*beta_aq*Mads/pow(1.0+beta_aq*Mads+beta_org*MOinit,2.0))*fdispo;
       deriv_error2_MO+=(alpha_aq*RH*beta_org*Mads/pow(1.0+beta_aq*Mads+beta_org*MOinit,2.0))*fdispo;
-      
+
     }
 
 }
@@ -1437,7 +1437,7 @@ void hygroscopicity_org(model_config &config, vector<species>& surrogate, double
   //surrogate[config.iH2O].Ap : mass of water in the organic phase
   //at equilibrium according to Raoult's law:
   // Xwater = RH/gamma_water
-  // with Xwater = moles water/(sum of moles) = Ap/MMwater * MOW/MOinit  
+  // with Xwater = moles water/(sum of moles) = Ap/MMwater * MOW/MOinit
 
   double alpha=surrogate[config.iH2O].MM/MOW/surrogate[config.iH2O].gamma_org;
   double Pwater=exp(13.7-5120.0/Temperature)*1.013e5;
@@ -1451,9 +1451,9 @@ void hygroscopicity_org(model_config &config, vector<species>& surrogate, double
 void hygroscopicity_org_sat(model_config &config, vector<species> &surrogate, double &Temperature,
                             Array <double, 1> &MOW, double &MMaq,
                             double &RH, double LWC, double conc_inorganic,
-			    Array <double, 1> &MOinit, Array <double,1> &MO, 
-			    double &AQinit, double &AQ, 
-			    Array <double, 2> &Jacobian,			    
+			    Array <double, 1> &MOinit, Array <double,1> &MO,
+			    double &AQinit, double &AQ,
+			    Array <double, 2> &Jacobian,
 			    bool compute_aq, double factor)
 {
   //Compute the absorption of water by on organic phase with a concentration of MOinit
@@ -1481,9 +1481,9 @@ void hygroscopicity_org_sat(model_config &config, vector<species> &surrogate, do
 	beta_aq=alpha_aq*8.314*Temperature/(surrogate[config.iH2O].MM*Pwater)*1.0e-6;
       }
     else
-      {	
+      {
 	alpha_aq=surrogate[config.iH2O].MM/MMaq;
-	beta_aq=alpha_aq*8.314*Temperature/(surrogate[config.iH2O].MM*Pwater)*1.0e-6; 
+	beta_aq=alpha_aq*8.314*Temperature/(surrogate[config.iH2O].MM*Pwater)*1.0e-6;
       }
 
   double fdispo=1.0;
@@ -1498,22 +1498,22 @@ void hygroscopicity_org_sat(model_config &config, vector<species> &surrogate, do
     {
       if (surrogate[config.iH2O].hydrophobic)
 	alpha_org(iphase)=surrogate[config.iH2O].MM/MOW(iphase)/surrogate[config.iH2O].gamma_org_sat(iphase);
-      else 
+      else
 	alpha_org(iphase)=0.0;
       beta_org(iphase)=alpha_org(iphase)*8.314*Temperature/(surrogate[config.iH2O].MM*Pwater)*1.0e-6;
       sum+=beta_org(iphase)*MOinit(iphase);
     }
-     
+
   if (compute_aq)
     {
       if (config.activity_model=="unifac")
 	{
 	  if (config.compute_inorganic)
-	    surrogate[config.iH2O].Aaq=factor*max(alpha_aq*RH*AQinit/sum-LWC,0.0)+(1.0-factor)*surrogate[config.iH2O].Aaq;      
+	    surrogate[config.iH2O].Aaq=factor*max(alpha_aq*RH*AQinit/sum-LWC,0.0)+(1.0-factor)*surrogate[config.iH2O].Aaq;
 	  else
-	    surrogate[config.iH2O].Aaq=factor*alpha_aq*RH*AQinit/sum+(1.0-factor)*surrogate[config.iH2O].Aaq;  
+	    surrogate[config.iH2O].Aaq=factor*alpha_aq*RH*AQinit/sum+(1.0-factor)*surrogate[config.iH2O].Aaq;
 
-	  AQ+=surrogate[config.iH2O].Aaq;    
+	  AQ+=surrogate[config.iH2O].Aaq;
 	  if (surrogate[config.iH2O].Aaq>0.0)
 	    {
 	      Jacobian(nphase,nphase)-=alpha_aq*RH/sum-alpha_aq*RH*beta_aq*AQinit/pow(sum,2.0);
@@ -1523,16 +1523,16 @@ void hygroscopicity_org_sat(model_config &config, vector<species> &surrogate, do
 	}
       else
 	{
-	  surrogate[config.iH2O].Aaq=factor*alpha_aq*RH*Mads/sum*fdispo+(1.0-factor)*surrogate[config.iH2O].Aaq;      
-	  AQ+=surrogate[config.iH2O].Aaq;    	  
+	  surrogate[config.iH2O].Aaq=factor*alpha_aq*RH*Mads/sum*fdispo+(1.0-factor)*surrogate[config.iH2O].Aaq;
+	  AQ+=surrogate[config.iH2O].Aaq;
 	  Jacobian(nphase,nphase)-=(alpha_aq*RH/sum-alpha_aq*RH*beta_aq*Mads/pow(sum,2.0))*fdispo;
 	  for (iphase=0;iphase<nphase;iphase++)
-	    Jacobian(nphase,iphase)+=alpha_aq*RH*beta_org(iphase)*Mads/pow(sum,2.0)*fdispo;	    
+	    Jacobian(nphase,iphase)+=alpha_aq*RH*beta_org(iphase)*Mads/pow(sum,2.0)*fdispo;
 	}
     }
 
   for (iphase=0;iphase<nphase;iphase++)
-    {      
+    {
       surrogate[config.iH2O].Ap_sat(iphase)=factor*alpha_org(iphase)*RH*MOinit(iphase)/sum*fdispo
 	+(1.0-factor)*surrogate[config.iH2O].Ap_sat(iphase);
       MO(iphase)+=surrogate[config.iH2O].Ap_sat(iphase);
@@ -1542,7 +1542,7 @@ void hygroscopicity_org_sat(model_config &config, vector<species> &surrogate, do
 	    Jacobian(iphase,jphase)+=alpha_org(iphase)*RH*beta_aq*MOinit(iphase)/pow(sum,2.0)*fdispo;
 	  else
 	    Jacobian(iphase,jphase)-=(alpha_org(iphase)*RH/sum-alpha_org(iphase)*RH*beta_org(iphase)*MOinit(iphase)/pow(sum,2.0))*fdispo;
-	  
+
 	  if (compute_aq)
 	    if (config.activity_model=="unifac")
 	      {
@@ -1576,15 +1576,15 @@ void activity_coefficients_aq(model_config config, vector<species>& surrogate,
   double sumX_unifac=0.0;
   double sum=0.0;
 
-  //initialization 
+  //initialization
   X_unifac=0.0;
   Xions=0.0;
 
   MMaq=0.0;
   XH2O=0.0;
-  
+
   //computation of X_unifac (molar fraction of compounds used in the computation of activity
-  // coefficients) and MMaq 
+  // coefficients) and MMaq
   double conc_org=LWC;
   double sum_org=0.0;
   for (i=0;i<n;++i)
@@ -1595,7 +1595,7 @@ void activity_coefficients_aq(model_config config, vector<species>& surrogate,
           surrogate[i].Xaq+=LWC/surrogate[i].MM;
         sum+=surrogate[i].Xaq;
         if (surrogate[i].index_gamma_aq>=0)
-          {	   
+          {
             sumX_unifac+=surrogate[i].Xaq;
             X_unifac(surrogate[i].index_gamma_aq)+=surrogate[i].Xaq;
 	    conc_org+=surrogate[i].Aaq;
@@ -1606,23 +1606,23 @@ void activity_coefficients_aq(model_config config, vector<species>& surrogate,
   conc_org=max(conc_org,config.MOmin);
 
   double xsms=0.0;
-  double summolal=0.0;        
+  double summolal=0.0;
   if (sum_org>0.0)
-    for (i=0;i<n;++i)     
+    for (i=0;i<n;++i)
       {
-        if (surrogate[i].is_organic or i==config.iH2O)	          
+        if (surrogate[i].is_organic or i==config.iH2O)
           {
             if (surrogate[i].hydrophilic)
-              xsms+=surrogate[i].Xaq/sum_org*surrogate[i].MM*1.0e-3;	
+              xsms+=surrogate[i].Xaq/sum_org*surrogate[i].MM*1.0e-3;
           }
         else if (surrogate[i].is_inorganic_precursor==false)
-          summolal+=surrogate[i].Aaq/surrogate[i].MM/conc_org*1000.0;             
-      } 
+          summolal+=surrogate[i].Aaq/surrogate[i].MM/conc_org*1000.0;
+      }
 
-  
+
   double gamma_molal=1.0;
   if (xsms>0.0)
-    gamma_molal=1.0/(0.018/xsms+0.018*summolal);   
+    gamma_molal=1.0/(0.018/xsms+0.018*summolal);
 
   if (sum>0.0) // YK
     {
@@ -1640,7 +1640,7 @@ void activity_coefficients_aq(model_config config, vector<species>& surrogate,
     XH2O=surrogate[config.iH2O].Xaq;
 
   //Call of unifac
-  if (config.compute_organic and sumX_unifac>0.0 
+  if (config.compute_organic and sumX_unifac>0.0
       and config.activity_model=="unifac")
     {
       if (config.SR_ions)
@@ -1674,15 +1674,15 @@ void activity_coefficients_aq(model_config config, vector<species>& surrogate,
               itemp=max(itemp,0);
               itemp=min(itemp,config.ntemp);
               double alpha;
-              if (Temperature<=263.15) 
-                alpha=0.0;            
+              if (Temperature<=263.15)
+                alpha=0.0;
               else if (Temperature>=263.15+1.0*config.ntemp)
                 alpha=1.0;
               else
-                alpha=Temperature-263.15-1.0*itemp;          
+                alpha=Temperature-263.15-1.0*itemp;
 
               for (i=0;i<n;i++)
-                if (surrogate[i].index_gamma_aq>=0)                                     
+                if (surrogate[i].index_gamma_aq>=0)
                   spec_activity(surrogate[i].index_gamma_aq)=
                     (1.0-alpha)*surrogate[i].species_activity(itemp)+alpha*surrogate[i].species_activity(itemp+1);
 
@@ -1700,14 +1700,14 @@ void activity_coefficients_aq(model_config config, vector<species>& surrogate,
                       config.QG_aq,config.Rparam_aq,config.Qparam_aq,config.Lparam_aq,
                       config.RGions,config.QGions, config.Lions,
                       config.Z,Temperature,gamma_unifac,gamma_ions,config.temperature_dependancy);
-        
+
 	  iion=0;
           for (i=0;i<n;++i)
             {
               if (surrogate[i].is_organic==false and i!=config.iH2O and surrogate[i].is_inorganic_precursor==false)
                 {
                   surrogate[i].gamma_aq=gamma_ions(iion)*gamma_molal;
-		    
+
 		  if (i==config.iHp)
 		    surrogate[i].gamma_aq=gamma_ions(iion)*gamma_molal;
                   iion++;
@@ -1732,30 +1732,30 @@ void activity_coefficients_aq(model_config config, vector<species>& surrogate,
               itemp=max(itemp,0);
               itemp=min(itemp,config.ntemp);
               double alpha;
-              if (Temperature<=263.15) 
-                alpha=0.0;            
+              if (Temperature<=263.15)
+                alpha=0.0;
               else if (Temperature>=263.15+1.0*config.ntemp)
                 alpha=1.0;
               else
-                alpha=Temperature-263.15-1.0*itemp;          
+                alpha=Temperature-263.15-1.0*itemp;
 
               for (i=0;i<n;i++)
-                if (surrogate[i].index_gamma_aq>=0)                                     
+                if (surrogate[i].index_gamma_aq>=0)
                   spec_activity(surrogate[i].index_gamma_aq)=
                     (1.0-alpha)*surrogate[i].species_activity(itemp)+alpha*surrogate[i].species_activity(itemp+1);
 
               tab_unifac(config.nmol_aq,config.nfunc_aq,config.groups_aq,
                          X_unifac,config.Inter_aq,config.InterB_aq,config.InterC_aq,config.RG_aq,
-                         config.QG_aq,config.Rparam_aq,config.Qparam_aq,config.Lparam_aq,                        
+                         config.QG_aq,config.Rparam_aq,config.Qparam_aq,config.Lparam_aq,
                          spec_activity,config.Z,Temperature,gamma_unifac,config.temperature_dependancy);
             }
           else
             unifac(config.nmol_aq,config.nfunc_aq,config.groups_aq,
                    X_unifac,config.Inter_aq,config.InterB_aq,config.InterC_aq,
 		   config.RG_aq,
-                   config.QG_aq,config.Rparam_aq,config.Qparam_aq,config.Lparam_aq,                  
+                   config.QG_aq,config.Rparam_aq,config.Qparam_aq,config.Lparam_aq,
                    config.Z,Temperature,gamma_unifac,config.temperature_dependancy);
-        
+
           for (i=0;i<n;++i)
             {
               if (surrogate[i].index_gamma_aq >=0)
@@ -1785,7 +1785,7 @@ void hygroscopicity_aq(model_config &config, vector<species>& surrogate,
     {
       double alpha=surrogate[config.iH2O].MM/MMaq/surrogate[config.iH2O].gamma_aq;
       double Pwater=exp(13.7-5120.0/Temperature)*1.013e5;
-      double beta=alpha*8.314*Temperature/(surrogate[config.iH2O].MM*Pwater)*1.0e-6;     
+      double beta=alpha*8.314*Temperature/(surrogate[config.iH2O].MM*Pwater)*1.0e-6;
 
       surrogate[config.iH2O].Aaq=factor*
         max(alpha*RH*AQinit/(1.0+beta*AQinit)-LWC,0.0)
@@ -1816,7 +1816,7 @@ void hygroscopicity_aq(model_config &config, vector<species>& surrogate,
 
 void hygroscopicity_tot(model_config &config, vector<species>& surrogate,
 			double &Temperature, double &RH,
-			double &AQinit, 
+			double &AQinit,
 			double &conc_inorganic, double &MMaq,
 			double &AQ, double &derivative, double factor)
 {
@@ -1850,7 +1850,7 @@ void activity_coefficients_LR_MR(model_config &config, vector<species>& surrogat
   //         * gamma_LR (long range)
   // gamma_MR = gamma_LR = 1.0 without ions (used therefore only for the aqueous phase)
   //ionic = ionic strength (mol/kg)
-  
+
   double Xtot=0.0;
   int n=surrogate.size();
   int i,j;
@@ -1865,14 +1865,14 @@ void activity_coefficients_LR_MR(model_config &config, vector<species>& surrogat
   charges_ions.resize(config.nion_aiomfac);
   molar_mass_solvents.resize(config.nmol_aiomfac);
   molar_mass_groups.resize(config.ngroup_aiomfac);
- 
+
   for (i=0;i<n;++i) //molality (mol/kg) and charge of inorganic ions
     if (surrogate[i].is_organic==false and i!=config.iH2O and surrogate[i].is_inorganic_precursor==false)
       {
-        molality(surrogate[i].index_ion)=surrogate[i].molality;	
-        charges_ions(surrogate[i].index_ion)=surrogate[i].charge;      
+        molality(surrogate[i].index_ion)=surrogate[i].molality;
+        charges_ions(surrogate[i].index_ion)=surrogate[i].charge;
       }
-    
+
   //compute the molar fraction of solvent species used in aiomfac
   // and their molar masses (in kg/mol)
   for (i=0;i<n;++i)
@@ -1885,12 +1885,12 @@ void activity_coefficients_LR_MR(model_config &config, vector<species>& surrogat
         Xtot+=surrogate[i].Xaq;
       }
 
-  if (Xtot==0.0) 
+  if (Xtot==0.0)
     {
       surrogate[config.iH2O].Xaq=1.0;
       Xtot=1.0;
     }
- 
+
   for (i=0;i<n;++i)
     if ((surrogate[i].is_organic or i==config.iH2O) and surrogate[i].hydrophilic
         and surrogate[i].index_gamma_aiomfac>=0)
@@ -1899,11 +1899,11 @@ void activity_coefficients_LR_MR(model_config &config, vector<species>& surrogat
         X_aiomfac(surrogate[i].index_gamma_aiomfac)=surrogate[i].Xaq;
         molar_mass_solvents(surrogate[i].index_gamma_aiomfac)=surrogate[i].MM*0.001;
       }
-  
+
   //Compute the mean molar masses of aiomfac groups in the aqueous phase according to:
   //   the number of aiomfac groups in the molecule (config.groups_aiomfac)
   //   and the molar mass (in kg/mol) of the group in the molecule (config.Mgroups_aiomfac)
-  
+
   for (j=0;j<config.ngroup_aiomfac;++j)
     {
       Xtot=0.0;
@@ -1914,7 +1914,7 @@ void activity_coefficients_LR_MR(model_config &config, vector<species>& surrogat
       if (Xtot>0.0)
         for (i=0;i<config.nmol_aiomfac;++i)
           molar_mass_groups(j)+=config.Mgroups_aiomfac(i,j)*
-            config.groups_aiomfac(i,j)*X_aiomfac(i)/Xtot*0.001; 
+            config.groups_aiomfac(i,j)*X_aiomfac(i)/Xtot*0.001;
       else
 	{
 	  for (i=0;i<config.nmol_aiomfac;++i)
@@ -1922,7 +1922,7 @@ void activity_coefficients_LR_MR(model_config &config, vector<species>& surrogat
 	      {
 		molar_mass_groups(j)+=config.groups_aiomfac(i,j)*config.Mgroups_aiomfac(i,j)*0.001;
 		Xtot+=config.groups_aiomfac(i,j);
-	      }	  	  
+	      }
 	  molar_mass_groups(j)/=Xtot;
 	}
     }
@@ -1934,21 +1934,21 @@ void activity_coefficients_LR_MR(model_config &config, vector<species>& surrogat
           config.b1ki_aq,config.b2ki_aq,config.b1ca_aq,
           config.b2ca_aq, config.b3ca_aq, config.c1ca_aq,
           config.c2ca_aq, config.Rcc_aq, config.Qcca_aq);
-  
+
   for (i=0;i<n;++i)
     if (surrogate[i].index_gamma_aiomfac>=0)
       {
         surrogate[i].gamma_LR=gamma_LR_solvents(surrogate[i].index_gamma_aiomfac);
-        surrogate[i].gamma_SRMR=surrogate[i].gamma_aq*gamma_MR_solvents(surrogate[i].index_gamma_aiomfac);       
+        surrogate[i].gamma_SRMR=surrogate[i].gamma_aq*gamma_MR_solvents(surrogate[i].index_gamma_aiomfac);
         surrogate[i].gamma_aq*=gamma_LR_solvents(surrogate[i].index_gamma_aiomfac)*
           gamma_MR_solvents(surrogate[i].index_gamma_aiomfac);
       }
-  
+
   for (i=0;i<n;++i)
     if (surrogate[i].is_organic==false and i!=config.iH2O and surrogate[i].is_inorganic_precursor==false)
       {
         surrogate[i].gamma_LR=gamma_LR_ions(surrogate[i].index_ion);
-        surrogate[i].gamma_SRMR=surrogate[i].gamma_aq*gamma_MR_ions(surrogate[i].index_ion);        
+        surrogate[i].gamma_SRMR=surrogate[i].gamma_aq*gamma_MR_ions(surrogate[i].index_ion);
         surrogate[i].gamma_aq=surrogate[i].gamma_LR*surrogate[i].gamma_SRMR;
       }
 }
@@ -1964,7 +1964,7 @@ void compute_organion(model_config &config, vector<species>& surrogate,
   int i,b;
   int n=surrogate.size();
   double Kp;
-  
+
   for (b=0;b<config.nbins;++b)
     {
       double conc_org=LWC(b);
@@ -1974,14 +1974,14 @@ void compute_organion(model_config &config, vector<species>& surrogate,
       conc_org=max(conc_org,config.MOmin);
 
       ionic_organic(b)=0.0;
-      organion(b)=0.0;      
+      organion(b)=0.0;
       for (i=0;i<n;++i)
 	if (surrogate[i].hydrophilic and surrogate[i].is_organic)
 	  if(surrogate[i].nonvolatile==false)
 	    {
 	      Kp=surrogate[i].Kp_eff_aq(config, Temperature, ionic(b), chp(b),surrogate[config.iHp].LR(b),
 					surrogate[config.iHp].SRMR(b),MMaq(b), fion1, fion2);
-	      //molality1: molality of ions HA- or A-  
+	      //molality1: molality of ions HA- or A-
 	      molality1=surrogate[i].Aaq_bins_init(b)*fion1/surrogate[i].MM/conc_org*1000.0;
 	      //molality2: molality of ions A2-
 	      molality2=surrogate[i].Aaq_bins_init(b)*fion2/surrogate[i].MM/conc_org*1000.0;
@@ -1989,9 +1989,9 @@ void compute_organion(model_config &config, vector<species>& surrogate,
 	      ionic_organic(b)+=0.5*molality1+0.5*molality2*4;
 	      organion(b)+=molality1+2*molality2;
 	    }
-	  
+
     }
-  
+
 }
 
 void compute_organion2(model_config &config, vector<species>& surrogate,
@@ -2005,7 +2005,7 @@ void compute_organion2(model_config &config, vector<species>& surrogate,
   int i,b;
   int n=surrogate.size();
   double Kp;
-  
+
   for (b=0;b<config.nbins;++b)
     {
       ionic_organic(b)=0.0;
@@ -2016,23 +2016,23 @@ void compute_organion2(model_config &config, vector<species>& surrogate,
 	if (surrogate[i].hydrophilic)
 	  conc_org+=surrogate[i].Aaq_bins_init(b);
       conc_org=max(conc_org,config.MOmin);
-      
+
       for (i=0;i<n;++i)
 	if (surrogate[i].hydrophilic and surrogate[i].is_organic)
 	  if(surrogate[i].nonvolatile==false)
 	    {
 	      Kp=surrogate[i].Kp_eff_aq(config, Temperature, ionic(b), chp(b),surrogate[config.iHp].LR(b),
 					surrogate[config.iHp].SRMR(b),MMaq(b), fion1, fion2);
-	      //molality1: molality of ions HA- or A-  
+	      //molality1: molality of ions HA- or A-
 	      molality1=surrogate[i].Aaq_bins(b)*fion1/surrogate[i].MM/conc_org*1000.0;
 	      //molality2: molality of ions A2-
 	      molality2=surrogate[i].Aaq_bins(b)*fion2/surrogate[i].MM/conc_org*1000.0;
 	      //compute ionic_organic and organion
 	      ionic_organic(b)+=0.5*molality1+0.5*molality2*4;
 	      organion(b)+=molality1+2*molality2;
-	    }	 
+	    }
     }
-  
+
 }
 
 double species::Kequilibrium(double &Temperature)
@@ -2067,7 +2067,7 @@ double species::Kequilibrium(double &Temperature)
       deltaH_over_RT0=0.0;
       deltaCp0_over_R=0.0;
     }
-  else 
+  else
     cout << "error: inorganic precursor " << name << " not defined. " << endl;
 
   value=K0*exp(-deltaH_over_RT0*(T0/Temperature-1.0)-deltaCp0_over_R*(1+log(T0/Temperature)-T0/Temperature));
@@ -2088,7 +2088,7 @@ void Kp_inorganic(model_config config, vector<species>& surrogate, double& Tempe
     if (surrogate[i].is_inorganic_precursor)
       {
         if (surrogate[i].name=="H2SO4")
-          surrogate[i].Kaq_inorg=1.0e10;		
+          surrogate[i].Kaq_inorg=1.0e10;
         else if (surrogate[i].name=="NH3")
           {
             deltaH_over_RT0=13.79;
@@ -2115,7 +2115,7 @@ void Kp_inorganic(model_config config, vector<species>& surrogate, double& Tempe
               *R*Temperature/(rho_h2o*1.0e6*1.013e5)*MH2O/MMaq
               *(1.0+surrogate[i].Kequilibrium(Temperature)/(chp*surrogate[config.iHp].gamma_aq*surrogate[config.iClm].gamma_aq));
           }
-	    
+
       }
 }
 
@@ -2133,7 +2133,7 @@ void Kpideal_inorganic(model_config config, vector<species>& surrogate, double& 
     if (surrogate[i].is_inorganic_precursor)
       {
         if (surrogate[i].name=="H2SO4")
-          surrogate[i].kpi=1.0e10;		
+          surrogate[i].kpi=1.0e10;
         else if (surrogate[i].name=="NH3")
           {
             deltaH_over_RT0=13.79;
@@ -2157,10 +2157,10 @@ void Kpideal_inorganic(model_config config, vector<species>& surrogate, double& 
             surrogate[i].kpi=surrogate[i].Henry*exp(-deltaH_over_RT0*(T0/Temperature-1.0)-deltaCp0_over_R*(1+log(T0/Temperature)-T0/Temperature))
               *R*Temperature/(rho_h2o*1.0e6*1.013e5)*MH2O;
           }
-	    
+
       }
 }
- 
+
 void Kpreal_inorganic(model_config config, vector<species>& surrogate, double& chp, double& MMaq)
 {
   int n=surrogate.size();
@@ -2175,7 +2175,7 @@ void Kpreal_inorganic(model_config config, vector<species>& surrogate, double& c
     if (surrogate[i].is_inorganic_precursor)
       {
         if (surrogate[i].name=="H2SO4")
-          surrogate[i].Kaq_inorg=1.0e10;		
+          surrogate[i].Kaq_inorg=1.0e10;
         else if (surrogate[i].name=="NH3")
           {
             deltaH_over_RT0=13.79;
@@ -2194,6 +2194,6 @@ void Kpreal_inorganic(model_config config, vector<species>& surrogate, double& c
             deltaCp0_over_R=19.91;
             surrogate[i].Kaq_inorg=surrogate[i].kpi/MMaq*(1.0+surrogate[i].keq/(chp*surrogate[config.iHp].gamma_aq*surrogate[config.iClm].gamma_aq));
           }
-	    
+
       }
 }

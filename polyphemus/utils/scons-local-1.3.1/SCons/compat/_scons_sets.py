@@ -55,35 +55,43 @@ what's tested is actually `z in y'.
 #   improvements.
 
 from __future__ import generators
+
 try:
     from itertools import ifilter, ifilterfalse
 except ImportError:
     # Code to make the module run under Py2.2
     def ifilter(predicate, iterable):
         if predicate is None:
+
             def predicate(x):
                 return x
+
         for x in iterable:
             if predicate(x):
                 yield x
+
     def ifilterfalse(predicate, iterable):
         if predicate is None:
+
             def predicate(x):
                 return x
+
         for x in iterable:
             if not predicate(x):
                 yield x
+
     try:
         True, False
     except NameError:
-        True, False = (0==0, 0!=0)
+        True, False = (0 == 0, 0 != 0)
 
-__all__ = ['BaseSet', 'Set', 'ImmutableSet']
+__all__ = ["BaseSet", "Set", "ImmutableSet"]
+
 
 class BaseSet(object):
     """Common base class for mutable and immutable sets."""
 
-    __slots__ = ['_data']
+    __slots__ = ["_data"]
 
     # Constructor
 
@@ -91,8 +99,9 @@ class BaseSet(object):
         """This is an abstract class."""
         # Don't call this from a concrete subclass!
         if self.__class__ is BaseSet:
-            raise TypeError, ("BaseSet is an abstract class.  "
-                              "Use Set or ImmutableSet.")
+            raise TypeError, (
+                "BaseSet is an abstract class.  " "Use Set or ImmutableSet."
+            )
 
     # Standard protocols: __len__, __repr__, __str__, __iter__
 
@@ -114,7 +123,7 @@ class BaseSet(object):
         elements = self._data.keys()
         if sorted:
             elements.sort()
-        return '%s(%r)' % (self.__class__.__name__, elements)
+        return "%s(%r)" % (self.__class__.__name__, elements)
 
     def __iter__(self):
         """Return an iterator over the elements or a set.
@@ -166,7 +175,7 @@ class BaseSet(object):
         result._data.update(self._data)
         return result
 
-    __copy__ = copy # For the copy module
+    __copy__ = copy  # For the copy module
 
     def __deepcopy__(self, memo):
         """Return a deep copy of a set; used by copy module."""
@@ -176,6 +185,7 @@ class BaseSet(object):
         # it can certainly contain an object that has a reference to
         # itself.
         from copy import deepcopy
+
         result = self.__class__()
         memo[id(self)] = result
         data = result._data
@@ -262,7 +272,7 @@ class BaseSet(object):
             data[elt] = value
         return result
 
-    def  __sub__(self, other):
+    def __sub__(self, other):
         """Return the difference of two sets as a new Set.
 
         (I.e. all elements that are in this set and not in the other.)
@@ -299,7 +309,7 @@ class BaseSet(object):
         except TypeError:
             transform = getattr(element, "__as_temporarily_immutable__", None)
             if transform is None:
-                raise # re-raise the TypeError exception we caught
+                raise  # re-raise the TypeError exception we caught
             return transform() in self._data
 
     # Subset and superset test
@@ -376,7 +386,7 @@ class BaseSet(object):
                 except TypeError:
                     transform = getattr(element, "__as_immutable__", None)
                     if transform is None:
-                        raise # re-raise the TypeError exception we caught
+                        raise  # re-raise the TypeError exception we caught
                     data[transform()] = value
         else:
             # Safe: only catch TypeError where intended
@@ -386,14 +396,14 @@ class BaseSet(object):
                 except TypeError:
                     transform = getattr(element, "__as_immutable__", None)
                     if transform is None:
-                        raise # re-raise the TypeError exception we caught
+                        raise  # re-raise the TypeError exception we caught
                     data[transform()] = value
 
 
 class ImmutableSet(BaseSet):
     """Immutable set class."""
 
-    __slots__ = ['_hashcode']
+    __slots__ = ["_hashcode"]
 
     # BaseSet + hashing
 
@@ -415,8 +425,9 @@ class ImmutableSet(BaseSet):
     def __setstate__(self, state):
         self._data, self._hashcode = state
 
+
 class Set(BaseSet):
-    """ Mutable set class."""
+    """Mutable set class."""
 
     __slots__ = []
 
@@ -430,10 +441,10 @@ class Set(BaseSet):
 
     def __getstate__(self):
         # getstate's results are ignored if it is not
-        return self._data,
+        return (self._data,)
 
     def __setstate__(self, data):
-        self._data, = data
+        (self._data,) = data
 
     def __hash__(self):
         """A Set cannot be hashed."""
@@ -526,7 +537,7 @@ class Set(BaseSet):
         except TypeError:
             transform = getattr(element, "__as_immutable__", None)
             if transform is None:
-                raise # re-raise the TypeError exception we caught
+                raise  # re-raise the TypeError exception we caught
             self._data[transform()] = True
 
     def remove(self, element):
@@ -539,7 +550,7 @@ class Set(BaseSet):
         except TypeError:
             transform = getattr(element, "__as_temporarily_immutable__", None)
             if transform is None:
-                raise # re-raise the TypeError exception we caught
+                raise  # re-raise the TypeError exception we caught
             del self._data[transform()]
 
     def discard(self, element):
@@ -575,6 +586,7 @@ class _TemporarilyImmutableSet(BaseSet):
 
     def __hash__(self):
         return self._set._compute_hash()
+
 
 # Local Variables:
 # tab-width:4

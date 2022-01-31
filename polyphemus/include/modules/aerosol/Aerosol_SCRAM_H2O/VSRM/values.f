@@ -1,24 +1,24 @@
 C-----------------------------------------------------------------------
 C     Copyright (C) 2005-2007, ENPC - INRIA - EDF R&D
 C     Author(s): Kathleen Fahey and Bruno Sportisse
-C     
+C
 C     This file is part of the Variable Size Resolved Model (VSRM),
 C     based on the VSRM model of Carnegie Melon University.  It is a
 C     component of the air quality modeling system Polyphemus.
-C    
+C
 C     Polyphemus is developed in the INRIA - ENPC joint project-team
 C     CLIME and in the ENPC - EDF R&D joint laboratory CEREA.
-C    
+C
 C     Polyphemus is free software; you can redistribute it and/or modify
 C     it under the terms of the GNU General Public License as published
 C     by the Free Software Foundation; either version 2 of the License,
 C     or (at your option) any later version.
-C     
+C
 C     Polyphemus is distributed in the hope that it will be useful, but
 C     WITHOUT ANY WARRANTY; without even the implied warranty of
 C     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 C     General Public License for more details.
-C     
+C
 C     For more information, visit the Polyphemus web site:
 C     http://cerea.enpc.fr/polyphemus/
 C-----------------------------------------------------------------------
@@ -26,33 +26,33 @@ C-----------------------------------------------------------------------
       subroutine values(x,con,akeq,cc)
 
 C------------------------------------------------------------------------
-C     
-C     -- DESCRIPTION 
-C     
+C
+C     -- DESCRIPTION
+C
 C     This routine computes the aqueous-phase species, eventually on
 C     the basis of Henry's law. The other ones have already been
-C     computed. 
-C     
+C     computed.
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- INPUT VARIABLES
-C     
+C
 C     X    : pH.
-C     CON  : species that are solved ([M] 
+C     CON  : species that are solved ([M]
 C     AKEQ : equilibrium constants.
-C     
+C
 C     -- INPUT/OUTPUT VARIABLES
-C     
+C
 C     -- OUTPUT VARIABLES
-C     
+C
 C     CON : aqueous-phase species.
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- REMARKS
-C     
+C
 c     Vector CC(1:46)
-c     1)    SO2*H2O     24)	CH3C(O)OOH 
+c     1)    SO2*H2O     24)	CH3C(O)OOH
 c     2)	HSO3(-)		25)	CH3OOH
 c     3)	SO3(2-)		26)	HCl
 c     4)	H2SO4		27)	Cl(-)
@@ -75,9 +75,9 @@ c     20)	NO		    43)	OCH2SO3(2-)
 c     21)	NO2 		44)	CO3(-)
 c     22)	O3		    45)	OH(-)
 c     23)	PAN		    46)	H(+)
-c     
+c
 c     Vector CON(1:28)
-c     
+c
 c     1)	SO2(g)		  15)	HCl(g)
 c     2)	H2SO4(g)	  16)	OH(g)
 c     3)	HNO2(g)		  17)	HO2(g)
@@ -92,20 +92,20 @@ c     11)	O3(g)		  25)	SO5(-)
 c     12)	PAN(g)		  26)	HSO5(-)
 c     13)	CH3C(O)OOH(g) 27)	HOCH2SO3(-),OCH2SO3(2-)
 c     14)	CH3OOH(g)	  28)	CO3(-)
-c     
-      
+c
+
 C------------------------------------------------------------------------
-C     
+C
 C     -- MODIFICATIONS
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- AUTHOR(S)
-C     
+C
 C     Kathleen Fahey, CEREA, , on the basis of the VSRM model
 C     (Carneggie Mellon University).
 C     2005/10/3, cleaning and update, Bruno Sportisse, CEREA.
-C     
+C
 C------------------------------------------------------------------------
 
       IMPLICIT NONE

@@ -670,8 +670,8 @@ namespace Seldon
 	Y(i) += alpha_ * temp;
       }
   }
-  
-  
+
+
   template <class T0,
 	    class T1, class Prop1, class Storage1, class Allocator1,
 	    class T2, class Storage2, class Allocator2,
@@ -717,7 +717,7 @@ namespace Seldon
 	Y(i) += alpha_ * temp;
       }
   }
-  
+
 
   // MltAdd //
   ////////////
@@ -800,7 +800,7 @@ namespace Seldon
 
     CheckDim(M, X, Y, "GaussSeidel(M, X, Y, iter)");
 #endif
-    
+
     for (i = 0; i < iter; i++)
       for (j = 0; j < na; j++)
 	{
@@ -847,7 +847,7 @@ namespace Seldon
 
     CheckDim(M, X, Y, "SOR(M, X, Y, omega, iter)");
 #endif
-    
+
     for (i = 0; i < iter; i++)
       for (j = 0; j < na; j++)
 	{

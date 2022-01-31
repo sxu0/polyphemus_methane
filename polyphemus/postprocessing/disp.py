@@ -33,21 +33,23 @@ from atmopy import *
 
 ### Initializations.
 
-parser = optparse.OptionParser(usage = "%prog configuration_file")
+parser = optparse.OptionParser(usage="%prog configuration_file")
 (options, args) = parser.parse_args()
 
 if not args:
     parser.error("A configuration file is required.")
 
-additional_content = [("concentrations", "[output]", "String"), \
-                      ("paired", "[output]", "Bool"), \
-                      ("daily_basis", "[output]", "Bool"), \
-                      ("scatter", "[output]", "Int"), \
-                      ("multiple_files", "[input]", "Bool"), \
-                      ("meas_style", "[output]", "StringList"), \
-                      ("sim_style", "[output]", "StringList"), \
-                      ("[legend]", "", "legend", "StringSection")]
-config = talos.Config(sys.argv[1], additional_content = additional_content)
+additional_content = [
+    ("concentrations", "[output]", "String"),
+    ("paired", "[output]", "Bool"),
+    ("daily_basis", "[output]", "Bool"),
+    ("scatter", "[output]", "Int"),
+    ("multiple_files", "[input]", "Bool"),
+    ("meas_style", "[output]", "StringList"),
+    ("sim_style", "[output]", "StringList"),
+    ("[legend]", "", "legend", "StringSection"),
+]
+config = talos.Config(sys.argv[1], additional_content=additional_content)
 
 origin = (config.t_min, config.y_min, config.x_min)
 delta = (config.Delta_t, config.Delta_y, config.Delta_x)
@@ -57,15 +59,12 @@ shape = (config.Nt, config.Ny, config.Nx)
 ### Reads input data.
 
 # Observations.
-station = io.load_station(config.station_file, \
-                          config.station_file_type, config.station)
+station = io.load_station(config.station_file, config.station_file_type, config.station)
 obs_dates, obs = io.load_file_observations(station.name, config.obs_dir)
 obs_dates, obs = observation.remove_missing(obs_dates, obs, (-999, 0))
 
-if config.concentrations == "daily" \
-       and not config.daily_basis \
-       and len(obs) != 0:
-    dates_daily, obs_daily  = observation.split_into_days(obs_dates, obs)
+if config.concentrations == "daily" and not config.daily_basis and len(obs) != 0:
+    dates_daily, obs_daily = observation.split_into_days(obs_dates, obs)
     obs_dates = []
     obs_d = []
     for i in range(len(dates_daily)):
@@ -73,7 +72,7 @@ if config.concentrations == "daily" \
         if len(dates_daily[i]) == int(24 / delta[0]):
             obs_dates.append(dates_daily[i][0])
             obs_d.append(obs_daily[i].mean())
-    obs = array(obs_d, 'd')
+    obs = array(obs_d, "d")
 
 # Computed.
 
@@ -86,16 +85,14 @@ else:
 sim = []
 for i in range(Nsim):
     # Reads the concentrations and extracts the first level.
-    tmp = io.load_binary(files[i], \
-                         [config.Nt, config.Nz, config.Ny, config.Nx])[:,0,:]
+    tmp = io.load_binary(files[i], [config.Nt, config.Nz, config.Ny, config.Nx])[
+        :, 0, :
+    ]
     # Extracts simulated data.
-    sim_tmp = observation.get_simulated_at_station(origin, \
-                                                   delta, tmp, station)
+    sim_tmp = observation.get_simulated_at_station(origin, delta, tmp, station)
     if config.concentrations == "daily":
-        sim_dates_ref = \
-                      observation.get_simulation_dates(origin[0], delta[0], shape[0])
-        dates_daily, sim_daily  = \
-                     observation.split_into_days(sim_dates_ref, sim_tmp)
+        sim_dates_ref = observation.get_simulation_dates(origin[0], delta[0], shape[0])
+        dates_daily, sim_daily = observation.split_into_days(sim_dates_ref, sim_tmp)
         sim_d = []
         sim_dates_ref = []
         for i in range(len(dates_daily)):
@@ -103,18 +100,16 @@ for i in range(Nsim):
             if len(dates_daily[i]) == int(24 / delta[0]):
                 sim_dates_ref.append(dates_daily[i][0])
                 sim_d.append(sim_daily[i].mean())
-        sim_tmp = array(sim_d, 'd')
+        sim_tmp = array(sim_d, "d")
         sim_dates = sim_dates_ref
     else:
         sim_dates = observation.get_simulation_dates(origin[0], delta[0], shape[0])
     sim.append(sim_tmp)
 
 # Removes concentrations outside the considered period.
-obs_dates, obs = \
-           observation.restrict_to_period(obs_dates, obs, config.t_range)
+obs_dates, obs = observation.restrict_to_period(obs_dates, obs, config.t_range)
 for i in range(Nsim):
-    tmp, sim[i] = \
-         observation.restrict_to_period(sim_dates, sim[i], config.t_range)
+    tmp, sim[i] = observation.restrict_to_period(sim_dates, sim[i], config.t_range)
 sim_dates = tmp
 
 if config.concentrations == "peak" and not config.paired:
@@ -123,17 +118,17 @@ if config.concentrations == "peak" and not config.paired:
         tmp, sim[i] = observation.get_daily_peaks(sim_dates, sim[i], [11, 17])
     sim_dates = tmp
 if config.concentrations == "peak" and config.paired:
-    sim_mask, obs_mask \
-              = observation.masks_to_common_dates(sim_dates, obs_dates)
+    sim_mask, obs_mask = observation.masks_to_common_dates(sim_dates, obs_dates)
     obs = obs[obs_mask]
     obs_dates = [d for d, b in zip(obs_dates, obs_mask) if b]
     sim_dates = [d for d, b in zip(sim_dates, sim_mask) if b]
-    for i in range(Nsim): sim[i] = sim[i][obs_mask]
+    for i in range(Nsim):
+        sim[i] = sim[i][obs_mask]
     # Here is the restriction that prevents the use of multiple files with
     # paired peaks.
-    dates, sim[0], obs \
-           = observation.get_daily_obs_peaks(dates, sim[0], obs, \
-                                             [11, 17], paired = True)
+    dates, sim[0], obs = observation.get_daily_obs_peaks(
+        dates, sim[0], obs, [11, 17], paired=True
+    )
     sim_dates = dates[:]
     obs_dates = dates[:]
 if config.concentrations == "peak":
@@ -156,10 +151,10 @@ if hasattr(config, "meas_style"):
     else:
         obs_width = 0.5
 else:
-    obs_fmt = 'r-'
+    obs_fmt = "r-"
     obs_width = 0.5
 if hasattr(config, "sim_style"):
-    line = " ".join(config.sim_style).split('&')
+    line = " ".join(config.sim_style).split("&")
     options = [x.split() for x in line]
     # If there is not enough options.
     if len(line) < Nsim or min([len(x) for x in options[:Nsim]]) == 0:
@@ -171,7 +166,7 @@ if hasattr(config, "sim_style"):
         # A single style leads to a single entry in the legend.
         if hasattr(config, "legend"):
             config.legend = []
-    else: # Enough options.
+    else:  # Enough options.
         sim_fmt = [x[0] for x in options[:Nsim]]
         sim_width = []
         for x in options[:Nsim]:
@@ -180,7 +175,7 @@ if hasattr(config, "sim_style"):
             else:
                 sim_width.append(obs_width)
 else:
-    sim_fmt = ['b-' for i in range(Nsim)]
+    sim_fmt = ["b-" for i in range(Nsim)]
     sim_width = [obs_width for i in range(Nsim)]
     # A single style leads to a single entry in the legend.
     if hasattr(config, "legend"):
@@ -188,10 +183,10 @@ else:
 
 # Multiple files are not supported in scatter plots.
 if config.scatter != 0:
-    dates, sim[0], obs = \
-           observation.restrict_to_common_dates(sim_dates, sim[0], \
-                                                obs_dates, obs)
-    plot(obs, sim[0], obs_fmt, linewidth = obs_width)
+    dates, sim[0], obs = observation.restrict_to_common_dates(
+        sim_dates, sim[0], obs_dates, obs
+    )
+    plot(obs, sim[0], obs_fmt, linewidth=obs_width)
 
     if len(config.y_range) != 1:
         lim_min = config.y_range[0]
@@ -202,42 +197,47 @@ if config.scatter != 0:
         lim_max = min(limits[1], limits[3])
 
     if config.scatter == 3:
-        plot([lim_min, lim_max], [lim_min, lim_max], 'k--')
-        plot([lim_min, lim_max], \
-             [lim_min, lim_min + (lim_max - lim_min) / 2.], 'k:')
-        plot([lim_min, lim_min + (lim_max - lim_min) / 2.], \
-             [lim_min, lim_max], 'k:')
+        plot([lim_min, lim_max], [lim_min, lim_max], "k--")
+        plot([lim_min, lim_max], [lim_min, lim_min + (lim_max - lim_min) / 2.0], "k:")
+        plot([lim_min, lim_min + (lim_max - lim_min) / 2.0], [lim_min, lim_max], "k:")
 
     if len(config.y_range) != 1:
-        axis([config.y_range[0], config.y_range[1], \
-              config.y_range[0], config.y_range[1]])
+        axis(
+            [config.y_range[0], config.y_range[1], config.y_range[0], config.y_range[1]]
+        )
     elif config.scatter == 2 or config.scatter == 3:
         axis([lim_min, lim_max, lim_min, lim_max])
 
-    xlabel(r'$\rm{Measurements,}\ \ \mu g\ \cdot\ m^{-3}$')
-    ylabel(r'$\rm{Polyphemus,}\ \ \mu g\ \cdot\ m^{-3}$')
+    xlabel(r"$\rm{Measurements,}\ \ \mu g\ \cdot\ m^{-3}$")
+    ylabel(r"$\rm{Polyphemus,}\ \ \mu g\ \cdot\ m^{-3}$")
 
 # Not a scatter plot.
 else:
     ax = subplot(1, 1, 1)
     sim_lines = []
     for i in range(Nsim):
-        sim_lines.append(display.segplot_date(date2num(sim_dates), sim[i], \
-                                              sim_fmt[i], config.Delta_t, \
-                                              linewidth = sim_width[i]))
-    obs_lines = display.segplot_date(date2num(obs_dates), obs, \
-                                     obs_fmt, config.Delta_t, \
-                                     linewidth = obs_width)
+        sim_lines.append(
+            display.segplot_date(
+                date2num(sim_dates),
+                sim[i],
+                sim_fmt[i],
+                config.Delta_t,
+                linewidth=sim_width[i],
+            )
+        )
+    obs_lines = display.segplot_date(
+        date2num(obs_dates), obs, obs_fmt, config.Delta_t, linewidth=obs_width
+    )
     if not config.multiple_files:
-        legend((sim_lines[0][0], obs_lines[0]), \
-               ("Polyphemus", "Measurements"))
+        legend((sim_lines[0][0], obs_lines[0]), ("Polyphemus", "Measurements"))
     else:
         if not hasattr(config, "legend") or len(config.legend) != Nsim:
-            legend([sim_lines[0], obs_lines[0]], \
-                   ["Polyphemus", "Measurements"])
+            legend([sim_lines[0], obs_lines[0]], ["Polyphemus", "Measurements"])
         else:
-            legend([x[0] for x in sim_lines] + [obs_lines[0]], \
-                   config.legend + ["Measurements"])
+            legend(
+                [x[0] for x in sim_lines] + [obs_lines[0]],
+                config.legend + ["Measurements"],
+            )
 
     # Formats the date axis.
     xlim(date2num(config.t_range[0]), date2num(config.t_range[1]))
@@ -245,7 +245,7 @@ else:
         ylim(config.y_range[0], config.y_range[1])
     Ndays = (config.t_range[1] - config.t_range[0]).days
     if Ndays < 62:
-        locator = DayLocator(interval = int(ceil(float(Ndays) / 7.)))
+        locator = DayLocator(interval=int(ceil(float(Ndays) / 7.0)))
         format = DateFormatter("%d %b")
     else:
         locator = MonthLocator()
@@ -253,4 +253,4 @@ else:
     ax.xaxis.set_major_locator(locator)
     ax.xaxis.set_major_formatter(format)
 
-    ylabel(r'$\mu g\ \cdot\ m^{-3}$')
+    ylabel(r"$\mu g\ \cdot\ m^{-3}$")

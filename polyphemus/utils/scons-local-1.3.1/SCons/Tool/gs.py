@@ -40,14 +40,15 @@ import SCons.Util
 # Ghostscript goes by different names on different platforms...
 platform = SCons.Platform.platform_default()
 
-if platform == 'os2':
-    gs = 'gsos2'
-elif platform == 'win32':
-    gs = 'gswin32c'
+if platform == "os2":
+    gs = "gsos2"
+elif platform == "win32":
+    gs = "gswin32c"
 else:
-    gs = 'gs'
+    gs = "gs"
 
 GhostscriptAction = None
+
 
 def generate(env):
     """Add Builders and construction variables for Ghostscript to an
@@ -55,24 +56,26 @@ def generate(env):
 
     global GhostscriptAction
     if GhostscriptAction is None:
-        GhostscriptAction = SCons.Action.Action('$GSCOM', '$GSCOMSTR')
+        GhostscriptAction = SCons.Action.Action("$GSCOM", "$GSCOMSTR")
 
     import pdf
+
     pdf.generate(env)
 
-    bld = env['BUILDERS']['PDF']
-    bld.add_action('.ps', GhostscriptAction)
+    bld = env["BUILDERS"]["PDF"]
+    bld.add_action(".ps", GhostscriptAction)
 
-    env['GS']      = gs
-    env['GSFLAGS'] = SCons.Util.CLVar('-dNOPAUSE -dBATCH -sDEVICE=pdfwrite')
-    env['GSCOM']   = '$GS $GSFLAGS -sOutputFile=$TARGET $SOURCES'
+    env["GS"] = gs
+    env["GSFLAGS"] = SCons.Util.CLVar("-dNOPAUSE -dBATCH -sDEVICE=pdfwrite")
+    env["GSCOM"] = "$GS $GSFLAGS -sOutputFile=$TARGET $SOURCES"
 
 
 def exists(env):
-    if env.has_key('PS2PDF'):
-        return env.Detect(env['PS2PDF'])
+    if env.has_key("PS2PDF"):
+        return env.Detect(env["PS2PDF"])
     else:
         return env.Detect(gs) or SCons.Util.WhereIs(gs)
+
 
 # Local Variables:
 # tab-width:4

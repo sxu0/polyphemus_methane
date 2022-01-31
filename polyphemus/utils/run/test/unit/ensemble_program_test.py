@@ -23,15 +23,13 @@ import os, sys, unittest
 
 
 class EnsembleProgramTest(unittest.TestCase):
-
     def setUp(self):
         test_dir = os.path.dirname(__file__)
         self.cwd = os.getcwd()
         os.chdir(os.path.join(test_dir, "../../example"))
         self.config_parameter = "parameter.cfg"
         self.config_program = "program.cfg"
-        self.polyphemus_dir = \
-          os.path.abspath(os.path.join(test_dir, "../../../.."))
+        self.polyphemus_dir = os.path.abspath(os.path.join(test_dir, "../../../.."))
 
     def tearDown(self):
         os.chdir(self.cwd)
@@ -41,8 +39,8 @@ class EnsembleProgramTest(unittest.TestCase):
         p = EnsembleProgram()
 
         # Raises an Exception for a wrong file.
-        self.assertRaises(Exception, p.Init, 'nofile_sorry', 'nofile_sorry')
-        self.assertRaises(Exception, p.ReadIdEnsembleFile, 'nofile_sorry')
+        self.assertRaises(Exception, p.Init, "nofile_sorry", "nofile_sorry")
+        self.assertRaises(Exception, p.ReadIdEnsembleFile, "nofile_sorry")
 
         # Loading.
         p.Init(self.config_parameter, self.config_program)
@@ -65,5 +63,5 @@ class EnsembleProgramTest(unittest.TestCase):
         _ = p.GetGeneralDict(0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main(argv=sys.argv)

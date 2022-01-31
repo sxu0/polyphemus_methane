@@ -279,23 +279,23 @@ namespace Polyphemus
 
     // Street-Network Model creation.
     StreetNetworkModel = new ClassLocalModel(street_config);
-  
+
     // Read the configuration for Street-Network model..
     StreetNetworkModel->ReadConfiguration();
 
     delta_t_local = StreetNetworkModel->GetDelta_t();
     if (delta_t_local != delta_t_eulerian)
       {
-        cout << "=== Warning: the time step in the street model should be equal to that in the Eulerian model." << endl; 
+        cout << "=== Warning: the time step in the street model should be equal to that in the Eulerian model." << endl;
         cout << "=== Warning: the time step in the street model is set to " << delta_t_eulerian << endl;
 
         delta_t_local = delta_t_eulerian;
         StreetNetworkModel->SetDelta_t(delta_t_eulerian);
       }
-    
+
     if (StreetNetworkModel->GetDateMin() != this->Date_min)
       {
-        cout << "=== Warning: the starting date in the street model should be same to that in the Polair3D model." << endl;       
+        cout << "=== Warning: the starting date in the street model should be same to that in the Polair3D model." << endl;
         StreetNetworkModel->SetDateMin(this->Date_min);
       }
 
@@ -304,7 +304,7 @@ namespace Polyphemus
 
     StreetConcentration.Copy(StreetNetworkModel->GetStreetConcentration()); // YK
 
-    // Initialize the input data 
+    // Initialize the input data
     StreetNetworkModel->InitData();
 
     // Compute the urban fraction in the grid cells.
@@ -313,8 +313,8 @@ namespace Polyphemus
     for (int s = 0; s < this->Ns; s++)
       for (int j = 0; j < this->Ny; j++)
         for (int i = 0; i < this->Nx; i++)
-          ConcentrationOverCanopy(s, j, i) = 
-            this->Concentration(s, 0, j, i); 
+          ConcentrationOverCanopy(s, j, i) =
+            this->Concentration(s, 0, j, i);
 
   }
 
@@ -331,7 +331,7 @@ namespace Polyphemus
       {
         // Gets the coordinate of the street.
         T longitude, latitude;
-        StreetNetworkModel->GetStreetCoordinate(street_index, longitude, latitude); 
+        StreetNetworkModel->GetStreetCoordinate(street_index, longitude, latitude);
 
         // Gets corresponding cell in Eulerian grid.
         int index_x, index_y, index_z;
@@ -339,7 +339,7 @@ namespace Polyphemus
 
         for (int s = 0; s < this->Ns; ++s)
           {
-            // Gets the mass flux. 
+            // Gets the mass flux.
             T mass_flux = StreetNetworkModel->
               GetMassTransferBackground(street_index, s);
             // Adds the mass flux to the correspoding grid cell.
@@ -356,7 +356,7 @@ namespace Polyphemus
   {
     for (int j = 0; j < this->Ny; ++j)
       for (int i = 0; i < this->Nx; ++i)
-        {        
+        {
           if (is_urban(j, i))
             {
               // Computes ratio of the urban volume and the volume of the grid cell.
@@ -369,11 +369,11 @@ namespace Polyphemus
                 {
                   T old_concentration = Model.GetConcentration()(s, 0, j, i);
                   T added_mass = mass_flux_grid(s, j, i) * this->Delta_t;
-                  T new_concentration = (old_concentration * cell_volume + 
+                  T new_concentration = (old_concentration * cell_volume +
                                          added_mass) / cell_volume;
                   if (new_concentration < 0.0)
                     new_concentration = 0.0;
-                  
+
                   Model.GetConcentration()(s, 0, j, i) = new_concentration;
                 }
             }
@@ -418,16 +418,16 @@ namespace Polyphemus
 
          int s_id =  StreetNetworkModel->GetStreetID(street_index);
          T longitude, latitude;
-         StreetNetworkModel->GetStreetCoordinate(street_index, longitude, latitude); 
+         StreetNetworkModel->GetStreetCoordinate(street_index, longitude, latitude);
 
          // Gets corresponding cell in Eulerian grid.
          int index_x, index_y, index_z;
          GetCellIndices(longitude, latitude, 0.0, index_z, index_y, index_x);
 
-         is_urban(index_y, index_x) = true; 
+         is_urban(index_y, index_x) = true;
          sum_height_length(index_y, index_x) += (street_height * street_length);
-         sum_length(index_y, index_x) += street_length; 
-         street_number(index_y, index_x) += 1; 
+         sum_length(index_y, index_x) += street_length;
+         street_number(index_y, index_x) += 1;
 
          sum_street_volume(index_y, index_x) += street_volume;
        }
@@ -453,7 +453,7 @@ namespace Polyphemus
 
     for (int i = 0; i < this->Nx; ++i)
       for (int j = 0; j < this->Ny; ++j)
-        {        
+        {
           if (is_urban(j, i))
             {
               // Computes ratio of the urban volume and the volume of the grid cell.
@@ -482,7 +482,7 @@ namespace Polyphemus
   {
     for (int i = 0; i < this->Nx; ++i)
       for (int j = 0; j < this->Ny; ++j)
-        {        
+        {
           if (is_urban(j, i))
             {
               // Computes ratio of the urban volume and the volume of the grid cell.
@@ -513,7 +513,7 @@ namespace Polyphemus
   {
     for (int j = 0; j < this->Ny; ++j)
       for (int i = 0; i < this->Nx; ++i)
-        {        
+        {
           if (is_urban(j, i))
             {
               // Computes ratio of the urban volume and the volume of the grid cell.
@@ -532,7 +532,7 @@ namespace Polyphemus
                 {
                   T old_concentration = Model.GetConcentration()(s, 0, j, i);
                   T added_mass = mass_flux_grid(s, j, i) * this->Delta_t;
-                  T new_concentration = (old_concentration * factor * cell_volume + 
+                  T new_concentration = (old_concentration * factor * cell_volume +
                                          added_mass) / (factor * cell_volume);
                   if (new_concentration < 0.0)
                       new_concentration = 0.0;
@@ -563,7 +563,7 @@ namespace Polyphemus
 
   //! Model initialization for each step.
   /*! It reads on file the data that are is needed for the current step.
-   */  
+   */
   template<class T, class ClassEulerianModel, class ClassLocalModel>
   void StreetInGridTransport<T, ClassEulerianModel, ClassLocalModel>
   ::InitStep()
@@ -595,8 +595,8 @@ namespace Polyphemus
 
   }
 
-  //! 
-  /*! 
+  //!
+  /*!
   */
   template<class T, class ClassEulerianModel, class ClassLocalModel>
   void StreetInGridTransport<T, ClassEulerianModel, ClassLocalModel>
@@ -604,32 +604,32 @@ namespace Polyphemus
   {
 
     /*** Winds ***/
-    
+
     this->UpdateData("meteo", "ZonalWind", FileZonalWind_i,
                      FileZonalWind_f, ZonalWind_i);
-    
+
     this->UpdateData("meteo", "MeridionalWind", FileMeridionalWind_i,
                      FileMeridionalWind_f, MeridionalWind_i);
 
     /*** Temperature ***/
-    
+
     this->UpdateData("meteo", "Temperature", FileTemperature_i,
                      FileTemperature_f, Temperature_i);
-    
+
     /*** FrictionModule ***/
-    
+
     this->UpdateData("meteo", "FrictionModule",
                      FileFrictionModule_i, FileFrictionModule_f,
                      FrictionModule_i);
-    
+
     /*** BoundaryHeight ***/
-    
+
     this->UpdateData("meteo", "BoundaryHeight",
                      FileBoundaryHeight_i, FileBoundaryHeight_f,
                      BoundaryHeight_i);
-    
+
     /*** LMO ***/
-    
+
     this->UpdateData("meteo", "LMO", FileLMO_i,
                      FileLMO_f, LMO_i);
 
@@ -711,10 +711,10 @@ namespace Polyphemus
                 T quantity_street = StreetNetworkModel->
                   GetStreetQuantity(street_index, s);
                 cell_quantity(s, iy, ix) += quantity_street;
-                
+
               }
           }
-		
+
         // Adding street concentration to the Concentration Data.
         StreetTransfer(this->Concentration);
 
@@ -739,10 +739,10 @@ namespace Polyphemus
       {
         // Street center coordinates.
         T lon_c, lat_c;
-        T z_c = 2.0; 
+        T z_c = 2.0;
         StreetNetworkModel->
           GetStreetCoordinate(street_index, lon_c, lat_c);
-    
+
         Array<T, 1> background_concentration;
         background_concentration.resize(this->Ns);
         ExtractSpeciesData(z_c, lat_c, lon_c,
@@ -766,17 +766,17 @@ namespace Polyphemus
   {
     // Street center coordinates.
     T lon_c, lat_c;
-    T z_c = 2.0; 
+    T z_c = 2.0;
     StreetNetworkModel->
       GetStreetCoordinate(street_index, lon_c, lat_c);
-    
+
     // Extracting meteorological data.
     map<string, T> meteorological_data;
     ExtractMeteo(z_c, lat_c, lon_c, meteorological_data);
 
     T temp = meteorological_data["wind_angle"];
     T wind_angle;
-    // temp 
+    // temp
     // wind_angle = 0 for the wind from south to north.
     // wind_angle = pi for the wind from north to south.
     if (temp <= (pi / 2.0))
@@ -817,7 +817,7 @@ namespace Polyphemus
     T z_c = 2.0;
     StreetNetworkModel->
       GetIntersectionCoordinate(intersection_index, lon_c, lat_c);
-    
+
     // Extracting meteorological data.
     map<string, T> meteorological_data;
 
@@ -989,7 +989,7 @@ namespace Polyphemus
     Coord4D(1) = height;
     Coord4D(2) = lat;
     Coord4D(3) = lon;
-    
+
     // Background concentrations.
     for (s = 0; s < this->Ns; s++)
       {
@@ -1018,7 +1018,7 @@ namespace Polyphemus
     for (int i = 0; i < this->Nx; ++i)
       for (int j = 0; j < this->Ny; ++j)
          if (is_urban(j, i))
-           {   
+           {
              T cell_width_z, cell_width_y, cell_width_x, cell_volume;
              ComputeCellWidth(0, j, i, cell_width_z, cell_width_y,
                               cell_width_x, cell_volume);
@@ -1030,7 +1030,7 @@ namespace Polyphemus
                {
                  T quantity_background = Concentration_out(s, 0, j, i) *
                    cell_volume; // in mass (ug)
-                 T new_concentration = (quantity_background + 
+                 T new_concentration = (quantity_background +
                                         cell_quantity(s, j, i)) / cell_volume;
 
                  Concentration_out(s, 0, j, i)
@@ -1189,8 +1189,8 @@ namespace Polyphemus
     FormatBinary<float>().Append(rate_NO2, filename_no2);
     string filename_no = "/net/libre/yomi/kimy/StreetInGrid/Trafipollu/sing-voc/nox20-streetvolume/reference/results_test/emission_collect/NO.bin";
     FormatBinary<float>().Append(rate_NO, filename_no);
-  }   
-    
+  }
+
 
 } // namespace Polyphemus.
 

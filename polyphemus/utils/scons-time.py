@@ -51,6 +51,7 @@ try:
 except NameError:
     # Pre-2.2 Python has no False keyword.
     import __builtin__
+
     __builtin__.False = not 1
 
 try:
@@ -58,7 +59,9 @@ try:
 except NameError:
     # Pre-2.2 Python has no True keyword.
     import __builtin__
+
     __builtin__.True = not 0
+
 
 def make_temp_file(**kw):
     try:
@@ -71,24 +74,29 @@ def make_temp_file(**kw):
     except TypeError:
         try:
             save_template = tempfile.template
-            prefix = kw['prefix']
-            del kw['prefix']
+            prefix = kw["prefix"]
+            del kw["prefix"]
             tempfile.template = prefix
             result = tempfile.mktemp(**kw)
         finally:
             tempfile.template = save_template
     return result
 
+
 def HACK_for_exec(cmd, *args):
-    '''
+    """
     For some reason, Python won't allow an exec() within a function
     that also declares an internal function (including lambda functions).
     This function is a hack that calls exec() in a function with no
     internal functions.
-    '''
-    if not args:          exec(cmd)
-    elif len(args) == 1:  exec cmd in args[0]
-    else:                 exec cmd in args[0], args[1]
+    """
+    if not args:
+        exec (cmd)
+    elif len(args) == 1:
+        exec cmd in args[0]
+    else:
+        exec cmd in args[0], args[1]
+
 
 class Plotter:
     def increment_size(self, largest):
@@ -113,6 +121,7 @@ class Plotter:
         increment = self.increment_size(largest)
         return ((largest + increment - 1) / increment) * increment
 
+
 class Line:
     def __init__(self, points, type, title, label, comment, fmt="%s %s"):
         self.points = points
@@ -130,14 +139,14 @@ class Line:
         if self.title:
             title_string = 'title "%s"' % self.title
         else:
-            title_string = 'notitle'
+            title_string = "notitle"
         return "'-' %s with lines lt %s" % (title_string, self.type)
 
     def print_points(self, fmt=None):
         if fmt is None:
             fmt = self.fmt
         if self.comment:
-            print '# %s' % self.comment
+            print "# %s" % self.comment
         for x, y in self.points:
             # If y is None, it usually represents some kind of break
             # in the line's index number.  We might want to represent
@@ -145,22 +154,22 @@ class Line:
             # between the two points on either side.
             if not y is None:
                 print fmt % (x, y)
-        print 'e'
+        print "e"
 
     def get_x_values(self):
-        return [ p[0] for p in self.points ]
+        return [p[0] for p in self.points]
 
     def get_y_values(self):
-        return [ p[1] for p in self.points ]
+        return [p[1] for p in self.points]
+
 
 class Gnuplotter(Plotter):
-
     def __init__(self, title, key_location):
         self.lines = []
         self.title = title
         self.key_location = key_location
 
-    def line(self, points, type, title=None, label=None, comment=None, fmt='%s %s'):
+    def line(self, points, type, title=None, label=None, comment=None, fmt="%s %s"):
         if points:
             line = Line(points, type, title, label, comment, fmt)
             self.lines.append(line)
@@ -232,63 +241,69 @@ class Gnuplotter(Plotter):
 
         if self.title:
             print 'set title "%s"' % self.title
-        print 'set key %s' % self.key_location
+        print "set key %s" % self.key_location
 
         min_y = self.get_min_y()
         max_y = self.max_graph_value(self.get_max_y())
         range = max_y - min_y
         incr = range / 10.0
         start = min_y + (max_y / 2.0) + (2.0 * incr)
-        position = [ start - (i * incr) for i in xrange(5) ]
+        position = [start - (i * incr) for i in xrange(5)]
 
         inx = 1
         for line in self.lines:
-            line.print_label(inx, line.points[0][0]-1,
-                             position[(inx-1) % len(position)])
+            line.print_label(
+                inx, line.points[0][0] - 1, position[(inx - 1) % len(position)]
+            )
             inx += 1
 
-        plot_strings = [ self.plot_string(l) for l in self.lines ]
-        print 'plot ' + ', \\\n     '.join(plot_strings)
+        plot_strings = [self.plot_string(l) for l in self.lines]
+        print "plot " + ", \\\n     ".join(plot_strings)
 
         for line in self.lines:
             line.print_points()
 
 
-
 def untar(fname):
     import tarfile
-    tar = tarfile.open(name=fname, mode='r')
+
+    tar = tarfile.open(name=fname, mode="r")
     for tarinfo in tar:
         tar.extract(tarinfo)
     tar.close()
 
+
 def unzip(fname):
     import zipfile
-    zf = zipfile.ZipFile(fname, 'r')
+
+    zf = zipfile.ZipFile(fname, "r")
     for name in zf.namelist():
         dir = os.path.dirname(name)
         try:
             os.makedirs(dir)
         except:
             pass
-        open(name, 'w').write(zf.read(name))
+        open(name, "w").write(zf.read(name))
+
 
 def read_tree(dir):
     def read_files(arg, dirname, fnames):
         for fn in fnames:
             fn = os.path.join(dirname, fn)
             if os.path.isfile(fn):
-                open(fn, 'rb').read()
-    os.path.walk('.', read_files, None)
+                open(fn, "rb").read()
+
+    os.path.walk(".", read_files, None)
+
 
 def redirect_to_file(command, log):
-    return '%s > %s 2>&1' % (command, log)
+    return "%s > %s 2>&1" % (command, log)
+
 
 def tee_to_file(command, log):
-    return '%s 2>&1 | tee %s' % (command, log)
+    return "%s 2>&1 | tee %s" % (command, log)
 
 
-    
 class SConsTimer:
     """
     Usage: scons-time SUBCOMMAND [ARGUMENTS]
@@ -303,89 +318,88 @@ class SConsTimer:
         run             Runs a test configuration
     """
 
-    name = 'scons-time'
-    name_spaces = ' '*len(name)
+    name = "scons-time"
+    name_spaces = " " * len(name)
 
     def makedict(**kw):
         return kw
 
     default_settings = makedict(
-        aegis               = 'aegis',
-        aegis_project       = None,
-        chdir               = None,
-        config_file         = None,
-        initial_commands    = [],
-        key_location        = 'bottom left',
-        orig_cwd            = os.getcwd(),
-        outdir              = None,
-        prefix              = '',
-        python              = '"%s"' % sys.executable,
-        redirect            = redirect_to_file,
-        scons               = None,
-        scons_flags         = '--debug=count --debug=memory --debug=time --debug=memoizer',
-        scons_lib_dir       = None,
-        scons_wrapper       = None,
-        startup_targets     = '--help',
-        subdir              = None,
-        subversion_url      = None,
-        svn                 = 'svn',
-        svn_co_flag         = '-q',
-        tar                 = 'tar',
-        targets             = '',
-        targets0            = None,
-        targets1            = None,
-        targets2            = None,
-        title               = None,
-        unzip               = 'unzip',
-        verbose             = False,
-        vertical_bars       = [],
-
-        unpack_map = {
-            '.tar.gz'       : (untar,   '%(tar)s xzf %%s'),
-            '.tgz'          : (untar,   '%(tar)s xzf %%s'),
-            '.tar'          : (untar,   '%(tar)s xf %%s'),
-            '.zip'          : (unzip,   '%(unzip)s %%s'),
+        aegis="aegis",
+        aegis_project=None,
+        chdir=None,
+        config_file=None,
+        initial_commands=[],
+        key_location="bottom left",
+        orig_cwd=os.getcwd(),
+        outdir=None,
+        prefix="",
+        python='"%s"' % sys.executable,
+        redirect=redirect_to_file,
+        scons=None,
+        scons_flags="--debug=count --debug=memory --debug=time --debug=memoizer",
+        scons_lib_dir=None,
+        scons_wrapper=None,
+        startup_targets="--help",
+        subdir=None,
+        subversion_url=None,
+        svn="svn",
+        svn_co_flag="-q",
+        tar="tar",
+        targets="",
+        targets0=None,
+        targets1=None,
+        targets2=None,
+        title=None,
+        unzip="unzip",
+        verbose=False,
+        vertical_bars=[],
+        unpack_map={
+            ".tar.gz": (untar, "%(tar)s xzf %%s"),
+            ".tgz": (untar, "%(tar)s xzf %%s"),
+            ".tar": (untar, "%(tar)s xf %%s"),
+            ".zip": (unzip, "%(unzip)s %%s"),
         },
     )
 
     run_titles = [
-        'Startup',
-        'Full build',
-        'Up-to-date build',
+        "Startup",
+        "Full build",
+        "Up-to-date build",
     ]
 
     run_commands = [
-        '%(python)s %(scons_wrapper)s %(scons_flags)s --profile=%(prof0)s %(targets0)s',
-        '%(python)s %(scons_wrapper)s %(scons_flags)s --profile=%(prof1)s %(targets1)s',
-        '%(python)s %(scons_wrapper)s %(scons_flags)s --profile=%(prof2)s %(targets2)s',
+        "%(python)s %(scons_wrapper)s %(scons_flags)s --profile=%(prof0)s %(targets0)s",
+        "%(python)s %(scons_wrapper)s %(scons_flags)s --profile=%(prof1)s %(targets1)s",
+        "%(python)s %(scons_wrapper)s %(scons_flags)s --profile=%(prof2)s %(targets2)s",
     ]
 
     stages = [
-        'pre-read',
-        'post-read',
-        'pre-build',
-        'post-build',
+        "pre-read",
+        "post-read",
+        "pre-build",
+        "post-build",
     ]
 
     stage_strings = {
-        'pre-read'      : 'Memory before reading SConscript files:',
-        'post-read'     : 'Memory after reading SConscript files:',
-        'pre-build'     : 'Memory before building targets:',
-        'post-build'    : 'Memory after building targets:',
+        "pre-read": "Memory before reading SConscript files:",
+        "post-read": "Memory after reading SConscript files:",
+        "pre-build": "Memory before building targets:",
+        "post-build": "Memory after building targets:",
     }
 
-    memory_string_all = 'Memory '
+    memory_string_all = "Memory "
 
     default_stage = stages[-1]
 
     time_strings = {
-        'total'         : 'Total build time',
-        'SConscripts'   : 'Total SConscript file execution time',
-        'SCons'         : 'Total SCons execution time',
-        'commands'      : 'Total command execution time',
+        "total": "Total build time",
+        "SConscripts": "Total SConscript file execution time",
+        "SCons": "Total SCons execution time",
+        "commands": "Total command execution time",
     }
-    
-    time_string_all = 'Total .* time'
+
+    time_string_all = "Total .* time"
 
     #
 
@@ -412,7 +426,7 @@ class SConsTimer:
         a string.  (It's probably a Python function to be executed.)
         """
         try:
-            command + ''
+            command + ""
         except TypeError:
             action = command[0]
             string = command[1]
@@ -420,7 +434,7 @@ class SConsTimer:
         else:
             action = command
             string = action
-            args = (())
+            args = ()
         action = self.subst(action, dictionary)
         string = self.subst(string, dictionary)
         return (action, string, args)
@@ -441,8 +455,8 @@ class SConsTimer:
             msg = msg % args
         if msg is None:
             return
-        fmt = '%s[%s]: %s\n'
-        sys.stdout.write(fmt % (self.name, time.strftime('%H:%M:%S'), msg))
+        fmt = "%s[%s]: %s\n"
+        sys.stdout.write(fmt % (self.name, time.strftime("%H:%M:%S"), msg))
 
     def _do_not_execute(self, action, *args):
         pass
@@ -464,7 +478,7 @@ class SConsTimer:
         Executes a list of commands, substituting values from the
         specified dictionary.
         """
-        commands = [ self.subst_variables(c, dict) for c in commands ]
+        commands = [self.subst_variables(c, dict) for c in commands]
         for action, string, args in commands:
             self.display(string, *args)
             sys.stdout.flush()
@@ -483,7 +497,7 @@ class SConsTimer:
         output = os.popen(command).read()
         if self.verbose:
             sys.stdout.write(output)
-        open(log, 'wb').write(output)
+        open(log, "wb").write(output)
 
     #
 
@@ -494,7 +508,7 @@ class SConsTimer:
         This is like os.path.splitext() (which it calls) except that it
         also looks for '.tar.gz' and treats it as an atomic extensions.
         """
-        if path.endswith('.tar.gz'):
+        if path.endswith(".tar.gz"):
             return path[:-7], path[-7:]
         else:
             return os.path.splitext(path)
@@ -515,12 +529,12 @@ class SConsTimer:
 
         return files
 
-    def ascii_table(self, files, columns,
-                    line_function, file_function=lambda x: x,
-                    *args, **kw):
+    def ascii_table(
+        self, files, columns, line_function, file_function=lambda x: x, *args, **kw
+    ):
 
-        header_fmt = ' '.join(['%12s'] * len(columns))
-        line_fmt = header_fmt + '    %s'
+        header_fmt = " ".join(["%12s"] * len(columns))
+        line_fmt = header_fmt + "    %s"
 
         print header_fmt % columns
 
@@ -530,7 +544,7 @@ class SConsTimer:
                 t = []
             diff = len(columns) - len(t)
             if diff > 0:
-                t += [''] * diff
+                t += [""] * diff
             t.append(file_function(file))
             print line_fmt % tuple(t)
 
@@ -539,7 +553,7 @@ class SConsTimer:
 
         for file in files:
             base = os.path.splitext(file)[0]
-            run, index = string.split(base, '-')[-2:]
+            run, index = string.split(base, "-")[-2:]
 
             run = int(run)
             index = int(index)
@@ -565,7 +579,7 @@ class SConsTimer:
         """
         doc = obj.__doc__
         if doc is None:
-            return ''
+            return ""
         return self.outdent(doc)
 
     def find_next_run_number(self, dir, prefix):
@@ -576,7 +590,7 @@ class SConsTimer:
         specified prefix, extracts the run numbers from each file name,
         and returns the next run number after the largest it finds.
         """
-        x = re.compile(re.escape(prefix) + '-([0-9]+).*')
+        x = re.compile(re.escape(prefix) + "-([0-9]+).*")
         matches = map(lambda e, x=x: x.match(e), os.listdir(dir))
         matches = filter(None, matches)
         if not matches:
@@ -584,7 +598,7 @@ class SConsTimer:
         run_numbers = map(lambda m: int(m.group(1)), matches)
         return int(max(run_numbers)) + 1
 
-    def gnuplot_results(self, results, fmt='%s %.3f'):
+    def gnuplot_results(self, results, fmt="%s %.3f"):
         """
         Prints out a set of results in Gnuplot format.
         """
@@ -597,9 +611,9 @@ class SConsTimer:
             try:
                 t = self.run_titles[i]
             except IndexError:
-                t = '??? %s ???' % i
+                t = "??? %s ???" % i
             results[i].sort()
-            gp.line(results[i], i+1, t, None, t, fmt=fmt)
+            gp.line(results[i], i + 1, t, None, t, fmt=fmt)
 
         for bar_tuple in self.vertical_bars:
             try:
@@ -616,7 +630,7 @@ class SConsTimer:
         Returns the absolute path of a log file for the specificed
         invocation number.
         """
-        name = self.prefix_run + '-%d.log' % invocation
+        name = self.prefix_run + "-%d.log" % invocation
         return os.path.join(self.outdir, name)
 
     def outdent(self, s):
@@ -624,22 +638,24 @@ class SConsTimer:
         Strip as many spaces from each line as are found at the beginning
         of the first line in the list.
         """
-        lines = s.split('\n')
-        if lines[0] == '':
+        lines = s.split("\n")
+        if lines[0] == "":
             lines = lines[1:]
-        spaces = re.match(' *', lines[0]).group(0)
+        spaces = re.match(" *", lines[0]).group(0)
+
         def strip_initial_spaces(l, s=spaces):
             if l.startswith(spaces):
-                l = l[len(spaces):]
+                l = l[len(spaces) :]
             return l
-        return '\n'.join([ strip_initial_spaces(l) for l in lines ]) + '\n'
+
+        return "\n".join([strip_initial_spaces(l) for l in lines]) + "\n"
 
     def profile_name(self, invocation):
         """
         Returns the absolute path of a profile file for the specified
         invocation number.
         """
-        name = self.prefix_run + '-%d.prof' % invocation
+        name = self.prefix_run + "-%d.prof" % invocation
         return os.path.join(self.outdir, name)
 
     def set_env(self, key, value):
@@ -657,15 +673,15 @@ class SConsTimer:
             search_string = time_string
         contents = open(file).read()
         if not contents:
-            sys.stderr.write('file %s has no contents!\n' % repr(file))
+            sys.stderr.write("file %s has no contents!\n" % repr(file))
             return None
-        result = re.findall(r'%s: ([\d\.]*)' % search_string, contents)[-4:]
-        result = [ float(r) for r in result ]
+        result = re.findall(r"%s: ([\d\.]*)" % search_string, contents)[-4:]
+        result = [float(r) for r in result]
         if not time_string is None:
             try:
                 result = result[0]
             except IndexError:
-                sys.stderr.write('file %s has no results!\n' % repr(file))
+                sys.stderr.write("file %s has no results!\n" % repr(file))
                 return None
         return result
 
@@ -676,12 +692,17 @@ class SConsTimer:
         try:
             import pstats
         except ImportError, e:
-            sys.stderr.write('%s: func: %s\n' % (self.name, e))
-            sys.stderr.write('%s  This version of Python is missing the profiler.\n' % self.name_spaces)
-            sys.stderr.write('%s  Cannot use the "func" subcommand.\n' % self.name_spaces)
+            sys.stderr.write("%s: func: %s\n" % (self.name, e))
+            sys.stderr.write(
+                "%s  This version of Python is missing the profiler.\n"
+                % self.name_spaces
+            )
+            sys.stderr.write(
+                '%s  Cannot use the "func" subcommand.\n' % self.name_spaces
+            )
             sys.exit(1)
         statistics = pstats.Stats(file).stats
-        matches = [ e for e in statistics.items() if e[0][2] == function ]
+        matches = [e for e in statistics.items() if e[0][2] == function]
         r = matches[0]
         return r[0][0], r[0][1], r[0][2], r[1][3]
 
@@ -701,8 +722,8 @@ class SConsTimer:
         else:
             search_string = memory_string
         lines = open(file).readlines()
-        lines = [ l for l in lines if l.startswith(search_string) ][-4:]
-        result = [ int(l.split()[-1]) for l in lines[-4:] ]
+        lines = [l for l in lines if l.startswith(search_string)][-4:]
+        result = [int(l.split()[-1]) for l in lines[-4:]]
         if len(result) == 1:
             result = result[0]
         return result
@@ -711,10 +732,10 @@ class SConsTimer:
         """
         Returns the counts of the specified object_name.
         """
-        object_string = ' ' + object_name + '\n'
+        object_string = " " + object_name + "\n"
         lines = open(file).readlines()
-        line = [ l for l in lines if l.endswith(object_string) ][0]
-        result = [ int(field) for field in line.split()[:4] ]
+        line = [l for l in lines if l.endswith(object_string)][0]
+        result = [int(field) for field in line.split()[:4]]
         if index is not None:
             result = result[index]
         return result
@@ -731,7 +752,7 @@ class SConsTimer:
             return
         cmdName = self.command_alias.get(argv[0], argv[0])
         try:
-            func = getattr(self, 'do_' + cmdName)
+            func = getattr(self, "do_" + cmdName)
         except AttributeError:
             return self.default(argv)
         try:
@@ -739,6 +760,7 @@ class SConsTimer:
         except TypeError, e:
             sys.stderr.write("%s %s: %s\n" % (self.name, cmdName, e))
             import traceback
+
             traceback.print_exc(file=sys.stderr)
             sys.stderr.write("Try '%s help %s'\n" % (self.name, cmdName))
 
@@ -754,17 +776,16 @@ class SConsTimer:
     #
 
     def do_help(self, argv):
-        """
-        """
+        """ """
         if argv[1:]:
             for arg in argv[1:]:
                 try:
-                    func = getattr(self, 'do_' + arg)
+                    func = getattr(self, "do_" + arg)
                 except AttributeError:
                     sys.stderr.write('%s: No help for "%s"\n' % (self.name, arg))
                 else:
                     try:
-                        help = getattr(self, 'help_' + arg)
+                        help = getattr(self, "help_" + arg)
                     except AttributeError:
                         sys.stdout.write(self.doc_to_help(func))
                         sys.stdout.flush()
@@ -796,59 +817,58 @@ class SConsTimer:
         sys.stdout.flush()
 
     def do_func(self, argv):
-        """
-        """
-        format = 'ascii'
-        function_name = '_main'
+        """ """
+        format = "ascii"
+        function_name = "_main"
         tail = None
 
-        short_opts = '?C:f:hp:t:'
+        short_opts = "?C:f:hp:t:"
 
         long_opts = [
-            'chdir=',
-            'file=',
-            'fmt=',
-            'format=',
-            'func=',
-            'function=',
-            'help',
-            'prefix=',
-            'tail=',
-            'title=',
+            "chdir=",
+            "file=",
+            "fmt=",
+            "format=",
+            "func=",
+            "function=",
+            "help",
+            "prefix=",
+            "tail=",
+            "title=",
         ]
 
         opts, args = getopt.getopt(argv[1:], short_opts, long_opts)
 
         for o, a in opts:
-            if o in ('-C', '--chdir'):
+            if o in ("-C", "--chdir"):
                 self.chdir = a
-            elif o in ('-f', '--file'):
+            elif o in ("-f", "--file"):
                 self.config_file = a
-            elif o in ('--fmt', '--format'):
+            elif o in ("--fmt", "--format"):
                 format = a
-            elif o in ('--func', '--function'):
+            elif o in ("--func", "--function"):
                 function_name = a
-            elif o in ('-?', '-h', '--help'):
-                self.do_help(['help', 'func'])
+            elif o in ("-?", "-h", "--help"):
+                self.do_help(["help", "func"])
                 sys.exit(0)
-            elif o in ('--max',):
+            elif o in ("--max",):
                 max_time = int(a)
-            elif o in ('-p', '--prefix'):
+            elif o in ("-p", "--prefix"):
                 self.prefix = a
-            elif o in ('-t', '--tail'):
+            elif o in ("-t", "--tail"):
                 tail = int(a)
-            elif o in ('--title',):
+            elif o in ("--title",):
                 self.title = a
 
         if self.config_file:
-            exec open(self.config_file, 'rU').read() in self.__dict__
+            exec open(self.config_file, "rU").read() in self.__dict__
 
         if self.chdir:
             os.chdir(self.chdir)
 
         if not args:
 
-            pattern = '%s*.prof' % self.prefix
+            pattern = "%s*.prof" % self.prefix
             args = self.args_to_files([pattern], tail)
 
             if not args:
@@ -857,9 +877,15 @@ class SConsTimer:
                 else:
                     directory = os.getcwd()
 
-                sys.stderr.write('%s: func: No arguments specified.\n' % self.name)
-                sys.stderr.write('%s  No %s*.prof files found in "%s".\n' % (self.name_spaces, self.prefix, directory))
-                sys.stderr.write('%s  Type "%s help func" for help.\n' % (self.name_spaces, self.name))
+                sys.stderr.write("%s: func: No arguments specified.\n" % self.name)
+                sys.stderr.write(
+                    '%s  No %s*.prof files found in "%s".\n'
+                    % (self.name_spaces, self.prefix, directory)
+                )
+                sys.stderr.write(
+                    '%s  Type "%s help func" for help.\n'
+                    % (self.name_spaces, self.name)
+                )
                 sys.exit(1)
 
         else:
@@ -868,24 +894,21 @@ class SConsTimer:
 
         cwd_ = os.getcwd() + os.sep
 
-        if format == 'ascii':
+        if format == "ascii":
 
             for file in args:
                 try:
-                    f, line, func, time = \
-                            self.get_function_profile(file, function_name)
+                    f, line, func, time = self.get_function_profile(file, function_name)
                 except ValueError, e:
-                    sys.stderr.write("%s: func: %s: %s\n" %
-                                     (self.name, file, e))
+                    sys.stderr.write("%s: func: %s: %s\n" % (self.name, file, e))
                 else:
                     if f.startswith(cwd_):
-                        f = f[len(cwd_):]
+                        f = f[len(cwd_) :]
                     print "%.3f %s:%d(%s)" % (time, f, line, func)
 
-        elif format == 'gnuplot':
+        elif format == "gnuplot":
 
-            results = self.collect_results(args, self.get_function_time,
-                                           function_name)
+            results = self.collect_results(args, self.get_function_time, function_name)
 
             self.gnuplot_results(results)
 
@@ -916,51 +939,53 @@ class SConsTimer:
 
     def do_mem(self, argv):
 
-        format = 'ascii'
+        format = "ascii"
         logfile_path = lambda x: x
         stage = self.default_stage
         tail = None
 
-        short_opts = '?C:f:hp:t:'
+        short_opts = "?C:f:hp:t:"
 
         long_opts = [
-            'chdir=',
-            'file=',
-            'fmt=',
-            'format=',
-            'help',
-            'prefix=',
-            'stage=',
-            'tail=',
-            'title=',
+            "chdir=",
+            "file=",
+            "fmt=",
+            "format=",
+            "help",
+            "prefix=",
+            "stage=",
+            "tail=",
+            "title=",
         ]
 
         opts, args = getopt.getopt(argv[1:], short_opts, long_opts)
 
         for o, a in opts:
-            if o in ('-C', '--chdir'):
+            if o in ("-C", "--chdir"):
                 self.chdir = a
-            elif o in ('-f', '--file'):
+            elif o in ("-f", "--file"):
                 self.config_file = a
-            elif o in ('--fmt', '--format'):
+            elif o in ("--fmt", "--format"):
                 format = a
-            elif o in ('-?', '-h', '--help'):
-                self.do_help(['help', 'mem'])
+            elif o in ("-?", "-h", "--help"):
+                self.do_help(["help", "mem"])
                 sys.exit(0)
-            elif o in ('-p', '--prefix'):
+            elif o in ("-p", "--prefix"):
                 self.prefix = a
-            elif o in ('--stage',):
+            elif o in ("--stage",):
                 if not a in self.stages:
-                    sys.stderr.write('%s: mem: Unrecognized stage "%s".\n' % (self.name, a))
+                    sys.stderr.write(
+                        '%s: mem: Unrecognized stage "%s".\n' % (self.name, a)
+                    )
                     sys.exit(1)
                 stage = a
-            elif o in ('-t', '--tail'):
+            elif o in ("-t", "--tail"):
                 tail = int(a)
-            elif o in ('--title',):
+            elif o in ("--title",):
                 self.title = a
 
         if self.config_file:
-            HACK_for_exec(open(self.config_file, 'rU').read(), self.__dict__)
+            HACK_for_exec(open(self.config_file, "rU").read(), self.__dict__)
 
         if self.chdir:
             os.chdir(self.chdir)
@@ -968,7 +993,7 @@ class SConsTimer:
 
         if not args:
 
-            pattern = '%s*.log' % self.prefix
+            pattern = "%s*.log" % self.prefix
             args = self.args_to_files([pattern], tail)
 
             if not args:
@@ -977,9 +1002,14 @@ class SConsTimer:
                 else:
                     directory = os.getcwd()
 
-                sys.stderr.write('%s: mem: No arguments specified.\n' % self.name)
-                sys.stderr.write('%s  No %s*.log files found in "%s".\n' % (self.name_spaces, self.prefix, directory))
-                sys.stderr.write('%s  Type "%s help mem" for help.\n' % (self.name_spaces, self.name))
+                sys.stderr.write("%s: mem: No arguments specified.\n" % self.name)
+                sys.stderr.write(
+                    '%s  No %s*.log files found in "%s".\n'
+                    % (self.name_spaces, self.prefix, directory)
+                )
+                sys.stderr.write(
+                    '%s  Type "%s help mem" for help.\n' % (self.name_spaces, self.name)
+                )
                 sys.exit(1)
 
         else:
@@ -988,14 +1018,15 @@ class SConsTimer:
 
         cwd_ = os.getcwd() + os.sep
 
-        if format == 'ascii':
+        if format == "ascii":
 
             self.ascii_table(args, tuple(self.stages), self.get_memory, logfile_path)
 
-        elif format == 'gnuplot':
+        elif format == "gnuplot":
 
-            results = self.collect_results(args, self.get_memory,
-                                           self.stage_strings[stage])
+            results = self.collect_results(
+                args, self.get_memory, self.stage_strings[stage]
+            )
 
             self.gnuplot_results(results)
 
@@ -1028,59 +1059,67 @@ class SConsTimer:
 
     def do_obj(self, argv):
 
-        format = 'ascii'
+        format = "ascii"
         logfile_path = lambda x: x
         stage = self.default_stage
         tail = None
 
-        short_opts = '?C:f:hp:t:'
+        short_opts = "?C:f:hp:t:"
 
         long_opts = [
-            'chdir=',
-            'file=',
-            'fmt=',
-            'format=',
-            'help',
-            'prefix=',
-            'stage=',
-            'tail=',
-            'title=',
+            "chdir=",
+            "file=",
+            "fmt=",
+            "format=",
+            "help",
+            "prefix=",
+            "stage=",
+            "tail=",
+            "title=",
         ]
 
         opts, args = getopt.getopt(argv[1:], short_opts, long_opts)
 
         for o, a in opts:
-            if o in ('-C', '--chdir'):
+            if o in ("-C", "--chdir"):
                 self.chdir = a
-            elif o in ('-f', '--file'):
+            elif o in ("-f", "--file"):
                 self.config_file = a
-            elif o in ('--fmt', '--format'):
+            elif o in ("--fmt", "--format"):
                 format = a
-            elif o in ('-?', '-h', '--help'):
-                self.do_help(['help', 'obj'])
+            elif o in ("-?", "-h", "--help"):
+                self.do_help(["help", "obj"])
                 sys.exit(0)
-            elif o in ('-p', '--prefix'):
+            elif o in ("-p", "--prefix"):
                 self.prefix = a
-            elif o in ('--stage',):
+            elif o in ("--stage",):
                 if not a in self.stages:
-                    sys.stderr.write('%s: obj: Unrecognized stage "%s".\n' % (self.name, a))
-                    sys.stderr.write('%s       Type "%s help obj" for help.\n' % (self.name_spaces, self.name))
+                    sys.stderr.write(
+                        '%s: obj: Unrecognized stage "%s".\n' % (self.name, a)
+                    )
+                    sys.stderr.write(
+                        '%s       Type "%s help obj" for help.\n'
+                        % (self.name_spaces, self.name)
+                    )
                     sys.exit(1)
                 stage = a
-            elif o in ('-t', '--tail'):
+            elif o in ("-t", "--tail"):
                 tail = int(a)
-            elif o in ('--title',):
+            elif o in ("--title",):
                 self.title = a
 
         if not args:
-            sys.stderr.write('%s: obj: Must specify an object name.\n' % self.name)
-            sys.stderr.write('%s       Type "%s help obj" for help.\n' % (self.name_spaces, self.name))
+            sys.stderr.write("%s: obj: Must specify an object name.\n" % self.name)
+            sys.stderr.write(
+                '%s       Type "%s help obj" for help.\n'
+                % (self.name_spaces, self.name)
+            )
             sys.exit(1)
 
         object_name = args.pop(0)
 
         if self.config_file:
-            HACK_for_exec(open(self.config_file, 'rU').read(), self.__dict__)
+            HACK_for_exec(open(self.config_file, "rU").read(), self.__dict__)
 
         if self.chdir:
             os.chdir(self.chdir)
@@ -1088,7 +1127,7 @@ class SConsTimer:
 
         if not args:
 
-            pattern = '%s*.log' % self.prefix
+            pattern = "%s*.log" % self.prefix
             args = self.args_to_files([pattern], tail)
 
             if not args:
@@ -1097,9 +1136,14 @@ class SConsTimer:
                 else:
                     directory = os.getcwd()
 
-                sys.stderr.write('%s: obj: No arguments specified.\n' % self.name)
-                sys.stderr.write('%s  No %s*.log files found in "%s".\n' % (self.name_spaces, self.prefix, directory))
-                sys.stderr.write('%s  Type "%s help obj" for help.\n' % (self.name_spaces, self.name))
+                sys.stderr.write("%s: obj: No arguments specified.\n" % self.name)
+                sys.stderr.write(
+                    '%s  No %s*.log files found in "%s".\n'
+                    % (self.name_spaces, self.prefix, directory)
+                )
+                sys.stderr.write(
+                    '%s  Type "%s help obj" for help.\n' % (self.name_spaces, self.name)
+                )
                 sys.exit(1)
 
         else:
@@ -1108,11 +1152,17 @@ class SConsTimer:
 
         cwd_ = os.getcwd() + os.sep
 
-        if format == 'ascii':
+        if format == "ascii":
 
-            self.ascii_table(args, tuple(self.stages), self.get_object_counts, logfile_path, object_name)
+            self.ascii_table(
+                args,
+                tuple(self.stages),
+                self.get_object_counts,
+                logfile_path,
+                object_name,
+            )
 
-        elif format == 'gnuplot':
+        elif format == "gnuplot":
 
             stage_index = 0
             for s in self.stages:
@@ -1120,8 +1170,9 @@ class SConsTimer:
                     break
                 stage_index = stage_index + 1
 
-            results = self.collect_results(args, self.get_object_counts,
-                                           object_name, stage_index)
+            results = self.collect_results(
+                args, self.get_object_counts, object_name, stage_index
+            )
 
             self.gnuplot_results(results)
 
@@ -1156,69 +1207,72 @@ class SConsTimer:
         sys.stdout.flush()
 
     def do_run(self, argv):
-        """
-        """
+        """ """
         run_number_list = [None]
 
-        short_opts = '?f:hnp:qs:v'
+        short_opts = "?f:hnp:qs:v"
 
         long_opts = [
-            'aegis=',
-            'file=',
-            'help',
-            'no-exec',
-            'number=',
-            'outdir=',
-            'prefix=',
-            'python=',
-            'quiet',
-            'scons=',
-            'svn=',
-            'subdir=',
-            'subversion=',
-            'verbose',
+            "aegis=",
+            "file=",
+            "help",
+            "no-exec",
+            "number=",
+            "outdir=",
+            "prefix=",
+            "python=",
+            "quiet",
+            "scons=",
+            "svn=",
+            "subdir=",
+            "subversion=",
+            "verbose",
         ]
 
         opts, args = getopt.getopt(argv[1:], short_opts, long_opts)
 
         for o, a in opts:
-            if o in ('--aegis',):
+            if o in ("--aegis",):
                 self.aegis_project = a
-            elif o in ('-f', '--file'):
+            elif o in ("-f", "--file"):
                 self.config_file = a
-            elif o in ('-?', '-h', '--help'):
-                self.do_help(['help', 'run'])
+            elif o in ("-?", "-h", "--help"):
+                self.do_help(["help", "run"])
                 sys.exit(0)
-            elif o in ('-n', '--no-exec'):
+            elif o in ("-n", "--no-exec"):
                 self.execute = self._do_not_execute
-            elif o in ('--number',):
+            elif o in ("--number",):
                 run_number_list = self.split_run_numbers(a)
-            elif o in ('--outdir',):
+            elif o in ("--outdir",):
                 self.outdir = a
-            elif o in ('-p', '--prefix'):
+            elif o in ("-p", "--prefix"):
                 self.prefix = a
-            elif o in ('--python',):
+            elif o in ("--python",):
                 self.python = a
-            elif o in ('-q', '--quiet'):
+            elif o in ("-q", "--quiet"):
                 self.display = self._do_not_display
-            elif o in ('-s', '--subdir'):
+            elif o in ("-s", "--subdir"):
                 self.subdir = a
-            elif o in ('--scons',):
+            elif o in ("--scons",):
                 self.scons = a
-            elif o in ('--svn', '--subversion'):
+            elif o in ("--svn", "--subversion"):
                 self.subversion_url = a
-            elif o in ('-v', '--verbose'):
+            elif o in ("-v", "--verbose"):
                 self.redirect = tee_to_file
                 self.verbose = True
-                self.svn_co_flag = ''
+                self.svn_co_flag = ""
 
         if not args and not self.config_file:
-            sys.stderr.write('%s: run: No arguments or -f config file specified.\n' % self.name)
-            sys.stderr.write('%s  Type "%s help run" for help.\n' % (self.name_spaces, self.name))
+            sys.stderr.write(
+                "%s: run: No arguments or -f config file specified.\n" % self.name
+            )
+            sys.stderr.write(
+                '%s  Type "%s help run" for help.\n' % (self.name_spaces, self.name)
+            )
             sys.exit(1)
 
         if self.config_file:
-            exec open(self.config_file, 'rU').read() in self.__dict__
+            exec open(self.config_file, "rU").read() in self.__dict__
 
         if args:
             self.archive_list = args
@@ -1242,47 +1296,51 @@ class SConsTimer:
 
     def split_run_numbers(self, s):
         result = []
-        for n in s.split(','):
+        for n in s.split(","):
             try:
-                x, y = n.split('-')
+                x, y = n.split("-")
             except ValueError:
                 result.append(int(n))
             else:
-                result.extend(range(int(x), int(y)+1))
+                result.extend(range(int(x), int(y) + 1))
         return result
 
     def scons_path(self, dir):
-        return os.path.join(dir, 'src', 'script', 'scons.py')
+        return os.path.join(dir, "src", "script", "scons.py")
 
     def scons_lib_dir_path(self, dir):
-        return os.path.join(dir, 'src', 'engine')
+        return os.path.join(dir, "src", "engine")
 
     def prep_aegis_run(self, commands, removals):
-        self.aegis_tmpdir = make_temp_file(prefix = self.name + '-aegis-')
-        removals.append((shutil.rmtree, 'rm -rf %%s', self.aegis_tmpdir))
+        self.aegis_tmpdir = make_temp_file(prefix=self.name + "-aegis-")
+        removals.append((shutil.rmtree, "rm -rf %%s", self.aegis_tmpdir))
 
         self.aegis_parent_project = os.path.splitext(self.aegis_project)[0]
         self.scons = self.scons_path(self.aegis_tmpdir)
         self.scons_lib_dir = self.scons_lib_dir_path(self.aegis_tmpdir)
 
-        commands.extend([
-            'mkdir %(aegis_tmpdir)s',
-            (lambda: os.chdir(self.aegis_tmpdir), 'cd %(aegis_tmpdir)s'),
-            '%(aegis)s -cp -ind -p %(aegis_parent_project)s .',
-            '%(aegis)s -cp -ind -p %(aegis_project)s -delta %(run_number)s .',
-        ])
+        commands.extend(
+            [
+                "mkdir %(aegis_tmpdir)s",
+                (lambda: os.chdir(self.aegis_tmpdir), "cd %(aegis_tmpdir)s"),
+                "%(aegis)s -cp -ind -p %(aegis_parent_project)s .",
+                "%(aegis)s -cp -ind -p %(aegis_project)s -delta %(run_number)s .",
+            ]
+        )
 
     def prep_subversion_run(self, commands, removals):
-        self.svn_tmpdir = make_temp_file(prefix = self.name + '-svn-')
-        removals.append((shutil.rmtree, 'rm -rf %%s', self.svn_tmpdir))
+        self.svn_tmpdir = make_temp_file(prefix=self.name + "-svn-")
+        removals.append((shutil.rmtree, "rm -rf %%s", self.svn_tmpdir))
 
         self.scons = self.scons_path(self.svn_tmpdir)
         self.scons_lib_dir = self.scons_lib_dir_path(self.svn_tmpdir)
 
-        commands.extend([
-            'mkdir %(svn_tmpdir)s',
-            '%(svn)s co %(svn_co_flag)s -r %(run_number)s %(subversion_url)s %(svn_tmpdir)s',
-        ])
+        commands.extend(
+            [
+                "mkdir %(svn_tmpdir)s",
+                "%(svn)s co %(svn_co_flag)s -r %(run_number)s %(subversion_url)s %(svn_tmpdir)s",
+            ]
+        )
 
     def individual_run(self, run_number, archive_list, prepare=None):
         """
@@ -1295,9 +1353,9 @@ class SConsTimer:
         if prepare:
             prepare(commands, removals)
 
-        save_scons              = self.scons
-        save_scons_wrapper      = self.scons_wrapper
-        save_scons_lib_dir      = self.scons_lib_dir
+        save_scons = self.scons
+        save_scons_wrapper = self.scons_wrapper
+        save_scons_lib_dir = self.scons_lib_dir
 
         if self.outdir is None:
             self.outdir = self.orig_cwd
@@ -1318,7 +1376,7 @@ class SConsTimer:
 
         self.run_number = str(run_number)
 
-        self.prefix_run = self.prefix + '-%03d' % run_number
+        self.prefix_run = self.prefix + "-%03d" % run_number
 
         if self.targets0 is None:
             self.targets0 = self.startup_targets
@@ -1327,48 +1385,49 @@ class SConsTimer:
         if self.targets2 is None:
             self.targets2 = self.targets
 
-        self.tmpdir = make_temp_file(prefix = self.name + '-')
+        self.tmpdir = make_temp_file(prefix=self.name + "-")
 
-        commands.extend([
-            'mkdir %(tmpdir)s',
-
-            (os.chdir, 'cd %%s', self.tmpdir),
-        ])
+        commands.extend(
+            [
+                "mkdir %(tmpdir)s",
+                (os.chdir, "cd %%s", self.tmpdir),
+            ]
+        )
 
         for archive in archive_list:
             if not os.path.isabs(archive):
                 archive = os.path.join(self.orig_cwd, archive)
             if os.path.isdir(archive):
                 dest = os.path.split(archive)[1]
-                commands.append((shutil.copytree, 'cp -r %%s %%s', archive, dest))
+                commands.append((shutil.copytree, "cp -r %%s %%s", archive, dest))
             else:
                 suffix = self.archive_splitext(archive)[1]
                 unpack_command = self.unpack_map.get(suffix)
                 if not unpack_command:
                     dest = os.path.split(archive)[1]
-                    commands.append((shutil.copyfile, 'cp %%s %%s', archive, dest))
+                    commands.append((shutil.copyfile, "cp %%s %%s", archive, dest))
                 else:
                     commands.append(unpack_command + (archive,))
 
-        commands.extend([
-            (os.chdir, 'cd %%s', self.subdir),
-        ])
+        commands.extend(
+            [
+                (os.chdir, "cd %%s", self.subdir),
+            ]
+        )
 
         commands.extend(self.initial_commands)
 
-        commands.extend([
-            (lambda: read_tree('.'),
-            'find * -type f | xargs cat > /dev/null'),
-
-            (self.set_env, 'export %%s=%%s',
-             'SCONS_LIB_DIR', self.scons_lib_dir),
-
-            '%(python)s %(scons_wrapper)s --version',
-        ])
+        commands.extend(
+            [
+                (lambda: read_tree("."), "find * -type f | xargs cat > /dev/null"),
+                (self.set_env, "export %%s=%%s", "SCONS_LIB_DIR", self.scons_lib_dir),
+                "%(python)s %(scons_wrapper)s --version",
+            ]
+        )
 
         index = 0
         for run_command in self.run_commands:
-            setattr(self, 'prof%d' % index, self.profile_name(index))
+            setattr(self, "prof%d" % index, self.profile_name(index))
             c = (
                 self.log_execute,
                 self.log_display,
@@ -1378,20 +1437,22 @@ class SConsTimer:
             commands.append(c)
             index = index + 1
 
-        commands.extend([
-            (os.chdir, 'cd %%s', self.orig_cwd),
-        ])
+        commands.extend(
+            [
+                (os.chdir, "cd %%s", self.orig_cwd),
+            ]
+        )
 
-        if not os.environ.get('PRESERVE'):
+        if not os.environ.get("PRESERVE"):
             commands.extend(removals)
 
-            commands.append((shutil.rmtree, 'rm -rf %%s', self.tmpdir))
+            commands.append((shutil.rmtree, "rm -rf %%s", self.tmpdir))
 
         self.run_command_list(commands, self.__dict__)
 
-        self.scons              = save_scons
-        self.scons_lib_dir      = save_scons_lib_dir
-        self.scons_wrapper      = save_scons_wrapper
+        self.scons = save_scons
+        self.scons_lib_dir = save_scons_lib_dir
+        self.scons_wrapper = save_scons_wrapper
 
     #
 
@@ -1413,52 +1474,57 @@ class SConsTimer:
 
     def do_time(self, argv):
 
-        format = 'ascii'
+        format = "ascii"
         logfile_path = lambda x: x
         tail = None
-        which = 'total'
+        which = "total"
 
-        short_opts = '?C:f:hp:t:'
+        short_opts = "?C:f:hp:t:"
 
         long_opts = [
-            'chdir=',
-            'file=',
-            'fmt=',
-            'format=',
-            'help',
-            'prefix=',
-            'tail=',
-            'title=',
-            'which=',
+            "chdir=",
+            "file=",
+            "fmt=",
+            "format=",
+            "help",
+            "prefix=",
+            "tail=",
+            "title=",
+            "which=",
         ]
 
         opts, args = getopt.getopt(argv[1:], short_opts, long_opts)
 
         for o, a in opts:
-            if o in ('-C', '--chdir'):
+            if o in ("-C", "--chdir"):
                 self.chdir = a
-            elif o in ('-f', '--file'):
+            elif o in ("-f", "--file"):
                 self.config_file = a
-            elif o in ('--fmt', '--format'):
+            elif o in ("--fmt", "--format"):
                 format = a
-            elif o in ('-?', '-h', '--help'):
-                self.do_help(['help', 'time'])
+            elif o in ("-?", "-h", "--help"):
+                self.do_help(["help", "time"])
                 sys.exit(0)
-            elif o in ('-p', '--prefix'):
+            elif o in ("-p", "--prefix"):
                 self.prefix = a
-            elif o in ('-t', '--tail'):
+            elif o in ("-t", "--tail"):
                 tail = int(a)
-            elif o in ('--title',):
+            elif o in ("--title",):
                 self.title = a
-            elif o in ('--which',):
+            elif o in ("--which",):
                 if not a in self.time_strings.keys():
-                    sys.stderr.write('%s: time: Unrecognized timer "%s".\n' % (self.name, a))
-                    sys.stderr.write('%s  Type "%s help time" for help.\n' % (self.name_spaces, self.name))
+                    sys.stderr.write(
+                        '%s: time: Unrecognized timer "%s".\n' % (self.name, a)
+                    )
+                    sys.stderr.write(
+                        '%s  Type "%s help time" for help.\n'
+                        % (self.name_spaces, self.name)
+                    )
                     sys.exit(1)
                 which = a
 
         if self.config_file:
-            HACK_for_exec(open(self.config_file, 'rU').read(), self.__dict__)
+            HACK_for_exec(open(self.config_file, "rU").read(), self.__dict__)
 
         if self.chdir:
             os.chdir(self.chdir)
@@ -1466,7 +1532,7 @@ class SConsTimer:
 
         if not args:
 
-            pattern = '%s*.log' % self.prefix
+            pattern = "%s*.log" % self.prefix
             args = self.args_to_files([pattern], tail)
 
             if not args:
@@ -1475,9 +1541,15 @@ class SConsTimer:
                 else:
                     directory = os.getcwd()
 
-                sys.stderr.write('%s: time: No arguments specified.\n' % self.name)
-                sys.stderr.write('%s  No %s*.log files found in "%s".\n' % (self.name_spaces, self.prefix, directory))
-                sys.stderr.write('%s  Type "%s help time" for help.\n' % (self.name_spaces, self.name))
+                sys.stderr.write("%s: time: No arguments specified.\n" % self.name)
+                sys.stderr.write(
+                    '%s  No %s*.log files found in "%s".\n'
+                    % (self.name_spaces, self.prefix, directory)
+                )
+                sys.stderr.write(
+                    '%s  Type "%s help time" for help.\n'
+                    % (self.name_spaces, self.name)
+                )
                 sys.exit(1)
 
         else:
@@ -1486,34 +1558,36 @@ class SConsTimer:
 
         cwd_ = os.getcwd() + os.sep
 
-        if format == 'ascii':
+        if format == "ascii":
 
             columns = ("Total", "SConscripts", "SCons", "commands")
             self.ascii_table(args, columns, self.get_debug_times, logfile_path)
 
-        elif format == 'gnuplot':
+        elif format == "gnuplot":
 
-            results = self.collect_results(args, self.get_debug_times,
-                                           self.time_strings[which])
+            results = self.collect_results(
+                args, self.get_debug_times, self.time_strings[which]
+            )
 
-            self.gnuplot_results(results, fmt='%s %.6f')
+            self.gnuplot_results(results, fmt="%s %.6f")
 
         else:
 
             sys.stderr.write('%s: time: Unknown format "%s".\n' % (self.name, format))
             sys.exit(1)
 
-if __name__ == '__main__':
-    opts, args = getopt.getopt(sys.argv[1:], 'h?V', ['help', 'version'])
+
+if __name__ == "__main__":
+    opts, args = getopt.getopt(sys.argv[1:], "h?V", ["help", "version"])
 
     ST = SConsTimer()
 
     for o, a in opts:
-        if o in ('-?', '-h', '--help'):
-            ST.do_help(['help'])
+        if o in ("-?", "-h", "--help"):
+            ST.do_help(["help"])
             sys.exit(0)
-        elif o in ('-V', '--version'):
-            sys.stdout.write('scons-time version\n')
+        elif o in ("-V", "--version"):
+            sys.stdout.write("scons-time version\n")
             sys.exit(0)
 
     if not args:

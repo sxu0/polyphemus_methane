@@ -29,7 +29,7 @@ namespace Seldon
   /****************
    * CONSTRUCTORS *
    ****************/
-  
+
 
   //! Default constructor.
   /*!
@@ -79,8 +79,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   //! Copy constructor.
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_HermPacked<T, Prop, Storage, Allocator>
@@ -91,11 +91,11 @@ namespace Seldon
     this->m_ = 0;
     this->n_ = 0;
     this->data_ = NULL;
-    
+
     this->Copy(A);
   }
-  
-  
+
+
   /**************
    * DESTRUCTOR *
    **************/
@@ -105,19 +105,19 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_HermPacked<T, Prop, Storage, Allocator>::~Matrix_HermPacked()
   {
-    
+
 #ifdef SELDON_CHECK_MEMORY
     try
       {
 #endif
-	
+
 	if (this->data_ != NULL)
 	  {
 	    this->allocator_.deallocate(this->data_,
 					(this->m_ * (this->m_ + 1)) / 2);
 	    this->data_ = NULL;
 	  }
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -287,7 +287,7 @@ namespace Seldon
       throw WrongCol("Matrix_HermPacked::operator()",
 		     string("Index should be in [0, ") + to_str(this->n_-1)
 		     + "], but is equal to " + to_str(j) + ".");
-    
+
     if (i > j)
       throw WrongRow("Matrix_HermPacked::operator()",
 		     string("Attempted to access to element (")
@@ -300,7 +300,7 @@ namespace Seldon
 					 (j*(j+1)) / 2 + i)];
   }
 
- 
+
   //! Access operator.
   /*!
     Returns the value of element (i, j).
@@ -313,7 +313,7 @@ namespace Seldon
   Matrix_HermPacked<T, Prop, Storage, Allocator>
   ::operator() (int i, int j) const
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_HermPacked::operator()",
@@ -324,7 +324,7 @@ namespace Seldon
 		     string("Index should be in [0, ") + to_str(this->n_-1)
 		     + "], but is equal to " + to_str(j) + ".");
 #endif
-    
+
     if (i > j)
       return conj(this->data_[Storage::GetFirst(j * this->m_
 						- (j*(j+1)) / 2 + i,
@@ -369,7 +369,7 @@ namespace Seldon
 					 (j*(j+1)) / 2 + i)];
   }
 
- 
+
   //! Direct access method.
   /*!
     This method allows access to elements stored in memory, i.e. elements
@@ -383,7 +383,7 @@ namespace Seldon
   ::const_reference
   Matrix_HermPacked<T, Prop, Storage, Allocator>::Val(int i, int j) const
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_HermPacked::Val(int, int) const",
@@ -400,7 +400,7 @@ namespace Seldon
 		     + string(") but row index should not be strictly")
 		     + " more than column index.");
 #endif
-    
+
     return this->data_[Storage::GetFirst(i * this->n_ - (i*(i+1)) / 2 + j,
 					 (j*(j+1)) / 2 + i)];
   }
@@ -416,7 +416,7 @@ namespace Seldon
   inline typename Matrix_HermPacked<T, Prop, Storage, Allocator>::reference
   Matrix_HermPacked<T, Prop, Storage, Allocator>::operator[] (int i)
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->GetDataSize())
       throw WrongIndex("Matrix_HermPacked::operator[] (int)",
@@ -424,7 +424,7 @@ namespace Seldon
 		       + to_str(this->GetDataSize()-1) + "], but is equal to "
 		       + to_str(i) + ".");
 #endif
-    
+
     return this->data_[i];
   }
 
@@ -440,7 +440,7 @@ namespace Seldon
   ::const_reference
   Matrix_HermPacked<T, Prop, Storage, Allocator>::operator[] (int i) const
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->GetDataSize())
       throw WrongIndex("Matrix_HermPacked::operator[] (int) const",
@@ -448,7 +448,7 @@ namespace Seldon
 		       + to_str(this->GetDataSize()-1) + "], but is equal to "
 		       + to_str(i) + ".");
 #endif
-    
+
     return this->data_[i];
   }
 
@@ -509,7 +509,7 @@ namespace Seldon
   void Matrix_HermPacked<T, Prop, Storage, Allocator>::SetIdentity()
   {
     this->Fill(T(0));
-    
+
     T one(1);
     for (int i = 0; i < min(this->m_, this->n_); i++)
       (*this)(i,i) = one;
@@ -627,8 +627,8 @@ namespace Seldon
   {
     Print(0, 0, l, l);
   }
-  
-  
+
+
   /**************************
    * INPUT/OUTPUT FUNCTIONS *
    **************************/
@@ -660,7 +660,7 @@ namespace Seldon
     this->Write(FileStream);
 
     FileStream.close();
-    
+
   }
 
 
@@ -676,7 +676,7 @@ namespace Seldon
   void Matrix_HermPacked<T, Prop, Storage, Allocator>
   ::Write(ostream& FileStream) const
   {
-    
+
 #ifdef SELDON_CHECK_IO
     // Checks if the file is ready.
     if (!FileStream.good())
@@ -799,7 +799,7 @@ namespace Seldon
 
     FileStream.close();
   }
- 
+
 
   //! Reads the matrix from an input stream.
   /*!
@@ -839,8 +839,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   //! Reads the matrix from a file.
   /*!
     Reads a matrix stored in text format in a file.
@@ -858,13 +858,13 @@ namespace Seldon
       throw IOError("Matrix_Pointers::ReadText(string FileName)",
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
-    
+
     this->ReadText(FileStream);
 
     FileStream.close();
   }
-  
-  
+
+
   //! Reads the matrix from an input stream.
   /*!
     Reads a matrix in text format from an input stream.
@@ -876,14 +876,14 @@ namespace Seldon
   {
     // clears previous matrix
     Clear();
-    
+
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
       throw IOError("Matrix_Pointers::ReadText(ifstream& FileStream)",
                     "Stream is not ready.");
 #endif
-    
+
     // we read first line
     string line;
     getline(FileStream, line);
@@ -893,43 +893,43 @@ namespace Seldon
 	// empty file ?
 	return;
       }
-    
+
     // converting first line into a vector
     istringstream line_stream(line);
     Vector<T> first_row;
     first_row.ReadText(line_stream);
-    
+
     // and now the other rows
     Vector<T> other_rows;
     other_rows.ReadText(FileStream);
-    
+
     // number of rows and columns
     int n = first_row.GetM();
     int m = 1 + other_rows.GetM()/n;
-    
+
 #ifdef SELDON_CHECK_IO
     // Checking number of elements
     if (other_rows.GetM() != (m-1)*n)
       throw IOError("Matrix_Pointers::ReadText(ifstream& FileStream)",
                     "The file should contain same number of columns.");
 #endif
-    
+
     this->Reallocate(m,n);
     // filling matrix
     for (int j = 0; j < n; j++)
       this->Val(0, j) = first_row(j);
-    
+
     int nb = 0;
     for (int i = 1; i < m; i++)
       {
 	for (int j = 0; j < i; j++)
 	  nb++;
-	
+
 	for (int j = i; j < n; j++)
 	  this->Val(i, j) = other_rows(nb++);
       }
   }
-  
+
 
 
   ///////////////////////////
@@ -986,7 +986,7 @@ namespace Seldon
     return *this;
   }
 
-  
+
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
@@ -998,11 +998,11 @@ namespace Seldon
   {
     for (int i = 0; i < this->GetDataSize();i++)
       this->data_[i] *= x;
-    
+
     return *this;
   }
-  
-  
+
+
   //! Reallocates memory to resize the matrix and keeps previous entries.
   /*!
     On exit, the matrix is a i x j matrix.
@@ -1015,28 +1015,28 @@ namespace Seldon
   inline void Matrix<T, Prop, ColHermPacked, Allocator>
   ::Resize(int i, int j)
   {
-    
+
     // Storing the old values of the matrix.
     int nold = this->GetDataSize();
     Vector<T, VectFull, Allocator> xold(nold);
     for (int k = 0; k < nold; k++)
       xold(k) = this->data_[k];
-    
+
     // Reallocation.
     this->Reallocate(i, j);
-    
+
     // Filling the matrix with its old values.
     int nmin = min(nold, this->GetDataSize());
     for (int k = 0; k < nmin; k++)
       this->data_[k] = xold(k);
   }
-  
-  
+
+
   ///////////////////////////
   // MATRIX<ROWHERMPACKED> //
   ///////////////////////////
-  
-  
+
+
   /****************
    * CONSTRUCTORS *
    ****************/
@@ -1085,8 +1085,8 @@ namespace Seldon
 
     return *this;
   }
-  
-  
+
+
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
@@ -1098,11 +1098,11 @@ namespace Seldon
   {
     for (int i = 0; i < this->GetDataSize();i++)
       this->data_[i] *= x;
-    
+
     return *this;
   }
-  
-  
+
+
   //! Reallocates memory to resize the matrix and keeps previous entries.
   /*!
     On exit, the matrix is a i x j matrix.
@@ -1120,10 +1120,10 @@ namespace Seldon
     Vector<T, VectFull, Allocator> xold(nold);
     for (int k = 0; k < nold; k++)
       xold(k) = this->data_[k];
-    
+
     // Reallocation.
     this->Reallocate(i, j);
-    
+
     // Filling the matrix with its old values.
     int imin = min(iold, i);
     nold = 0;
@@ -1132,12 +1132,12 @@ namespace Seldon
       {
 	for (int l = k; l < imin; l++)
 	  this->data_[n+l-k] = xold(nold+l-k);
-	
+
 	n += i - k;
 	nold += iold - k;
       }
   }
-  
+
 
 } // namespace Seldon.
 

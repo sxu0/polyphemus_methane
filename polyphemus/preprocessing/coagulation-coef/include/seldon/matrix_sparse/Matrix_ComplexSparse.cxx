@@ -214,9 +214,9 @@ namespace Seldon
     try
       {
 #endif
-	
+
 	real_ind_ = reinterpret_cast<int*>( calloc(real_nz_, sizeof(int)) );
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -261,9 +261,9 @@ namespace Seldon
     try
       {
 #endif
-	
+
 	imag_ind_ = reinterpret_cast<int*>( calloc(imag_nz_, sizeof(int)) );
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -441,13 +441,13 @@ namespace Seldon
 		       Vector<int, Storage2, Allocator2>& imag_ind):
     Matrix_Base<T, Allocator>(i, j)
   {
-    
+
     real_nz_ = real_values.GetLength();
     imag_nz_ = imag_values.GetLength();
-    
+
 #ifdef SELDON_CHECK_DIMENSIONS
     // Checks whether vector sizes are acceptable.
-    
+
     if (real_ind.GetLength() != real_nz_)
       {
 	this->m_ = 0;
@@ -586,7 +586,7 @@ namespace Seldon
     imag_values.Nullify();
   }
 
-  
+
   //! Copy constructor
   template <class T, class Prop, class Storage, class Allocator>
   Matrix_ComplexSparse<T, Prop, Storage, Allocator>
@@ -603,11 +603,11 @@ namespace Seldon
     imag_ind_ = NULL;
     real_data_ = NULL;
     imag_data_ = NULL;
-    
+
     this->Copy(A);
   }
-  
-  
+
+
   /**************
    * DESTRUCTOR *
    **************/
@@ -625,13 +625,13 @@ namespace Seldon
     try
       {
 #endif
-	
+
 	if (real_ptr_ != NULL)
 	  {
 	    free(real_ptr_);
 	    real_ptr_ = NULL;
 	  }
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -644,13 +644,13 @@ namespace Seldon
     try
       {
 #endif
-	
+
 	if (imag_ptr_ != NULL)
 	  {
 	    free(imag_ptr_);
 	    imag_ptr_ = NULL;
 	  }
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -663,13 +663,13 @@ namespace Seldon
     try
       {
 #endif
-	
+
 	if (real_ind_ != NULL)
 	  {
 	    free(real_ind_);
 	    real_ind_ = NULL;
 	  }
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -682,13 +682,13 @@ namespace Seldon
     try
       {
 #endif
-	
+
 	if (imag_ind_ != NULL)
 	  {
 	    free(imag_ind_);
 	    imag_ind_ = NULL;
 	  }
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -701,13 +701,13 @@ namespace Seldon
     try
       {
 #endif
-	
+
 	if (this->real_data_ != NULL)
 	  {
 	    this->allocator_.deallocate(this->real_data_, real_nz_);
 	    this->real_data_ = NULL;
 	  }
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -721,13 +721,13 @@ namespace Seldon
     try
       {
 #endif
-	
+
 	if (this->imag_data_ != NULL)
 	  {
 	    this->allocator_.deallocate(this->imag_data_, imag_nz_);
 	    this->imag_data_ = NULL;
 	  }
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -740,7 +740,7 @@ namespace Seldon
     this->real_nz_ = 0;
     this->imag_nz_ = 0;
   }
-  
+
 
   //! Clears the matrix.
   /*! This methods is equivalent to the destructor. On exit, the matrix
@@ -794,10 +794,10 @@ namespace Seldon
     this->n_ = j;
     real_nz_ = real_values.GetLength();
     imag_nz_ = imag_values.GetLength();
-    
+
 #ifdef SELDON_CHECK_DIMENSIONS
     // Checks whether vector sizes are acceptable.
-    
+
     if (real_ind.GetLength() != real_nz_)
       {
 	this->m_ = 0;
@@ -931,7 +931,7 @@ namespace Seldon
     imag_values.Nullify();
   }
 
-  
+
   //! Redefines the matrix.
   /*! It clears the matrix and sets it to a new matrix defined by arrays
     'real_values' (values of the real part), 'real_ptr'
@@ -1002,7 +1002,7 @@ namespace Seldon
     imag_data_ = NULL;
   }
 
-  
+
   //! Copies a matrix
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ComplexSparse<T, Prop, Storage, Allocator>::
@@ -1023,7 +1023,7 @@ namespace Seldon
 	this->imag_nz_ = 0;
 	return;
       }
-    
+
 #ifdef SELDON_CHECK_DIMENSIONS
     if ( (static_cast<long int>(real_nz_-1) / static_cast<long int>(j)
 	  >= static_cast<long int>(i)) ||
@@ -1058,7 +1058,7 @@ namespace Seldon
 	real_ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
 						   sizeof(int)) );
 	memcpy(this->real_ptr_, A.real_ptr_, Storage::GetFirst(i, j)+1);
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -1105,7 +1105,7 @@ namespace Seldon
 	imag_ptr_ = reinterpret_cast<int*>( calloc(Storage::GetFirst(i, j)+1,
 						   sizeof(int)) );
 	memcpy(this->imag_ptr_, A.imag_ptr_, Storage::GetFirst(i, j)+1);
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -1150,10 +1150,10 @@ namespace Seldon
     try
       {
 #endif
-	
+
 	real_ind_ = reinterpret_cast<int*>( calloc(real_nz_, sizeof(int)) );
 	memcpy(this->real_ind_, A.real_ind_, real_nz_);
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -1198,10 +1198,10 @@ namespace Seldon
     try
       {
 #endif
-	
+
 	imag_ind_ = reinterpret_cast<int*>( calloc(imag_nz_, sizeof(int)) );
 	memcpy(this->imag_ind_, A.imag_ind_, imag_nz_);
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -1252,7 +1252,7 @@ namespace Seldon
 
 	this->real_data_ = this->allocator_.allocate(real_nz_, this);
 	this->allocator_.memorycpy(this->real_data_, A.real_data_, real_nz_);
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -1301,7 +1301,7 @@ namespace Seldon
 
 	this->imag_data_ = this->allocator_.allocate(imag_nz_, this);
 	this->allocator_.memorycpy(this->imag_data_, A.imag_data_, imag_nz_);
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -1344,14 +1344,14 @@ namespace Seldon
 		     + " values (imaginary part), for a "
 		     + to_str(i) + " by " + to_str(j) + " matrix.");
 #endif
-    
+
   }
-  
-  
+
+
   /*******************
    * BASIC FUNCTIONS *
    *******************/
-  
+
 
   //! Returns the number of elements stored in memory.
   /*!
@@ -1433,7 +1433,7 @@ namespace Seldon
     return (Storage::GetFirst(this->m_, this->n_) + 1);
   }
 
-  
+
   //! Returns the length of the array of start indices for the imaginary part.
   /*!
     \return The length of the array of start indices for the imaginary part.
@@ -1445,7 +1445,7 @@ namespace Seldon
     return (Storage::GetFirst(this->m_, this->n_) + 1);
   }
 
-  
+
   //! Returns the length of the array of (column or row) indices
   //! for the real part.
   /*!
@@ -1545,7 +1545,7 @@ namespace Seldon
 
     imag_a = imag_ptr_[Storage::GetFirst(i, j)];
     imag_b = imag_ptr_[Storage::GetFirst(i, j) + 1];
-    
+
     if (real_a != real_b)
       {
 	l = Storage::GetSecond(i, j);
@@ -1597,7 +1597,7 @@ namespace Seldon
 
   }
 
-  
+
   //! Duplicates a matrix (assignment operator).
   /*!
     \param A matrix to be copied.
@@ -1613,8 +1613,8 @@ namespace Seldon
 
     return *this;
   }
-  
-  
+
+
   /************************
    * CONVENIENT FUNCTIONS *
    ************************/
@@ -1638,7 +1638,7 @@ namespace Seldon
   }
 
 
- 
+
   //////////////////////////////
   // MATRIX<COLCOMPLEXSPARSE> //
   //////////////////////////////

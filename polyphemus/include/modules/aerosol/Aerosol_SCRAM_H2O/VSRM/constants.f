@@ -1,24 +1,24 @@
 C-----------------------------------------------------------------------
 C     Copyright (C) 2005-2007, ENPC - INRIA - EDF R&D
 C     Author(s): Kathleen Fahey
-C     
+C
 C     This file is part of the Variable Size Resolved Model (VSRM),
 C     based on the VSRM model of Carnegie Melon University.  It is a
 C     component of the air quality modeling system Polyphemus.
-C    
+C
 C     Polyphemus is developed in the INRIA - ENPC joint project-team
 C     CLIME and in the ENPC - EDF R&D joint laboratory CEREA.
-C    
+C
 C     Polyphemus is free software; you can redistribute it and/or modify
 C     it under the terms of the GNU General Public License as published
 C     by the Free Software Foundation; either version 2 of the License,
 C     or (at your option) any later version.
-C     
+C
 C     Polyphemus is distributed in the hope that it will be useful, but
 C     WITHOUT ANY WARRANTY; without even the implied warranty of
 C     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 C     General Public License for more details.
-C     
+C
 C     For more information, visit the Polyphemus web site:
 C     http://cerea.enpc.fr/polyphemus/
 C-----------------------------------------------------------------------
@@ -26,42 +26,42 @@ C-----------------------------------------------------------------------
       subroutine constants(temp)
 
 C------------------------------------------------------------------------
-C     
-C     -- DESCRIPTION 
-C     
+C
+C     -- DESCRIPTION
+C
 C     This routine computes the kinetic/equilibrium rates for the aqueous-phase
 C     mechanism (17 dissociation reactions, 21 Henry's reactions and
 C     120 forward reactions).
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- INPUT VARIABLES
-C     
+C
 C     TEMP   : temperature             [K].
-C     
+C
 C     -- INPUT/OUTPUT VARIABLES
-C     
+C
 C     -- OUTPUT VARIABLES
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- REMARKS
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- MODIFICATIONS
-C     
+C
 C     1) Optimize computation by defining 1/TEMP-1./298.
 C     2) Remove all "include" (not used).
 C------------------------------------------------------------------------
-C     
+C
 C     -- AUTHOR(S)
-C     
+C
 C     2005/10/3, Kathleen Fahey, CEREA.
-C     
+C
 C------------------------------------------------------------------------
-c     
-      IMPLICIT NONE 
+c
+      IMPLICIT NONE
 
       include 'aerpar.inc'
       include 'droppar.inc'

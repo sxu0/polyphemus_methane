@@ -538,4 +538,3 @@ void newt1(float x[], int n, int *check, void (*vecfunc)(int, float [], float []
 
 
 #endif /* _NR_H_ */
-

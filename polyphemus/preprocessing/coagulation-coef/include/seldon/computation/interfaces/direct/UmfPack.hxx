@@ -35,23 +35,23 @@ namespace Seldon
     void *Symbolic, *Numeric ; //!< pointers of UmfPack objects
     int n; //!< number of rows in the matrix
     bool display_info; //!< true if display is allowed
-    
+
   public :
     MatrixUmfPack_Base();
     ~MatrixUmfPack_Base();
-    
+
     void HideMessages();
     void ShowMessages();
     void Clear();
-    
+
   };
-  
+
   //! empty class
   template<class T>
   class MatrixUmfPack : public MatrixUmfPack_Base<T>
   {
   };
-  
+
   //! class to solve linear system in double precision with UmfPack
   template<>
   class MatrixUmfPack<double> : public MatrixUmfPack_Base<double>
@@ -59,21 +59,21 @@ namespace Seldon
   public :
     //! unsymmetric matrix in Column Sparse Row Format
     Matrix<double, General, ColSparse> Acsr;
-    
+
     MatrixUmfPack();
     ~MatrixUmfPack();
-    
+
     void Clear(){this->~MatrixUmfPack();}
-    
+
     template<class Prop, class Storage,class Allocator>
     void FactorizeMatrix(Matrix<double,Prop,Storage,Allocator> & mat,
 			 bool keep_matrix = false);
-    
+
     template<class Allocator2>
     void Solve(Vector<double, VectFull, Allocator2>& x);
-    
+
   };
-  
+
   //! class to solve linear system in complex double precision with UmfPack
   template<>
   class MatrixUmfPack<complex<double> >
@@ -82,25 +82,25 @@ namespace Seldon
   public:
     //! Index of unsymmetric matrix in Column Sparse Row Format
     IVect Ptr, Ind;
-    
+
     //! imaginary part of unsymmetric matrix in Column Sparse Row Format
     Vector<double> ValuesImag;
-    
+
     //! real part of unsymmetric matrix in Column Sparse Row Format
     Vector<double> ValuesReal;
-    
+
     MatrixUmfPack();
     ~MatrixUmfPack();
-    
+
     void Clear(){this->~MatrixUmfPack();}
-    
+
     template<class Prop, class Storage,class Allocator>
     void FactorizeMatrix(Matrix<complex<double>,Prop,Storage,Allocator> & mat,
 			 bool keep_matrix = false);
-    
+
     template<class Allocator2>
     void Solve(Vector<complex<double>,VectFull,Allocator2>& x);
-    
+
   };
 
 }

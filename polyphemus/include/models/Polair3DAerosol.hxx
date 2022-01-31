@@ -148,12 +148,12 @@ namespace Polyphemus
     //! Bins bounds (in m).
     Array<T, 1> Fractionbound_aer;
     Array<T, 1> Fractionbound_aer_2;
-    
+
     //! Number of aerosol fraction sections.
     int Nfraction_aer;
     int Nfraction_aer_2;
     string coagulation_coefficient_file;
-    
+
     //! Bins bounds (in m).
     Array<T, 1> BinBound_aer;
     //! relations between aerosol species index and groups index
@@ -172,7 +172,7 @@ namespace Polyphemus
     RegularGrid<T> GridC4D_aer;
     //! 5D grid for aerosol compositions.
     RegularGrid<T> GridC5D_aer;
-    
+
     //! 4D grid for aerosol bins.
     RegularGrid<T> GridB4D_aer;
     //! 5D grid for aerosol bins.
@@ -182,7 +182,7 @@ namespace Polyphemus
     RegularGrid<T> GridB4D_aer_i;
     //! 5D grid for aerosol bins.(for internal data)
     RegularGrid<T> GridB5D_aer_i;
-    
+
     //! 4D grid for aerosol species.
     RegularGrid<T> GridS4D_aer;
     //! 5D grid for aerosol species.
@@ -304,7 +304,7 @@ namespace Polyphemus
     RegularGrid<T> GridB_bc_aer;
     //! Grid for aerosol bins with boundary conditions.(internal data)
     RegularGrid<T> GridB_bc_aer_i;
-    
+
     //! Boundary conditions along z at current date for aerosols.
     Data<T, 4> BoundaryCondition_z_aer_i;
     //! Boundary conditions buffer.
@@ -354,7 +354,7 @@ namespace Polyphemus
     Data<T,5> BoundaryCondition_x_aer_i_tmp;
     Data<T,5> FileBoundaryCondition_x_aer_i_tmp;
     Data<T,5> FileBoundaryCondition_x_aer_f_tmp;
-	  
+
     Data<T,3> NumberBoundaryCondition_z_aer_i_tmp;
     Data<T,3> FileNumberBoundaryCondition_z_aer_i_tmp;
     Data<T,3> FileNumberBoundaryCondition_z_aer_f_tmp;
@@ -366,7 +366,7 @@ namespace Polyphemus
     Data<T,4> FileNumberBoundaryCondition_x_aer_f_tmp;
     Data<T,5> Concentration_aer_i;
     Data<T,4> NumberConcentration_aer_i;
-	
+
     /*** Loss terms ***/
 
     //! Number of aerosol bins with deposition velocities.
@@ -402,7 +402,7 @@ namespace Polyphemus
     Data<T, 3> WetDepositionFluxNumber_aer;
     //! In cloud wet deposition number fluxes at current date.
     Data<T, 3> InCloudWetDepositionFluxNumber_aer;
-	
+
     /*** Source terms ***/
 
     //!Tag of input data format for emissions//SZ
@@ -555,7 +555,7 @@ namespace Polyphemus
     bool HasNumberInitialCondition_aer(int b) const;
     int NumberInitialConditionIndex_aer(int b) const;
     vector<int> InitialConditionBinList_aer(int b);
-	
+
     bool HasBoundaryCondition_aer(int s, int b) const;
     bool HasBoundaryCondition_aer(string name, int b) const;
     bool HasNumberBoundaryCondition_aer(int b) const;
@@ -635,15 +635,15 @@ namespace Polyphemus
                                        ScavengingCoefficient_aer_);
 
     virtual void SetDate(Date date);
-    
+
    /*** External composition methods ***///SZ
     int FindExternalCompositionID(string species);
-    
+
     int FindCompositionID(Data<T,2>& total_mass_,
 			    Data<T,3>& group_mass_,
 			    Data<T,3>& composition_bounds_,
 			    int Nc ,int Ng, int y, int x);
-			    
+
     int FindCompositionID(Data<T,3>& total_mass_,
 			    Data<T,4>& group_mass_,
 			    Data<T,3>& composition_bounds_,

@@ -25,5 +25,10 @@
 
 from test_utils.pytest_ext import *
 from test_utils.display import *
-from test_utils.compare_data import (compare_result, compare_dir, compare_path,
-                                     compare_bin_file, assert_no_difference)
+from test_utils.compare_data import (
+    compare_result,
+    compare_dir,
+    compare_path,
+    compare_bin_file,
+    assert_no_difference,
+)

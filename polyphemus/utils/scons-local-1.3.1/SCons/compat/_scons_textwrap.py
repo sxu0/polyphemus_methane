@@ -10,10 +10,12 @@ __revision__ = "$Id: textwrap.py,v 1.32.8.2 2004/05/13 01:48:15 gward Exp $"
 import string, re
 
 try:
-   unicode
+    unicode
 except NameError:
-   class unicode:
-       pass
+
+    class unicode:
+        pass
+
 
 # Do the right thing with boolean values for all known Python versions
 # (so this module can be copied to projects that don't depend on Python
@@ -23,7 +25,7 @@ try:
 except NameError:
     (True, False) = (1, 0)
 
-__all__ = ['TextWrapper', 'wrap', 'fill']
+__all__ = ["TextWrapper", "wrap", "fill"]
 
 # Hardcode the recognized whitespace characters to the US-ASCII
 # whitespace characters.  The main reason for doing this is that in
@@ -33,7 +35,8 @@ __all__ = ['TextWrapper', 'wrap', 'fill']
 # same as any other whitespace char, which is clearly wrong (it's a
 # *non-breaking* space), 2) possibly cause problems with Unicode,
 # since 0xa0 is not in range(128).
-_whitespace = '\t\n\x0b\x0c\r '
+_whitespace = "\t\n\x0b\x0c\r "
+
 
 class TextWrapper:
     """
@@ -71,7 +74,7 @@ class TextWrapper:
         be broken, and some lines might be longer than 'width'.
     """
 
-    whitespace_trans = string.maketrans(_whitespace, ' ' * len(_whitespace))
+    whitespace_trans = string.maketrans(_whitespace, " " * len(_whitespace))
 
     unicode_whitespace_trans = {}
     try:
@@ -80,7 +83,7 @@ class TextWrapper:
         # Python1.5 doesn't understand u'' syntax, in which case we
         # won't actually use the unicode translation below, so it
         # doesn't matter what value we put in the table.
-        uspace = ord(' ')
+        uspace = ord(" ")
     for x in map(ord, _whitespace):
         unicode_whitespace_trans[x] = uspace
 
@@ -91,32 +94,37 @@ class TextWrapper:
     #   Hello/ /there/ /--/ /you/ /goof-/ball,/ /use/ /the/ /-b/ /option!
     # (after stripping out empty strings).
     try:
-        wordsep_re = re.compile(r'(\s+|'                  # any whitespace
-                                r'[^\s\w]*\w{2,}-(?=\w{2,})|' # hyphenated words
-                                r'(?<=[\w\!\"\'\&\.\,\?])-{2,}(?=\w))')   # em-dash
+        wordsep_re = re.compile(
+            r"(\s+|"  # any whitespace
+            r"[^\s\w]*\w{2,}-(?=\w{2,})|"  # hyphenated words
+            r"(?<=[\w\!\"\'\&\.\,\?])-{2,}(?=\w))"
+        )  # em-dash
     except re.error:
         # Pre-2.0 Python versions don't have the (?<= negative look-behind
         # assertion.  It mostly doesn't matter for the simple input
         # SCons is going to give it, so just leave it out.
-        wordsep_re = re.compile(r'(\s+|'                    # any whitespace
-                                r'-*\w{2,}-(?=\w{2,}))')    # hyphenated words
+        wordsep_re = re.compile(
+            r"(\s+|" r"-*\w{2,}-(?=\w{2,}))"  # any whitespace
+        )  # hyphenated words
 
     # XXX will there be a locale-or-charset-aware version of
     # string.lowercase in 2.3?
-    sentence_end_re = re.compile(r'[%s]'              # lowercase letter
-                                 r'[\.\!\?]'          # sentence-ending punct.
-                                 r'[\"\']?'           # optional end-of-quote
-                                 % string.lowercase)
+    sentence_end_re = re.compile(
+        r"[%s]"  # lowercase letter
+        r"[\.\!\?]"  # sentence-ending punct.
+        r"[\"\']?" % string.lowercase  # optional end-of-quote
+    )
 
-
-    def __init__(self,
-                 width=70,
-                 initial_indent="",
-                 subsequent_indent="",
-                 expand_tabs=True,
-                 replace_whitespace=True,
-                 fix_sentence_endings=False,
-                 break_long_words=True):
+    def __init__(
+        self,
+        width=70,
+        initial_indent="",
+        subsequent_indent="",
+        expand_tabs=True,
+        replace_whitespace=True,
+        fix_sentence_endings=False,
+        break_long_words=True,
+    ):
         self.width = width
         self.initial_indent = initial_indent
         self.subsequent_indent = subsequent_indent
@@ -124,7 +132,6 @@ class TextWrapper:
         self.replace_whitespace = replace_whitespace
         self.fix_sentence_endings = fix_sentence_endings
         self.break_long_words = break_long_words
-
 
     # -- Private methods -----------------------------------------------
     # (possibly useful for subclasses to override)
@@ -139,12 +146,11 @@ class TextWrapper:
         if self.expand_tabs:
             text = string.expandtabs(text)
         if self.replace_whitespace:
-            if type(text) == type(''):
+            if type(text) == type(""):
                 text = string.translate(text, self.whitespace_trans)
             elif isinstance(text, unicode):
                 text = string.translate(text, self.unicode_whitespace_trans)
         return text
-
 
     def _split(self, text):
         """_split(text : string) -> [string]
@@ -172,9 +178,9 @@ class TextWrapper:
         """
         i = 0
         pat = self.sentence_end_re
-        while i < len(chunks)-1:
-            if chunks[i+1] == " " and pat.search(chunks[i]):
-                chunks[i+1] = "  "
+        while i < len(chunks) - 1:
+            if chunks[i + 1] == " " and pat.search(chunks[i]):
+                chunks[i + 1] = "  "
                 i = i + 2
             else:
                 i = i + 1
@@ -242,7 +248,7 @@ class TextWrapper:
 
             # First chunk on line is whitespace -- drop it, unless this
             # is the very beginning of the text (ie. no lines started yet).
-            if string.strip(chunks[0]) == '' and lines:
+            if string.strip(chunks[0]) == "" and lines:
                 del chunks[0]
 
             while chunks:
@@ -263,16 +269,15 @@ class TextWrapper:
                 self._handle_long_word(chunks, cur_line, cur_len, width)
 
             # If the last chunk on this line is all whitespace, drop it.
-            if cur_line and string.strip(cur_line[-1]) == '':
+            if cur_line and string.strip(cur_line[-1]) == "":
                 del cur_line[-1]
 
             # Convert current line back to a string and store it in list
             # of all lines (return value).
             if cur_line:
-                lines.append(indent + string.join(cur_line, ''))
+                lines.append(indent + string.join(cur_line, ""))
 
         return lines
-
 
     # -- Public interface ----------------------------------------------
 
@@ -304,6 +309,7 @@ class TextWrapper:
 
 # -- Convenience interface ---------------------------------------------
 
+
 def wrap(text, width=70, **kwargs):
     """Wrap a single paragraph of text, returning a list of wrapped lines.
 
@@ -315,9 +321,10 @@ def wrap(text, width=70, **kwargs):
     wrapping behaviour.
     """
     kw = kwargs.copy()
-    kw['width'] = width
+    kw["width"] = width
     w = apply(TextWrapper, (), kw)
     return w.wrap(text)
+
 
 def fill(text, width=70, **kwargs):
     """Fill a single paragraph of text, returning a new string.
@@ -329,12 +336,13 @@ def fill(text, width=70, **kwargs):
     available keyword args to customize wrapping behaviour.
     """
     kw = kwargs.copy()
-    kw['width'] = width
+    kw["width"] = width
     w = apply(TextWrapper, (), kw)
     return w.fill(text)
 
 
 # -- Loosely related functionality -------------------------------------
+
 
 def dedent(text):
     """dedent(text : string) -> string
@@ -357,7 +365,7 @@ def dedent(text):
             print repr(s)          # prints '    hello\n      world\n    '
             print repr(dedent(s))  # prints 'hello\n  world\n'
     """
-    lines = text.expandtabs().split('\n')
+    lines = text.expandtabs().split("\n")
     margin = None
     for line in lines:
         content = line.lstrip()
@@ -373,7 +381,8 @@ def dedent(text):
         for i in range(len(lines)):
             lines[i] = lines[i][margin:]
 
-    return string.join(lines, '\n')
+    return string.join(lines, "\n")
+
 
 # Local Variables:
 # tab-width:4

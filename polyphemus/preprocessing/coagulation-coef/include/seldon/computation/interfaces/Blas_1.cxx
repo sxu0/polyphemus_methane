@@ -675,8 +675,8 @@ namespace Seldon
     return cblas_idamax(X.GetLength(),
 			reinterpret_cast<const double*>(X.GetData()), 1);
   }
-  
-  
+
+
   template <class Allocator>
   size_t GetMaxAbsIndex(const Vector<complex<float>, VectFull, Allocator>& X)
   {

@@ -13,4 +13,3 @@ function_suffix=racm
 # T when aerosol formation is taken into acount,
 # F otherwise, it is the default.
 aerosol_formation=F
-

@@ -33,23 +33,25 @@ selection method.
 __revision__ = "src/engine/SCons/Platform/os2.py 5110 2010/07/25 16:14:38 bdeegan"
 import win32
 
+
 def generate(env):
-    if not env.has_key('ENV'):
-        env['ENV']        = {}
-    env['OBJPREFIX']      = ''
-    env['OBJSUFFIX']      = '.obj'
-    env['SHOBJPREFIX']    = '$OBJPREFIX'
-    env['SHOBJSUFFIX']    = '$OBJSUFFIX'
-    env['PROGPREFIX']     = ''
-    env['PROGSUFFIX']     = '.exe'
-    env['LIBPREFIX']      = ''
-    env['LIBSUFFIX']      = '.lib'
-    env['SHLIBPREFIX']    = ''
-    env['SHLIBSUFFIX']    = '.dll'
-    env['LIBPREFIXES']    = '$LIBPREFIX'
-    env['LIBSUFFIXES']    = [ '$LIBSUFFIX', '$SHLIBSUFFIX' ]
-    env['HOST_OS']        = 'os2'
-    env['HOST_ARCH']      = win32.get_architecture().arch
+    if not env.has_key("ENV"):
+        env["ENV"] = {}
+    env["OBJPREFIX"] = ""
+    env["OBJSUFFIX"] = ".obj"
+    env["SHOBJPREFIX"] = "$OBJPREFIX"
+    env["SHOBJSUFFIX"] = "$OBJSUFFIX"
+    env["PROGPREFIX"] = ""
+    env["PROGSUFFIX"] = ".exe"
+    env["LIBPREFIX"] = ""
+    env["LIBSUFFIX"] = ".lib"
+    env["SHLIBPREFIX"] = ""
+    env["SHLIBSUFFIX"] = ".dll"
+    env["LIBPREFIXES"] = "$LIBPREFIX"
+    env["LIBSUFFIXES"] = ["$LIBSUFFIX", "$SHLIBSUFFIX"]
+    env["HOST_OS"] = "os2"
+    env["HOST_ARCH"] = win32.get_architecture().arch
+
 
 # Local Variables:
 # tab-width:4

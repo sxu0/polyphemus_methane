@@ -5,12 +5,12 @@
 // ENPC (http://www.enpc.fr) and EDF R&D (http://www.edf.fr).
 //
 // This file is part of a simulation system for air quality.
-// 
+//
 // This code is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This file is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -39,9 +39,9 @@ using namespace AtmoData;
 
 int main(int argc, char** argv)
 {
- 
+
   TRY;
-  
+
   cout << endl;
 
   string main_config_file("Polair3D.cfg"), sec_config_file("");
@@ -96,7 +96,7 @@ int main(int argc, char** argv)
   configuration.FindFromBeginning("[domain]");
   configuration.PeekValue("Date", date_mother_domain);
   Date date_mother(date_mother_domain);
-  Date date(convert<int>(argv[argc - 1]));  
+  Date date(convert<int>(argv[argc - 1]));
   int record = date.GetDaysFrom(date_mother);
   configuration.PeekValue("Nt", Nt_out);
   configuration.PeekValue("Nz", Nz_out);
@@ -106,7 +106,7 @@ int main(int argc, char** argv)
   configuration.PeekValue("Delta_t", Delta_t_out);
   configuration.PeekValue("Delta_y", Delta_y_out);
   configuration.PeekValue("Delta_x", Delta_x_out);
-  
+
   configuration.PeekValue("t_min", t_min_out);
   configuration.PeekValue("y_min", y_min_out);
   configuration.PeekValue("x_min", x_min_out);
@@ -116,7 +116,7 @@ int main(int argc, char** argv)
   configuration.PeekValue("Vertical_levels", vertical_levels_out);
 
   // Input/output directories and files.
-  string gas_file,aerosol_file; 
+  string gas_file,aerosol_file;
   string species_group_file;
   string composition_file;
   string composition_possibilities_file;
@@ -126,12 +126,12 @@ int main(int argc, char** argv)
 
   configuration.PeekValue("Species_Gas", gas_file);
   configuration.PeekValue("Species_Aerosol", aerosol_file);
-  configuration.PeekValue("Species_Group", species_group_file);  
+  configuration.PeekValue("Species_Group", species_group_file);
   configuration.PeekValue("Composition_configure", composition_file);//add composition configuration
-  configuration.AddFile(composition_file);  
+  configuration.AddFile(composition_file);
   configuration.PeekValue("Ncomposition", Ncomposition);
   configuration.PeekValue("N_frac", Nfrac);
-  configuration.PeekValue("N_groups", Ngroup);  
+  configuration.PeekValue("N_groups", Ngroup);
   configuration.PeekValue("Composition_possibilities", composition_possibilities_file);
   Data<real,3> composition_bounds(Ncomposition,Ngroup,2);
   ExtStream composition_data(composition_possibilities_file);
@@ -161,7 +161,7 @@ int main(int argc, char** argv)
   configuration.PeekValue("Directory_Polair3D-ic", Directory_out);
   cout << " Ncomposition=" <<Ncomposition<< endl;
   cout << " Nfrac="<< Nfrac<< endl;
-  cout << " Ngroup=" <<Ngroup<< endl;  
+  cout << " Ngroup=" <<Ngroup<< endl;
   cout << " done." << endl;
   cout << endl;
 
@@ -169,7 +169,7 @@ int main(int argc, char** argv)
   ///////////
   // GRIDS //
   ///////////
-    
+
   cout << "Memory allocation for data fields..."; cout.flush();
 
   // Output grids.
@@ -185,7 +185,7 @@ int main(int argc, char** argv)
   ///////////////////////////
   // INPUT DATA PROCESSING //
   ///////////////////////////
-  
+
   // Reads output altitudes.
   FormatText Heights_out;
   Heights_out.Read(vertical_levels_out, GridZ_interf_out);
@@ -211,25 +211,25 @@ int main(int argc, char** argv)
       // input fields.
       // Initial Conditions
       Data<real, 3> Conc_ic_out(GridZ_out, GridY_out,GridX_out);
-      
+
       string File_conc = Directory_in + gas_names + ".bin";
       cout << "File_conc " << File_conc << endl;
       InputPolair.ReadRecord(File_conc, record,Conc_ic_out);
 
 	  // Writes output files.
 	  FormatBinary<float> PolairOut;
-	  PolairOut.Append(Conc_ic_out, Directory_out + gas_names 
+	  PolairOut.Append(Conc_ic_out, Directory_out + gas_names
 		       + ".bin");
     }
 
   gas_species.close();
-  
+
   //INITIAL AEROSOL//
-  
+
   for(int Nb=0;Nb<N_size_section_aer;Nb++)
   {
     ExtStream aerosol_species(aerosol_file);
-    string aerosol_names;      
+    string aerosol_names;
     if (!aerosol_species.is_open())
       throw string("Unable to open file \"") + aerosol_file + "\".";
 
@@ -238,13 +238,13 @@ int main(int argc, char** argv)
     Conc_total.SetZero();
     Data<real, 4> Conc_group(GridGroup,GridZ_out, GridY_out,GridX_out);
     Conc_group.SetZero();
-   
+
     while (aerosol_species.GetElement(aerosol_names))
     {
       if(aerosol_names!="Number")
       {
       //cout << "   " << aerosol_names << endl;
-  
+
       // input fields.
       // Initial Conditions
       Data<real, 3> Conc_ic_out(GridZ_out, GridY_out,GridX_out);
@@ -276,7 +276,7 @@ int main(int argc, char** argv)
 	      Conc_total(z,y,x)+=Conc_ic_out(z,y,x);
 	      Conc_group(group_id,z, y,x)+=Conc_ic_out(z,y,x);
 // 	      cout<<Conc_group(group_id,z, y,x)<<"/"<<Conc_total(z,y,x)<<"+"<<Conc_ic_out(z,y,x)
-// 	         <<" ("<<z<<","<<y<<","<<x<<")"<<endl;	 
+// 	         <<" ("<<z<<","<<y<<","<<x<<")"<<endl;
 	      }
 	    }
       }
@@ -346,7 +346,7 @@ int main(int argc, char** argv)
       // Initial Conditions
       Data<real, 4> Conc_ic_out_compos(GridComposition,GridZ_out, GridY_out
 	  ,GridX_out);
-      Conc_ic_out_compos.SetZero();      
+      Conc_ic_out_compos.SetZero();
       Data<real, 3> Conc_ic_out(GridZ_out, GridY_out,GridX_out);
       char tostring[3];
       sprintf(tostring,"%d",Nb);
@@ -357,7 +357,7 @@ int main(int argc, char** argv)
       for(int z = 0; z < Nz_out; z++)
       {
 	 for(int y = 0; y < Ny_out; y++)
-	    for(int x = 0; x < Nx_out; x++)    
+	    for(int x = 0; x < Nx_out; x++)
 	    {
 	      g=Composition_grid(z,y,x);
 	      //cout<<g<<" "<<z<<" "<<y<<" "<<x<<endl;
@@ -369,15 +369,15 @@ int main(int argc, char** argv)
 	  // Writes output files.
  	  FormatBinary<float> PolairOut_aer;
 	  string File_out =Directory_out + aerosol_names +"_"+string(tostring)+ ".bin";
- 	  PolairOut_aer.Append(Conc_ic_out_compos,File_out );    
-	  cout << "File_out " << File_out << endl;		       
-    }    
+ 	  PolairOut_aer.Append(Conc_ic_out_compos,File_out );
+	  cout << "File_out " << File_out << endl;
+    }
     aerosol_species2.close();
   }
-  
-  cout << endl;  
+
+  cout << endl;
   END;
-  
+
   return 0;
 
 }

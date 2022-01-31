@@ -37,6 +37,7 @@ import string
 
 import posix
 
+
 def get_xlc(env, xlc=None, xlc_r=None, packages=[]):
     # Use the AIX package installer tool lslpp to figure out where a
     # given xl* compiler is installed and what version it is.
@@ -44,24 +45,32 @@ def get_xlc(env, xlc=None, xlc_r=None, packages=[]):
     xlcVersion = None
 
     if xlc is None:
-        xlc = env.get('CC', 'xlc')
+        xlc = env.get("CC", "xlc")
     if xlc_r is None:
-        xlc_r = xlc + '_r'
+        xlc_r = xlc + "_r"
     for package in packages:
-        cmd = "lslpp -fc " + package + " 2>/dev/null | egrep '" + xlc + "([^-_a-zA-Z0-9].*)?$'"
+        cmd = (
+            "lslpp -fc "
+            + package
+            + " 2>/dev/null | egrep '"
+            + xlc
+            + "([^-_a-zA-Z0-9].*)?$'"
+        )
         line = os.popen(cmd).readline()
         if line:
-            v, p = string.split(line, ':')[1:3]
+            v, p = string.split(line, ":")[1:3]
             xlcVersion = string.split(v)[1]
             xlcPath = string.split(p)[0]
-            xlcPath = xlcPath[:xlcPath.rindex('/')]
+            xlcPath = xlcPath[: xlcPath.rindex("/")]
             break
     return (xlcPath, xlc, xlc_r, xlcVersion)
 
+
 def generate(env):
     posix.generate(env)
-    #Based on AIX 5.2: ARG_MAX=24576 - 3000 for environment expansion
-    env['MAXLINELENGTH']  = 21576
+    # Based on AIX 5.2: ARG_MAX=24576 - 3000 for environment expansion
+    env["MAXLINELENGTH"] = 21576
+
 
 # Local Variables:
 # tab-width:4

@@ -29,7 +29,7 @@
 
 namespace Seldon
 {
-  
+
 
   //! Full matrix class.
   template <class T, class Prop, class Storage,
@@ -67,7 +67,7 @@ namespace Seldon
     void SetData(int i, int j, pointer data);
     void Nullify();
     void Resize(int i, int j);
-    
+
     // Element access and affectation.
     reference operator() (int i, int j);
 #ifndef SWIG
@@ -130,7 +130,7 @@ namespace Seldon
     Matrix()  throw();
     Matrix(int i, int j);
     Matrix(const Matrix<T, Prop, ColMajor, Allocator>& A);
-    
+
 #ifndef SWIG
     template <class T0>
     Matrix<T, Prop, ColMajor, Allocator>& operator= (const T0& x);

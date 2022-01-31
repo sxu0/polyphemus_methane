@@ -47,18 +47,18 @@ import SCons.Errors
 explicit_stack_size = None
 default_stack_size = 256
 
-interrupt_msg = 'Build interrupted.'
+interrupt_msg = "Build interrupted."
 
 
 class InterruptState:
-   def __init__(self):
-       self.interrupted = False
+    def __init__(self):
+        self.interrupted = False
 
-   def set(self):
-       self.interrupted = True
+    def set(self):
+        self.interrupted = True
 
-   def __call__(self):
-       return self.interrupted
+    def __call__(self):
+        return self.interrupted
 
 
 class Jobs:
@@ -85,7 +85,7 @@ class Jobs:
             stack_size = explicit_stack_size
             if stack_size is None:
                 stack_size = default_stack_size
-                
+
             try:
                 self.job = Parallel(taskmaster, num, stack_size)
                 self.num_jobs = num
@@ -136,6 +136,7 @@ class Jobs:
         SCons forks before executing another process. In that case, we
         want the child to exit immediately.
         """
+
         def handler(signum, stack, self=self, parentpid=os.getpid()):
             if os.getpid() == parentpid:
                 self.job.taskmaster.stop()
@@ -143,7 +144,7 @@ class Jobs:
             else:
                 os._exit(2)
 
-        self.old_sigint  = signal.signal(signal.SIGINT, handler)
+        self.old_sigint = signal.signal(signal.SIGINT, handler)
         self.old_sigterm = signal.signal(signal.SIGTERM, handler)
         try:
             self.old_sighup = signal.signal(signal.SIGHUP, handler)
@@ -152,7 +153,7 @@ class Jobs:
 
     def _reset_sig_handler(self):
         """Restore the signal handlers to their previous state (before the
-         call to _setup_sig_handler()."""
+        call to _setup_sig_handler()."""
 
         signal.signal(signal.SIGINT, self.old_sigint)
         signal.signal(signal.SIGTERM, self.old_sigterm)
@@ -160,6 +161,7 @@ class Jobs:
             signal.signal(signal.SIGHUP, self.old_sighup)
         except AttributeError:
             pass
+
 
 class Serial:
     """This class is used to execute tasks in series, and is more efficient
@@ -170,14 +172,14 @@ class Serial:
     """
 
     def __init__(self, taskmaster):
-        """Create a new serial job given a taskmaster. 
+        """Create a new serial job given a taskmaster.
 
         The taskmaster's next_task() method should return the next task
         that needs to be executed, or None if there are no more tasks. The
         taskmaster's executed() method will be called for each task when it
         is successfully executed or failed() will be called if it failed to
         execute (e.g. execute() raised an exception)."""
-        
+
         self.taskmaster = taskmaster
         self.interrupted = InterruptState()
 
@@ -186,7 +188,7 @@ class Serial:
         and executing them, and return when there are no more tasks. If a task
         fails to execute (i.e. execute() raises an exception), then the job will
         stop."""
-        
+
         while 1:
             task = self.taskmaster.next_task()
 
@@ -201,7 +203,8 @@ class Serial:
                 if self.interrupted():
                     try:
                         raise SCons.Errors.BuildError(
-                            task.targets[0], errstr=interrupt_msg)
+                            task.targets[0], errstr=interrupt_msg
+                        )
                     except:
                         task.exception_set()
                 else:
@@ -226,10 +229,11 @@ try:
 except ImportError:
     pass
 else:
+
     class Worker(threading.Thread):
         """A worker thread waits on a task to be posted to its request queue,
         dequeues the task, executes it, and posts a tuple including the task
-        and a boolean indicating whether the task executed successfully. """
+        and a boolean indicating whether the task executed successfully."""
 
         def __init__(self, requestQueue, resultsQueue, interrupted):
             threading.Thread.__init__(self)
@@ -252,7 +256,8 @@ else:
                 try:
                     if self.interrupted():
                         raise SCons.Errors.BuildError(
-                            task.targets[0], errstr=interrupt_msg)
+                            task.targets[0], errstr=interrupt_msg
+                        )
                     task.execute()
                 except:
                     task.exception_set()
@@ -267,7 +272,7 @@ else:
 
         def __init__(self, num, stack_size, interrupted):
             """Create the request and reply queues, and 'num' worker threads.
-            
+
             One must specify the stack size of the worker threads. The
             stack size is specified in kilobytes.
             """
@@ -275,13 +280,15 @@ else:
             self.resultsQueue = Queue.Queue(0)
 
             try:
-                prev_size = threading.stack_size(stack_size*1024) 
+                prev_size = threading.stack_size(stack_size * 1024)
             except AttributeError, e:
                 # Only print a warning if the stack size has been
                 # explicitly set.
                 if not explicit_stack_size is None:
-                    msg = "Setting stack size is unsupported by this version of Python:\n    " + \
-                        e.args[0]
+                    msg = (
+                        "Setting stack size is unsupported by this version of Python:\n    "
+                        + e.args[0]
+                    )
                     SCons.Warnings.warn(SCons.Warnings.StackSizeWarning, msg)
             except ValueError, e:
                 msg = "Setting stack size failed:\n    " + str(e)
@@ -294,8 +301,8 @@ else:
                 self.workers.append(worker)
 
             # Once we drop Python 1.5 we can change the following to:
-            #if 'prev_size' in locals():
-            if 'prev_size' in locals().keys():
+            # if 'prev_size' in locals():
+            if "prev_size" in locals().keys():
                 threading.stack_size(prev_size)
 
         def put(self, task):
@@ -322,7 +329,7 @@ else:
                 self.requestQueue.put(None)
 
             # Wait for all of the workers to terminate.
-            # 
+            #
             # If we don't do this, later Python versions (2.4, 2.5) often
             # seem to raise exceptions during shutdown.  This happens
             # in requestQueue.get(), as an assertion failure that
@@ -339,7 +346,7 @@ else:
             self.workers = []
 
     class Parallel:
-        """This class is used to execute tasks in parallel, and is somewhat 
+        """This class is used to execute tasks in parallel, and is somewhat
         less efficient than Serial, but is appropriate for parallel builds.
 
         This class is thread safe.
@@ -358,7 +365,7 @@ else:
             Note: calls to taskmaster are serialized, but calls to
             execute() on distinct tasks are not serialized, because
             that is the whole point of parallel jobs: they can execute
-            multiple tasks simultaneously. """
+            multiple tasks simultaneously."""
 
             self.taskmaster = taskmaster
             self.interrupted = InterruptState()
@@ -373,7 +380,7 @@ else:
             an exception), then the job will stop."""
 
             jobs = 0
-            
+
             while 1:
                 # Start up as many available tasks as we're
                 # allowed to.
@@ -398,7 +405,8 @@ else:
                             task.executed()
                             task.postprocess()
 
-                if not task and not jobs: break
+                if not task and not jobs:
+                    break
 
                 # Let any/all completed tasks finish up before we go
                 # back and put the next batch of tasks on the queue.
@@ -412,7 +420,8 @@ else:
                         if self.interrupted():
                             try:
                                 raise SCons.Errors.BuildError(
-                                    task.targets[0], errstr=interrupt_msg)
+                                    task.targets[0], errstr=interrupt_msg
+                                )
                             except:
                                 task.exception_set()
 
@@ -427,6 +436,7 @@ else:
 
             self.tp.cleanup()
             self.taskmaster.cleanup()
+
 
 # Local Variables:
 # tab-width:4

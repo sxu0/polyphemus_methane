@@ -62,6 +62,7 @@ rest of our code will find our pre-loaded compatibility module.
 
 __revision__ = "src/engine/SCons/compat/__init__.py 5110 2010/07/25 16:14:38 bdeegan"
 
+
 def import_as(module, name):
     """
     Imports the specified module (from our local directory) as the
@@ -69,9 +70,11 @@ def import_as(module, name):
     """
     import imp
     import os.path
+
     dir = os.path.split(__file__)[0]
     file, filename, suffix_mode_type = imp.find_module(module, [dir])
     imp.load_module(name, file, filename, suffix_mode_type)
+
 
 import builtins
 
@@ -80,7 +83,7 @@ try:
 except ImportError:
     # Pre-2.5 Python has no hashlib module.
     try:
-        import_as('_scons_hashlib', 'hashlib')
+        import_as("_scons_hashlib", "hashlib")
     except ImportError:
         # If we failed importing our compatibility module, it probably
         # means this version of Python has no md5 module.  Don't do
@@ -95,30 +98,34 @@ except NameError:
     try:
         # Python 2.2 and 2.3 can use the copy of the 2.[45] sets module
         # that we grabbed.
-        import_as('_scons_sets', 'sets')
+        import_as("_scons_sets", "sets")
     except (ImportError, SyntaxError):
         # Python 1.5 (ImportError, no __future_ module) and 2.1
         # (SyntaxError, no generators in __future__) will blow up
         # trying to import the 2.[45] sets module, so back off to a
         # custom sets module that can be discarded easily when we
         # stop supporting those versions.
-        import_as('_scons_sets15', 'sets')
+        import_as("_scons_sets15", "sets")
     import __builtin__
     import sets
+
     __builtin__.set = sets.Set
 
 import fnmatch
+
 try:
     fnmatch.filter
 except AttributeError:
     # Pre-2.2 Python has no fnmatch.filter() function.
     def filter(names, pat):
         """Return the subset of the list NAMES that match PAT"""
-        import os,posixpath
-        result=[]
+        import os, posixpath
+
+        result = []
         pat = os.path.normcase(pat)
         if not fnmatch._cache.has_key(pat):
             import re
+
             res = fnmatch.translate(pat)
             fnmatch._cache[pat] = re.compile(res)
         match = fnmatch._cache[pat].match
@@ -132,6 +139,7 @@ except AttributeError:
                 if match(os.path.normcase(name)):
                     result.append(name)
         return result
+
     fnmatch.filter = filter
     del filter
 
@@ -139,7 +147,7 @@ try:
     import itertools
 except ImportError:
     # Pre-2.3 Python has no itertools module.
-    import_as('_scons_itertools', 'itertools')
+    import_as("_scons_itertools", "itertools")
 
 # If we need the compatibility version of textwrap, it  must be imported
 # before optparse, which uses it.
@@ -147,25 +155,27 @@ try:
     import textwrap
 except ImportError:
     # Pre-2.3 Python has no textwrap module.
-    import_as('_scons_textwrap', 'textwrap')
+    import_as("_scons_textwrap", "textwrap")
 
 try:
     import optparse
 except ImportError:
     # Pre-2.3 Python has no optparse module.
-    import_as('_scons_optparse', 'optparse')
+    import_as("_scons_optparse", "optparse")
 
 import os
+
 try:
     os.devnull
 except AttributeError:
     # Pre-2.4 Python has no os.devnull attribute
     import sys
+
     _names = sys.builtin_module_names
-    if 'posix' in _names:
-        os.devnull = '/dev/null'
-    elif 'nt' in _names:
-        os.devnull = 'nul'
+    if "posix" in _names:
+        os.devnull = "/dev/null"
+    elif "nt" in _names:
+        os.devnull = "nul"
     os.path.devnull = os.devnull
 try:
     os.path.lexists
@@ -173,6 +183,7 @@ except AttributeError:
     # Pre-2.4 Python has no os.path.lexists function
     def lexists(path):
         return os.path.exists(path) or os.path.islink(path)
+
     os.path.lexists = lexists
 
 
@@ -180,10 +191,11 @@ try:
     import platform
 except ImportError:
     # Pre-2.3 Python has no platform module.
-    import_as('_scons_platform', 'platform')
+    import_as("_scons_platform", "platform")
 
 
 import shlex
+
 try:
     shlex.split
 except AttributeError:
@@ -194,10 +206,11 @@ except AttributeError:
     # version of the shlex module cribbed from Python 2.5 with some
     # minor modifications for older Python versions.
     del shlex
-    import_as('_scons_shlex', 'shlex')
+    import_as("_scons_shlex", "shlex")
 
 
 import shutil
+
 try:
     shutil.move
 except AttributeError:
@@ -220,18 +233,23 @@ except AttributeError:
         except OSError:
             if os.path.isdir(src):
                 if shutil.destinsrc(src, dst):
-                    raise Error, "Cannot move a directory '%s' into itself '%s'." % (src, dst)
+                    raise Error, "Cannot move a directory '%s' into itself '%s'." % (
+                        src,
+                        dst,
+                    )
                 shutil.copytree(src, dst, symlinks=True)
                 shutil.rmtree(src)
             else:
-                shutil.copy2(src,dst)
+                shutil.copy2(src, dst)
                 os.unlink(src)
+
     shutil.move = move
     del move
 
     def destinsrc(src, dst):
         src = os.path.abspath(src)
-        return os.path.abspath(dst)[:len(src)] == src
+        return os.path.abspath(dst)[: len(src)] == src
+
     shutil.destinsrc = destinsrc
     del destinsrc
 
@@ -240,25 +258,28 @@ try:
     import subprocess
 except ImportError:
     # Pre-2.4 Python has no subprocess module.
-    import_as('_scons_subprocess', 'subprocess')
+    import_as("_scons_subprocess", "subprocess")
 
 import sys
+
 try:
     sys.version_info
 except AttributeError:
     # Pre-1.6 Python has no sys.version_info
     import string
+
     version_string = string.split(sys.version)[0]
-    version_ints = map(int, string.split(version_string, '.'))
-    sys.version_info = tuple(version_ints + ['final', 0])
+    version_ints = map(int, string.split(version_string, "."))
+    sys.version_info = tuple(version_ints + ["final", 0])
 
 try:
     import UserString
 except ImportError:
     # Pre-1.6 Python has no UserString module.
-    import_as('_scons_UserString', 'UserString')
+    import_as("_scons_UserString", "UserString")
 
 import tempfile
+
 try:
     tempfile.mkstemp
 except AttributeError:
@@ -266,23 +287,24 @@ except AttributeError:
     # adapted from the mkstemp implementation in python 3.
     import os
     import errno
+
     def mkstemp(*args, **kw):
         text = False
         # TODO (1.5)
-        #if 'text' in kw :
-        if 'text' in kw.keys() :
-            text = kw['text']
-            del kw['text']
-        elif len( args ) == 4 :
+        # if 'text' in kw :
+        if "text" in kw.keys():
+            text = kw["text"]
+            del kw["text"]
+        elif len(args) == 4:
             text = args[3]
             args = args[:3]
         flags = os.O_RDWR | os.O_CREAT | os.O_EXCL
-        if not text and hasattr( os, 'O_BINARY' ) :
+        if not text and hasattr(os, "O_BINARY"):
             flags = flags | os.O_BINARY
         while True:
-            try :
+            try:
                 name = apply(tempfile.mktemp, args, kw)
-                fd = os.open( name, flags, 0600 )
+                fd = os.open(name, flags, 0600)
                 return (fd, os.path.abspath(name))
             except OSError, e:
                 if e.errno == errno.EEXIST:
@@ -291,8 +313,6 @@ except AttributeError:
 
     tempfile.mkstemp = mkstemp
     del mkstemp
-
-
 
 
 # Local Variables:

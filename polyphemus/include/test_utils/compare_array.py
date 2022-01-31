@@ -25,9 +25,9 @@ import numpy as np
 import numpy.ma as ma
 
 
-def compare_array(array, ref_array,
-                  mean_rtol=1e-02, max_rtol=5e-02,
-                  nan_rtol=1e-02, inf_rtol=1e-02):
+def compare_array(
+    array, ref_array, mean_rtol=1e-02, max_rtol=5e-02, nan_rtol=1e-02, inf_rtol=1e-02
+):
     """Returns true if 'array' is an approximation of 'ref_array'.
 
     A difference is detected in the following cases:
@@ -73,8 +73,12 @@ def compare_array(array, ref_array,
     a field is called 'diff_array', it is used to plot a map of difference.
     """
     if np.shape(array) != np.shape(ref_array):
-        return{'different dimensions' : { 'cur' : str(np.shape(array)),
-                                          'ref' : str(np.shape(ref_array)) } }
+        return {
+            "different dimensions": {
+                "cur": str(np.shape(array)),
+                "ref": str(np.shape(ref_array)),
+            }
+        }
     if np.size(ref_array) == 0:
         return {}
 
@@ -84,11 +88,18 @@ def compare_array(array, ref_array,
         """Hides NaN and infinity, and returns a report on those values."""
         fixed_array = ma.masked_invalid(raw_array, copy=False)
         hidding = ma.is_masked(fixed_array)
-        return (fixed_array if hidding else raw_array, {
-        'positive infinity': np.equal(raw_array, np.PINF) if hidding else [False],
-        'negative infinity': np.equal(raw_array, np.NINF) if hidding else [False],
-        'NaN': np.isnan(raw_array) if hidding else [False]
-        } )
+        return (
+            fixed_array if hidding else raw_array,
+            {
+                "positive infinity": np.equal(raw_array, np.PINF)
+                if hidding
+                else [False],
+                "negative infinity": np.equal(raw_array, np.NINF)
+                if hidding
+                else [False],
+                "NaN": np.isnan(raw_array) if hidding else [False],
+            },
+        )
 
     array, special_values = hide_special_values(array)
     ref_array, ref_special_values = hide_special_values(ref_array)
@@ -107,12 +118,14 @@ def compare_array(array, ref_array,
 
         if ref_value_count == 0:
             difference[value_type] = {
-                'cur': "has {} {}".format(value_count, value_type),
-                'ref': "no {}".format(value_type) }
+                "cur": "has {} {}".format(value_count, value_type),
+                "ref": "no {}".format(value_type),
+            }
         elif value_count == 0:
             difference[value_type] = {
-                'cur': "no {}".format(value_type),
-                'ref': "has {} {}".format(ref_value_count, value_type) }
+                "cur": "no {}".format(value_type),
+                "ref": "has {} {}".format(ref_value_count, value_type),
+            }
         else:
             rtol = inf_rtol
             if value_type == "Nan":
@@ -123,20 +136,25 @@ def compare_array(array, ref_array,
             diff_count = only_in_cur + only_in_ref
             if diff_count > tol:
                 difference[value_type] = {
-                    'cur': "{} {} not in 'ref' (and {} also in 'ref')"
-                            .format(only_in_cur, value_type, common_count),
-                    'diff': "{} {} differences, representing a \
-rate of {:.2f}% on the total number of values (tolerance={:.2f}%)"
-                            .format(diff_count, value_type,
-                                    (100. * diff_count / ref_size), 100. * rtol),
-                    'ref': "{} {} not in 'cur' (and {} also in 'cur')"
-                            .format(only_in_ref, value_type, common_count) }
+                    "cur": "{} {} not in 'ref' (and {} also in 'ref')".format(
+                        only_in_cur, value_type, common_count
+                    ),
+                    "diff": "{} {} differences, representing a \
+rate of {:.2f}% on the total number of values (tolerance={:.2f}%)".format(
+                        diff_count,
+                        value_type,
+                        (100.0 * diff_count / ref_size),
+                        100.0 * rtol,
+                    ),
+                    "ref": "{} {} not in 'cur' (and {} also in 'cur')".format(
+                        only_in_ref, value_type, common_count
+                    ),
+                }
 
     # Puts a mask so that the numerical comparison does not take into account\
     # invalid values:
     if special_values or ref_special_values:
-        mask_all = np.logical_or(ma.getmaskarray(array),
-                                 ma.getmaskarray(ref_array))
+        mask_all = np.logical_or(ma.getmaskarray(array), ma.getmaskarray(ref_array))
         if special_values:
             ref_array = ma.masked_array(ref_array, mask_all)
         if ref_special_values:
@@ -145,18 +163,18 @@ rate of {:.2f}% on the total number of values (tolerance={:.2f}%)"
     array_min = np.min(array)
     ref_array_min = np.min(ref_array)
     if np.sign(ref_array_min) >= 0 and np.sign(array_min) == -1:
-        difference['different sign'] = {
-                            'cur' : "contains some strictly negative values",
-                            'ref' : "all values are positive or null"
-                            }
+        difference["different sign"] = {
+            "cur": "contains some strictly negative values",
+            "ref": "all values are positive or null",
+        }
 
     array_max = np.max(array)
     ref_array_max = np.max(ref_array)
     if np.sign(ref_array_max) <= 0 and np.sign(array_max) == 1:
-        difference['different sign'] = {
-                            'cur' : "contains some strictly positive values",
-                            'ref' : "all values are negative or null"
-                            }
+        difference["different sign"] = {
+            "cur": "contains some strictly positive values",
+            "ref": "all values are negative or null",
+        }
 
     def is_error(value, ref_value, rtol):
         return np.abs(value - ref_value) > rtol * np.abs(ref_value)
@@ -165,22 +183,22 @@ rate of {:.2f}% on the total number of values (tolerance={:.2f}%)"
     ref_array_max_abs = max(abs(ref_array_max), abs(ref_array_min))
 
     if is_error(array_max_abs, ref_array_max_abs, max_rtol):
-        difference['abs max (rtol={:.2e})'.format(max_rtol)] = {
-                                        'cur' : array_max_abs,
-                                        'ref' : ref_array_max_abs,
-                                        'diff' : array_max_abs - ref_array_max_abs,
-                                        }
+        difference["abs max (rtol={:.2e})".format(max_rtol)] = {
+            "cur": array_max_abs,
+            "ref": ref_array_max_abs,
+            "diff": array_max_abs - ref_array_max_abs,
+        }
 
     array_mean = np.mean(array)
     ref_array_mean = np.mean(ref_array)
     if is_error(np.mean(array), np.mean(ref_array), mean_rtol):
-        difference['mean (rtol={:.2e})'.format(mean_rtol)] = {
-                                        'cur' : array_mean,
-                                        'ref' : ref_array_mean,
-                                        'diff' : array_mean - ref_array_mean,
-                                        }
+        difference["mean (rtol={:.2e})".format(mean_rtol)] = {
+            "cur": array_mean,
+            "ref": ref_array_mean,
+            "diff": array_mean - ref_array_mean,
+        }
 
     # Puts an array of the differences, not accounting for special values.
     if difference:
-        difference['diff_array'] = array - ref_array
+        difference["diff_array"] = array - ref_array
     return difference

@@ -33,37 +33,30 @@ class Spack:
 
     def dependency(self, path, exclude_dependency, build_dir=None):
         path = os.path.abspath(path)
-        species_file = glob.glob(os.path.join(path, "*.species")) + \
-                       glob.glob(os.path.join(path, "species"))
-        reactions_file = glob.glob(os.path.join(path, "*.reactions")) + \
-                         glob.glob(os.path.join(path, "reactions"))
+        species_file = glob.glob(os.path.join(path, "*.species")) + glob.glob(
+            os.path.join(path, "species")
+        )
+        reactions_file = glob.glob(os.path.join(path, "*.reactions")) + glob.glob(
+            os.path.join(path, "reactions")
+        )
         spack_config = glob.glob(os.path.join(path, "spack_config"))
         if spack_config:
             spack_config = spack_config[0]
 
         if not species_file or not reactions_file:
             if spack_config:
-                raise Exception, "In \"" + path + "\":\n"\
-                                 "Spack needs a '.species' file "\
-                                 "and a '.reactions' file to operate"
+                raise Exception, 'In "' + path + '":\n' "Spack needs a '.species' file " "and a '.reactions' file to operate"
             return []
         if len(species_file) > 1:
             if spack_config:
-                raise Exception, "In \"" + path + "\":\n"\
-                                 "Several species file given to Spack, "\
-                                 "only one is expected"
+                raise Exception, 'In "' + path + '":\n' "Several species file given to Spack, " "only one is expected"
             return []
         if len(reactions_file) > 1:
             if spack_config:
-                raise Exception, "In \"" + path + "\":\n"\
-                                 "Several reactions file given to Spack, "\
-                                 "only one is expected"
+                raise Exception, 'In "' + path + '":\n' "Several reactions file given to Spack, " "only one is expected"
             return []
         if not spack_config:
-                raise Exception, "In \"" + path + "\":\n"\
-                        "There is a species file and reactions file, "\
-                        "but Spack needs a 'spack_config' file to operate"
-
+            raise Exception, 'In "' + path + '":\n' "There is a species file and reactions file, " "but Spack needs a 'spack_config' file to operate"
 
         # Creates a vanilla environment since Spack does not depends on
         # environment specifics and can be run in the source tree instead
@@ -71,26 +64,34 @@ class Spack:
         spack_env = self.utils.create_env()
 
         spack_fortran_output = []
-        for filename in ["dimensions.f", "dratedc.f", "fexchem.f",
-                         "jacdchemdc.f", "kinetic.f", "rates.f",
-                         "LU_decompose.f", "LU_solve.f", "LU_solve_tr.f"]:
+        for filename in [
+            "dimensions.f",
+            "dratedc.f",
+            "fexchem.f",
+            "jacdchemdc.f",
+            "kinetic.f",
+            "rates.f",
+            "LU_decompose.f",
+            "LU_solve.f",
+            "LU_solve_tr.f",
+        ]:
             fortran_file = os.path.join(path, filename)
             spack_fortran_output.append(fortran_file)
 
         spack_config_output = os.path.join(path, "species.spack.dat")
 
-        spack_exe = os.path.join(self.utils.polyphemus_path,
-                                "include/spack/src/generate_chem_files.sh")
-        spack_arg = [os.path.basename(p)
-                     for p in species_file + reactions_file]
+        spack_exe = os.path.join(
+            self.utils.polyphemus_path, "include/spack/src/generate_chem_files.sh"
+        )
+        spack_arg = [os.path.basename(p) for p in species_file + reactions_file]
         spack_input = [spack_config] + species_file + reactions_file
 
         # Generates the files with Spack.
-        spack_target = spack_env.Command(spack_fortran_output +
-                                         [spack_config_output],
-                                         spack_input,
-                                         [ "cd " + path + " && " +
-                                          " ".join([spack_exe] + spack_arg)])
+        spack_target = spack_env.Command(
+            spack_fortran_output + [spack_config_output],
+            spack_input,
+            ["cd " + path + " && " + " ".join([spack_exe] + spack_arg)],
+        )
 
         # Automatically builds Spack if needed.
         spack_dir = os.path.dirname(spack_exe)
@@ -101,10 +102,11 @@ class Spack:
         copy_fortran = []
         for f in spack_fortran_output:
             copy_fortran.append(Copy(self.utils.rebase_dir(build_dir, f), f))
-        fortran_target = spack_env.Command(self.utils.rebase_dir(build_dir,
-                                                                 spack_fortran_output),
-                                           spack_target,
-                                           copy_fortran)
+        fortran_target = spack_env.Command(
+            self.utils.rebase_dir(build_dir, spack_fortran_output),
+            spack_target,
+            copy_fortran,
+        )
 
         # Avoids building Spack files from the source tree, we have copies
         # in the build directories.

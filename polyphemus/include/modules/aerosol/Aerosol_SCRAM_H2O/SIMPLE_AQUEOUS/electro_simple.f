@@ -54,7 +54,7 @@ C     -- OUTPUT VARIABLES
 C
 C     F : evaluation of the electroneutrality relation (anion-cation).
 C     FL: relative value (ABS(F)/(anion+cation).
-C     conc_out: output concentrations of ions ([mol/L_water]), 
+C     conc_out: output concentrations of ions ([mol/L_water]),
 C               partial pressures ([atm]),
 C               and aqueous species (mol/L_water]):
 C               conc_out(1): [H+].

@@ -126,36 +126,36 @@ namespace Seldon
   class ArrayRowSparse : public RowSparse
   {
   };
-  
+
   class ArrayColSparse : public ColSparse
   {
   };
-  
+
   class ArrayRowSymSparse : public RowSymSparse
   {
   };
-  
+
   class ArrayColSymSparse : public ColSymSparse
   {
   };
-  
+
   class ArrayRowComplexSparse : public RowComplexSparse
   {
   };
-  
+
   class ArrayRowSymComplexSparse : public RowSymComplexSparse
   {
   };
-  
+
   class ArrayColComplexSparse : public ColComplexSparse
   {
   };
-  
+
   class ArrayColSymComplexSparse : public ColSymComplexSparse
   {
   };
-  
-  
+
+
   ///////////////
   // SYMMETRIC //
   ///////////////

@@ -33,13 +33,17 @@ __revision__ = "src/engine/SCons/Scanner/IDL.py 5110 2010/07/25 16:14:38 bdeegan
 import SCons.Node.FS
 import SCons.Scanner
 
+
 def IDLScan():
     """Return a prototype Scanner instance for scanning IDL source files"""
-    cs = SCons.Scanner.ClassicCPP("IDLScan",
-                                  "$IDLSUFFIXES",
-                                  "CPPPATH",
-                                  '^[ \t]*(?:#[ \t]*include|[ \t]*import)[ \t]+(<|")([^>"]+)(>|")')
+    cs = SCons.Scanner.ClassicCPP(
+        "IDLScan",
+        "$IDLSUFFIXES",
+        "CPPPATH",
+        '^[ \t]*(?:#[ \t]*include|[ \t]*import)[ \t]+(<|")([^>"]+)(>|")',
+    )
     return cs
+
 
 # Local Variables:
 # tab-width:4

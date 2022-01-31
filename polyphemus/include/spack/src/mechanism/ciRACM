@@ -41,7 +41,7 @@ UDD          119.
 HKET          74.
 ONIT         119.
 PAN          121.
-TPAN         147. 
+TPAN         147.
 OP1           48.
 OP2           62.
 PAA           76.
@@ -75,14 +75,11 @@ O3P           16.
 O1D           16.
 SULF          98.
 
-! DMS is not in the mechanism. ORA1, ORA2 and SULF are only products. 
+! DMS is not in the mechanism. ORA1, ORA2 and SULF are only products.
 ! CO2 only products : not taken into account.
 !
-! Differences with ciRADM: 
+! Differences with ciRADM:
 ! in RADM: OL2, OL2P, OLN, XNO2
 ! in RACM: ETE, DIEN, API, MACR, UDD, HKET, ETEP, ISOP, APIP, LIMP, PHO,
 !          ADDT, ADDX, ADDC, CSLP, OLNN, OLND, LIM.
 ! Actually: ETE = OL2 and ETEP = OL2P
-
-
-

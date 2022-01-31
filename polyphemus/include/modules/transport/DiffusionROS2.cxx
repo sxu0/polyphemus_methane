@@ -593,14 +593,14 @@ namespace Polyphemus
           {
 
             /*** Number Surface emissions ***/
-			
-            Array<T, 2> NumberSurfaceEmission_i(shape(Model.GetNy(), 
+
+            Array<T, 2> NumberSurfaceEmission_i(shape(Model.GetNy(),
                                                       Model.GetNx()));
-            Array<T, 2> NumberSurfaceEmission_f(shape(Model.GetNy(), 
+            Array<T, 2> NumberSurfaceEmission_f(shape(Model.GetNy(),
                                                       Model.GetNx()));
             int emis_b;
 
-            if (Model.HasNumberSurfaceEmission_aer(b))   
+            if (Model.HasNumberSurfaceEmission_aer(b))
               {
                 emis_b = Model.NumberSurfaceEmissionIndex_aer(b);
                 NumberSurfaceEmission_i
@@ -624,7 +624,7 @@ namespace Polyphemus
                                                 (b, 0, 0, 0),
                                                 shape(Model.GetNz(), Model.GetNy(),
                                                       Model.GetNx()));
-            
+
             /*** Numerical integration ***/
 
 #ifdef POLYPHEMUS_PARALLEL_WITH_MPI
@@ -660,7 +660,7 @@ namespace Polyphemus
                               Model.GetNx(), Model.GetNy(), Model.GetNz(),
                               Model.D3("AirDensity_i"), NumberConcentration_aer_s);
 #endif
-            
+
           }
       }
 

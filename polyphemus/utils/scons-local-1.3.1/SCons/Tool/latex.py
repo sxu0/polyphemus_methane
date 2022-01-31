@@ -41,14 +41,20 @@ import SCons.Util
 import SCons.Tool
 import SCons.Tool.tex
 
-def LaTeXAuxFunction(target = None, source= None, env=None):
-    result = SCons.Tool.tex.InternalLaTeXAuxAction( SCons.Tool.tex.LaTeXAction, target, source, env )
+
+def LaTeXAuxFunction(target=None, source=None, env=None):
+    result = SCons.Tool.tex.InternalLaTeXAuxAction(
+        SCons.Tool.tex.LaTeXAction, target, source, env
+    )
     if result != 0:
-        print env['LATEX']," returned an error, check the log file"
+        print env["LATEX"], " returned an error, check the log file"
     return result
 
-LaTeXAuxAction = SCons.Action.Action(LaTeXAuxFunction,
-                              strfunction=SCons.Tool.tex.TeXLaTeXStrFunction)
+
+LaTeXAuxAction = SCons.Action.Action(
+    LaTeXAuxFunction, strfunction=SCons.Tool.tex.TeXLaTeXStrFunction
+)
+
 
 def generate(env):
     """Add Builders and construction variables for LaTeX to an Environment."""
@@ -56,21 +62,25 @@ def generate(env):
     env.AppendUnique(LATEXSUFFIXES=SCons.Tool.LaTeXSuffixes)
 
     import dvi
+
     dvi.generate(env)
 
     import pdf
+
     pdf.generate(env)
 
-    bld = env['BUILDERS']['DVI']
-    bld.add_action('.ltx', LaTeXAuxAction)
-    bld.add_action('.latex', LaTeXAuxAction)
-    bld.add_emitter('.ltx', SCons.Tool.tex.tex_eps_emitter)
-    bld.add_emitter('.latex', SCons.Tool.tex.tex_eps_emitter)
+    bld = env["BUILDERS"]["DVI"]
+    bld.add_action(".ltx", LaTeXAuxAction)
+    bld.add_action(".latex", LaTeXAuxAction)
+    bld.add_emitter(".ltx", SCons.Tool.tex.tex_eps_emitter)
+    bld.add_emitter(".latex", SCons.Tool.tex.tex_eps_emitter)
 
     SCons.Tool.tex.generate_common(env)
 
+
 def exists(env):
-    return env.Detect('latex')
+    return env.Detect("latex")
+
 
 # Local Variables:
 # tab-width:4

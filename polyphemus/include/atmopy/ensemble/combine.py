@@ -23,17 +23,18 @@
 
 import datetime
 import sys, os
-sys.path.insert(0,
-                os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])
+
+sys.path.insert(0, os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])
 import observation
+
 sys.path.pop(0)
 from scipy import *
 from numpy import *
 import scipy.linalg
 import scipy.stats.stats
 
-def collect(sim, obs, dates = None, stations = None, period = None,
-            stations_out = None):
+
+def collect(sim, obs, dates=None, stations=None, period=None, stations_out=None):
     """
     Collects data (observations and simulated concentrations) over a given
     period and at a given set of stations.
@@ -65,18 +66,16 @@ def collect(sim, obs, dates = None, stations = None, period = None,
     """
     # Initializations.
     if isinstance(sim[0], ndarray):
-        sim = (sim, )
+        sim = (sim,)
 
     if dates == None:
         dates = [range(len(x)) for x in obs]
         period = None
-    elif isinstance(dates[0], datetime.datetime) \
-             or isinstance(dates[0], datetime.date):
-        dates = (dates, )
+    elif isinstance(dates[0], datetime.datetime) or isinstance(dates[0], datetime.date):
+        dates = (dates,)
     if period == None:
         period = (min([x[0] for x in dates]), max([x[-1] for x in dates]))
-    elif isinstance(period, datetime.datetime) \
-             or isinstance(period, datetime.date):
+    elif isinstance(period, datetime.datetime) or isinstance(period, datetime.date):
         period = (period, period)
     elif len(period) == 1:
         period = (period[0], period[0])
@@ -86,16 +85,20 @@ def collect(sim, obs, dates = None, stations = None, period = None,
     if stations == None:
         stations = range(len(obs))
         stations_out = None
-    elif isinstance(stations, observation.Station) \
-             or isinstance(stations, str) \
-             or isinstance(stations, int):
-        stations = (stations, )
+    elif (
+        isinstance(stations, observation.Station)
+        or isinstance(stations, str)
+        or isinstance(stations, int)
+    ):
+        stations = (stations,)
     if stations_out == None:
         stations_out = stations
-    elif isinstance(stations_out, observation.Station) \
-           or isinstance(stations_out, str) \
-           or isinstance(stations_out, int):
-        stations_out = (stations_out, )
+    elif (
+        isinstance(stations_out, observation.Station)
+        or isinstance(stations_out, str)
+        or isinstance(stations_out, int)
+    ):
+        stations_out = (stations_out,)
 
     # Output arrays.
     out_obs = []
@@ -107,8 +110,7 @@ def collect(sim, obs, dates = None, stations = None, period = None,
             i = 0
             while i < len(dates[istation]) and dates[istation][i] < period[0]:
                 i += 1
-            while i < len(dates[istation]) \
-                      and dates[istation][i] <= period[1]:
+            while i < len(dates[istation]) and dates[istation][i] <= period[1]:
                 # Observations.
                 out_obs.append(obs[istation][i])
                 # Simulations.
@@ -119,8 +121,7 @@ def collect(sim, obs, dates = None, stations = None, period = None,
     return array(out_sim), array(out_obs)
 
 
-def collect_dates(sim, obs, dates = None, stations = None, period = None,
-                  stations_out = None):
+def collect_dates(sim, obs, dates=None, stations=None, period=None, stations_out=None):
     """
     Collects data (observations and simulated concentrations) over a given
     period (defined by a list of dates) and at a given set of stations.
@@ -151,18 +152,16 @@ def collect_dates(sim, obs, dates = None, stations = None, period = None,
     """
     # Initializations.
     if isinstance(sim[0], ndarray):
-        sim = (sim, )
+        sim = (sim,)
 
     if dates == None:
         dates = [range(len(x)) for x in obs]
         period = None
-    elif isinstance(dates[0], datetime.datetime) \
-             or isinstance(dates[0], datetime.date):
-        dates = (dates, )
+    elif isinstance(dates[0], datetime.datetime) or isinstance(dates[0], datetime.date):
+        dates = (dates,)
     if period == None:
         period = (min([x[0] for x in dates]), max([x[-1] for x in dates]))
-    elif isinstance(period, datetime.datetime) \
-             or isinstance(period, datetime.date):
+    elif isinstance(period, datetime.datetime) or isinstance(period, datetime.date):
         period = (period, period)
     elif len(period) == 1:
         period = (period[0], period[0])
@@ -170,16 +169,20 @@ def collect_dates(sim, obs, dates = None, stations = None, period = None,
     if stations == None:
         stations = range(len(obs))
         stations_out = None
-    elif isinstance(stations, observation.Station) \
-             or isinstance(stations, str) \
-             or isinstance(stations, int):
-        stations = (stations, )
+    elif (
+        isinstance(stations, observation.Station)
+        or isinstance(stations, str)
+        or isinstance(stations, int)
+    ):
+        stations = (stations,)
     if stations_out == None:
         stations_out = stations
-    elif isinstance(stations_out, observation.Station) \
-           or isinstance(stations_out, str) \
-           or isinstance(stations_out, int):
-        stations_out = (stations_out, )
+    elif (
+        isinstance(stations_out, observation.Station)
+        or isinstance(stations_out, str)
+        or isinstance(stations_out, int)
+    ):
+        stations_out = (stations_out,)
 
     # Output arrays.
     out_obs = []
@@ -190,8 +193,7 @@ def collect_dates(sim, obs, dates = None, stations = None, period = None,
             j = 0
             i = 0
             while j < len(period):
-                while i < len(dates[istation]) \
-                          and dates[istation][i] < period[j]:
+                while i < len(dates[istation]) and dates[istation][i] < period[j]:
                     i += 1
                 if i == len(dates[istation]):
                     break
@@ -245,7 +247,7 @@ def w_penalized_least_squares(sim, obs, penalization):
     @rtype: 1D-array
     @return: The coefficients (or weights) 'alpha' of the linear combination.
     """
-    A = penalization * identity(sim.shape[0], dtype = 'd')
+    A = penalization * identity(sim.shape[0], dtype="d")
     for i in range(sim.shape[1]):
         A += outer(sim[:, i], sim[:, i])
     return dot(linalg.inv(A), dot(sim, obs))
@@ -265,20 +267,23 @@ def w_least_squares_simplex(sim, obs):
     @rtype: 1D-array
     @return: The coefficients (or weights) 'alpha' of the linear combination.
     """
+
     def cost(w):
         s = dot(transpose(w), sim) / w.sum()
         return dot(transpose(s - obs), s - obs)
+
     def cost_gradient(w):
         w_sum = w.sum()
         s = dot(transpose(w), sim) / w_sum
         return dot(sim - s, s - obs) / w_sum
-    res, f, d = \
-         scipy.optimize.fmin_l_bfgs_b(cost,
-                                      ones(sim.shape[0], dtype = 'd'),
-                                      fprime = cost_gradient,
-                                      bounds = [(0., 1.) for i in
-                                                range(sim.shape[0])],
-                                      approx_grad = False)
+
+    res, f, d = scipy.optimize.fmin_l_bfgs_b(
+        cost,
+        ones(sim.shape[0], dtype="d"),
+        fprime=cost_gradient,
+        bounds=[(0.0, 1.0) for i in range(sim.shape[0])],
+        approx_grad=False,
+    )
     res = array(res)
     return res / res.sum()
 
@@ -373,7 +378,7 @@ def m_median(sim):
     return array(scipy.stats.stats.median(sim, 0))
 
 
-def combine_step(dates, sim, coeff_dates, coeff_step, restricted = False):
+def combine_step(dates, sim, coeff_dates, coeff_step, restricted=False):
     """
     Combines the simulated concentrations based on coefficients provided for
     each date. The same coefficients are applied to all stations.
@@ -405,11 +410,10 @@ def combine_step(dates, sim, coeff_dates, coeff_step, restricted = False):
     """
     # Initializations.
     if isinstance(sim[0], ndarray):
-        sim = (sim, )
+        sim = (sim,)
 
-    if isinstance(dates[0], datetime.datetime) \
-           or isinstance(dates[0], datetime.date):
-        dates = (dates, )
+    if isinstance(dates[0], datetime.datetime) or isinstance(dates[0], datetime.date):
+        dates = (dates,)
 
     Nsim = len(sim)
     Nstations = len(sim[0])
@@ -424,13 +428,13 @@ def combine_step(dates, sim, coeff_dates, coeff_step, restricted = False):
         icoeff = 0
         for idate in range(len(dates[istation])):
             # Corresponding index in 'coeff_dates' and 'coeff_step'.
-            while icoeff < Ndates \
-                      and coeff_dates[icoeff] != dates[istation][idate]:
+            while icoeff < Ndates and coeff_dates[icoeff] != dates[istation][idate]:
                 icoeff += 1
             if icoeff == Ndates:
                 if not restricted:
-                    raise Exception, "Unable to find coefficients for date " \
-                          + str(dates[istation][idate]) + "."
+                    raise Exception, "Unable to find coefficients for date " + str(
+                        dates[istation][idate]
+                    ) + "."
                 icoeff = 0
             else:
                 # Concentrations of the ensemble.
@@ -479,11 +483,10 @@ def combine_step_unbiased(dates, sim, obs, coeff_dates, coeff_step):
     """
     # Initializations.
     if isinstance(sim[0], ndarray):
-        sim = (sim, )
+        sim = (sim,)
 
-    if isinstance(dates[0], datetime.datetime) \
-           or isinstance(dates[0], datetime.date):
-        dates = (dates, )
+    if isinstance(dates[0], datetime.datetime) or isinstance(dates[0], datetime.date):
+        dates = (dates,)
 
     Nsim = len(sim)
     Nstations = len(sim[0])
@@ -499,31 +502,38 @@ def combine_step_unbiased(dates, sim, obs, coeff_dates, coeff_step):
     for idate in range(len(coeff_dates)):
         # New indices.
         for i in range(Nstations):
-            while date_index[i] < len(dates[i]) \
-                      and dates[i][date_index[i]] < coeff_dates[idate]:
+            while (
+                date_index[i] < len(dates[i])
+                and dates[i][date_index[i]] < coeff_dates[idate]
+            ):
                 date_index[i] += 1
         # Computing the means for the current step.
         obs_mean = []
         sim_mean = [[] for j in range(Nsim)]
         for i in range(Nstations):
-            if date_index[i] < len(dates[i]) \
-                   and dates[i][date_index[i]] == coeff_dates[idate]:
+            if (
+                date_index[i] < len(dates[i])
+                and dates[i][date_index[i]] == coeff_dates[idate]
+            ):
                 obs_mean.append(obs[i][date_index[i]])
                 for j in range(Nsim):
                     sim_mean[j].append(sim[j][i][date_index[i]])
-        if len(obs_mean) == 0:   # Empty step.
+        if len(obs_mean) == 0:  # Empty step.
             continue
         obs_mean = array(obs_mean).mean()
         for j in range(Nsim):
             sim_mean[j] = array(sim_mean[j]).mean()
         # Computes the ensemble value.
         for i in range(Nstations):
-            if date_index[i] < len(dates[i]) \
-                   and dates[i][date_index[i]] == coeff_dates[idate]:
+            if (
+                date_index[i] < len(dates[i])
+                and dates[i][date_index[i]] == coeff_dates[idate]
+            ):
                 ens = obs_mean
                 for j in range(Nsim):
-                    ens += coeff_step[idate][j] * (sim[j][i][date_index[i]]
-                                                   - sim_mean[j])
+                    ens += coeff_step[idate][j] * (
+                        sim[j][i][date_index[i]] - sim_mean[j]
+                    )
                 output_sim[i].append(ens)
 
     for istation in range(Nstations):
@@ -532,7 +542,7 @@ def combine_step_unbiased(dates, sim, obs, coeff_dates, coeff_step):
     return output_sim
 
 
-def combine_station_step(dates, sim, coeff_dates, coeff, restricted = False):
+def combine_station_step(dates, sim, coeff_dates, coeff, restricted=False):
     """
     Combines the simulated concentrations based on coefficients provided for
     each date and for each station.
@@ -566,11 +576,10 @@ def combine_station_step(dates, sim, coeff_dates, coeff, restricted = False):
 
     # Initializations.
     if isinstance(sim[0], ndarray):
-        sim = (sim, )
+        sim = (sim,)
 
-    if isinstance(dates[0], datetime.datetime) \
-           or isinstance(dates[0], datetime.date):
-        dates = (dates, )
+    if isinstance(dates[0], datetime.datetime) or isinstance(dates[0], datetime.date):
+        dates = (dates,)
 
     Nsim = len(sim)
     Nstations = len(sim[0])
@@ -580,17 +589,14 @@ def combine_station_step(dates, sim, coeff_dates, coeff, restricted = False):
         output_date = [[] for i in range(Nstations)]
 
     for istation in range(Nstations):
-        matching_dates = [x for x in dates[istation]
-                          if x in coeff_dates[istation]]
+        matching_dates = [x for x in dates[istation] if x in coeff_dates[istation]]
         if not matching_dates == coeff_dates and not restricted:
-            raise Exception, "Unable to match all dates, please activate" \
-                  + " 'restricted' option."
+            raise Exception, "Unable to match all dates, please activate" + " 'restricted' option."
         for good_date in matching_dates:
             idate = dates[istation].index(good_date)
             icoeff = coeff_dates[istation].index(good_date)
             data = array([sim[i][istation][idate] for i in range(Nsim)])
-            output_sim[istation].append((coeff[istation][icoeff]
-                                         * data).sum())
+            output_sim[istation].append((coeff[istation][icoeff] * data).sum())
         if restricted:
             output_date[istation] = matching_dates[:]
 
@@ -630,11 +636,10 @@ def remove_bias_step(dates, sim, bias_dates, bias_step):
     """
     # Initializations.
     if isinstance(sim[0], ndarray):
-        sim = (sim, )
+        sim = (sim,)
 
-    if isinstance(dates[0], datetime.datetime) \
-           or isinstance(dates[0], datetime.date):
-        dates = (dates, )
+    if isinstance(dates[0], datetime.datetime) or isinstance(dates[0], datetime.date):
+        dates = (dates,)
 
     Nsim = len(sim)
     Nstations = len(sim[0])
@@ -646,12 +651,12 @@ def remove_bias_step(dates, sim, bias_dates, bias_step):
         ibias = 0
         for idate in range(len(dates[istation])):
             # Corresponding index in 'bias_dates' and 'bias_step'.
-            while ibias < Ndates \
-                      and bias_dates[ibias] != dates[istation][idate]:
+            while ibias < Ndates and bias_dates[ibias] != dates[istation][idate]:
                 ibias += 1
             if ibias == Ndates:
-                raise Exception, "Unable to find coefficients for date " \
-                      + str(dates[istation][idate]) + "."
+                raise Exception, "Unable to find coefficients for date " + str(
+                    dates[istation][idate]
+                ) + "."
             for isim in range(Nsim):
                 value = sim[isim][istation][idate] - bias_step[ibias]
                 output_sim[isim][istation].append(value)

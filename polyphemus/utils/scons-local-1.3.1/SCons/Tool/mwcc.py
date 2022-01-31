@@ -38,6 +38,7 @@ import string
 
 import SCons.Util
 
+
 def set_vars(env):
     """Set MWCW_VERSION, MWCW_VERSIONS, and some codewarrior environment vars
 
@@ -50,7 +51,7 @@ def set_vars(env):
 
     Returns true if at least one version is found, false otherwise
     """
-    desired = env.get('MWCW_VERSION', '')
+    desired = env.get("MWCW_VERSION", "")
 
     # return right away if the variables are already set
     if isinstance(desired, MWVersion):
@@ -68,20 +69,20 @@ def set_vars(env):
     elif versions:
         version = versions[-1]
 
-    env['MWCW_VERSIONS'] = versions
-    env['MWCW_VERSION'] = version
+    env["MWCW_VERSIONS"] = versions
+    env["MWCW_VERSION"] = version
 
     if version is None:
-      return 0
+        return 0
 
-    env.PrependENVPath('PATH', version.clpath)
-    env.PrependENVPath('PATH', version.dllpath)
-    ENV = env['ENV']
-    ENV['CWFolder'] = version.path
-    ENV['LM_LICENSE_FILE'] = version.license
-    plus = lambda x: '+%s' % x
-    ENV['MWCIncludes'] = string.join(map(plus, version.includes), os.pathsep)
-    ENV['MWLibraries'] = string.join(map(plus, version.libs), os.pathsep)
+    env.PrependENVPath("PATH", version.clpath)
+    env.PrependENVPath("PATH", version.dllpath)
+    ENV = env["ENV"]
+    ENV["CWFolder"] = version.path
+    ENV["LM_LICENSE_FILE"] = version.license
+    plus = lambda x: "+%s" % x
+    ENV["MWCIncludes"] = string.join(map(plus, version.includes), os.pathsep)
+    ENV["MWLibraries"] = string.join(map(plus, version.libs), os.pathsep)
     return 1
 
 
@@ -96,18 +97,18 @@ def find_versions():
     if SCons.Util.can_read_reg:
         try:
             HLM = SCons.Util.HKEY_LOCAL_MACHINE
-            product = 'SOFTWARE\\Metrowerks\\CodeWarrior\\Product Versions'
+            product = "SOFTWARE\\Metrowerks\\CodeWarrior\\Product Versions"
             product_key = SCons.Util.RegOpenKeyEx(HLM, product)
 
             i = 0
             while 1:
-                name = product + '\\' + SCons.Util.RegEnumKey(product_key, i)
+                name = product + "\\" + SCons.Util.RegEnumKey(product_key, i)
                 name_key = SCons.Util.RegOpenKeyEx(HLM, name)
 
                 try:
-                    version = SCons.Util.RegQueryValueEx(name_key, 'VERSION')
-                    path = SCons.Util.RegQueryValueEx(name_key, 'PATH')
-                    mwv = MWVersion(version[0], path[0], 'Win32-X86')
+                    version = SCons.Util.RegQueryValueEx(name_key, "VERSION")
+                    path = SCons.Util.RegQueryValueEx(name_key, "PATH")
+                    mwv = MWVersion(version[0], path[0], "Win32-X86")
                     versions.append(mwv)
                 except SCons.Util.RegError:
                     pass
@@ -125,9 +126,8 @@ class MWVersion:
         self.version = version
         self.path = path
         self.platform = platform
-        self.clpath = os.path.join(path, 'Other Metrowerks Tools',
-                                   'Command Line Tools')
-        self.dllpath = os.path.join(path, 'Bin')
+        self.clpath = os.path.join(path, "Other Metrowerks Tools", "Command Line Tools")
+        self.dllpath = os.path.join(path, "Bin")
 
         # The Metrowerks tools don't store any configuration data so they
         # are totally dumb when it comes to locating standard headers,
@@ -138,10 +138,10 @@ class MWVersion:
         ### The paths below give a normal build environment in CodeWarrior for
         ### Windows, other versions of CodeWarrior might need different paths.
 
-        msl = os.path.join(path, 'MSL')
-        support = os.path.join(path, '%s Support' % platform)
+        msl = os.path.join(path, "MSL")
+        support = os.path.join(path, "%s Support" % platform)
 
-        self.license = os.path.join(path, 'license.dat')
+        self.license = os.path.join(path, "license.dat")
         self.includes = [msl, support]
         self.libs = [msl, support]
 
@@ -149,8 +149,8 @@ class MWVersion:
         return self.version
 
 
-CSuffixes = ['.c', '.C']
-CXXSuffixes = ['.cc', '.cpp', '.cxx', '.c++', '.C++']
+CSuffixes = [".c", ".C"]
+CXXSuffixes = [".cc", ".cpp", ".cxx", ".c++", ".C++"]
 
 
 def generate(env):
@@ -170,36 +170,39 @@ def generate(env):
         static_obj.add_action(suffix, SCons.Defaults.CXXAction)
         shared_obj.add_action(suffix, SCons.Defaults.ShCXXAction)
 
-    env['CCCOMFLAGS'] = '$CPPFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS -nolink -o $TARGET $SOURCES'
+    env[
+        "CCCOMFLAGS"
+    ] = "$CPPFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS -nolink -o $TARGET $SOURCES"
 
-    env['CC']         = 'mwcc'
-    env['CCCOM']      = '$CC $CFLAGS $CCFLAGS $CCCOMFLAGS'
+    env["CC"] = "mwcc"
+    env["CCCOM"] = "$CC $CFLAGS $CCFLAGS $CCCOMFLAGS"
 
-    env['CXX']        = 'mwcc'
-    env['CXXCOM']     = '$CXX $CXXFLAGS $CCCOMFLAGS'
+    env["CXX"] = "mwcc"
+    env["CXXCOM"] = "$CXX $CXXFLAGS $CCCOMFLAGS"
 
-    env['SHCC']       = '$CC'
-    env['SHCCFLAGS']  = '$CCFLAGS'
-    env['SHCFLAGS']   = '$CFLAGS'
-    env['SHCCCOM']    = '$SHCC $SHCFLAGS $SHCCFLAGS $CCCOMFLAGS'
+    env["SHCC"] = "$CC"
+    env["SHCCFLAGS"] = "$CCFLAGS"
+    env["SHCFLAGS"] = "$CFLAGS"
+    env["SHCCCOM"] = "$SHCC $SHCFLAGS $SHCCFLAGS $CCCOMFLAGS"
 
-    env['SHCXX']       = '$CXX'
-    env['SHCXXFLAGS']  = '$CXXFLAGS'
-    env['SHCXXCOM']    = '$SHCXX $SHCXXFLAGS $CCCOMFLAGS'
+    env["SHCXX"] = "$CXX"
+    env["SHCXXFLAGS"] = "$CXXFLAGS"
+    env["SHCXXCOM"] = "$SHCXX $SHCXXFLAGS $CCCOMFLAGS"
 
-    env['CFILESUFFIX'] = '.c'
-    env['CXXFILESUFFIX'] = '.cpp'
-    env['CPPDEFPREFIX']  = '-D'
-    env['CPPDEFSUFFIX']  = ''
-    env['INCPREFIX']  = '-I'
-    env['INCSUFFIX']  = ''
+    env["CFILESUFFIX"] = ".c"
+    env["CXXFILESUFFIX"] = ".cpp"
+    env["CPPDEFPREFIX"] = "-D"
+    env["CPPDEFSUFFIX"] = ""
+    env["INCPREFIX"] = "-I"
+    env["INCSUFFIX"] = ""
 
-    #env['PCH'] = ?
-    #env['PCHSTOP'] = ?
+    # env['PCH'] = ?
+    # env['PCHSTOP'] = ?
 
 
 def exists(env):
     return set_vars(env)
+
 
 # Local Variables:
 # tab-width:4

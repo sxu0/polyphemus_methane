@@ -101,15 +101,15 @@ namespace Polyphemus
 
     //! List of species with scavenging.
     vector<string> species_list_scav;
-    vector<string> species_list_dep; 
+    vector<string> species_list_dep;
     //! Dry deposition fluxes at current date.
     Data<T, 3> DryDepositionFlux;
-  
+
     //! Wet deposition fluxes at current date.
     Data<T, 3> WetDepositionFlux;
     //! In cloud wet deposition fluxes at current date.
     Data<T, 3> InCloudWetDepositionFlux;
- 
+
     //! Time criteria for reinjection.
     bool option_time;
     //! Reinjection time (in seconds since release).
@@ -285,7 +285,7 @@ namespace Polyphemus
     void GetCellIndices(T lon, T lat, T height,
                         int& index_z, int& index_y, int& index_x);
     T GetGasCompensation(int species, int z, int y, int x);
-    void SetGasCompensation(int species, int z, int y, int x, 
+    void SetGasCompensation(int species, int z, int y, int x,
 			    T gas_compensation);
     void LatLonToCartesian(T lon, T lat, T& x, T& y);
     void CartesianToLatLon(T x, T y, T& lon, T& lat);

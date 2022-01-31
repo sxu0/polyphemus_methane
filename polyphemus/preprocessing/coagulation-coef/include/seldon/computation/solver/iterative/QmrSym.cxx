@@ -22,15 +22,15 @@
 
 namespace Seldon
 {
-  
+
   //! Solves linear system using Symmetric Quasi-Minimal Residual (SQMR)
   /*!
     Solves the symmetric linear system Ax = b using the
     Quasi-Minimal Residual method.
-    
+
     See: R. W. Freund and N. M. Nachtigal, A quasi-minimal residual method for
     non-Hermitian linear systems, Numerical Math., 60(1991), pp. 315-339
-    
+
     \param[in] A  Complex Symmetric Matrix
     \param[in,out] x  Vector on input it is the initial guess
     on output it is the solution
@@ -45,57 +45,57 @@ namespace Seldon
     const int N = A.GetM();
     if (N <= 0)
       return 0;
-    
+
     typedef typename Vector1::value_type Complexe;
     Complexe delta, ep(0), beta;
     Titer  rho, rho_1;
     Complexe theta_1, gamma_1;
     Complexe theta(0), gamma(1), eta(-1);
-    
+
     Vector1 r(b), y(b);
     Vector1 v(b), p_tld(b);
     Vector1 p(b), d(b), s(b);
-    
+
     // we initialize iter
     int success_init = iter.Init(b);
     if (success_init != 0)
       return iter.ErrorCode();
-    
+
     // r = b - Ax
     Copy(b, r);
     if (!iter.IsInitGuess_Null())
       MltAdd(Complexe(-1), A, x, Complexe(1), r);
     else
       x.Zero();
-    
+
     Copy(r, v);
-    
+
     M.Solve(A, v, y);
     rho = Norm2(y);
-    
+
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are reached
     while (! iter.Finished(r))
       {
-	
+
 	if (rho == Titer(0))
 	  {
 	    iter.Fail(1, "Qmr breakdown #1");
 	    break;
 	  }
-		  
+
 	// v = v / rho
 	// y = y / rho
 	Mlt(Complexe(1./rho), v);
 	Mlt(Complexe(1./rho), y);
-	
+
 	delta = DotProd(v, y);
 	if (delta == Complexe(0))
 	  {
 	    iter.Fail(3, "Qmr breakdown #2");
 	    break;
 	  }
-	
+
 	if (iter.First())
 	  Copy(y, p);
 	else
@@ -104,45 +104,45 @@ namespace Seldon
 	    Mlt(Complexe(-(rho  * delta / ep)), p);
 	    Add(Complexe(1), y, p);
 	  }
-	
+
 	// product matrix vector p_tld = A*p
 	Mlt(A, p, p_tld);
-	
+
 	ep = DotProd(p, p_tld);
 	if (ep == Complexe(0))
 	  {
 	    iter.Fail(4, "Qmr breakdown #3");
 	    break;
 	  }
-	
+
 	beta = ep / delta;
 	if (beta == Complexe(0))
 	  {
 	    iter.Fail(5, "Qmr breakdown #4");
 	    break;
 	  }
-	  
+
 	// v = -beta v + p_tld
 	Mlt(Complexe(-beta), v); Add(Complexe(1), p_tld, v);
 	M.Solve(A, v, y);
-	
+
 	rho_1 = rho;
 	rho = Norm2(y);
-	
+
 	gamma_1 = gamma;
 	theta_1 = theta;
-		
+
 	theta = rho / (gamma_1 * beta);
 	gamma = Complexe(1) / sqrt(1.0 + theta * theta);
-	
+
 	if (gamma == Titer(0))
 	  {
 	    iter.Fail(6, "Qmr breakdown #5");
 	    break;
 	  }
-	
+
 	eta = -eta * rho_1 * gamma * gamma / (beta * gamma_1 * gamma_1);
-	
+
 	if (iter.First())
 	  {
 	    Copy(p, d);
@@ -160,13 +160,13 @@ namespace Seldon
 	  }
 	Add(Complexe(1), d, x);
 	Add(-Complexe(1), s, r);
-	
+
 	++iter;
       }
-    
+
     return iter.ErrorCode();
   }
-  
+
 } // end namespace
 
 #define SELDON_FILE_ITERATIVE_QMRSYM_CXX

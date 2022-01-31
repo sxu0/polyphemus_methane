@@ -50,22 +50,38 @@ import SCons.Scanner.D
 import SCons.Scanner.LaTeX
 import SCons.Scanner.Prog
 
-DefaultToolpath=[]
+DefaultToolpath = []
 
 CScanner = SCons.Scanner.C.CScanner()
 DScanner = SCons.Scanner.D.DScanner()
 LaTeXScanner = SCons.Scanner.LaTeX.LaTeXScanner()
 PDFLaTeXScanner = SCons.Scanner.LaTeX.PDFLaTeXScanner()
 ProgramScanner = SCons.Scanner.Prog.ProgramScanner()
-SourceFileScanner = SCons.Scanner.Base({}, name='SourceFileScanner')
+SourceFileScanner = SCons.Scanner.Base({}, name="SourceFileScanner")
 
-CSuffixes = [".c", ".C", ".cxx", ".cpp", ".c++", ".cc",
-             ".h", ".H", ".hxx", ".hpp", ".hh",
-             ".F", ".fpp", ".FPP",
-             ".m", ".mm",
-             ".S", ".spp", ".SPP"]
+CSuffixes = [
+    ".c",
+    ".C",
+    ".cxx",
+    ".cpp",
+    ".c++",
+    ".cc",
+    ".h",
+    ".H",
+    ".hxx",
+    ".hpp",
+    ".hh",
+    ".F",
+    ".fpp",
+    ".FPP",
+    ".m",
+    ".mm",
+    ".S",
+    ".spp",
+    ".SPP",
+]
 
-DSuffixes = ['.d']
+DSuffixes = [".d"]
 
 IDLSuffixes = [".idl", ".IDL"]
 
@@ -85,6 +101,7 @@ for suffix in LaTeXSuffixes:
     SourceFileScanner.add_scanner(suffix, LaTeXScanner)
     SourceFileScanner.add_scanner(suffix, PDFLaTeXScanner)
 
+
 class Tool:
     def __init__(self, name, toolpath=[], **kw):
         self.name = name
@@ -95,7 +112,7 @@ class Tool:
         module = self._tool_module()
         self.generate = module.generate
         self.exists = module.exists
-        if hasattr(module, 'options'):
+        if hasattr(module, "options"):
             self.options = module.options
 
     def _tool_module(self):
@@ -112,7 +129,7 @@ class Tool:
                     if file:
                         file.close()
             except ImportError, e:
-                if str(e)!="No module named %s"%self.name:
+                if str(e) != "No module named %s" % self.name:
                     raise SCons.Errors.EnvironmentError, e
                 try:
                     import zipimport
@@ -128,12 +145,12 @@ class Tool:
         finally:
             sys.path = oldpythonpath
 
-        full_name = 'SCons.Tool.' + self.name
+        full_name = "SCons.Tool." + self.name
         try:
             return sys.modules[full_name]
         except KeyError:
             try:
-                smpath = sys.modules['SCons.Tool'].__path__
+                smpath = sys.modules["SCons.Tool"].__path__
                 try:
                     file, path, desc = imp.find_module(self.name, smpath)
                     module = imp.load_module(full_name, file, path, desc)
@@ -142,11 +159,14 @@ class Tool:
                         file.close()
                     return module
                 except ImportError, e:
-                    if str(e)!="No module named %s"%self.name:
+                    if str(e) != "No module named %s" % self.name:
                         raise SCons.Errors.EnvironmentError, e
                     try:
                         import zipimport
-                        importer = zipimport.zipimporter( sys.modules['SCons.Tool'].__path__[0] )
+
+                        importer = zipimport.zipimporter(
+                            sys.modules["SCons.Tool"].__path__[0]
+                        )
                         module = importer.load_module(full_name)
                         setattr(SCons.Tool, self.name, module)
                         return module
@@ -167,24 +187,28 @@ class Tool:
                 kw.update(call_kw)
             else:
                 kw = self.init_kw
-        env.Append(TOOLS = [ self.name ])
-        if hasattr(self, 'options'):
+        env.Append(TOOLS=[self.name])
+        if hasattr(self, "options"):
             import SCons.Variables
-            if not env.has_key('options'):
+
+            if not env.has_key("options"):
                 from SCons.Script import ARGUMENTS
-                env['options']=SCons.Variables.Variables(args=ARGUMENTS)
-            opts=env['options']
+
+                env["options"] = SCons.Variables.Variables(args=ARGUMENTS)
+            opts = env["options"]
 
             self.options(opts)
             opts.Update(env)
 
-        apply(self.generate, ( env, ) + args, kw)
+        apply(self.generate, (env,) + args, kw)
 
     def __str__(self):
         return self.name
 
+
 ##########################################################################
 #  Create common executable program / library / object builders
+
 
 def createProgBuilder(env):
     """This is a utility function that creates the Program
@@ -194,19 +218,23 @@ def createProgBuilder(env):
     """
 
     try:
-        program = env['BUILDERS']['Program']
+        program = env["BUILDERS"]["Program"]
     except KeyError:
         import SCons.Defaults
-        program = SCons.Builder.Builder(action = SCons.Defaults.LinkAction,
-                                        emitter = '$PROGEMITTER',
-                                        prefix = '$PROGPREFIX',
-                                        suffix = '$PROGSUFFIX',
-                                        src_suffix = '$OBJSUFFIX',
-                                        src_builder = 'Object',
-                                        target_scanner = ProgramScanner)
-        env['BUILDERS']['Program'] = program
+
+        program = SCons.Builder.Builder(
+            action=SCons.Defaults.LinkAction,
+            emitter="$PROGEMITTER",
+            prefix="$PROGPREFIX",
+            suffix="$PROGSUFFIX",
+            src_suffix="$OBJSUFFIX",
+            src_builder="Object",
+            target_scanner=ProgramScanner,
+        )
+        env["BUILDERS"]["Program"] = program
 
     return program
+
 
 def createStaticLibBuilder(env):
     """This is a utility function that creates the StaticLibrary
@@ -216,23 +244,26 @@ def createStaticLibBuilder(env):
     """
 
     try:
-        static_lib = env['BUILDERS']['StaticLibrary']
+        static_lib = env["BUILDERS"]["StaticLibrary"]
     except KeyError:
-        action_list = [ SCons.Action.Action("$ARCOM", "$ARCOMSTR") ]
-        if env.Detect('ranlib'):
+        action_list = [SCons.Action.Action("$ARCOM", "$ARCOMSTR")]
+        if env.Detect("ranlib"):
             ranlib_action = SCons.Action.Action("$RANLIBCOM", "$RANLIBCOMSTR")
             action_list.append(ranlib_action)
 
-        static_lib = SCons.Builder.Builder(action = action_list,
-                                           emitter = '$LIBEMITTER',
-                                           prefix = '$LIBPREFIX',
-                                           suffix = '$LIBSUFFIX',
-                                           src_suffix = '$OBJSUFFIX',
-                                           src_builder = 'StaticObject')
-        env['BUILDERS']['StaticLibrary'] = static_lib
-        env['BUILDERS']['Library'] = static_lib
+        static_lib = SCons.Builder.Builder(
+            action=action_list,
+            emitter="$LIBEMITTER",
+            prefix="$LIBPREFIX",
+            suffix="$LIBSUFFIX",
+            src_suffix="$OBJSUFFIX",
+            src_builder="StaticObject",
+        )
+        env["BUILDERS"]["StaticLibrary"] = static_lib
+        env["BUILDERS"]["Library"] = static_lib
 
     return static_lib
+
 
 def createSharedLibBuilder(env):
     """This is a utility function that creates the SharedLibrary
@@ -242,21 +273,24 @@ def createSharedLibBuilder(env):
     """
 
     try:
-        shared_lib = env['BUILDERS']['SharedLibrary']
+        shared_lib = env["BUILDERS"]["SharedLibrary"]
     except KeyError:
         import SCons.Defaults
-        action_list = [ SCons.Defaults.SharedCheck,
-                        SCons.Defaults.ShLinkAction ]
-        shared_lib = SCons.Builder.Builder(action = action_list,
-                                           emitter = "$SHLIBEMITTER",
-                                           prefix = '$SHLIBPREFIX',
-                                           suffix = '$SHLIBSUFFIX',
-                                           target_scanner = ProgramScanner,
-                                           src_suffix = '$SHOBJSUFFIX',
-                                           src_builder = 'SharedObject')
-        env['BUILDERS']['SharedLibrary'] = shared_lib
+
+        action_list = [SCons.Defaults.SharedCheck, SCons.Defaults.ShLinkAction]
+        shared_lib = SCons.Builder.Builder(
+            action=action_list,
+            emitter="$SHLIBEMITTER",
+            prefix="$SHLIBPREFIX",
+            suffix="$SHLIBSUFFIX",
+            target_scanner=ProgramScanner,
+            src_suffix="$SHOBJSUFFIX",
+            src_builder="SharedObject",
+        )
+        env["BUILDERS"]["SharedLibrary"] = shared_lib
 
     return shared_lib
+
 
 def createLoadableModuleBuilder(env):
     """This is a utility function that creates the LoadableModule
@@ -266,21 +300,24 @@ def createLoadableModuleBuilder(env):
     """
 
     try:
-        ld_module = env['BUILDERS']['LoadableModule']
+        ld_module = env["BUILDERS"]["LoadableModule"]
     except KeyError:
         import SCons.Defaults
-        action_list = [ SCons.Defaults.SharedCheck,
-                        SCons.Defaults.LdModuleLinkAction ]
-        ld_module = SCons.Builder.Builder(action = action_list,
-                                          emitter = "$LDMODULEEMITTER",
-                                          prefix = '$LDMODULEPREFIX',
-                                          suffix = '$LDMODULESUFFIX',
-                                          target_scanner = ProgramScanner,
-                                          src_suffix = '$SHOBJSUFFIX',
-                                          src_builder = 'SharedObject')
-        env['BUILDERS']['LoadableModule'] = ld_module
+
+        action_list = [SCons.Defaults.SharedCheck, SCons.Defaults.LdModuleLinkAction]
+        ld_module = SCons.Builder.Builder(
+            action=action_list,
+            emitter="$LDMODULEEMITTER",
+            prefix="$LDMODULEPREFIX",
+            suffix="$LDMODULESUFFIX",
+            target_scanner=ProgramScanner,
+            src_suffix="$SHOBJSUFFIX",
+            src_builder="SharedObject",
+        )
+        env["BUILDERS"]["LoadableModule"] = ld_module
 
     return ld_module
+
 
 def createObjBuilders(env):
     """This is a utility function that creates the StaticObject
@@ -295,33 +332,37 @@ def createObjBuilders(env):
     The return is a 2-tuple of (StaticObject, SharedObject)
     """
 
+    try:
+        static_obj = env["BUILDERS"]["StaticObject"]
+    except KeyError:
+        static_obj = SCons.Builder.Builder(
+            action={},
+            emitter={},
+            prefix="$OBJPREFIX",
+            suffix="$OBJSUFFIX",
+            src_builder=["CFile", "CXXFile"],
+            source_scanner=SourceFileScanner,
+            single_source=1,
+        )
+        env["BUILDERS"]["StaticObject"] = static_obj
+        env["BUILDERS"]["Object"] = static_obj
 
     try:
-        static_obj = env['BUILDERS']['StaticObject']
+        shared_obj = env["BUILDERS"]["SharedObject"]
     except KeyError:
-        static_obj = SCons.Builder.Builder(action = {},
-                                           emitter = {},
-                                           prefix = '$OBJPREFIX',
-                                           suffix = '$OBJSUFFIX',
-                                           src_builder = ['CFile', 'CXXFile'],
-                                           source_scanner = SourceFileScanner,
-                                           single_source = 1)
-        env['BUILDERS']['StaticObject'] = static_obj
-        env['BUILDERS']['Object'] = static_obj
-
-    try:
-        shared_obj = env['BUILDERS']['SharedObject']
-    except KeyError:
-        shared_obj = SCons.Builder.Builder(action = {},
-                                           emitter = {},
-                                           prefix = '$SHOBJPREFIX',
-                                           suffix = '$SHOBJSUFFIX',
-                                           src_builder = ['CFile', 'CXXFile'],
-                                           source_scanner = SourceFileScanner,
-                                           single_source = 1)
-        env['BUILDERS']['SharedObject'] = shared_obj
+        shared_obj = SCons.Builder.Builder(
+            action={},
+            emitter={},
+            prefix="$SHOBJPREFIX",
+            suffix="$SHOBJSUFFIX",
+            src_builder=["CFile", "CXXFile"],
+            source_scanner=SourceFileScanner,
+            single_source=1,
+        )
+        env["BUILDERS"]["SharedObject"] = shared_obj
 
     return (static_obj, shared_obj)
+
 
 def createCFileBuilders(env):
     """This is a utility function that creates the CFile/CXXFile
@@ -337,96 +378,108 @@ def createCFileBuilders(env):
     """
 
     try:
-        c_file = env['BUILDERS']['CFile']
+        c_file = env["BUILDERS"]["CFile"]
     except KeyError:
-        c_file = SCons.Builder.Builder(action = {},
-                                       emitter = {},
-                                       suffix = {None:'$CFILESUFFIX'})
-        env['BUILDERS']['CFile'] = c_file
+        c_file = SCons.Builder.Builder(
+            action={}, emitter={}, suffix={None: "$CFILESUFFIX"}
+        )
+        env["BUILDERS"]["CFile"] = c_file
 
-        env.SetDefault(CFILESUFFIX = '.c')
+        env.SetDefault(CFILESUFFIX=".c")
 
     try:
-        cxx_file = env['BUILDERS']['CXXFile']
+        cxx_file = env["BUILDERS"]["CXXFile"]
     except KeyError:
-        cxx_file = SCons.Builder.Builder(action = {},
-                                         emitter = {},
-                                         suffix = {None:'$CXXFILESUFFIX'})
-        env['BUILDERS']['CXXFile'] = cxx_file
-        env.SetDefault(CXXFILESUFFIX = '.cc')
+        cxx_file = SCons.Builder.Builder(
+            action={}, emitter={}, suffix={None: "$CXXFILESUFFIX"}
+        )
+        env["BUILDERS"]["CXXFile"] = cxx_file
+        env.SetDefault(CXXFILESUFFIX=".cc")
 
     return (c_file, cxx_file)
+
 
 ##########################################################################
 #  Create common Java builders
 
+
 def CreateJarBuilder(env):
     try:
-        java_jar = env['BUILDERS']['Jar']
+        java_jar = env["BUILDERS"]["Jar"]
     except KeyError:
         fs = SCons.Node.FS.get_default_fs()
-        jar_com = SCons.Action.Action('$JARCOM', '$JARCOMSTR')
-        java_jar = SCons.Builder.Builder(action = jar_com,
-                                         suffix = '$JARSUFFIX',
-                                         src_suffix = '$JAVACLASSSUFIX',
-                                         src_builder = 'JavaClassFile',
-                                         source_factory = fs.Entry)
-        env['BUILDERS']['Jar'] = java_jar
+        jar_com = SCons.Action.Action("$JARCOM", "$JARCOMSTR")
+        java_jar = SCons.Builder.Builder(
+            action=jar_com,
+            suffix="$JARSUFFIX",
+            src_suffix="$JAVACLASSSUFIX",
+            src_builder="JavaClassFile",
+            source_factory=fs.Entry,
+        )
+        env["BUILDERS"]["Jar"] = java_jar
     return java_jar
+
 
 def CreateJavaHBuilder(env):
     try:
-        java_javah = env['BUILDERS']['JavaH']
+        java_javah = env["BUILDERS"]["JavaH"]
     except KeyError:
         fs = SCons.Node.FS.get_default_fs()
-        java_javah_com = SCons.Action.Action('$JAVAHCOM', '$JAVAHCOMSTR')
-        java_javah = SCons.Builder.Builder(action = java_javah_com,
-                                           src_suffix = '$JAVACLASSSUFFIX',
-                                           target_factory = fs.Entry,
-                                           source_factory = fs.File,
-                                           src_builder = 'JavaClassFile')
-        env['BUILDERS']['JavaH'] = java_javah
+        java_javah_com = SCons.Action.Action("$JAVAHCOM", "$JAVAHCOMSTR")
+        java_javah = SCons.Builder.Builder(
+            action=java_javah_com,
+            src_suffix="$JAVACLASSSUFFIX",
+            target_factory=fs.Entry,
+            source_factory=fs.File,
+            src_builder="JavaClassFile",
+        )
+        env["BUILDERS"]["JavaH"] = java_javah
     return java_javah
+
 
 def CreateJavaClassFileBuilder(env):
     try:
-        java_class_file = env['BUILDERS']['JavaClassFile']
+        java_class_file = env["BUILDERS"]["JavaClassFile"]
     except KeyError:
         fs = SCons.Node.FS.get_default_fs()
-        javac_com = SCons.Action.Action('$JAVACCOM', '$JAVACCOMSTR')
-        java_class_file = SCons.Builder.Builder(action = javac_com,
-                                                emitter = {},
-                                                #suffix = '$JAVACLASSSUFFIX',
-                                                src_suffix = '$JAVASUFFIX',
-                                                src_builder = ['JavaFile'],
-                                                target_factory = fs.Entry,
-                                                source_factory = fs.File)
-        env['BUILDERS']['JavaClassFile'] = java_class_file
+        javac_com = SCons.Action.Action("$JAVACCOM", "$JAVACCOMSTR")
+        java_class_file = SCons.Builder.Builder(
+            action=javac_com,
+            emitter={},
+            # suffix = '$JAVACLASSSUFFIX',
+            src_suffix="$JAVASUFFIX",
+            src_builder=["JavaFile"],
+            target_factory=fs.Entry,
+            source_factory=fs.File,
+        )
+        env["BUILDERS"]["JavaClassFile"] = java_class_file
     return java_class_file
+
 
 def CreateJavaClassDirBuilder(env):
     try:
-        java_class_dir = env['BUILDERS']['JavaClassDir']
+        java_class_dir = env["BUILDERS"]["JavaClassDir"]
     except KeyError:
         fs = SCons.Node.FS.get_default_fs()
-        javac_com = SCons.Action.Action('$JAVACCOM', '$JAVACCOMSTR')
-        java_class_dir = SCons.Builder.Builder(action = javac_com,
-                                               emitter = {},
-                                               target_factory = fs.Dir,
-                                               source_factory = fs.Dir)
-        env['BUILDERS']['JavaClassDir'] = java_class_dir
+        javac_com = SCons.Action.Action("$JAVACCOM", "$JAVACCOMSTR")
+        java_class_dir = SCons.Builder.Builder(
+            action=javac_com, emitter={}, target_factory=fs.Dir, source_factory=fs.Dir
+        )
+        env["BUILDERS"]["JavaClassDir"] = java_class_dir
     return java_class_dir
+
 
 def CreateJavaFileBuilder(env):
     try:
-        java_file = env['BUILDERS']['JavaFile']
+        java_file = env["BUILDERS"]["JavaFile"]
     except KeyError:
-        java_file = SCons.Builder.Builder(action = {},
-                                          emitter = {},
-                                          suffix = {None:'$JAVASUFFIX'})
-        env['BUILDERS']['JavaFile'] = java_file
-        env['JAVASUFFIX'] = '.java'
+        java_file = SCons.Builder.Builder(
+            action={}, emitter={}, suffix={None: "$JAVASUFFIX"}
+        )
+        env["BUILDERS"]["JavaFile"] = java_file
+        env["JAVASUFFIX"] = ".java"
     return java_file
+
 
 class ToolInitializerMethod:
     """
@@ -438,6 +491,7 @@ class ToolInitializerMethod:
     whatever builder was (presumably) added to the construction
     environment in place of this particular instance.
     """
+
     def __init__(self, name, initializer):
         """
         Note:  we store the tool name as __name__ so it can be used by
@@ -448,9 +502,9 @@ class ToolInitializerMethod:
 
     def get_builder(self, env):
         """
-	Returns the appropriate real Builder for this method name
-	after having the associated ToolInitializer object apply
-	the appropriate Tool module.
+        Returns the appropriate real Builder for this method name
+        after having the associated ToolInitializer object apply
+        the appropriate Tool module.
         """
         builder = getattr(env, self.__name__)
 
@@ -469,12 +523,12 @@ class ToolInitializerMethod:
         return builder
 
     def __call__(self, env, *args, **kw):
-        """
-        """
+        """ """
         builder = self.get_builder(env)
         if builder is None:
             return [], []
         return apply(builder, args, kw)
+
 
 class ToolInitializer:
     """
@@ -487,6 +541,7 @@ class ToolInitializer:
     ToolInitializerMethod objects for the various Builder methods
     that we want to use to delay Tool searches until necessary.
     """
+
     def __init__(self, env, tools, names):
         if not SCons.Util.is_List(tools):
             tools = [tools]
@@ -512,8 +567,8 @@ class ToolInitializer:
 
     def apply_tools(self, env):
         """
-	Searches the list of associated Tool modules for one that
-	exists, and applies that to the construction environment.
+        Searches the list of associated Tool modules for one that
+        exists, and applies that to the construction environment.
         """
         for t in self.tools:
             tool = SCons.Tool.Tool(t)
@@ -521,20 +576,26 @@ class ToolInitializer:
                 env.Tool(tool)
                 return
 
-	# If we fall through here, there was no tool module found.
-	# This is where we can put an informative error message
-	# about the inability to find the tool.   We'll start doing
-	# this as we cut over more pre-defined Builder+Tools to use
-	# the ToolInitializer class.
+
+# If we fall through here, there was no tool module found.
+# This is where we can put an informative error message
+# about the inability to find the tool.   We'll start doing
+# this as we cut over more pre-defined Builder+Tools to use
+# the ToolInitializer class.
+
 
 def Initializers(env):
-    ToolInitializer(env, ['install'], ['_InternalInstall', '_InternalInstallAs'])
+    ToolInitializer(env, ["install"], ["_InternalInstall", "_InternalInstallAs"])
+
     def Install(self, *args, **kw):
         return apply(self._InternalInstall, args, kw)
+
     def InstallAs(self, *args, **kw):
         return apply(self._InternalInstallAs, args, kw)
+
     env.AddMethod(Install)
     env.AddMethod(InstallAs)
+
 
 def FindTool(tools, env):
     for tool in tools:
@@ -543,91 +604,116 @@ def FindTool(tools, env):
             return tool
     return None
 
+
 def FindAllTools(tools, env):
     def ToolExists(tool, env=env):
         return Tool(tool).exists(env)
-    return filter (ToolExists, tools)
+
+    return filter(ToolExists, tools)
+
 
 def tool_list(platform, env):
 
-    other_plat_tools=[]
+    other_plat_tools = []
     # XXX this logic about what tool to prefer on which platform
     #     should be moved into either the platform files or
     #     the tool files themselves.
     # The search orders here are described in the man page.  If you
     # change these search orders, update the man page as well.
-    if str(platform) == 'win32':
+    if str(platform) == "win32":
         "prefer Microsoft tools on Windows"
-        linkers = ['mslink', 'gnulink', 'ilink', 'linkloc', 'ilink32' ]
-        c_compilers = ['msvc', 'mingw', 'gcc', 'intelc', 'icl', 'icc', 'cc', 'bcc32' ]
-        cxx_compilers = ['msvc', 'intelc', 'icc', 'g++', 'c++', 'bcc32' ]
-        assemblers = ['masm', 'nasm', 'gas', '386asm' ]
-        fortran_compilers = ['gfortran', 'g77', 'ifl', 'cvf', 'f95', 'f90', 'fortran']
-        ars = ['mslib', 'ar', 'tlib']
-        other_plat_tools=['msvs','midl']
-    elif str(platform) == 'os2':
+        linkers = ["mslink", "gnulink", "ilink", "linkloc", "ilink32"]
+        c_compilers = ["msvc", "mingw", "gcc", "intelc", "icl", "icc", "cc", "bcc32"]
+        cxx_compilers = ["msvc", "intelc", "icc", "g++", "c++", "bcc32"]
+        assemblers = ["masm", "nasm", "gas", "386asm"]
+        fortran_compilers = ["gfortran", "g77", "ifl", "cvf", "f95", "f90", "fortran"]
+        ars = ["mslib", "ar", "tlib"]
+        other_plat_tools = ["msvs", "midl"]
+    elif str(platform) == "os2":
         "prefer IBM tools on OS/2"
-        linkers = ['ilink', 'gnulink', ]#'mslink']
-        c_compilers = ['icc', 'gcc',]# 'msvc', 'cc']
-        cxx_compilers = ['icc', 'g++',]# 'msvc', 'c++']
-        assemblers = ['nasm',]# 'masm', 'gas']
-        fortran_compilers = ['ifl', 'g77']
-        ars = ['ar',]# 'mslib']
-    elif str(platform) == 'irix':
+        linkers = [
+            "ilink",
+            "gnulink",
+        ]  #'mslink']
+        c_compilers = [
+            "icc",
+            "gcc",
+        ]  # 'msvc', 'cc']
+        cxx_compilers = [
+            "icc",
+            "g++",
+        ]  # 'msvc', 'c++']
+        assemblers = [
+            "nasm",
+        ]  # 'masm', 'gas']
+        fortran_compilers = ["ifl", "g77"]
+        ars = [
+            "ar",
+        ]  # 'mslib']
+    elif str(platform) == "irix":
         "prefer MIPSPro on IRIX"
-        linkers = ['sgilink', 'gnulink']
-        c_compilers = ['sgicc', 'gcc', 'cc']
-        cxx_compilers = ['sgic++', 'g++', 'c++']
-        assemblers = ['as', 'gas']
-        fortran_compilers = ['f95', 'f90', 'f77', 'g77', 'fortran']
-        ars = ['sgiar']
-    elif str(platform) == 'sunos':
+        linkers = ["sgilink", "gnulink"]
+        c_compilers = ["sgicc", "gcc", "cc"]
+        cxx_compilers = ["sgic++", "g++", "c++"]
+        assemblers = ["as", "gas"]
+        fortran_compilers = ["f95", "f90", "f77", "g77", "fortran"]
+        ars = ["sgiar"]
+    elif str(platform) == "sunos":
         "prefer Forte tools on SunOS"
-        linkers = ['sunlink', 'gnulink']
-        c_compilers = ['suncc', 'gcc', 'cc']
-        cxx_compilers = ['sunc++', 'g++', 'c++']
-        assemblers = ['as', 'gas']
-        fortran_compilers = ['sunf95', 'sunf90', 'sunf77', 'f95', 'f90', 'f77',
-                             'gfortran', 'g77', 'fortran']
-        ars = ['sunar']
-    elif str(platform) == 'hpux':
+        linkers = ["sunlink", "gnulink"]
+        c_compilers = ["suncc", "gcc", "cc"]
+        cxx_compilers = ["sunc++", "g++", "c++"]
+        assemblers = ["as", "gas"]
+        fortran_compilers = [
+            "sunf95",
+            "sunf90",
+            "sunf77",
+            "f95",
+            "f90",
+            "f77",
+            "gfortran",
+            "g77",
+            "fortran",
+        ]
+        ars = ["sunar"]
+    elif str(platform) == "hpux":
         "prefer aCC tools on HP-UX"
-        linkers = ['hplink', 'gnulink']
-        c_compilers = ['hpcc', 'gcc', 'cc']
-        cxx_compilers = ['hpc++', 'g++', 'c++']
-        assemblers = ['as', 'gas']
-        fortran_compilers = ['f95', 'f90', 'f77', 'g77', 'fortran']
-        ars = ['ar']
-    elif str(platform) == 'aix':
+        linkers = ["hplink", "gnulink"]
+        c_compilers = ["hpcc", "gcc", "cc"]
+        cxx_compilers = ["hpc++", "g++", "c++"]
+        assemblers = ["as", "gas"]
+        fortran_compilers = ["f95", "f90", "f77", "g77", "fortran"]
+        ars = ["ar"]
+    elif str(platform) == "aix":
         "prefer AIX Visual Age tools on AIX"
-        linkers = ['aixlink', 'gnulink']
-        c_compilers = ['aixcc', 'gcc', 'cc']
-        cxx_compilers = ['aixc++', 'g++', 'c++']
-        assemblers = ['as', 'gas']
-        fortran_compilers = ['f95', 'f90', 'aixf77', 'g77', 'fortran']
-        ars = ['ar']
-    elif str(platform) == 'darwin':
+        linkers = ["aixlink", "gnulink"]
+        c_compilers = ["aixcc", "gcc", "cc"]
+        cxx_compilers = ["aixc++", "g++", "c++"]
+        assemblers = ["as", "gas"]
+        fortran_compilers = ["f95", "f90", "aixf77", "g77", "fortran"]
+        ars = ["ar"]
+    elif str(platform) == "darwin":
         "prefer GNU tools on Mac OS X, except for some linkers and IBM tools"
-        linkers = ['applelink', 'gnulink']
-        c_compilers = ['gcc', 'cc']
-        cxx_compilers = ['g++', 'c++']
-        assemblers = ['as']
-        fortran_compilers = ['gfortran', 'f95', 'f90', 'g77']
-        ars = ['ar']
+        linkers = ["applelink", "gnulink"]
+        c_compilers = ["gcc", "cc"]
+        cxx_compilers = ["g++", "c++"]
+        assemblers = ["as"]
+        fortran_compilers = ["gfortran", "f95", "f90", "g77"]
+        ars = ["ar"]
     else:
         "prefer GNU tools on all other platforms"
-        linkers = ['gnulink', 'mslink', 'ilink']
-        c_compilers = ['gcc', 'msvc', 'intelc', 'icc', 'cc']
-        cxx_compilers = ['g++', 'msvc', 'intelc', 'icc', 'c++']
-        assemblers = ['gas', 'nasm', 'masm']
-        fortran_compilers = ['gfortran', 'g77', 'ifort', 'ifl', 'f95', 'f90', 'f77']
-        ars = ['ar', 'mslib']
+        linkers = ["gnulink", "mslink", "ilink"]
+        c_compilers = ["gcc", "msvc", "intelc", "icc", "cc"]
+        cxx_compilers = ["g++", "msvc", "intelc", "icc", "c++"]
+        assemblers = ["gas", "nasm", "masm"]
+        fortran_compilers = ["gfortran", "g77", "ifort", "ifl", "f95", "f90", "f77"]
+        ars = ["ar", "mslib"]
 
     c_compiler = FindTool(c_compilers, env) or c_compilers[0]
 
     # XXX this logic about what tool provides what should somehow be
     #     moved into the tool files themselves.
-    if c_compiler and c_compiler == 'mingw':
+    if c_compiler and c_compiler == "mingw":
         # MinGW contains a linker, C compiler, C++ compiler,
         # Fortran compiler, archiver and assembler:
         cxx_compiler = None
@@ -637,7 +723,7 @@ def tool_list(platform, env):
         ar = None
     else:
         # Don't use g++ if the C compiler has built-in C++ support:
-        if c_compiler in ('msvc', 'intelc', 'icc'):
+        if c_compiler in ("msvc", "intelc", "icc"):
             cxx_compiler = None
         else:
             cxx_compiler = FindTool(cxx_compilers, env) or cxx_compilers[0]
@@ -646,27 +732,52 @@ def tool_list(platform, env):
         fortran_compiler = FindTool(fortran_compilers, env) or fortran_compilers[0]
         ar = FindTool(ars, env) or ars[0]
 
-    other_tools = FindAllTools(['BitKeeper', 'CVS',
-                                'dmd',
-                                'filesystem',
-                                'dvipdf', 'dvips', 'gs',
-                                'jar', 'javac', 'javah',
-                                'latex', 'lex',
-                                'm4', #'midl', 'msvs',
-                                'pdflatex', 'pdftex', 'Perforce',
-                                'RCS', 'rmic', 'rpcgen',
-                                'SCCS',
-                                # 'Subversion',
-                                'swig',
-                                'tar', 'tex',
-                                'yacc', 'zip', 'rpm', 'wix']+other_plat_tools,
-                               env)
+    other_tools = FindAllTools(
+        [
+            "BitKeeper",
+            "CVS",
+            "dmd",
+            "filesystem",
+            "dvipdf",
+            "dvips",
+            "gs",
+            "jar",
+            "javac",
+            "javah",
+            "latex",
+            "lex",
+            "m4",  #'midl', 'msvs',
+            "pdflatex",
+            "pdftex",
+            "Perforce",
+            "RCS",
+            "rmic",
+            "rpcgen",
+            "SCCS",
+            # 'Subversion',
+            "swig",
+            "tar",
+            "tex",
+            "yacc",
+            "zip",
+            "rpm",
+            "wix",
+        ]
+        + other_plat_tools,
+        env,
+    )
 
-    tools = ([linker, c_compiler, cxx_compiler,
-              fortran_compiler, assembler, ar]
-             + other_tools)
+    tools = [
+        linker,
+        c_compiler,
+        cxx_compiler,
+        fortran_compiler,
+        assembler,
+        ar,
+    ] + other_tools
 
     return filter(lambda x: x, tools)
+
 
 # Local Variables:
 # tab-width:4

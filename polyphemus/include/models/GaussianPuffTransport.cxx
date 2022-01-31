@@ -745,7 +745,7 @@ namespace Polyphemus
   template<class T>
   void GaussianPuffTransport<T>::SetCurrentMeteo(Puff<T>* puff)
   {
-    if (this->option_process["with_ADMS_dispersion_formula"] || 
+    if (this->option_process["with_ADMS_dispersion_formula"] ||
 	this->option_process["plume_vertical_trajectory"])
       {
         if (puff->HasMeteo())
@@ -1130,7 +1130,7 @@ namespace Polyphemus
       }
   }
 
-  
+
   //! Computes plume rise for each time step.
   template<class T>
   void GaussianPuffTransport<T>::ComputeEvolutivePlumeRise()
@@ -1266,7 +1266,7 @@ namespace Polyphemus
     rise_above_BL = puff->GetHeightAboveBL();
     if (rise_above_BL > previous_height)
       previous_height = rise_above_BL;
-    
+
     previous_rise = max(previous_height - source_height, 0.);
     //distance = puff->GetDistance();
     velocity = puff->GetSourceVelocity();
@@ -1274,7 +1274,7 @@ namespace Polyphemus
     diameter = puff->GetSourceDiameter();
 
     ComputeBuoyancyFrequency((temperature_), stability_, N2);
- 
+
     if (previous_rise == 0.)
       {
 	if (stability_ <= 3)
@@ -1341,7 +1341,7 @@ namespace Polyphemus
 	  }
 
       }
-    
+
     T Eq_plume_rise;
     if (option_concawe)
       Eq_plume_rise = ComputeConcawePlumeRise(temperature_, wind_,
@@ -1362,12 +1362,12 @@ namespace Polyphemus
 					   source_height,
 					   this->option_process["with_plume_rise_breakup"]);
 
-    
+
      // Computing effective height.
     T effective_height = 0.;
     T effective_height_above = 0.;
     T penetration_factor = 0.;
-    
+
     if (inversion_height_ <= 0.)
       {
 	// There is no inversion.
@@ -1392,7 +1392,7 @@ namespace Polyphemus
 	      }
 
 	    effective_height = source_height + plume_rise;
-	    
+
 	  }
 	else
 	  {
@@ -1401,12 +1401,12 @@ namespace Polyphemus
 	    effective_height_above = source_height + plume_rise;
 	  }
       }
-    else if ((source_height + 1.5 * Eq_plume_rise >= inversion_height_) && 
+    else if ((source_height + 1.5 * Eq_plume_rise >= inversion_height_) &&
              !this->option_process["collect_puff_emission"])
       {
-        /* This case is not considered when puff emission quantities are 
-           collected for the verification processing.  
-        */ 
+        /* This case is not considered when puff emission quantities are
+           collected for the verification processing.
+        */
         // Partial penetration in the inversion layer.
         penetration_factor
           = max(1.5 - (inversion_height_ - source_height) / plume_rise, 0.);
@@ -1523,7 +1523,7 @@ namespace Polyphemus
       z_c = z_bl;
     else
       z_c = z_above;
-    
+
     distance = puff->GetDistance();
     time = puff->GetPuffTime();
 
@@ -1571,7 +1571,7 @@ namespace Polyphemus
     sigma_y = puff->GetSigma_y();
     sigma_z = puff->GetSigma_z();
     sigma_z0 = puff->GetSigma_z();
- 
+
     if (sigma_y == 0.)
       {
 	if (this->option_process["with_ADMS_dispersion_formula"])
@@ -1592,7 +1592,7 @@ namespace Polyphemus
 	  }
 	else
 	  {
-	    ComputeSigma(distance_x, time, z, sigma_x, sigma_y, sigma_z);	    
+	    ComputeSigma(distance_x, time, z, sigma_x, sigma_y, sigma_z);
 	    puff->SetSigma_x(sigma_x);
 	    puff->SetSigma_y(sigma_y);
 	    puff->SetSigma_z(sigma_z);
@@ -1602,21 +1602,21 @@ namespace Polyphemus
       {
 	if (this->option_process["with_ADMS_dispersion_formula"])
 	  {
-	    
+
 	    T source_diameter, source_height;
 	    source_diameter = puff->GetSourceDiameter();
 	    source_height = puff->GetSourceHeight();
 
 	    T plume_rise;
 	    plume_rise = z - source_height;
-	    T previous_time, previous_distance; 
-	
+	    T previous_time, previous_distance;
+
 	    previous_time = ComputeADMSTime(sigma_y, boundary_height_, friction_velocity_,
 					    convective_velocity_, wind_, z, lmo_,
 					    coriolis_, plume_rise, source_diameter, stability_);
 	    previous_distance = previous_time * wind_;
 	    // cout << " time: " << previous_time << " distance: " << previous_distance;
-	    
+
 	    // New distance / time to compute standard deviations.
 	    T next_distance, next_time;
 	    next_distance = previous_distance + this->Delta_t * wind_;
@@ -1635,7 +1635,7 @@ namespace Polyphemus
 						    convective_velocity_, lmo_, source_diameter,
 						    source_height, plume_rise, z, stability_);
 	    previous_distance = previous_time * wind_;
-	    // cout << "Vertical, previous dist: " << previous_distance << " previous_time: " << previous_time;	    
+	    // cout << "Vertical, previous dist: " << previous_distance << " previous_time: " << previous_time;
 	    next_distance = previous_distance + this->Delta_t * wind_;
 	    next_time = previous_time + this->Delta_t;
 	    // cout << " next_distance: " << next_distance << " next time: " << next_time << endl;
@@ -1649,7 +1649,7 @@ namespace Polyphemus
 	  {
 	    T previous_distance, previous_time;
 	    ComputeTime(z, sigma_y, previous_distance, previous_time);
-	    
+
 	    // New distance / time to compute standard deviations.
 	    T next_distance, next_time;
 	    next_distance = previous_distance + this->Delta_t * wind_;
@@ -1661,7 +1661,7 @@ namespace Polyphemus
 	    //ComputeSigma(distance_x, time, z, sigma_x, sigma_y, sigma_z);
 	    puff->SetSigma_z(sigma_z);
 	  }
-	
+
       }
 
   }
@@ -1902,7 +1902,7 @@ namespace Polyphemus
 	initial_sigma_y_2 = puff->GetInitialSigma_y();
 	initial_sigma_z_2 = puff->GetInitialSigma_z();
       }
-    
+
     sigma_x = sqrt(sigma_x * sigma_x + initial_sigma_x_2);
     sigma_y = sqrt(sigma_y * sigma_y + initial_sigma_y_2);
     sigma_z = sqrt(sigma_z * sigma_z + initial_sigma_z_2);
@@ -2139,7 +2139,7 @@ namespace Polyphemus
     zic = 0.;
     ComputeZi(convective_velocity_, friction_velocity_, lmo_,
 	      zi, zim, zic);
-    
+
     // Computes Crosswind vertical and horizontal dispersion parameters
     T sigma_w, sigma_v;
     sigma_w = ComputeSigmaWADMS(z, boundary_height_, friction_velocity_,
@@ -2155,7 +2155,7 @@ namespace Polyphemus
 
     if (sigma_w < sigma_min)
       sigma_w = sigma_min;
-        
+
     // Compute Lagrangian timestep for vertical and horizontal dispersion
     T Tlw, Tlv_convective, Tlv_stable;
     Tlv_convective = ComputeTlv(zi, sigma_v);
@@ -2163,7 +2163,7 @@ namespace Polyphemus
 					   boundary_height_, lmo_,
 					   coriolis_, sigma_v, stability_);
     Tlw = ComputeTlw(zi, sigma_w, z);
-      
+
 
     if (Tlw < 0. && stability_ < 3)
       cout << " TL: " << Tlw << endl;
@@ -2251,7 +2251,7 @@ namespace Polyphemus
         ComputeLossFactor(*current_puff, s);
   }
 
-  template<class T> 
+  template<class T>
   T GaussianPuffTransport<T>::ComputeVerticalTrajectory()
   {
     return this->compute_trajectory;

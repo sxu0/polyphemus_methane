@@ -3,12 +3,24 @@
 
 if "_mpi" in __file__:
     import coefficient_repartition_mpi_core as core
-    from coefficient_repartition_mpi_core import VectorInt, VectorDouble, \
-        vector_int, vector_str, Particle, GeneralSection
+    from coefficient_repartition_mpi_core import (
+        VectorInt,
+        VectorDouble,
+        vector_int,
+        vector_str,
+        Particle,
+        GeneralSection,
+    )
 else:
     import coefficient_repartition_core as core
-    from coefficient_repartition_core import VectorInt, VectorDouble, \
-        vector_int, vector_str, Particle, GeneralSection
+    from coefficient_repartition_core import (
+        VectorInt,
+        VectorDouble,
+        vector_int,
+        vector_str,
+        Particle,
+        GeneralSection,
+    )
 
 
 from base import Init, CoefficientRepartitionBase

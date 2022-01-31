@@ -24,5 +24,6 @@
 # Imports the profile modules to enable them:
 import gcc
 import icc
-#import clang
-#import msvc
+
+# import clang
+# import msvc

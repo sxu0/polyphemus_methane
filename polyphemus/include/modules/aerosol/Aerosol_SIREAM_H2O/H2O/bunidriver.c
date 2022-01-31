@@ -171,5 +171,3 @@ void bunidriver(double XPASS[], double GAMMA[], int n)
 #undef TINY
 #undef DIMFUN
 #undef DIMMOL
-
-

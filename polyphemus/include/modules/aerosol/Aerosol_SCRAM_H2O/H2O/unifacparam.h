@@ -28,31 +28,31 @@ Notes: Type A compounds + H2O at 25 C
          Carboxylic Acid        COOH
          Hydroxiperoxide        -O-O-H
 
-revision History:  1. Developed by Betty Pun, AER, December, 1999 
+revision History:  1. Developed by Betty Pun, AER, December, 1999
 	              under CARB funding
-		   2. Changed from original 5 Type A SOA + butandioic acid 
+		   2. Changed from original 5 Type A SOA + butandioic acid
                       to 6 anthropogenic and biogenic SOA for MADRID 1.5
-		      July 2005        
+		      July 2005
 
 
 
 **************************************************************************/
 
-                                                                               
+
 
 #ifndef UNIPARM_H
 #define UNIPARM_H
 
-/* no. of molecules */  	
+/* no. of molecules */
 int NMOL = 10;
 
 /* no. of functional groups */
-int NFUNC = 10;	
+int NFUNC = 10;
 
 /* Z = 10 is a fixed parameter in Unifac */
 double Z = 10.0;
 
-/* original file input has temperature, 
+/* original file input has temperature,
 but temperature is in main input file now */
 
 /* group volume parameters */
@@ -64,7 +64,7 @@ double RG[DIMFUN] = {0.9011, 0.6744, 0.4469, 0.2195, 1.00, 0.92, 1.6724, 0.998, 
 double QG[DIMFUN] = {0.8480, 0.5400, 0.2280, 0.0000, 1.20, 1.40, 1.4880, 0.948, 1.2240, 1.125};
 
 /* no. of groups in each molecule*/
-int NU[DIMMOL][DIMFUN] = { 
+int NU[DIMMOL][DIMFUN] = {
   {2, 2, 2, 1, 0, 0, 0, 0, 2, 0}, /* BiA2D */
   {2, 1, 2, 1, 0, 0, 1, 0, 1, 0}, /* BiA1D */
   {2, 2, 2, 1, 0, 0, 1, 1, 0, 0}, /* BiA0D */
@@ -75,7 +75,7 @@ int NU[DIMMOL][DIMFUN] = {
   {1, 2, 1, 1, 4, 0, 0, 0, 0, 0}, /* BiDER */
   {1, 0, 1, 1, 2, 0, 0, 0, 1, 0}, /* BiMGA */
   {0, 0, 0, 0, 0, 1, 0, 0, 0, 0}};
-  
+
 /* no. of groups in each molecule*/
 double A[DIMFUN][DIMFUN] = {
   {0.0,      0.0    ,  0.0    ,  0.0    ,  986.5, 1318.00,  476.400,  677.000,  663.500, 977.56},
@@ -92,5 +92,3 @@ double A[DIMFUN][DIMFUN] = {
 #endif
 
 /********************END unifacparam.h**********************************/
-
-

@@ -6,7 +6,7 @@
 #include "solving.cxx"
 using namespace soap;
 
-void soap_main(double LWC, double RH, double Temperature, 
+void soap_main(double LWC, double RH, double Temperature,
                double ionic, double chp, double& LWCorg,
                model_config* psoap_config,
                vector<species>* psurrogate, double& deltat,
@@ -14,4 +14,3 @@ void soap_main(double LWC, double RH, double Temperature,
                int ns_aer, int neq, double q[], double qaero[], double qgas[],
                double lwc_Nsize[], double ionic_Nsize[], double chp_Nsize[],
                double liquid_Nsize[]);
-

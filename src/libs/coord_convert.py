@@ -45,11 +45,11 @@ def convert_coord(lat, lon):
 
     # preliminary values
     n = f / (2 - f)
-    A = a / (1 + n) * (1 + n**2 / 4 + n**4 / 64 + n**6 / 256)
+    A = a / (1 + n) * (1 + n ** 2 / 4 + n ** 4 / 64 + n ** 6 / 256)
 
-    alpha1 = 1/2 * n - 2/3 * n**2 + 5/16 * n**3
-    alpha2 = 13/48 * n**2 - 5/3 * n**3
-    alpha3 = 61/240 * n**3
+    alpha1 = 1 / 2 * n - 2 / 3 * n ** 2 + 5 / 16 * n ** 3
+    alpha2 = 13 / 48 * n ** 2 - 5 / 3 * n ** 3
+    alpha3 = 61 / 240 * n ** 3
 
     t = np.sinh(
         np.arctanh(np.sin(phi))
@@ -100,15 +100,15 @@ def convert_proj(X, Y):
 
     # preliminary values
     n = f / (2 - f)
-    A = a / (1 + n) * (1 + n**2 / 4 + n**4 / 64 + n**6 / 256)
+    A = a / (1 + n) * (1 + n ** 2 / 4 + n ** 4 / 64 + n ** 6 / 256)
 
-    beta1 = 1/2 * n - 2/3 * n**2 + 37/96 * n**3
-    beta2 = 1/48 * n**2 + 1/15 * n**3
-    beta3 = 17/480 * n**3
+    beta1 = 1 / 2 * n - 2 / 3 * n ** 2 + 37 / 96 * n ** 3
+    beta2 = 1 / 48 * n ** 2 + 1 / 15 * n ** 3
+    beta3 = 17 / 480 * n ** 3
 
-    delta1 = 2 * n - 2/3 * n**2 - 2 * n**3
-    delta2 = 7/3 * n**2 - 8/5 * n**3
-    delta3 = 56/15 * n**3
+    delta1 = 2 * n - 2 / 3 * n ** 2 - 2 * n ** 3
+    delta2 = 7 / 3 * n ** 2 - 8 / 5 * n ** 3
+    delta3 = 56 / 15 * n ** 3
 
     eta = (Y - N0) / (k0 * A)
     nu = (X - E0) / (k0 * A)

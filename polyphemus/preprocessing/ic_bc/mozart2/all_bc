@@ -33,22 +33,19 @@ nb_args = len(sys.argv) - 1
 
 script_name = os.path.split(sys.argv[0])[1]
 
-if (nb_args != 2 and nb_args != 3):
+if nb_args != 2 and nb_args != 3:
     print __doc__
     print "Usage:"
-    print "  \"" + script_name + "\" [main configuration file] " \
-          + "[secondary configuration file] [Mozart directory]"
+    print '  "' + script_name + '" [main configuration file] ' + "[secondary configuration file] [Mozart directory]"
     print "Arguments:"
     print "  [main configuration file]: main configuration file."
-    print "  [secondary configuration file (optional)]: " \
-          + "secondary configuration file."
-    print "  [Mozart directory]: the directory in which all Mozart files " \
-          + "may be found"
+    print "  [secondary configuration file (optional)]: " + "secondary configuration file."
+    print "  [Mozart directory]: the directory in which all Mozart files " + "may be found"
     print "                      (hc00XX.nc where XX ranges from 40 to 77)."
     print
     sys.exit(1)
 
-if (nb_args == 2):
+if nb_args == 2:
     configuration = sys.argv[1]
 else:
     configuration = sys.argv[1] + " " + sys.argv[2]
@@ -59,5 +56,6 @@ for i in range(40, 78):
     print
     print "### " + mozart_dir + "/h00" + str(i) + ".nc"
     print
-    os.system("nice time ./bc " \
-              + configuration + " " + mozart_dir + "/h00" + str(i) + ".nc")
+    os.system(
+        "nice time ./bc " + configuration + " " + mozart_dir + "/h00" + str(i) + ".nc"
+    )

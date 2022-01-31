@@ -122,4 +122,3 @@ C     ******compute new time step
       DT2 = DMIN1( (TOUT2-TIN2) , DMAX1( DTAEROMIN, DT2) )
 
       END
-

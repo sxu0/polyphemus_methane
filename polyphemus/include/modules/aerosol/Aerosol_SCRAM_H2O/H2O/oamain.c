@@ -19,18 +19,18 @@ extern int thermoflag;
                           HVAPA, K, DRH, VPB, HVAPB)
 #endif
 
-/************************************************************************** 
-Purpose:  Main for OA (Type A and B) 
-          Controls input/output 
+/**************************************************************************
+Purpose:  Main for OA (Type A and B)
+          Controls input/output
 
-Arguments: 
+Arguments:
   Inputs : float *tempk    -- pointer to temperature in Kelvin
            float *rh       -- pointer to relative humidity in fraction
-           float *worg     -- array of total g + p concentrations of 6 Type 
-                               A and 5 Type B aerosol compounds 
+           float *worg     -- array of total g + p concentrations of 6 Type
+                               A and 5 Type B aerosol compounds
                                in microgram / m**3
            float *gasorg   -- gas-phase concentration array
-           float *partorg  -- particle-phase array (total mass concentration  
+           float *partorg  -- particle-phase array (total mass concentration
 	                       of molecules and ions as molecules )
            (output gasorg and partorg should sum to worg)
            float *lwc      -- LWC in microgram / m**3
@@ -38,14 +38,14 @@ Arguments:
                   (microgram H+ / m3 air over microgram water / m3 air)
            int *tboaflag   -- flag to turn on type B oa module if == 1
 	           (type a is iterated, but no need to rerun type b)
-		  
+
   Outputs : double *DeltaLWC -- LWC associated with Type A OA in microgram / m3
             double *Organion -- organic anion concentration
                                (mole negativeve charge / m3)
 
 Key calls: amain, bmain
 
-Notes: 1. Type B input g and a, with option to calculate partition  
+Notes: 1. Type B input g and a, with option to calculate partition
           without using Newt, the iterative procedure by calculating
           K based on input PAOM and input a
 
@@ -61,7 +61,7 @@ Revision History:  Prototype developed by Betty Pun, AER, Apr 00 Under EPRI
                    Extracted from CMAQ, June 2003
 
 		   July 2005 fixed aeros assignment when LWC > LWCZERO
-                   
+
 Reference:  Pun, Griffin, Seigneur, Seinfeld, 2003, JGR, Vol 107, D17, 4333
             doi:10.1029/2001JD000542
 
@@ -70,18 +70,18 @@ void oamain_(float *tempk, float *rh, float *worg, float *gasorg, float *partorg
 	     float *lwc, float *protonconc, double *Organion, double *DeltaLWC, int *tboaflag, int* ioligo,
 			 double *qsatref, double *tsatref, double *kpartref, double *drh, double *dhvap, int *ithermo)
 {
-  
+
   extern void amain (double *aero, double *aeros, double *LWCdelta2, int* ioligo);
   extern void bmain (float gasb[], float aerob[]);
- 
+
   int i, j, ieq;                   /* counter */
- 
+
   double aeros[NAMOL+1];  /* solid species below DRH */
   double aero[NAAERO+1];  /* aqueous species */
   double deltaLWC;        /* temporary variable for DeltaLWC */
   double *deltaLWC2;        /* temporary ptr variable for DeltaLWC */
 
-  float aerob[(NBSP+1)];    
+  float aerob[(NBSP+1)];
                /* type B particle concentrations ug/m3 air */
                /* for newt: initial guesses of Ai also contain final output */
                /* for direct solution: initial input Ai */
@@ -133,7 +133,7 @@ void oamain_(float *tempk, float *rh, float *worg, float *gasorg, float *partorg
   HVAPA[7] = dhvap[6] * 1.e-3;
   HVAPA[8] = dhvap[7] * 1.e-3;
   HVAPA[9] = dhvap[8] * 1.e-3;
-  
+
   VPB[1] = tsatref[9];
   VPB[2] = tsatref[10];
   VPB[3] = tsatref[11];
@@ -152,15 +152,15 @@ void oamain_(float *tempk, float *rh, float *worg, float *gasorg, float *partorg
 
   savpartorg = partorg;
 
-  temperature = (*tempk); 
-  RH = (*rh);             
-  LWC =  (*lwc);          
+  temperature = (*tempk);
+  RH = (*rh);
+  LWC =  (*lwc);
   acHP = (*protonconc);
   savlwc = lwc;
   oligoflag = (*ioligo);
   thermoflag = (*ithermo);
 
-  /* initialize negcharge and deltaLWC */ 
+  /* initialize negcharge and deltaLWC */
   negcharge = 0.0;
   deltaLWC = 0.0;
 
@@ -176,8 +176,8 @@ void oamain_(float *tempk, float *rh, float *worg, float *gasorg, float *partorg
   /* initialize aeros */
   if (LWC < LWC_ZERO)
     for (i = 1; i <= NAMOL; i++) aeros[i] = partorg[i-1];
-  else 
-    for (i = 1; i <= NAMOL; i++) aeros[i] = 0.0;                    
+  else
+    for (i = 1; i <= NAMOL; i++) aeros[i] = 0.0;
 
   j = 0;           /* j counts the number of non-zero solute read */
   for (i = 1; i <= NAMOL; i ++) {
@@ -189,7 +189,7 @@ void oamain_(float *tempk, float *rh, float *worg, float *gasorg, float *partorg
       exit(1);
     }
 
-    /* initial g for cases not requiring simultaneous solution, and not 
+    /* initial g for cases not requiring simultaneous solution, and not
        specified in amain.c (i.e., when 0 < totA < PRAC_ZERO */
   }
 
@@ -225,12 +225,12 @@ void oamain_(float *tempk, float *rh, float *worg, float *gasorg, float *partorg
     *Organion = negcharge;/*why change double->float then float->double in fortran?*/
  /*     if((((float)(negcharge))*0.0)!=(((float)(negcharge))*0.0))
        printf("oamain.c--negcharge=%e\n",negcharge);*/
-    
+
     /*printf("Organion=%e; negcharge=%e\n",*Organion, negcharge);*/
   }
   else  {
    /*  no change in gasorg, partorg for type A and deltalwc and organion = 0 */
-  } 
+  }
 
   /* Type A output */
   /* typeaoutput (tboaflag, aero, aeros, deltaLWC); */
@@ -240,7 +240,7 @@ void oamain_(float *tempk, float *rh, float *worg, float *gasorg, float *partorg
 
     PAOM = worg[NAMOL + NBSP];
     MWaom_mix = (*mwaom_mix_loc);
-    
+
     /* have to do full partition, can't do partapprox */
 
     for (i = (NAMOL+1); i <= (NAMOL + NBSP); i ++){
@@ -250,9 +250,9 @@ void oamain_(float *tempk, float *rh, float *worg, float *gasorg, float *partorg
 
     bmain (gasb, aerob);
     /* inside bmain + subprograms, gas + aero are used, not gasb + aerob */
-    
+
     /* Type B output: g[i], a[i] */
-    /* typeboutput (PAOM, gasb, aerob); */ 
+    /* typeboutput (PAOM, gasb, aerob); */
 
     if (bnrerrflag == 0) {
       for (i = NAMOL; i < (NAMOL + NBSP); i ++) {

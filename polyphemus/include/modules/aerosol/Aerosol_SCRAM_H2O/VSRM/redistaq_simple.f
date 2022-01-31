@@ -26,43 +26,43 @@ C-----------------------------------------------------------------------
      $     aerosol, number)
 
 C------------------------------------------------------------------------
-C     
-C     -- DESCRIPTION 
-C     
+C
+C     -- DESCRIPTION
+C
 C     This routine redistributes the aerosol mass and number
 C     concentration over the fixed aerosol sections.
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- INPUT VARIABLES
-C     
+C
 C     Ns: number of section of the aerosol distribution. ([\#])
 C     DSF_AERO: center diameters of the fixed sections. ([\mu m])
 C     fixed_rho_aero: fixed aerosol density. ([\mu g/m^3])
 C     dnew: center diameters of the sections. ([\mu m])
 C
 C     -- INPUT/OUTPUT VARIABLES
-C     
-C     aerosol: aerosol concentration ([\mu g/m^3]).     
-C     number: number concentration ([\#/m^3]).     
-C     
+C
+C     aerosol: aerosol concentration ([\mu g/m^3]).
+C     number: number concentration ([\#/m^3]).
+C
 C     -- OUTPUT VARIABLES
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- REMARKS
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- MODIFICATIONS
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- AUTHOR(S)
-C     
-C     2007/10 Marilyne Tombette, CEREA, 
+C
+C     2007/10 Marilyne Tombette, CEREA,
 C     2007/12 Cleaning and correct, Yelva Roustan, CEREA.
-C     
+C
 C------------------------------------------------------------------------
 
         IMPLICIT NONE
@@ -103,13 +103,13 @@ c     Initialize concentration (mass and number)
 
            call locate(Ns, DSF_AERO, dnew(jsec), j)
                                 ! redistribute over fixed sections
-           if (j.eq.0) then     
+           if (j.eq.0) then
               qtotal = 0.d0
               do ispe = 1,Naers
                  aerosol_redist(1, ispe) = aerosol_redist(1, ispe)
      $                + aerosol(jsec, ispe)
                                 ! compute total mass in the section
-                 if(ispe.ne.naw) then!except water                                
+                 if(ispe.ne.naw) then!except water
 		  qtotal = qtotal + aerosol_redist(1, ispe)
 		 endif
               enddo
@@ -121,7 +121,7 @@ c     Initialize concentration (mass and number)
      $             / DSF_AERO(1)**3.d0
            elseif (j.eq.Ns) then
               qtotal = 0.d0
-              do ispe = 1,Naers 
+              do ispe = 1,Naers
                  aerosol_redist(Ns, ispe) = aerosol_redist(Ns, ispe)
      $                + aerosol(jsec, ispe)
                                 ! compute total mass in the section
@@ -141,27 +141,27 @@ c     Initialize concentration (mass and number)
               weight2 = (1 - (DSF_AERO(j) / dnew(jsec))**3.d0)
      $             / (1 - (DSF_AERO(j) / DSF_AERO(j+1))**3.d0)
 
-              do ispe = 1,Naers 
+              do ispe = 1,Naers
                  aerosol_redist(j, ispe) = aerosol_redist(j, ispe)
      $                + aerosol(jsec, ispe) * weight1
                  aerosol_redist(j+1, ispe) = aerosol_redist(j+1, ispe)
      $                + aerosol(jsec, ispe) * weight2
-              enddo 
+              enddo
 
               number_redist(j) = number_redist(j)
      $             + number(jsec)
      $             * (dnew(jsec)**3.d0 - DSF_AERO(j+1)**3.d0)
-     $             / (DSF_AERO(j)**3.d0 - DSF_AERO(j+1)**3.d0) 
+     $             / (DSF_AERO(j)**3.d0 - DSF_AERO(j+1)**3.d0)
               number_redist(j+1) = number_redist(j+1)
      $             + number(jsec)
      $             * (dnew(jsec)**3.d0 - DSF_AERO(j)**3.d0)
-     $             / (DSF_AERO(j+1)**3.d0 - DSF_AERO(j)**3.d0) 
-   
+     $             / (DSF_AERO(j+1)**3.d0 - DSF_AERO(j)**3.d0)
+
            endif
         enddo
-        
+
 C     Turn back to conc vector.
-	
+
         do ispe = 1,Naers
            do jsec = 1,Ns
 	      aerosol(jsec, ispe) = aerosol_redist(jsec, ispe)
@@ -173,5 +173,3 @@ C     Turn back to conc vector.
         enddo
 
 	end
-
-

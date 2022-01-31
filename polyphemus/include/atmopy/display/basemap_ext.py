@@ -23,6 +23,7 @@
 
 from pylab import *
 from numpy import *
+
 try:
     from matplotlib.toolkits.basemap import Basemap
 except:
@@ -33,15 +34,26 @@ try:
 except:
     pass
 import sys, os
-sys.path.insert(0,
-                os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])
+
+sys.path.insert(0, os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])
 import talos
+
 sys.path.pop(0)
 
 
-def getm(config = None, y_min = None, x_min = None,
-         Delta_y = None, Delta_x = None, Ny = None, Nx = None, cbar = True,
-         open_figure = True, resolution = 'l', area_thresh = 1000):
+def getm(
+    config=None,
+    y_min=None,
+    x_min=None,
+    Delta_y=None,
+    Delta_x=None,
+    Ny=None,
+    Nx=None,
+    cbar=True,
+    open_figure=True,
+    resolution="l",
+    area_thresh=1000,
+):
     """
     Generates a map with Basemap.
 
@@ -59,7 +71,7 @@ def getm(config = None, y_min = None, x_min = None,
         if os.path.exists(config):
             config = talos.Config(config)
         else:
-            raise IOError, "Configuration file \"" + config + "\" not found."
+            raise IOError, 'Configuration file "' + config + '" not found.'
 
     if x_min is None:
         x_min = config.x_min
@@ -74,17 +86,20 @@ def getm(config = None, y_min = None, x_min = None,
     if Ny is None:
         Ny = config.Ny
 
-    m = Basemap(projection = 'cyl',
-                llcrnrlon = x_min - Delta_x / 2.,
-                llcrnrlat = y_min - Delta_y / 2.,
-                urcrnrlon = x_min + Delta_x / 2. + Delta_x * float(Nx - 1),
-                urcrnrlat = y_min + Delta_y / 2. + Delta_y * float(Ny - 1),
-                resolution = resolution, suppress_ticks = False,
-                area_thresh = area_thresh)
+    m = Basemap(
+        projection="cyl",
+        llcrnrlon=x_min - Delta_x / 2.0,
+        llcrnrlat=y_min - Delta_y / 2.0,
+        urcrnrlon=x_min + Delta_x / 2.0 + Delta_x * float(Nx - 1),
+        urcrnrlat=y_min + Delta_y / 2.0 + Delta_y * float(Ny - 1),
+        resolution=resolution,
+        suppress_ticks=False,
+        area_thresh=area_thresh,
+    )
     if open_figure:
         fig_num = get_current_fig_manager().num
-        xsize = rcParams['figure.figsize'][0]
-        fig = figure(num = fig_num)
+        xsize = rcParams["figure.figsize"][0]
+        fig = figure(num=fig_num)
         if cbar:
             ax = fig.add_axes([0.1, 0.1, 0.75, 0.75])
             axes(ax)
@@ -95,8 +110,7 @@ def getm(config = None, y_min = None, x_min = None,
     return m
 
 
-def getd(config = None, filename = "", Nt = None,
-         Nz = None, Ny = None, Nx = None):
+def getd(config=None, filename="", Nt=None, Nz=None, Ny=None, Nx=None):
     """
     Reads data from a binary file.
 
@@ -127,6 +141,7 @@ def getd(config = None, filename = "", Nt = None,
         filename = config.input_file
 
     import os
+
     if Nx is None:
         Nx = config.Nx
     if Ny is None:
@@ -148,13 +163,12 @@ def getd(config = None, filename = "", Nt = None,
     length = 1
     for l in [Nt, Nz, Ny, Nx]:
         length *= l
-    d = fromfile(filename, 'f', length)
+    d = fromfile(filename, "f", length)
     d.shape = (Nt, Nz, Ny, Nx)
-    return d.astype('f8')
+    return d.astype("f8")
 
 
-def getdJ(config = None, filename = "", Ndays = None,
-         Ntheta = None, Ny = None, Nz = None):
+def getdJ(config=None, filename="", Ndays=None, Ntheta=None, Ny=None, Nz=None):
     """
     Reads data from a binary file.
 
@@ -185,6 +199,7 @@ def getdJ(config = None, filename = "", Ndays = None,
         filename = config.input_file
 
     import os
+
     if Ndays is None:
         Ndays = config.Ndays
     if Ntheta is None:
@@ -206,20 +221,20 @@ def getdJ(config = None, filename = "", Ndays = None,
     length = 1
     for l in [Ndays, Ntheta, Ny, Nz]:
         length *= l
-    daux = fromfile(filename, 'f', length)
+    daux = fromfile(filename, "f", length)
     daux.shape = (Ndays, Ntheta, Ny, Nz)
 
-    d=zeros([Nz,Ny,Ntheta,Ndays])
+    d = zeros([Nz, Ny, Ntheta, Ndays])
     for i in range(Ndays):
         for j in range(Ntheta):
             for k in range(Ny):
                 for l in range(Nz):
-                    d[l,k,j,i] = daux[i,j,k,l]
+                    d[l, k, j, i] = daux[i, j, k, l]
 
-    return d.astype('f8')
+    return d.astype("f8")
 
 
-def getmd(config, cbar = True):
+def getmd(config, cbar=True):
     """
     Reads data from a binary file and generates the corresponding map.
 
@@ -244,14 +259,15 @@ def disp(map, data, **kwargs):
     @param data: Data (2D) to be displayed.
     """
     if data.ndim != 2:
-        raise Exception, "Function \"disp\" proceeds with 2D data," \
-              + " but input data has " + str(data.ndim) + " dimension(s)."
+        raise Exception, 'Function "disp" proceeds with 2D data,' + " but input data has " + str(
+            data.ndim
+        ) + " dimension(s)."
 
     # If the figure is empty, sets new axes.
     if len(gcf().axes) == 0:
-        xsize = rcParams['figure.figsize'][0]
+        xsize = rcParams["figure.figsize"][0]
         fig_num = get_current_fig_manager().num
-        fig = figure(num = fig_num)
+        fig = figure(num=fig_num)
         ax = fig.add_axes([0.1, 0.1, 0.75, 0.75])
         axes(ax)
         axes([0.875, 0.1, 0.05, 0.75])
@@ -274,10 +290,10 @@ def disp(map, data, **kwargs):
     if len(gcf().axes) > 1:
         gcf().axes[1].clear()
         cax = gcf().axes[1]
-        colorbar(cax = cax)
+        colorbar(cax=cax)
 
 
-def dispcf(map, data, V = None, **kwargs):
+def dispcf(map, data, V=None, **kwargs):
     """
     Displays a 2D array on a given map with filled contours.
 
@@ -289,14 +305,15 @@ def dispcf(map, data, V = None, **kwargs):
     @param V: The number of levels or the list of thresholds for the contours.
     """
     if data.ndim != 2:
-        raise Exception, "Function \"dispcf\" proceeds with 2D data," \
-              + " but input data has " + str(data.ndim) + " dimension(s)."
+        raise Exception, 'Function "dispcf" proceeds with 2D data,' + " but input data has " + str(
+            data.ndim
+        ) + " dimension(s)."
 
     # If the figure is empty, sets new axes.
     if len(gcf().axes) == 0:
-        xsize = rcParams['figure.figsize'][0]
+        xsize = rcParams["figure.figsize"][0]
         fig_num = get_current_fig_manager().num
-        fig = figure(num = fig_num)
+        fig = figure(num=fig_num)
         ax = fig.add_axes([0.1, 0.1, 0.75, 0.75])
         axes(ax)
         axes([0.875, 0.1, 0.05, 0.75])
@@ -326,19 +343,22 @@ def dispcf(map, data, V = None, **kwargs):
     if len(gcf().axes) > 1:
         gcf().axes[1].clear()
         cax = gcf().axes[1]
-        colorbar(cax = cax,format="%1.2f")
+        colorbar(cax=cax, format="%1.2f")
 
 
-def gridprofile(map, nx = -1, ny = -1, zz = -1):
+def gridprofile(map, nx=-1, ny=-1, zz=-1):
     """
     Returns arrays containing lon,lat of an equally spaced native projection
     horizontal grid (if zz = -1) or containing lon,height (if ny = -1)
     or lat,height (if nx = -1) of a non-equally spaced vertical grid.
     """
-    if(nx != -1 and ny != -1 and zz != -1) \
-              or (nx == -1 and ny == -1) or (nx == -1 and zz == -1) \
-              or (ny == -1 and zz == -1):
-        print "ERROR : cannot execute program \"gridprofile\"."
+    if (
+        (nx != -1 and ny != -1 and zz != -1)
+        or (nx == -1 and ny == -1)
+        or (nx == -1 and zz == -1)
+        or (ny == -1 and zz == -1)
+    ):
+        print 'ERROR : cannot execute program "gridprofile".'
 
     if zz == -1:
         lons, lats = map.makegrid(nx, ny)
@@ -346,8 +366,8 @@ def gridprofile(map, nx = -1, ny = -1, zz = -1):
 
     if ny == -1:
         lons2, lats2 = map.makegrid(nx, 2)
-        lons = empty([len(zz), nx], dtype = float32)
-        heights = empty([len(zz), nx], dtype = float32)
+        lons = empty([len(zz), nx], dtype=float32)
+        heights = empty([len(zz), nx], dtype=float32)
         for i in range(len(zz)):
             lons[i] = lons2[0]
             for j in range(nx):
@@ -356,8 +376,8 @@ def gridprofile(map, nx = -1, ny = -1, zz = -1):
 
     if nx == -1:
         lons2, lats2 = map.makegrid(2, ny)
-        lats = empty([len(zz), ny], dtype = float32)
-        heights = empty([len(zz), ny], dtype = float32)
+        lats = empty([len(zz), ny], dtype=float32)
+        heights = empty([len(zz), ny], dtype=float32)
         for i in range(len(zz)):
             for j in range(ny):
                 lats[i, j] = lats2[j, 0]
@@ -365,33 +385,39 @@ def gridprofile(map, nx = -1, ny = -1, zz = -1):
         return lats, heights
 
 
-def profile2Dcf(config, data, xx = -1, yy = -1, zz = -1,
-                lon = -1, lat = -1, alt = -1,
-                NLevels = 10, V = None, **kwargs):
+def profile2Dcf(
+    config,
+    data,
+    xx=-1,
+    yy=-1,
+    zz=-1,
+    lon=-1,
+    lat=-1,
+    alt=-1,
+    NLevels=10,
+    V=None,
+    **kwargs
+):
     """
     Displays a 2D section of a 3D array with filled contours.
     """
     # Some Errors' messages.
     if data.ndim != 3:
-        raise Exception, "Function \"profile\" proceeds with 3D data," \
-              + " but input data has " + str(data.ndim) + " dimension(s)."
+        raise Exception, 'Function "profile" proceeds with 3D data,' + " but input data has " + str(
+            data.ndim
+        ) + " dimension(s)."
 
-    if(xx == -1 and yy == -1 and zz == -1 \
-       and lon == -1 and lat == -1 and alt == -1):
-        raise Exception, "Function \"profilecf\" cannot display 3D maps." \
-              + " Missing one argument among xx, yy, zz, lon, lat, or alt."
+    if xx == -1 and yy == -1 and zz == -1 and lon == -1 and lat == -1 and alt == -1:
+        raise Exception, 'Function "profilecf" cannot display 3D maps.' + " Missing one argument among xx, yy, zz, lon, lat, or alt."
 
     if xx != -1 and lon != -1:
-        raise Exception, "You cannot specify a \"xx\" value and a \"lon\"" \
-              + " value at the same time."
+        raise Exception, 'You cannot specify a "xx" value and a "lon"' + " value at the same time."
 
     if yy != -1 and lat != -1:
-        raise Exception, "You cannot specify a \"yy\" value and a \"lat\"" \
-              + " value at the same time."
+        raise Exception, 'You cannot specify a "yy" value and a "lat"' + " value at the same time."
 
     if zz != -1 and alt != -1:
-        raise Exception, "You cannot specify a \"zz\" value and a \"alt\"" \
-              + " value at the same time."
+        raise Exception, 'You cannot specify a "zz" value and a "alt"' + " value at the same time."
 
     arg_num = 0
     arg_list = [xx, yy, zz, lon, lat, alt]
@@ -400,17 +426,14 @@ def profile2Dcf(config, data, xx = -1, yy = -1, zz = -1,
             arg_num += 1
 
     if arg_num != 1:
-        raise Exception, "Cannot execute \"profilecf\". Only one argument" \
-              + " among \"xx\", \"yy\", \"zz\", \"lon\", \"lat\", \"alt\"" \
-              + " should be specified."
+        raise Exception, 'Cannot execute "profilecf". Only one argument' + ' among "xx", "yy", "zz", "lon", "lat", "alt"' + " should be specified."
 
     # Reads configuration file 'config'.
     if isinstance(config, str):
         if os.path.isfile(config):
             config = talos.Config(config)
         else:
-            raise Exception, "Cannot read configuration file : \" " \
-                  + str(config) + " \"."
+            raise Exception, 'Cannot read configuration file : " ' + str(config) + ' ".'
     else:
         raise Exception, "First argument has to be a config file's name."
 
@@ -428,22 +451,30 @@ def profile2Dcf(config, data, xx = -1, yy = -1, zz = -1,
     z_max = levels[-1]
 
     # Some other Errors' messages.
-    if(xx > data.shape[2] or (lon !=-1 and (lon < x_min or lon > x_max))):
-        raise Exception, "Cannot display profile. data's maximum x_" \
-              + "coordinate is " + str(data.shape[2]) + " and data's" \
-              + " longitude is in [" + str(x_min) + "; " + str(x_max) + "]" \
-              + " (degrees)."
+    if xx > data.shape[2] or (lon != -1 and (lon < x_min or lon > x_max)):
+        raise Exception, "Cannot display profile. data's maximum x_" + "coordinate is " + str(
+            data.shape[2]
+        ) + " and data's" + " longitude is in [" + str(
+            x_min
+        ) + "; " + str(
+            x_max
+        ) + "]" + " (degrees)."
 
-    if(yy > data.shape[1] or (lat !=-1 and (lat < y_min or lat > y_max))):
-        raise Exception, "Cannot display profile. data's maximum y_" \
-              + "coordinate is " + str(data.shape[1]) + " and data's" \
-              + " latitude is in [" + str(y_min) + "; " + str(y_max) + "]" \
-              + " (degrees)."
+    if yy > data.shape[1] or (lat != -1 and (lat < y_min or lat > y_max)):
+        raise Exception, "Cannot display profile. data's maximum y_" + "coordinate is " + str(
+            data.shape[1]
+        ) + " and data's" + " latitude is in [" + str(
+            y_min
+        ) + "; " + str(
+            y_max
+        ) + "]" + " (degrees)."
 
-    if(zz > data.shape[0] or alt > z_max):
-        raise Exception, "Cannot display profile. data's maximum z_" \
-              + "coordinate is " + str(data.shape[0]) + " and data's" \
-              + " maximum altitude is " +  str(z_max) + " (m)."
+    if zz > data.shape[0] or alt > z_max:
+        raise Exception, "Cannot display profile. data's maximum z_" + "coordinate is " + str(
+            data.shape[0]
+        ) + " and data's" + " maximum altitude is " + str(
+            z_max
+        ) + " (m)."
 
     # Transformation of lon, lat, alt in xx, yy, zz if necessary.
 
@@ -461,19 +492,22 @@ def profile2Dcf(config, data, xx = -1, yy = -1, zz = -1,
 
     # Initialization of the map.
 
-    mref = Basemap(projection = 'cyl',
-                   llcrnrlon = x_min - Delta_x / 2.,
-                   llcrnrlat = y_min - Delta_y / 2.,
-                   urcrnrlon = x_min + Delta_x / 2. + Delta_x * float(Nx - 1),
-                   urcrnrlat = y_min + Delta_y / 2. + Delta_y * float(Ny - 1),
-                   resolution = 'l', suppress_ticks = False,
-                   area_thresh = 1000)
+    mref = Basemap(
+        projection="cyl",
+        llcrnrlon=x_min - Delta_x / 2.0,
+        llcrnrlat=y_min - Delta_y / 2.0,
+        urcrnrlon=x_min + Delta_x / 2.0 + Delta_x * float(Nx - 1),
+        urcrnrlat=y_min + Delta_y / 2.0 + Delta_y * float(Ny - 1),
+        resolution="l",
+        suppress_ticks=False,
+        area_thresh=1000,
+    )
 
     # If the figure is empty, sets new axes.
     if len(gcf().axes) == 0:
-        xsize = rcParams['figure.figsize'][0]
+        xsize = rcParams["figure.figsize"][0]
         fig_num = get_current_fig_manager().num
-        fig = figure(num = fig_num)
+        fig = figure(num=fig_num)
         ax = fig.add_axes([0.1, 0.1, 0.75, 0.75])
         axes(ax)
         axes([0.875, 0.1, 0.05, 0.75])
@@ -483,47 +517,53 @@ def profile2Dcf(config, data, xx = -1, yy = -1, zz = -1,
     axes(gcf().axes[0])
 
     # Display of profiles.
-    if(zz != -1):
+    if zz != -1:
         # Is equivalent to dispcf ( = horizontal section)
         data2 = data[zz]
         if V is None and NLevels != 1:
-            V = arange(NLevels) / float(NLevels - 1) *\
-                (data2.max() - data2.min()) + data2.min()
+            V = (
+                arange(NLevels) / float(NLevels - 1) * (data2.max() - data2.min())
+                + data2.min()
+            )
         xrange, yrange = mref.makegrid(data2.shape[1], data2.shape[0])
         if kwargs.has_key("colors"):
             V = len(kwargs["colors"]) - 1
-        mref.contourf(xrange, yrange, data2, V, extend='both', **kwargs)
+        mref.contourf(xrange, yrange, data2, V, extend="both", **kwargs)
         mref.drawcountries()
         mref.drawcoastlines()
 
-    if(yy != -1):
-        data2 = data[:,yy,:]
+    if yy != -1:
+        data2 = data[:, yy, :]
         if data2.shape[0] == len(levels) + 1:
             # Skips the first level for Kz (Kz[0] = 0.2).
-            data2 = data2[1:(len(levels) + 1),:]
+            data2 = data2[1 : (len(levels) + 1), :]
         if V is None and NLevels != 1:
-            V = arange(NLevels) / float(NLevels - 1) *\
-                (data2.max() - data2.min()) + data2.min()
+            V = (
+                arange(NLevels) / float(NLevels - 1) * (data2.max() - data2.min())
+                + data2.min()
+            )
         xrange, zrange = gridprofile(mref, data2.shape[1], -1, levels)
         if kwargs.has_key("colors"):
             V = len(kwargs["colors"]) - 1
-        contourf(xrange, zrange, data2, V, extend='both', **kwargs)
+        contourf(xrange, zrange, data2, V, extend="both", **kwargs)
         gca().set_xlim([xrange[0][0], xrange[0][-1]])
         gca().set_ylim([zrange[0][0], zrange[-1][0]])
 
     if xx != -1:
-        data2 = data[:,:,xx]
+        data2 = data[:, :, xx]
         if data2.shape[0] == len(levels) + 1:
-            data2 = data2[1:(len(levels) + 1),:]
+            data2 = data2[1 : (len(levels) + 1), :]
         if V is None and NLevels != 1:
-            V = arange(NLevels) / float(NLevels - 1) *\
-                (data2.max() - data2.min()) + data2.min()
+            V = (
+                arange(NLevels) / float(NLevels - 1) * (data2.max() - data2.min())
+                + data2.min()
+            )
         yrange, zrange = gridprofile(mref, -1, data2.shape[1], levels)
         print yrange[0][0], yrange[0][-1], zrange[0][0], zrange[-1][0]
         print zrange
         if kwargs.has_key("colors"):
             V = len(kwargs["colors"]) - 1
-        contourf(yrange, zrange, data2, V, extend='both', **kwargs)
+        contourf(yrange, zrange, data2, V, extend="both", **kwargs)
         gca().set_xlim([yrange[0][0], yrange[0][-1]])
         gca().set_ylim([zrange[0][0], zrange[-1][0]])
 
@@ -531,13 +571,24 @@ def profile2Dcf(config, data, xx = -1, yy = -1, zz = -1,
     if len(gcf().axes) > 1:
         gcf().axes[1].clear()
         cax = gcf().axes[1]
-        colorbar(cax = cax)
+        colorbar(cax=cax)
 
 
-
-def profile2DJ(config, data, yy=-1, zz =-1, dd=-1, theta=-1,
-               lat = -1, alt = -1, days = -1, time_angle=-1,
-               NLevels = 10, V = None, **kwargs):
+def profile2DJ(
+    config,
+    data,
+    yy=-1,
+    zz=-1,
+    dd=-1,
+    theta=-1,
+    lat=-1,
+    alt=-1,
+    days=-1,
+    time_angle=-1,
+    NLevels=10,
+    V=None,
+    **kwargs
+):
     """
     Displays an ALTITUDE-LATITUDE section of photolysis rate tabulation
     (4D array) with filled contours. dd=0 or days=0 :
@@ -545,31 +596,33 @@ def profile2DJ(config, data, yy=-1, zz =-1, dd=-1, theta=-1,
     """
     # Some Errors' messages.
     if data.ndim != 4:
-        raise Exception, "Function \"profileJ\" proceeds with," \
-            + " 4D data, but input data has " + \
-            str(data.ndim) + " dimension(s)."
+        raise Exception, 'Function "profileJ" proceeds with,' + " 4D data, but input data has " + str(
+            data.ndim
+        ) + " dimension(s)."
 
-    if(yy == -1 and zz == -1 and dd == -1 and theta == -1 \
-       and lat == -1 and alt == -1 and days == -1 and time_angle == -1):
-        raise Exception, "Function \"profilecf\" cannot display" \
-            + " 4D maps. Missing one argument among  yy, zz, " \
-            + "dd, theta, lat, alt, days, time_angle."
+    if (
+        yy == -1
+        and zz == -1
+        and dd == -1
+        and theta == -1
+        and lat == -1
+        and alt == -1
+        and days == -1
+        and time_angle == -1
+    ):
+        raise Exception, 'Function "profilecf" cannot display' + " 4D maps. Missing one argument among  yy, zz, " + "dd, theta, lat, alt, days, time_angle."
 
     if yy != -1 and lat != -1:
-        raise Exception, "You cannot specify a \"yy\" value" \
-            + " and a \"lat\" value at the same time."
+        raise Exception, 'You cannot specify a "yy" value' + ' and a "lat" value at the same time.'
 
     if zz != -1 and alt != -1:
-        raise Exception, "You cannot specify a \"zz\" value " \
-            + "  and a \"alt\" value at the same time."
+        raise Exception, 'You cannot specify a "zz" value ' + '  and a "alt" value at the same time.'
 
     if dd != -1 and days != -1:
-        raise Exception, "You cannot specify a \"dd\" value " \
-            + " and a \"days\" value at the same time."
+        raise Exception, 'You cannot specify a "dd" value ' + ' and a "days" value at the same time.'
 
     if theta != -1 and time_angle != -1:
-        raise Exception, "You cannot specify a \"theta\" value " \
-            + " and a \"time_angle\" value at the same time."
+        raise Exception, 'You cannot specify a "theta" value ' + ' and a "time_angle" value at the same time.'
 
     arg_num = 0
     arg_list = [yy, zz, dd, theta, lat, alt, days, time_angle]
@@ -578,19 +631,16 @@ def profile2DJ(config, data, yy=-1, zz =-1, dd=-1, theta=-1,
             arg_num += 1
 
     if arg_num != 2:
-        raise Exception, "Cannot execute \"profilecf\"." \
-            + " Two argument among \"yy\", \"zz\", \"dd\"," \
-            + " \"theta\", \"lat\", \"alt\", \"days\", " \
-            + " \"time_angle\" should be specified."
+        raise Exception, 'Cannot execute "profilecf".' + ' Two argument among "yy", "zz", "dd",' + ' "theta", "lat", "alt", "days", ' + ' "time_angle" should be specified.'
 
     # Reads configuration file 'config'.
     if isinstance(config, str):
         if os.path.isfile(config):
             config = talos.Config(config)
         else:
-            raise Exception, "Cannot read configuration " \
-                + "file : \" " \
-                + str(config) + " \"."
+            raise Exception, "Cannot read configuration " + 'file : " ' + str(
+                config
+            ) + ' ".'
     else:
         raise Exception, "First argument has to be a config file's name."
 
@@ -610,33 +660,42 @@ def profile2DJ(config, data, yy=-1, zz =-1, dd=-1, theta=-1,
     y_max = y_min + Delta_y * Ny
     time_angle_max = time_angle_min + Delta_time_angle * Ntheta
     z_max = levels[-1]
-    day_max=Ndays
+    day_max = Ndays
 
     # Errors messages
 
-    if(yy > data.shape[1] or (lat !=-1 and (lat < y_min or lat > y_max))):
-        raise Exception, "Cannot display profile. Data's maximum y_" \
-            + "coordinate is " + str(data.shape[1]) + " and data's" \
-            + " latitude is in [" + str(y_min) + "; " + str(y_max) + "]" \
-            + " (degrees)."
+    if yy > data.shape[1] or (lat != -1 and (lat < y_min or lat > y_max)):
+        raise Exception, "Cannot display profile. Data's maximum y_" + "coordinate is " + str(
+            data.shape[1]
+        ) + " and data's" + " latitude is in [" + str(
+            y_min
+        ) + "; " + str(
+            y_max
+        ) + "]" + " (degrees)."
 
-    if(zz > data.shape[0] or alt > z_max):
-        raise Exception, "Cannot display profile. Data's maximum z_" \
-            + "coordinate is " + str(data.shape[0]) + " and data's" \
-            + " maximum altitude is " +  str(z_max) + " (m)."
+    if zz > data.shape[0] or alt > z_max:
+        raise Exception, "Cannot display profile. Data's maximum z_" + "coordinate is " + str(
+            data.shape[0]
+        ) + " and data's" + " maximum altitude is " + str(
+            z_max
+        ) + " (m)."
 
-    if(theta > data.shape[2] or (time_angle !=-1 and
-                                 (time_angle < time_angle_min or
-                                  time_angle > time_angle_max))):
-        raise Exception, "Cannot display profile. Data's maximum " \
-            + "time_angle coordinate is " + str(data.shape[2]) \
-            + " and data's maximum time angle is " + str(time_angle_max) \
-            + " (degrees)."
+    if theta > data.shape[2] or (
+        time_angle != -1
+        and (time_angle < time_angle_min or time_angle > time_angle_max)
+    ):
+        raise Exception, "Cannot display profile. Data's maximum " + "time_angle coordinate is " + str(
+            data.shape[2]
+        ) + " and data's maximum time angle is " + str(
+            time_angle_max
+        ) + " (degrees)."
 
-    if(dd > data.shape[3] or days > day_max):
-        raise Exception, "Cannot display profile. data's maximum dd_" \
-            + "coordinate is " + str(data.shape[3]) + " and data's" \
-            + " maximum days is " +  str(day_max) + "."
+    if dd > data.shape[3] or days > day_max:
+        raise Exception, "Cannot display profile. data's maximum dd_" + "coordinate is " + str(
+            data.shape[3]
+        ) + " and data's" + " maximum days is " + str(
+            day_max
+        ) + "."
 
     # Transformation of lon, lat, alt in xx, yy, zz if necessary.
 
@@ -655,30 +714,33 @@ def profile2DJ(config, data, yy=-1, zz =-1, dd=-1, theta=-1,
     if days != -1:
         dd = int((days - day_min) / Delta_t)
 
-    if (days == 0 or dd ==0):
-        dd_sum=0
+    if days == 0 or dd == 0:
+        dd_sum = 0
         for i in range(data.shape[3]):
-            dd_sum = dd_sum+data[:,:,:,i]
-        data[:,:,:,0] = dd_sum / float(data.shape[3])
+            dd_sum = dd_sum + data[:, :, :, i]
+        data[:, :, :, 0] = dd_sum / float(data.shape[3])
 
     # Initialization of the map.
 
     x_min = 0
     Nx = 1
     Delta_x = 1
-    mref = Basemap(projection = 'cyl',
-                   llcrnrlon = x_min - Delta_x / 2.,
-                   llcrnrlat = y_min,
-                   urcrnrlon = x_min + Delta_x / 2. + Delta_x * float(Nx - 1),
-                   urcrnrlat = y_min + Delta_y * float(Ny - 1),
-                   resolution = 'l', suppress_ticks = False,
-                   area_thresh = 1000)
+    mref = Basemap(
+        projection="cyl",
+        llcrnrlon=x_min - Delta_x / 2.0,
+        llcrnrlat=y_min,
+        urcrnrlon=x_min + Delta_x / 2.0 + Delta_x * float(Nx - 1),
+        urcrnrlat=y_min + Delta_y * float(Ny - 1),
+        resolution="l",
+        suppress_ticks=False,
+        area_thresh=1000,
+    )
 
     # If the figure is empty, sets new axes.
     if len(gcf().axes) == 0:
-        xsize = rcParams['figure.figsize'][0]
+        xsize = rcParams["figure.figsize"][0]
         fig_num = get_current_fig_manager().num
-        fig = figure(num = fig_num)
+        fig = figure(num=fig_num)
         ax = fig.add_axes([0.1, 0.1, 0.75, 0.75])
         axes(ax)
         axes([0.875, 0.1, 0.05, 0.75])
@@ -689,27 +751,31 @@ def profile2DJ(config, data, yy=-1, zz =-1, dd=-1, theta=-1,
 
     # Display of profiles.
 
-    if(dd != -1 and theta != -1):
-        data2 = data[:,:,theta,dd]
+    if dd != -1 and theta != -1:
+        data2 = data[:, :, theta, dd]
         if V is None and NLevels != 1:
-            V = arange(NLevels) / float(NLevels - 1) *\
-                (data2.max() - data2.min()) + data2.min()
-        yrange, zrange = gridprofile(mref, -1, data2.shape[1],  levels)
+            V = (
+                arange(NLevels) / float(NLevels - 1) * (data2.max() - data2.min())
+                + data2.min()
+            )
+        yrange, zrange = gridprofile(mref, -1, data2.shape[1], levels)
 
         if kwargs.has_key("colors"):
             V = len(kwargs["colors"]) - 1
-        contourf(yrange, zrange, data2, V, extend='both', **kwargs)
+        contourf(yrange, zrange, data2, V, extend="both", **kwargs)
 
-    if(dd == 0 and theta != -1):
-        data2 = data[:,:,theta,0]
+    if dd == 0 and theta != -1:
+        data2 = data[:, :, theta, 0]
         if V is None and NLevels != 1:
-            V = arange(NLevels) / float(NLevels - 1) *\
-                (data2.max() - data2.min()) + data2.min()
-        yrange, zrange = gridprofile(mref, -1, data2.shape[1],  levels)
+            V = (
+                arange(NLevels) / float(NLevels - 1) * (data2.max() - data2.min())
+                + data2.min()
+            )
+        yrange, zrange = gridprofile(mref, -1, data2.shape[1], levels)
 
         if kwargs.has_key("colors"):
             V = len(kwargs["colors"]) - 1
-    contourf(yrange, zrange, data2, V, extend='both', **kwargs)
+    contourf(yrange, zrange, data2, V, extend="both", **kwargs)
 
     # Colorbar.
     if len(gcf().axes) > 1:
@@ -727,4 +793,4 @@ def cbar():
         cax = gcf().axes[1]
     else:
         cax = axes([0.875, 0.1, 0.05, 0.75])
-    colorbar(cax = cax)
+    colorbar(cax=cax)

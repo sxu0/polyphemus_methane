@@ -97,9 +97,3 @@ c
       parameter (ngtotal = 50)
       parameter (ngas_aq=ngtotal)
       parameter (naers=naspec)
-
-
-
-
-
-

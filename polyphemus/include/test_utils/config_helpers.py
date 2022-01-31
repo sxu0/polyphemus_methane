@@ -28,10 +28,12 @@ import re
 from atmopy import talos
 
 # Patterns used with the multi-line mode (re.M) of the regexp module:
-patterns = dict(sp=r"[ \t\r\f\v]*",  # \s would include line returns.
-                eq=r"[:=]",
-                val=r"[^#$]*",  # values include spaces
-                rest_of_line=r"[^$]*")
+patterns = dict(
+    sp=r"[ \t\r\f\v]*",  # \s would include line returns.
+    eq=r"[:=]",
+    val=r"[^#$]*",  # values include spaces
+    rest_of_line=r"[^$]*",
+)
 
 
 def as_config(config):
@@ -44,11 +46,11 @@ def as_config(config):
         return config
 
     if not os.path.isfile(config):
-        raise ValueError, "Cannot open config file \"{}\".".format(config)
+        raise ValueError, 'Cannot open config file "{}".'.format(config)
 
     additional_content = [
         ("Configuration_file", "[output]", "saver_config", "String"),
-        ("Output_file", "[save]", "String")
+        ("Output_file", "[save]", "String"),
     ]
     return talos.Config(config, additional_content)
 
@@ -64,8 +66,8 @@ def get_result_dir_list(config):
         config = f.read()
 
     match_list = re.findall(
-        r"{sp}Output_file{sp}{eq}{sp}({val})"\
-        .format(**patterns), config, re.M)
+        r"{sp}Output_file{sp}{eq}{sp}({val})".format(**patterns), config, re.M
+    )
 
     return set([os.path.normpath(os.path.dirname(v.strip())) for v in match_list])
 
@@ -91,15 +93,23 @@ def replace_value(config_filename, variable_name, new_value):
 
             # The case where there is already a commented value:
             config, n = re.subn(
-                r"({sp}{variable_name}{sp}{eq})({val})(# was: {rest_of_line})$"\
-            .format(variable_name=variable_name, **patterns),
-                r"\1 %s \3" % new_value, config, re.M)
+                r"({sp}{variable_name}{sp}{eq})({val})(# was: {rest_of_line})$".format(
+                    variable_name=variable_name, **patterns
+                ),
+                r"\1 %s \3" % new_value,
+                config,
+                re.M,
+            )
             if n == 0:
                 # The case there is no commented value yet:
                 config, n = re.subn(
-                    r"({sp}{variable_name}{sp}{eq})({rest_of_line})$"\
-                        .format(variable_name=variable_name, **patterns),
-                    r"\1 %s # was:\2" % new_value, config, re.M)
+                    r"({sp}{variable_name}{sp}{eq})({rest_of_line})$".format(
+                        variable_name=variable_name, **patterns
+                    ),
+                    r"\1 %s # was:\2" % new_value,
+                    config,
+                    re.M,
+                )
 
             if n == 0:
                 print "No '%s' variable in \"%s\"." % (variable_name, filename)
@@ -107,8 +117,11 @@ def replace_value(config_filename, variable_name, new_value):
                 f.seek(0)
                 f.write(config)
                 f.truncate()
-                print "'%s' variable has been set to '%s' in \"%s\"." \
-                        % (variable_name, new_value, filename)
+                print "'%s' variable has been set to '%s' in \"%s\"." % (
+                    variable_name,
+                    new_value,
+                    filename,
+                )
 
 
 def put_back_value(config_filename, variable_name):
@@ -125,14 +138,17 @@ def put_back_value(config_filename, variable_name):
         with open(filename, "r+") as f:
             config = f.read()
             config, n = re.subn(
-                r"({sp}{variable_name}{sp}{eq}){val}# was:({rest_of_line})$"\
-                .format(variable_name=variable_name, **patterns),
-                r"\1\2", config, re.M)
+                r"({sp}{variable_name}{sp}{eq}){val}# was:({rest_of_line})$".format(
+                    variable_name=variable_name, **patterns
+                ),
+                r"\1\2",
+                config,
+                re.M,
+            )
             if n == 0:
                 print "No '%s' variable in \"%s\"." % (variable_name, filename)
             else:
                 f.seek(0)
                 f.write(config)
                 f.truncate()
-                print "'%s' variable put back in \"%s\"." \
-                        % (variable_name, filename)
+                print "'%s' variable put back in \"%s\"." % (variable_name, filename)

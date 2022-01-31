@@ -96,4 +96,3 @@ C     DM: mean diameter; SD: variance.
       parameter(DM2_aq = 2.5d0)
       parameter(SD1_aq = 1.8d0)
       parameter(SD2_aq = 2.15d0)
-

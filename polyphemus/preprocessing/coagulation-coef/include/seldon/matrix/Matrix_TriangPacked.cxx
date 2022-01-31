@@ -29,7 +29,7 @@ namespace Seldon
   /****************
    * CONSTRUCTORS *
    ****************/
-  
+
 
   //! Default constructor.
   /*!
@@ -79,7 +79,7 @@ namespace Seldon
 
   }
 
-  
+
   //! Copy constructor.
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_TriangPacked<T, Prop, Storage, Allocator>
@@ -90,11 +90,11 @@ namespace Seldon
     this->m_ = 0;
     this->n_ = 0;
     this->data_ = NULL;
-    
+
     this->Copy(A);
   }
-  
-  
+
+
   /**************
    * DESTRUCTOR *
    **************/
@@ -105,19 +105,19 @@ namespace Seldon
   inline Matrix_TriangPacked<T, Prop, Storage, Allocator>
   ::~Matrix_TriangPacked()
   {
-    
+
 #ifdef SELDON_CHECK_MEMORY
     try
       {
 #endif
-	
+
 	if (this->data_ != NULL)
 	  {
 	    this->allocator_.deallocate(this->data_,
 					(this->m_ * (this->m_ + 1)) / 2);
 	    this->data_ = NULL;
 	  }
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -287,7 +287,7 @@ namespace Seldon
       throw WrongCol("Matrix_TriangPacked::Val(int, int)",
 		     string("Index should be in [0, ") + to_str(this->n_-1)
 		     + "], but is equal to " + to_str(j) + ".");
-    
+
     if (Storage::UpLo())
       {
 	if (i > j)
@@ -312,9 +312,9 @@ namespace Seldon
 					     j * this->m_
 					     - (j * (j + 1)) / 2 + i)];
       }
-    
+
 #endif
-    
+
     if (Storage::UpLo())
       return this->data_[Storage::GetFirst(i * this->n_
 					   - (i * (i + 1)) / 2 + j,
@@ -323,10 +323,10 @@ namespace Seldon
       return this->data_[Storage::GetFirst((i * (i + 1)) / 2 + j,
 					   j * this->m_
 					   - (j * (j + 1)) / 2 + i)];
-    
+
   }
 
- 
+
   //! Access operator.
   /*!
     Returns the value of element (i, j).
@@ -339,7 +339,7 @@ namespace Seldon
   Matrix_TriangPacked<T, Prop, Storage, Allocator>
   ::operator() (int i, int j) const
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_TriangPacked::operator()",
@@ -350,7 +350,7 @@ namespace Seldon
 		     string("Index should be in [0, ") + to_str(this->n_-1)
 		     + "], but is equal to " + to_str(j) + ".");
 #endif
-    
+
     if (Storage::UpLo())
       if (i > j)
 	return 0;
@@ -426,7 +426,7 @@ namespace Seldon
 					   - (j * (j + 1)) / 2 + i)];
   }
 
- 
+
   //! Direct access method.
   /*!
     This method allows access to elements stored in memory, i.e. elements
@@ -486,7 +486,7 @@ namespace Seldon
 					   - (j * (j + 1)) / 2 + i)];
   }
 
- 
+
   //! Access to elements of the data array.
   /*!
     Provides a direct access to the data array.
@@ -497,7 +497,7 @@ namespace Seldon
   inline typename Matrix_TriangPacked<T, Prop, Storage, Allocator>::reference
   Matrix_TriangPacked<T, Prop, Storage, Allocator>::operator[] (int i)
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->GetDataSize())
       throw WrongIndex("Matrix_TriangPacked::operator[] (int)",
@@ -505,7 +505,7 @@ namespace Seldon
 		       + to_str(this->GetDataSize()-1) + "], but is equal to "
 		       + to_str(i) + ".");
 #endif
-    
+
     return this->data_[i];
   }
 
@@ -521,7 +521,7 @@ namespace Seldon
   ::const_reference
   Matrix_TriangPacked<T, Prop, Storage, Allocator>::operator[] (int i) const
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->GetDataSize())
       throw WrongIndex("Matrix_TriangPacked::operator[] (int) const",
@@ -529,7 +529,7 @@ namespace Seldon
 		       + to_str(this->GetDataSize()-1) + "], but is equal to "
 		       + to_str(i) + ".");
 #endif
-    
+
     return this->data_[i];
   }
 
@@ -590,7 +590,7 @@ namespace Seldon
   void Matrix_TriangPacked<T, Prop, Storage, Allocator>::SetIdentity()
   {
     this->Fill(T(0));
-    
+
     T one(1);
     bool storage_col = (Storage::GetFirst(1,0) == 0);
     if ((Storage::UpLo() && storage_col)||(!Storage::UpLo() && !storage_col))
@@ -781,7 +781,7 @@ namespace Seldon
   void Matrix_TriangPacked<T, Prop, Storage, Allocator>
   ::Write(ostream& FileStream) const
   {
-    
+
 #ifdef SELDON_CHECK_IO
     // Checks if the file is ready.
     if (!FileStream.good())
@@ -904,7 +904,7 @@ namespace Seldon
 
     FileStream.close();
   }
- 
+
 
   //! Reads the matrix from an input stream.
   /*!
@@ -944,8 +944,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   //! Reads the matrix from a file.
   /*!
     Reads a matrix stored in text format in a file.
@@ -963,13 +963,13 @@ namespace Seldon
       throw IOError("Matrix_Pointers::ReadText(string FileName)",
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
-    
+
     this->ReadText(FileStream);
 
     FileStream.close();
   }
-  
-  
+
+
   //! Reads the matrix from an input stream.
   /*!
     Reads a matrix in text format from an input stream.
@@ -981,14 +981,14 @@ namespace Seldon
   {
     // clears previous matrix
     Clear();
-    
+
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
       throw IOError("Matrix_Pointers::ReadText(ifstream& FileStream)",
                     "Stream is not ready.");
 #endif
-    
+
     // we read first line
     string line;
     getline(FileStream, line);
@@ -998,27 +998,27 @@ namespace Seldon
 	// empty file ?
 	return;
       }
-    
+
     // converting first line into a vector
     istringstream line_stream(line);
     Vector<T> first_row;
     first_row.ReadText(line_stream);
-    
+
     // and now the other rows
     Vector<T> other_rows;
     other_rows.ReadText(FileStream);
-    
+
     // number of rows and columns
     int n = first_row.GetM();
     int m = 1 + other_rows.GetM()/n;
-    
+
 #ifdef SELDON_CHECK_IO
     // Checking number of elements
     if (other_rows.GetM() != (m-1)*n)
       throw IOError("Matrix_Pointers::ReadText(ifstream& FileStream)",
                     "The file should contain same number of columns.");
 #endif
-    
+
     this->Reallocate(m,n);
     // filling matrix
     if (Storage::UpLo())
@@ -1026,14 +1026,14 @@ namespace Seldon
 	this->Val(0, j) = first_row(j);
     else
       this->Val(0, 0) = first_row(0);
-    
+
     int nb = 0;
     if (Storage::UpLo())
       for (int i = 1; i < m; i++)
 	{
 	  for (int j = 0; j < i; j++)
 	    nb++;
-	  
+
 	  for (int j = i; j < n; j++)
 	    this->Val(i, j) = other_rows(nb++);
 	}
@@ -1042,12 +1042,12 @@ namespace Seldon
 	{
 	  for (int j = 0; j <= i; j++)
 	    this->Val(i, j) = other_rows(nb++);
-	  
+
 	  for (int j = i+1; j < n; j++)
 	    nb++;
 	}
   }
-  
+
 
 
   ///////////////////////////////
@@ -1087,8 +1087,8 @@ namespace Seldon
   /*****************
    * OTHER METHODS *
    *****************/
-  
-  
+
+
   //! Reallocates memory to resize the matrix and keeps previous entries.
   /*!
     On exit, the matrix is a i x j matrix.
@@ -1101,23 +1101,23 @@ namespace Seldon
   inline void Matrix<T, Prop, ColUpTriangPacked, Allocator>
   ::Resize(int i, int j)
   {
-    
+
     // Storing the old values of the matrix.
     int nold = this->GetDataSize();
     Vector<T, VectFull, Allocator> xold(nold);
     for (int k = 0; k < nold; k++)
       xold(k) = this->data_[k];
-    
+
     // Reallocation.
     this->Reallocate(i, j);
-    
+
     // Filling the matrix with its old values.
     int nmin = min(nold, this->GetDataSize());
     for (int k = 0; k < nmin; k++)
       this->data_[k] = xold(k);
   }
-  
-  
+
+
   //! Fills the matrix with a given value.
   /*!
     \param x value to fill the matrix with.
@@ -1131,8 +1131,8 @@ namespace Seldon
 
     return *this;
   }
-  
-  
+
+
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
@@ -1144,10 +1144,10 @@ namespace Seldon
   {
     for (int i = 0; i < this->GetDataSize();i++)
       this->data_[i] *= x;
-    
+
     return *this;
   }
-  
+
 
 
   ///////////////////////////////
@@ -1188,7 +1188,7 @@ namespace Seldon
    * OTHER METHODS *
    *****************/
 
-  
+
   //! Reallocates memory to resize the matrix and keeps previous entries.
   /*!
     On exit, the matrix is a i x j matrix.
@@ -1201,16 +1201,16 @@ namespace Seldon
   inline void Matrix<T, Prop, ColLoTriangPacked, Allocator>
   ::Resize(int i, int j)
   {
-    
+
     // Storing the old values of the matrix.
     int nold = this->GetDataSize(), iold = this->m_;
     Vector<T, VectFull, Allocator> xold(nold);
     for (int k = 0; k < nold; k++)
       xold(k) = this->data_[k];
-    
+
     // Reallocation.
     this->Reallocate(i, j);
-    
+
     // Filling the matrix with its old values.
     int imin = min(iold, i);
     nold = 0;
@@ -1219,13 +1219,13 @@ namespace Seldon
       {
 	for (int l = k; l < imin; l++)
 	  this->data_[n+l-k] = xold(nold+l-k);
-	
+
 	n += i - k;
 	nold += iold - k;
       }
   }
-  
-  
+
+
   //! Fills the matrix with a given value.
   /*!
     \param x value to fill the matrix with.
@@ -1240,7 +1240,7 @@ namespace Seldon
     return *this;
   }
 
-  
+
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
@@ -1252,11 +1252,11 @@ namespace Seldon
   {
     for (int i = 0; i < this->GetDataSize();i++)
       this->data_[i] *= x;
-    
+
     return *this;
   }
-  
-  
+
+
 
   ///////////////////////////////
   // MATRIX<ROWUPTRIANGPACKED> //
@@ -1296,7 +1296,7 @@ namespace Seldon
    * OTHER METHODS *
    *****************/
 
-  
+
   //! Reallocates memory to resize the matrix and keeps previous entries.
   /*!
     On exit, the matrix is a i x j matrix.
@@ -1315,10 +1315,10 @@ namespace Seldon
     Vector<T, VectFull, Allocator> xold(nold);
     for (int k = 0; k < nold; k++)
       xold(k) = this->data_[k];
-    
+
     // Reallocation.
     this->Reallocate(i, j);
-    
+
     // Filling the matrix with its old values.
     int imin = min(iold, i);
     nold = 0;
@@ -1327,13 +1327,13 @@ namespace Seldon
       {
 	for (int l = k; l < imin; l++)
 	  this->data_[n+l-k] = xold(nold+l-k);
-	
+
 	n += i - k;
 	nold += iold - k;
       }
   }
-  
-  
+
+
   //! Fills the matrix with a given value.
   /*!
     \param x value to fill the matrix with.
@@ -1348,7 +1348,7 @@ namespace Seldon
     return *this;
   }
 
-  
+
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
@@ -1360,11 +1360,11 @@ namespace Seldon
   {
     for (int i = 0; i < this->GetDataSize();i++)
       this->data_[i] *= x;
-    
+
     return *this;
   }
-  
-  
+
+
 
   ///////////////////////////////
   // MATRIX<ROWLOTRIANGPACKED> //
@@ -1404,7 +1404,7 @@ namespace Seldon
    * OTHER METHODS *
    *****************/
 
-  
+
   //! Reallocates memory to resize the matrix and keeps previous entries.
   /*!
     On exit, the matrix is a i x j matrix.
@@ -1417,23 +1417,23 @@ namespace Seldon
   inline void Matrix<T, Prop, RowLoTriangPacked, Allocator>
   ::Resize(int i, int j)
   {
-    
+
     // Storing the old values of the matrix.
     int nold = this->GetDataSize();
     Vector<T, VectFull, Allocator> xold(nold);
     for (int k = 0; k < nold; k++)
       xold(k) = this->data_[k];
-    
+
     // Reallocation.
     this->Reallocate(i, j);
-    
+
     // Filling the matrix with its old values.
     int nmin = min(nold, this->GetDataSize());
     for (int k = 0; k < nmin; k++)
       this->data_[k] = xold(k);
   }
-  
-  
+
+
   //! Fills the matrix with a given value.
   /*!
     \param x value to fill the matrix with.
@@ -1448,7 +1448,7 @@ namespace Seldon
     return *this;
   }
 
-  
+
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
@@ -1460,10 +1460,10 @@ namespace Seldon
   {
     for (int i = 0; i < this->GetDataSize();i++)
       this->data_[i] *= x;
-    
+
     return *this;
   }
-  
+
 } // namespace Seldon.
 
 #define SELDON_FILE_MATRIX_TRIANGPACKED_CXX

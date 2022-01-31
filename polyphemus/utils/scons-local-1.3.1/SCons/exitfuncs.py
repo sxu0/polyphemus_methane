@@ -30,8 +30,9 @@ Register functions which are executed when SCons exits for any reason.
 __revision__ = "src/engine/SCons/exitfuncs.py 5110 2010/07/25 16:14:38 bdeegan"
 
 
-
 _exithandlers = []
+
+
 def _run_exitfuncs():
     """run any registered exit functions
 
@@ -40,8 +41,9 @@ def _run_exitfuncs():
     """
 
     while _exithandlers:
-        func, targs, kargs =  _exithandlers.pop()
+        func, targs, kargs = _exithandlers.pop()
         apply(func, targs, kargs)
+
 
 def register(func, *targs, **kargs):
     """register a function to be executed upon normal program termination
@@ -51,6 +53,7 @@ def register(func, *targs, **kargs):
     kargs - optional keyword arguments to pass to func
     """
     _exithandlers.append((func, targs, kargs))
+
 
 import sys
 
@@ -65,7 +68,7 @@ try:
 except AttributeError:
     pass
 
-# make our exit function get run by python when it exits:    
+# make our exit function get run by python when it exits:
 sys.exitfunc = _run_exitfuncs
 
 del sys

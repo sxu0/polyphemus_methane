@@ -21,7 +21,7 @@ C     http://cerea.enpc.fr/polyphemus/
 C-----------------------------------------------------------------------
 
       SUBROUTINE SOAP_EQ(nesp_aer, nbin_aer,
-     &     neq,q,lwcorg, lwc, rh, ionic, proton, 
+     &     neq,q,lwcorg, lwc, rh, ionic, proton,
      &     temp, aero, gas, liquid, psoap_config, psurrogate)
 
 C------------------------------------------------------------------------
@@ -88,16 +88,16 @@ C------------------------------------------------------------------------
       double precision DSD(nbin_aer),csol(nbin_aer)
 
       csol = 0.D0
-      DSD = 0.D0    
+      DSD = 0.D0
 
 c    Calculate the concentration of hydronium ion in water
-c    microg/m3(=micromol/m3) / microg/m3 (H+ molar mass: 1 g/mol) 
-c     = micromol/microg * 1000 
-c     = mol/kg = mol/L (Water density: 1 kg/L) 
+c    microg/m3(=micromol/m3) / microg/m3 (H+ molar mass: 1 g/mol)
+c     = micromol/microg * 1000
+c     = mol/kg = mol/L (Water density: 1 kg/L)
       chp = proton / lwc * 1.0e3
 
-      CALL soap_main(lwc, rh, temp, ionic, chp, lwcorg, 
-     &     psoap_config, psurrogate, 
+      CALL soap_main(lwc, rh, temp, ionic, chp, lwcorg,
+     &     psoap_config, psurrogate,
      &     DT2, DSD, csol, liquid,
      &     nesp_aer, neq, q, aero, gas)
 

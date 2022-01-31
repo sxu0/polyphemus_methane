@@ -41,40 +41,47 @@ import SCons.Tool.tex
 
 PDFLaTeXAction = None
 
-def PDFLaTeXAuxFunction(target = None, source= None, env=None):
-    result = SCons.Tool.tex.InternalLaTeXAuxAction( PDFLaTeXAction, target, source, env )
+
+def PDFLaTeXAuxFunction(target=None, source=None, env=None):
+    result = SCons.Tool.tex.InternalLaTeXAuxAction(PDFLaTeXAction, target, source, env)
     if result != 0:
-        print env['PDFLATEX']," returned an error, check the log file"
+        print env["PDFLATEX"], " returned an error, check the log file"
     return result
 
+
 PDFLaTeXAuxAction = None
+
 
 def generate(env):
     """Add Builders and construction variables for pdflatex to an Environment."""
     global PDFLaTeXAction
     if PDFLaTeXAction is None:
-        PDFLaTeXAction = SCons.Action.Action('$PDFLATEXCOM', '$PDFLATEXCOMSTR')
+        PDFLaTeXAction = SCons.Action.Action("$PDFLATEXCOM", "$PDFLATEXCOMSTR")
 
     global PDFLaTeXAuxAction
     if PDFLaTeXAuxAction is None:
-        PDFLaTeXAuxAction = SCons.Action.Action(PDFLaTeXAuxFunction,
-                              strfunction=SCons.Tool.tex.TeXLaTeXStrFunction)
+        PDFLaTeXAuxAction = SCons.Action.Action(
+            PDFLaTeXAuxFunction, strfunction=SCons.Tool.tex.TeXLaTeXStrFunction
+        )
 
     env.AppendUnique(LATEXSUFFIXES=SCons.Tool.LaTeXSuffixes)
 
     import pdf
+
     pdf.generate(env)
 
-    bld = env['BUILDERS']['PDF']
-    bld.add_action('.ltx', PDFLaTeXAuxAction)
-    bld.add_action('.latex', PDFLaTeXAuxAction)
-    bld.add_emitter('.ltx', SCons.Tool.tex.tex_pdf_emitter)
-    bld.add_emitter('.latex', SCons.Tool.tex.tex_pdf_emitter)
+    bld = env["BUILDERS"]["PDF"]
+    bld.add_action(".ltx", PDFLaTeXAuxAction)
+    bld.add_action(".latex", PDFLaTeXAuxAction)
+    bld.add_emitter(".ltx", SCons.Tool.tex.tex_pdf_emitter)
+    bld.add_emitter(".latex", SCons.Tool.tex.tex_pdf_emitter)
 
     SCons.Tool.tex.generate_common(env)
 
+
 def exists(env):
-    return env.Detect('pdflatex')
+    return env.Detect("pdflatex")
+
 
 # Local Variables:
 # tab-width:4

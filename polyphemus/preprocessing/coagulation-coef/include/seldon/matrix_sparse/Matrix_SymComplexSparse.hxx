@@ -29,7 +29,7 @@
 
 namespace Seldon
 {
-  
+
 
   //! Symmetric complex sparse-matrix class.
   /*!
@@ -90,7 +90,7 @@ namespace Seldon
 			    Vector<int, Storage2, Allocator2>& imag_ind);
     Matrix_SymComplexSparse(const Matrix_SymComplexSparse<T, Prop, Storage,
 			    Allocator>& A);
-    
+
     // Destructor.
     ~Matrix_SymComplexSparse();
     void Clear();
@@ -113,7 +113,7 @@ namespace Seldon
 		 int* imag_ind);
     void Nullify();
     void Copy(const Matrix_SymComplexSparse<T, Prop, Storage, Allocator>& A);
-    
+
     // Basic methods.
     int GetDataSize() const;
     int* GetRealPtr() const;

@@ -42,4 +42,3 @@ contains
   end subroutine compute_aerosol_anthropic_emission
 
 end module chimere_aerosol_anthropic_emission
-

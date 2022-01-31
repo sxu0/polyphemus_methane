@@ -23,9 +23,9 @@ import os, unittest, sys
 
 
 class HostTestCase(unittest.TestCase):
-
     def setUp(self):
         import random
+
         # The local host.
         self.local_host = network.Host()
         # A random host.
@@ -44,6 +44,7 @@ class HostTestCase(unittest.TestCase):
 
     def testProcessingMethods(self):
         import time, popen2
+
         # Gets load averages.
         load_average = self.local_host.LoadAverage()
         self.assert_(not 9999 in load_average)
@@ -59,10 +60,10 @@ class HostTestCase(unittest.TestCase):
         self.assert_(out[0] == 0)
         out = self.local_host.LaunchBG(self.command)
         self.assert_(isinstance(out, popen2.Popen4))
-        while (out.poll() == -1):
+        while out.poll() == -1:
             time.sleep(0.1)
         self.assert_(out.poll() == 0)
-        out = self.local_host.LaunchWait(self.command, ltime = 0.5, wait = 0.2)
+        out = self.local_host.LaunchWait(self.command, ltime=0.5, wait=0.2)
         self.assert_(isinstance(out, tuple))
         self.assert_(out[0] == 0)
 
@@ -71,8 +72,8 @@ class HostTestCase(unittest.TestCase):
 # NETWORK TEST #
 ################
 
-class NetworkTestCase(unittest.TestCase):
 
+class NetworkTestCase(unittest.TestCase):
     def setUp(self):
         self.host = network.Host()
         self.network = network.Network()
@@ -91,14 +92,14 @@ class NetworkTestCase(unittest.TestCase):
         _ = self.network.GetAvailableHosts()
 
     def testFunctions(self):
-        self.assert_(network.IsNum('3.14'))
-        self.assert_(not network.IsNum('pi'))
-        self.assert_(network.IsInt('1'))
-        self.assert_(not network.IsInt('3.14'))
-        self.assert_(isinstance(network.ToNum('1'), int))
-        self.assert_(isinstance(network.ToNum('3.14'), float))
+        self.assert_(network.IsNum("3.14"))
+        self.assert_(not network.IsNum("pi"))
+        self.assert_(network.IsInt("1"))
+        self.assert_(not network.IsInt("3.14"))
+        self.assert_(isinstance(network.ToNum("1"), int))
+        self.assert_(isinstance(network.ToNum("3.14"), float))
         # Exceptions.
-        self.assertRaises(Exception, network.ToNum, 'pi')
+        self.assertRaises(Exception, network.ToNum, "pi")
         self.assertRaises(ValueError, network.remove, 3.14)
 
     def testAccessMethods(self):
@@ -115,7 +116,7 @@ class NetworkTestCase(unittest.TestCase):
         self.assert_(len(load_averages) == Nhost)
         self.assert_(isinstance(load_averages[0], tuple))
         # Gets an available hosts.
-        host_name = self.network.GetAvailableHost(load_limit = 0.3)
+        host_name = self.network.GetAvailableHost(load_limit=0.3)
         self.assert_(host_name in host_name_list)
         # Gets available hosts.
         available_hosts = self.network.GetAvailableHosts()
@@ -124,6 +125,7 @@ class NetworkTestCase(unittest.TestCase):
 
     def testProcessingMethods(self):
         import random, time, popen2
+
         # List of hosts.
         host_name_list = self.network.GetHostNames()
         Nhost = len(host_name_list)
@@ -132,8 +134,7 @@ class NetworkTestCase(unittest.TestCase):
         self.assert_(out == 0)
         # Launches a simple command to a random host in interactive mode.
         host_index = random.randint(0, Nhost - 1)
-        out = self.network.LaunchInt(self.command,
-                                     host_name_list[host_index])
+        out = self.network.LaunchInt(self.command, host_name_list[host_index])
         self.assert_(out == 0)
         # Launches a simple command in the foreground.
         out = self.network.LaunchFG(self.command)
@@ -141,12 +142,11 @@ class NetworkTestCase(unittest.TestCase):
         self.assert_(out[0] == 0)
         # Launches a simple command to a random host in the foreground.
         host_index = random.randint(0, Nhost - 1)
-        out = self.network.LaunchFG(self.command,
-                                    host_name_list[host_index])
+        out = self.network.LaunchFG(self.command, host_name_list[host_index])
         self.assert_(isinstance(out, tuple))
         self.assert_(out[0] == 0)
         # Launches a simple command in the foreground and waits.
-        out = self.network.LaunchWait(self.command, ltime = 0.5)
+        out = self.network.LaunchWait(self.command, ltime=0.5)
         self.assert_(isinstance(out, tuple))
         self.assert_(out[0] == 0)
         # Launches a simple command in the background.
@@ -156,18 +156,16 @@ class NetworkTestCase(unittest.TestCase):
         self.assert_(out.poll() == 0 or out.poll() == -1)
         # Launches a simple command to a random host in the background.
         host_index = random.randint(0, Nhost - 1)
-        out = self.network.LaunchBG(self.command,
-                                    host_name_list[host_index])
+        out = self.network.LaunchBG(self.command, host_name_list[host_index])
         self.assert_(isinstance(out, popen2.Popen4))
-        while (out.poll() == -1):
+        while out.poll() == -1:
             time.sleep(0.1)
         self.assert_(out.poll() == 0)
         # Launches a simple command in a screen.
         self.network.LaunchScreen(self.command)
         # Launches a simple command to a random host in a screen.
         host_index = random.randint(0, Nhost - 1)
-        self.network.LaunchScreen(self.command,
-                                  host_name_list[host_index])
+        self.network.LaunchScreen(self.command, host_name_list[host_index])
         # Sends a mail.
         # self.network.SendMail(self.subject,
         #                       'login@domain.com',
@@ -177,5 +175,5 @@ class NetworkTestCase(unittest.TestCase):
         #                             'login@domain.com', self.message)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main(argv=sys.argv)

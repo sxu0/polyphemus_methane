@@ -758,7 +758,7 @@ namespace Talos
   ///////////////
   // OPERATORS //
   ///////////////
-  
+
   //! Comparison operator <.
   /*!
     \param first_date date.

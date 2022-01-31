@@ -79,12 +79,12 @@ contains
 	jesp=List_species(s)
 	qti=qti+qext(jesp)     !total dry mass µg.m-3
       end do
-      
+
       ! if (qti.gt.TINYM*N_aerosol) then
-      ! The threshold 0.0 for the minimum aerosol concentration 
+      ! The threshold 0.0 for the minimum aerosol concentration
       ! should be avoided because it leads to a too small particle diameter.
       ! The threshold is set to 1.d-6 (YK).
-      if (qti.gt.1.d-6) then 
+      if (qti.gt.1.d-6) then
 	  if(wet_diam_estimation.eq.0) then !with isorropia
 	    do i=1,nesp_isorropia
 	      jesp=isorropia_species(i)
@@ -148,13 +148,13 @@ contains
                print *, j," fastdiam, after gerber",&
                    "wet diam", wet_d(j), "dry diameter", dry_d(j),&
                    "TEMP", Temperature, "RH", Relative_humidity
-            endif	   
+            endif
             if (wet_d(j) .lt. 1.D-3) then
                print *, j," fastdiam, after gerber: ",&
                    "wet diam", wet_d(j), "dry diameter", dry_d(j),&
                    "TEMP", Temperature, "RH", Relative_humidity,&
                    "dry conc", qti, "water conc", qext(EH2O),"number",c_number(j)
-            endif	   
+            endif
 	   else
 	      c_mass(j,EH2O)=qext(EH2O)
 	      k=concentration_index(j, 1)
@@ -422,7 +422,7 @@ contains
          ! its initial fixed ones,
          ! thus avoiding zero values
          ! k: index for aerosol size from 1 to N_sizebin
-         k=concentration_index(j, 1) 
+         k=concentration_index(j, 1)
          wet_d(j)=size_diam_av(k)
          wet_m(j)=size_mass_av(k)
       endif
@@ -493,11 +493,11 @@ contains
 #ifdef WITHOUT_NACL_IN_THERMODYNAMICS
      vil=vil + qext(ENa)/mass_density_aer(ENa)
 #endif
-! 
+!
 #ifndef WITHOUT_NACL_IN_THERMODYNAMICS
      vil=vil + qinti(INa)/mass_density_aer(ENa)
 #endif
-! 
+!
 #ifdef WITHOUT_NACL_IN_THERMODYNAMICS
      vil = vil + qext(ECl)/mass_density_aer(ECl) ! HCl volume
 #endif
@@ -659,7 +659,7 @@ contains
     surface_equilibrium_conc(ENO3)=gas(2)*molecular_weight_aer(ENO3)
     surface_equilibrium_conc(ECl) =gas(3)*molecular_weight_aer(ECl)
 #ifdef WITHOUT_NACL_IN_THERMODYNAMICS
-    surface_equilibrium_conc(ECl) = 0.d0 
+    surface_equilibrium_conc(ECl) = 0.d0
 #endif
 
 			      ! liquid inorg aerosol
@@ -903,7 +903,7 @@ contains
   end subroutine HPLFLIM
 
 
-  ! YK 
+  ! YK
   subroutine equi_const(TEMP, XK3, XK4, XK6, XK8, XK9, XK10)
     implicit none
     double precision TEMP, T0, T0T, COEF
@@ -930,7 +930,7 @@ contains
       ENDIF
 
   end subroutine equi_const
-  
+
   subroutine DRYIN(Temperature,qinti,N_size_loc,init_bulk_gas,ce_kernal_coef_i,&
    Kelvin_effect,surface_equilibrium_conc,ce_kernel)
 !------------------------------------------------------------------------
@@ -1380,7 +1380,7 @@ contains
 	idx = isorropia_species(i)
 	wi(i) = wi(i) / molecular_weight_aer(idx) ! microg.m-3 / microg.mol-1 = mol.m-3
     enddo
-    
+
     call ISOROPIA(wi, Relative_Humidity, Temperature, cntrl, w, gas2,&
 	liquid, solid, other, organion2, watorg2)
 

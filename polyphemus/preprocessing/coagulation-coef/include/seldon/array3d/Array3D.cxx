@@ -29,7 +29,7 @@ namespace Seldon
   /****************
    * CONSTRUCTORS *
    ****************/
-  
+
 
   //! Default constructor.
   /*!
@@ -93,7 +93,7 @@ namespace Seldon
 
   }
 
-  
+
   //! Copy constructor.
   template <class T, class Allocator>
   Array3D<T, Allocator>::Array3D(const Array3D<T, Allocator>& A)
@@ -105,15 +105,15 @@ namespace Seldon
     length23_ = 0;
 
     data_ = NULL;
-    
+
     Copy(A);
   }
 
-  
+
   /**************
    * DESTRUCTOR *
    **************/
-  
+
 
   //! Destructor.
   template <class T, class Allocator>
@@ -123,18 +123,18 @@ namespace Seldon
     length2_ = 0;
     length3_ = 0;
     length23_ = 0;
-    
+
 #ifdef SELDON_CHECK_MEMORY
     try
       {
 #endif
-	
+
 	if (data_ != NULL)
 	  {
 	    array3D_allocator_.deallocate(data_, length1_ * length23_);
 	    data_ = NULL;
 	  }
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -142,10 +142,10 @@ namespace Seldon
 	data_ = NULL;
       }
 #endif
-    
+
   }
-  
-  
+
+
   /*********************
    * MEMORY MANAGEMENT *
    *********************/
@@ -174,7 +174,7 @@ namespace Seldon
 	try
 	  {
 #endif
-	    
+
 	    data_ =
 	      reinterpret_cast<pointer>(array3D_allocator_.reallocate(data_,
 								      i*j*k,
@@ -205,7 +205,7 @@ namespace Seldon
       }
   }
 
-  
+
   //! Clears the array.
   /*!
     Destructs the array.
@@ -220,11 +220,11 @@ namespace Seldon
     this->length3_ = 0;
   }
 
-  
+
   /*****************
    * BASIC METHODS *
    *****************/
-  
+
 
   //! Returns the length in dimension #1.
   /*!
@@ -339,7 +339,7 @@ namespace Seldon
     return data_[i * length23_ + j * length3_ + k];
   }
 
- 
+
   //! Access operator.
   /*!
     Returns the value of element (i, j, k).
@@ -352,7 +352,7 @@ namespace Seldon
   inline typename Array3D<T, Allocator>::const_reference
   Array3D<T, Allocator>::operator() (int i, int j, int k) const
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= length1_)
       throw WrongIndex("Array3D::operator()",
@@ -388,7 +388,7 @@ namespace Seldon
 
     return *this;
   }
-  
+
   //! Duplicates a 3D array.
   /*!
     \param A 3D array to be copied.
@@ -487,8 +487,8 @@ namespace Seldon
   /**************************
    * INPUT/OUTPUT FUNCTIONS *
    **************************/
-  
-  
+
+
   //! Writes the 3D array in a file.
   /*!
     Stores the 3D array in a file in binary format.
@@ -556,7 +556,7 @@ namespace Seldon
 
   }
 
-  
+
   //! Reads the 3D array from a file.
   /*!
     Reads a 3D array stored in binary format in a file.
@@ -582,7 +582,7 @@ namespace Seldon
 
     FileStream.close();
   }
- 
+
 
   //! Reads the 3D array from an input stream.
   /*!
@@ -623,7 +623,7 @@ namespace Seldon
 #endif
 
   }
-  
+
   //! operator<< overloaded for a 3D array.
   /*!
     \param out output stream.

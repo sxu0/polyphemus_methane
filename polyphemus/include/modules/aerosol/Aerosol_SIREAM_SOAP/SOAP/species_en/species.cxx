@@ -6,7 +6,7 @@
 #include "species.h"
 using namespace soap;
 using namespace std;
-  
+
 void creation_species( vector<species>& surrogate, vector<string> species_list_aer)
 {
 
@@ -51,17 +51,17 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 							   0.0, //group H2O
 							   0.0, //group ACOH
 							   0.0,0.0, //group ketone
-							   0.0,   //group aldehyde  
+							   0.0,   //group aldehyde
 							   0.0,0.0, //group ester
-							   0.0,0.0,0.0, //group ether 
+							   0.0,0.0,0.0, //group ether
 							   2.0,  //group acid
 							   0.0,   //group ACNO2
 							   0.0,0.0,0.0, //group NO3
 							   0.0,0.0,0.0}; //group CO-OH
-  
+
   int size = sizeof(group_tmp_bia2d)/sizeof(double);
   assert(size = 45);
-	
+
   for(int i = 0; i < size; ++i)
 	BiA2D.groups[i] = group_tmp_bia2d[i];
 
@@ -74,7 +74,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   surrogate.push_back(BiA2D);
 
 
-  /* ==== BiA1D ==== */ 
+  /* ==== BiA1D ==== */
 
   species BiA1D;
   BiA1D.name="BiA1D";
@@ -94,7 +94,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   BiA1D.compute_gamma_org=true;  // Compute the activity coefficients of the organic phase for this compound?
   BiA1D.compute_gamma_aq=true;  // Compute the activity coefficients of the aqueous phase for this compound?
   BiA1D.Koligo_org=0.0;      //oligomeriation constant in the organic phase
-  BiA1D.rho=1300.0;  
+  BiA1D.rho=1300.0;
   BiA1D.KDiffusion_air=1.0e-5;
   BiA1D.accomodation_coefficient=alpha;
   BiA1D.viscosity=1.68e12;
@@ -113,17 +113,17 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 							   0.0, //group H2O
 							   0.0, //group ACOH
 							   1.0,0.0, //group ketone
-							   0.0,   //group aldehyde  
+							   0.0,   //group aldehyde
 							   0.0,0.0, //group ester
-							   0.0,0.0,0.0, //group ether 
+							   0.0,0.0,0.0, //group ether
 							   1.0,  //group acid
 							   0.0,   //group ACNO2
 							   0.0,0.0,0.0, //group NO3
 							   0.0,0.0,0.0}; //group CO-OH
-  
+
   size = sizeof(group_tmp_bia1d)/sizeof(double);
   assert(size = 45);
-	
+
   for(int i = 0; i < size; ++i)
 	BiA1D.groups[i] = group_tmp_bia1d[i];
 
@@ -132,7 +132,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   for (int i = 0; i < nsp; ++i)
     if (species_list_aer[i].substr(1,-1) == BiA1D.name)
       BiA1D.soap_ind = i;
-  
+
   surrogate.push_back(BiA1D);
 
   species BiA0D;
@@ -153,14 +153,14 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   BiA0D.compute_gamma_org=true;  // Compute the activity coefficients of the organic phase for this compound?
   BiA0D.compute_gamma_aq=true;  // Compute the activity coefficients of the aqueous phase for this compound?
   //Parameters for the oligomerization of aldehyde in the aqueous phase:
-  BiA0D.Koligo_aq=0.1;     
+  BiA0D.Koligo_aq=0.1;
   BiA0D.pHref=6.0;
   BiA0D.beta=1.91;
   BiA0D.rho=1300.0;
   BiA0D.KDiffusion_air=1.0e-5;
   BiA0D.accomodation_coefficient=alpha;
   BiA0D.viscosity=1.68e12;
-  
+
   //Group: if no functionnal group in the species use the default species
   //for the computation of activity coefficients
   //
@@ -175,9 +175,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 							   0.0, //group H2O
 							   0.0, //group ACOH
 							   1.0,0.0, //group ketone
-							   1.0,   //group aldehyde  
+							   1.0,   //group aldehyde
 							   0.0,0.0, //group ester
-							   0.0,0.0,0.0, //group ether 
+							   0.0,0.0,0.0, //group ether
 							   0.0,  //group acid
 							   0.0,   //group ACNO2
 							   0.0,0.0,0.0, //group NO3
@@ -185,7 +185,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 
   size = sizeof(group_tmp_bia0d)/sizeof(double);
   assert(size = 45);
-	
+
   for(int i = 0; i < size; ++i)
 	BiA0D.groups[i] = group_tmp_bia0d[i];
 
@@ -194,10 +194,10 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   for (int i = 0; i < nsp; ++i)
     if (species_list_aer[i].substr(1,-1) == BiA0D.name)
       BiA0D.soap_ind = i;
-  
+
   surrogate.push_back(BiA0D);
-  
-  
+
+
   species BiMT;
   BiMT.name="BiMT";
   BiMT.is_inorganic_precursor=false;
@@ -219,7 +219,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   BiMT.KDiffusion_air=1.0e-5;
   BiMT.accomodation_coefficient=alpha;
   BiMT.viscosity=1.68e12;
- 
+
   //Group: if no functionnal group in the species use the default species
   //for the computation of activity coefficients
   //
@@ -234,9 +234,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 							  0.0, //group H2O
 							  0.0, //group ACOH
 							  0.0,0.0, //group ketone
-							  0.0,   //group aldehyde  
+							  0.0,   //group aldehyde
 							  0.0,0.0, //group ester
-							  0.0,0.0,0.0, //group ether 
+							  0.0,0.0,0.0, //group ether
 							  0.0,  //group acid
 							  0.0,   //group ACNO2
 							  0.0,0.0,0.0, //group NO3
@@ -244,7 +244,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 
   size = sizeof(group_tmp_bimt)/sizeof(double);
   assert(size == 45);
-	
+
   for(int i = 0; i < size; ++i)
 	BiMT.groups[i] = group_tmp_bimt[i];
 
@@ -253,7 +253,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   for (int i = 0; i < nsp; ++i)
     if (species_list_aer[i].substr(1,-1) == BiMT.name)
       BiMT.soap_ind = i;
-  
+
   surrogate.push_back(BiMT);
 
   species BiPER;
@@ -277,7 +277,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   BiPER.KDiffusion_air=1.0e-5;
   BiPER.accomodation_coefficient=alpha;
   BiPER.viscosity=1.68e12;
-  
+
   //Group: if no functionnal group in the species use the default species
   //for the computation of activity coefficients
   //
@@ -292,9 +292,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 							   0.0, //group H2O
 							   0.0, //group ACOH
 							   0.0,0.0, //group ketone
-							   0.0,   //group aldehyde  
+							   0.0,   //group aldehyde
 							   0.0,0.0, //group ester
-							   0.0,0.0,0.0, //group ether 
+							   0.0,0.0,0.0, //group ether
 							   0.0,  //group acid
 							   0.0,   //group ACNO2
 							   0.0,0.0,0.0, //group NO3
@@ -302,7 +302,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 
   size = sizeof(group_tmp_biper)/sizeof(double);
   assert(size == 45);
-	
+
   for(int i = 0; i < size; ++i)
 	BiPER.groups[i] = group_tmp_biper[i];
 
@@ -311,7 +311,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   for (int i = 0; i < nsp; ++i)
     if (species_list_aer[i].substr(1,-1) == BiPER.name)
       BiPER.soap_ind = i;
-  
+
   surrogate.push_back(BiPER);
 
   species BiDER;
@@ -335,7 +335,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   BiDER.KDiffusion_air=1.0e-5;
   BiDER.accomodation_coefficient=alpha;
   BiDER.viscosity=1.68e12;
-  
+
   //Group: if no functionnal group in the species use the default species
   //for the computation of activity coefficients
   //
@@ -350,9 +350,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 							   0.0, //group H2O
 							   0.0, //group ACOH
 							   0.0,0.0, //group ketone
-							   0.0,   //group aldehyde  
+							   0.0,   //group aldehyde
 							   0.0,0.0, //group ester
-							   0.0,0.0,0.0, //group ether 
+							   0.0,0.0,0.0, //group ether
 							   0.0,  //group acid
 							   0.0,   //group ACNO2
 							   0.0,0.0,0.0, //group NO3
@@ -360,10 +360,10 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 
   size = sizeof(group_tmp_bider)/sizeof(double);
   assert(size == 45);
-	
+
   for(int i = 0; i < size; ++i)
 	BiDER.groups[i] = group_tmp_bider[i];
-  
+
   // Find the number in the aerosol species list
   BiDER.soap_ind = -1;
   for (int i = 0; i < nsp; ++i)
@@ -394,7 +394,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   BiMGA.KDiffusion_air=1.0e-5;
   BiMGA.accomodation_coefficient=alpha;
   BiMGA.viscosity=1.68e12;
-  
+
   //Group: if no functionnal group in the species use the default species
   //for the computation of activity coefficients
   //
@@ -409,9 +409,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 							   0.0, //group H2O
 							   0.0, //group ACOH
 							   0.0,0.0, //group ketone
-							   0.0,   //group aldehyde  
+							   0.0,   //group aldehyde
 							   0.0,0.0, //group ester
-							   0.0,0.0,0.0, //group ether 
+							   0.0,0.0,0.0, //group ether
 							   1.0,  //group acid
 							   0.0,   //group ACNO2
 							   0.0,0.0,0.0, //group NO3
@@ -419,7 +419,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 
   size = sizeof(group_tmp_bimga)/sizeof(double);
   assert(size == 45);
-	
+
   for(int i = 0; i < size; ++i)
 	BiMGA.groups[i] = group_tmp_bimga[i];
 
@@ -428,7 +428,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   for (int i = 0; i < nsp; ++i)
     if (species_list_aer[i].substr(1,-1) == BiMGA.name)
       BiMGA.soap_ind = i;
-  
+
   surrogate.push_back(BiMGA);
 
   species AnBlP;
@@ -452,8 +452,8 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   AnBlP.KDiffusion_air=1.0e-5;
   AnBlP.accomodation_coefficient=alpha;
   AnBlP.viscosity=1.68e12;
-  
-  
+
+
   //Group: if no functionnal group in the species use the default species
   //for the computation of activity coefficients
   //
@@ -468,9 +468,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 							   0.0, //group H2O
 							   0.0, //group ACOH
 							   0.0,0.0, //group ketone
-							   0.0,   //group aldehyde  
+							   0.0,   //group aldehyde
 							   0.0,0.0, //group ester
-							   0.0,0.0,0.0, //group ether 
+							   0.0,0.0,0.0, //group ether
 							   1.0,  //group acid
 							   1.0,   //group ACNO2
 							   0.0,0.0,0.0, //group NO3
@@ -478,7 +478,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 
   size = sizeof(group_tmp_anblp)/sizeof(double);
   assert(size == 45);
-	
+
   for(int i = 0; i < size; ++i)
 	AnBlP.groups[i] = group_tmp_anblp[i];
 
@@ -487,7 +487,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   for (int i = 0; i < nsp; ++i)
     if (species_list_aer[i].substr(1,-1) == AnBlP.name)
       AnBlP.soap_ind = i;
-  
+
   surrogate.push_back(AnBlP);
 
   species AnBmP;
@@ -511,7 +511,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   AnBmP.KDiffusion_air=1.0e-5;
   AnBmP.accomodation_coefficient=alpha;
   AnBmP.viscosity=1.68e12;
-  
+
   //Group: if no functionnal group in the species use the default species
   //for the computation of activity coefficients
   //
@@ -526,9 +526,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 							   0.0, //group H2O
 							   1.0, //group ACOH
 							   0.0,0.0, //group ketone
-							   0.0,   //group aldehyde  
+							   0.0,   //group aldehyde
 							   0.0,0.0, //group ester
-							   0.0,0.0,0.0, //group ether 
+							   0.0,0.0,0.0, //group ether
 							   1.0,  //group acid
 							   0.0,   //group ACNO2
 							   0.0,0.0,0.0, //group NO3
@@ -536,7 +536,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 
   size = sizeof(group_tmp_anbmp)/sizeof(double);
   assert(size == 45);
-	
+
   for(int i = 0; i < size; ++i)
 	AnBmP.groups[i] = group_tmp_anbmp[i];
 
@@ -545,7 +545,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   for (int i = 0; i < nsp; ++i)
     if (species_list_aer[i].substr(1,-1) == AnBmP.name)
       AnBmP.soap_ind = i;
-  
+
   surrogate.push_back(AnBmP);
 
   species BiBlP;
@@ -568,8 +568,8 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   BiBlP.rho=1300.0;
   BiBlP.KDiffusion_air=1.0e-5;
   BiBlP.accomodation_coefficient=alpha;
-  BiBlP.viscosity=1.68e12;  
-  
+  BiBlP.viscosity=1.68e12;
+
   //Group: if no functionnal group in the species use the default species
   //for the computation of activity coefficients
   //
@@ -584,9 +584,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 							   0.0, //group H2O
 							   0.0, //group ACOH
 							   0.0,0.0, //group ketone
-							   1.0,   //group aldehyde  
+							   1.0,   //group aldehyde
 							   0.0,0.0, //group ester
-							   0.0,0.0,0.0, //group ether 
+							   0.0,0.0,0.0, //group ether
 							   0.0,  //group acid
 							   0.0,   //group ACNO2
 							   0.0,1.0,0.0, //group NO3
@@ -594,7 +594,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 
   size = sizeof(group_tmp_biblp)/sizeof(double);
   assert(size == 45);
-	
+
   for(int i = 0; i < size; ++i)
 	BiBlP.groups[i] = group_tmp_biblp[i];
 
@@ -603,7 +603,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   for (int i = 0; i < nsp; ++i)
     if (species_list_aer[i].substr(1,-1) == BiBlP.name)
       BiBlP.soap_ind = i;
-  
+
   surrogate.push_back(BiBlP);
 
   species BiBmP;
@@ -626,8 +626,8 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   BiBmP.rho=1300.0;
   BiBmP.KDiffusion_air=1.0e-5;
   BiBmP.accomodation_coefficient=alpha;
-  BiBmP.viscosity=1.68e12;  
-  
+  BiBmP.viscosity=1.68e12;
+
   //Group: if no functionnal group in the species use the default species
   //for the computation of activity coefficients
   //
@@ -642,9 +642,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 							   0.0, //group H2O
 							   0.0, //group ACOH
 							   0.0,1.0, //group ketone
-							   1.0,   //group aldehyde  
+							   1.0,   //group aldehyde
 							   0.0,0.0, //group ester
-							   0.0,0.0,0.0, //group ether 
+							   0.0,0.0,0.0, //group ether
 							   0.0,  //group acid
 							   0.0,   //group ACNO2
 							   0.0,0.0,0.0, //group NO3
@@ -652,7 +652,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 
   size = sizeof(group_tmp_bibmp)/sizeof(double);
   assert(size == 45);
-	
+
   for(int i = 0; i < size; ++i)
 	BiBmP.groups[i] = group_tmp_bibmp[i];
 
@@ -661,10 +661,10 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   for (int i = 0; i < nsp; ++i)
     if (species_list_aer[i].substr(1,-1) == BiBmP.name)
       BiBmP.soap_ind = i;
-  
+
   surrogate.push_back(BiBmP);
 
-  
+
   species AnClP;
   AnClP.name="AnClP";
   AnClP.is_inorganic_precursor=false;
@@ -681,10 +681,10 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   AnClP.rho=1300.0;
   AnClP.KDiffusion_air=1.0e-5;
   AnClP.accomodation_coefficient=alpha;
-  AnClP.viscosity=1.68e12;  
+  AnClP.viscosity=1.68e12;
 
   //Group: if no functionnal group in the species use the default species
-  //for the computation of activity coefficients 
+  //for the computation of activity coefficients
   double group_tmp_anclp [] = {0.0,0.0,0.0,0.0, // group C
 							   0.0,0.0,0.0,0.0, //group C[OH]
 							   0.0,0.0,0.0,0.0, //group Calcohol
@@ -696,17 +696,17 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 							   0.0, //group H2O
 							   0.0, //group ACOH
 							   0.0,0.0, //group ketone
-							   0.0,   //group aldehyde  
+							   0.0,   //group aldehyde
 							   0.0,0.0, //group ester
 							   0.0,0.0,0.0, //group ether
 							   0.0,  //group acid
 							   0.0,   //group ACNO2
 							   0.0,0.0,0.0, //group NO3
 							   0.0,0.0,0.0}; //group CO-OH
-  
+
   size = sizeof(group_tmp_anclp)/sizeof(double);
   assert(size == 45);
-  
+
   for(int i = 0; i < size; ++i)
 	AnClP.groups[i] = group_tmp_anclp[i];
 
@@ -714,7 +714,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   AnClP.soap_ind = -1;
   for (int i = 0; i < nsp; ++i)
     if (species_list_aer[i].substr(1,-1) == AnClP.name)
-      AnClP.soap_ind = i;  
+      AnClP.soap_ind = i;
 
   surrogate.push_back(AnClP);
 
@@ -740,8 +740,8 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   BiNGA.KDiffusion_air=1.0e-5;
   BiNGA.accomodation_coefficient=alpha;
   BiNGA.viscosity=1.68e12;
-  
-  
+
+
   //Group: if no functionnal group in the species use the default species
   //for the computation of activity coefficients
   //
@@ -756,9 +756,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 							   0.0, //group H2O
 							   0.0, //group ACOH
 							   0.0,0.0, //group ketone
-							   0.0,   //group aldehyde  
+							   0.0,   //group aldehyde
 							   0.0,0.0, //group ester
-							   0.0,0.0,0.0, //group ether 
+							   0.0,0.0,0.0, //group ether
 							   1.0,  //group acid
 							   0.0,   //group ACNO2
 							   0.0,0.0,1.0, //group NO3
@@ -766,7 +766,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 
   size = sizeof(group_tmp_binga)/sizeof(double);
   assert(size == 45);
-	
+
   for(int i = 0; i < size; ++i)
 	BiNGA.groups[i] = group_tmp_binga[i];
 
@@ -775,12 +775,12 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   for (int i = 0; i < nsp; ++i)
     if (species_list_aer[i].substr(1,-1) == BiNGA.name)
       BiNGA.soap_ind = i;
-  
+
   surrogate.push_back(BiNGA);
 
   species BiNIT3;
-  BiNIT3.name="BiNIT3"; 
-  BiNIT3.is_inorganic_precursor=false;  
+  BiNIT3.name="BiNIT3";
+  BiNIT3.is_inorganic_precursor=false;
   BiNIT3.Psat_ref=1.45e-6; // Saturation vapor pressure at Tref (torr)
   BiNIT3.Tref=298;         // Temperature of reference (K)
   BiNIT3.MM=272.0;           // Molar mass (g/mol)
@@ -798,8 +798,8 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   BiNIT3.rho=1300.0;
   BiNIT3.KDiffusion_air=1.0e-5;
   BiNIT3.accomodation_coefficient=alpha;
-  BiNIT3.viscosity=1.68e12;  
-  
+  BiNIT3.viscosity=1.68e12;
+
   //Group: if no functionnal group in the species use the default species
   //for the computation of activity coefficients
   //
@@ -814,9 +814,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 								0.0, //group H2O
 								0.0, //group ACOH
 								0.0,0.0, //group ketone
-								0.0,   //group aldehyde  
+								0.0,   //group aldehyde
 								0.0,0.0, //group ester
-								0.0,0.0,0.0, //group ether 
+								0.0,0.0,0.0, //group ether
 								0.0,  //group acid
 								0.0,   //group ACNO2
 								1.0,2.0,0.0, //group NO3
@@ -824,10 +824,10 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 
   size = sizeof(group_tmp_binit3)/sizeof(double);
   assert(size == 45);
-	
+
   for(int i = 0; i < size; ++i)
 	BiNIT3.groups[i] = group_tmp_binit3[i];
-  
+
   // Find the number in the aerosol species list
   BiNIT3.soap_ind = -1;
   for (int i = 0; i < nsp; ++i)
@@ -856,15 +856,15 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   BiNIT.rho=1300.0;
   BiNIT.KDiffusion_air=1.0e-5;
   BiNIT.accomodation_coefficient=alpha;
-  BiNIT.viscosity=1.68e12;  
-  
+  BiNIT.viscosity=1.68e12;
+
   //Group: if no functionnal group in the species use the default species
   //for the computation of activity coefficients
   //
   double group_tmp_binit [] = {3.0,1.0,2.0,2.0, // group C
 							   0.0,0.0,1.0,0.0, //group C[OH]
 							   0.0,0.0,0.0,0.0, //group Calcohol
-							   0.0,0.0,0.0,0.0, //group Calcohol-tail   
+							   0.0,0.0,0.0,0.0, //group Calcohol-tail
 							   0.0,0.0,0.0,0.0,0.0, //group C=C
 							   0.0,0.0, //group aromatic carbon (AC)
 							   0.0,0.0,0.0, // group //AC-C
@@ -872,9 +872,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 							   0.0, //group H2O
 							   0.0, //group ACOH
 							   0.0,0.0, //group ketone
-							   0.0,   //group aldehyde  
+							   0.0,   //group aldehyde
 							   0.0,0.0, //group ester
-							   0.0,0.0,0.0, //group ether 
+							   0.0,0.0,0.0, //group ether
 							   0.0,  //group acid
 							   0.0,   //group ACNO2
 							   0.0,1.0,0.0, //group NO3
@@ -882,7 +882,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 
   size = sizeof(group_tmp_binit)/sizeof(double);
   assert(size == 45);
-	
+
   for(int i = 0; i < size; ++i)
 	BiNIT.groups[i] = group_tmp_binit[i];
 
@@ -890,10 +890,10 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   BiNIT.soap_ind = -1;
   for (int i = 0; i < nsp; ++i)
     if (species_list_aer[i].substr(1,-1) == BiNIT.name)
-      BiNIT.soap_ind = i;  
+      BiNIT.soap_ind = i;
 
   surrogate.push_back(BiNIT);
-  
+
   species POAlP;
   POAlP.name="POAlP";
   POAlP.is_inorganic_precursor=false;
@@ -902,8 +902,8 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   POAlP.hydrophilic=false; // Does the species condense on the aqueous phase?
   POAlP.hydrophobic=true;  // Does the species condense on the organic phase?
   POAlP.kp_from_experiment=true;  // Use experimental partitioning constant at Tref?
-  //  POAlP.kp_experiment=0.0435;       
-  //   POAlP.kp_experiment=0.0015;       
+  //  POAlP.kp_experiment=0.0435;
+  //   POAlP.kp_experiment=0.0015;
   POAlP.kp_experiment=1.1;       // Value of the experimental partitioning constant at Tref?
   POAlP.deltaH=106.0;     // Enthalpy of vaporization (kJ/mol)
   POAlP.Tref=298;
@@ -913,15 +913,15 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   POAlP.rho=1300.0;
   POAlP.KDiffusion_air=1.0e-5;
   POAlP.accomodation_coefficient=alpha;
-  POAlP.viscosity=1.68e12;  
+  POAlP.viscosity=1.68e12;
 
   //Group: if no functionnal group in the species use the default species
-  //for the computation of activity coefficients 
-  
+  //for the computation of activity coefficients
+
   double group_tmp_poalp [] = {0.0,0.0,0.0,0.0, // group C
 							   0.0,0.0,0.0,0.0, //group C[OH]
 							   0.0,0.0,0.0,0.0, //group Calcohol
-							   0.0,0.0,0.0,0.0, //group Calcohol-tail  
+							   0.0,0.0,0.0,0.0, //group Calcohol-tail
 							   0.0,0.0,0.0,0.0,0.0, //group C=C
 							   0.0,0.0, //group aromatic carbon (AC)
 							   0.0,0.0,0.0, // group //AC-C
@@ -929,9 +929,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 							   0.0, //group H2O
 							   0.0, //group ACOH
 							   0.0,0.0, //group ketone
-							   0.0,   //group aldehyde  
+							   0.0,   //group aldehyde
 							   0.0,0.0, //group ester
-							   0.0,0.0,0.0, //group ether  
+							   0.0,0.0,0.0, //group ether
 							   0.0,  //group acid
 							   0.0,   //group ACNO2
 							   0.0,0.0,0.0, //group NO3
@@ -967,15 +967,15 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   POAmP.rho=1300.0;
   POAmP.KDiffusion_air=1.0e-5;
   POAmP.accomodation_coefficient=alpha;
-  POAmP.viscosity=1.68e12;  
+  POAmP.viscosity=1.68e12;
 
   //Group: if no functionnal group in the species use the default species
-  //for the computation of activity coefficients 
-  
+  //for the computation of activity coefficients
+
   double group_tmp_poamp [] = {0.0,0.0,0.0,0.0, // group C
 							   0.0,0.0,0.0,0.0, //group C[OH]
 							   0.0,0.0,0.0,0.0, //group Calcohol
-							   0.0,0.0,0.0,0.0, //group Calcohol-tail  
+							   0.0,0.0,0.0,0.0, //group Calcohol-tail
 							   0.0,0.0,0.0,0.0,0.0, //group C=C
 							   0.0,0.0, //group aromatic carbon (AC)
 							   0.0,0.0,0.0, // group //AC-C
@@ -983,9 +983,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 							   0.0, //group H2O
 							   0.0, //group ACOH
 							   0.0,0.0, //group ketone
-							   0.0,   //group aldehyde  
+							   0.0,   //group aldehyde
 							   0.0,0.0, //group ester
-							   0.0,0.0,0.0, //group ether  
+							   0.0,0.0,0.0, //group ether
 							   0.0,  //group acid
 							   0.0,   //group ACNO2
 							   0.0,0.0,0.0, //group NO3
@@ -1021,15 +1021,15 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   POAhP.rho=1300.0;
   POAhP.KDiffusion_air=1.0e-5;
   POAhP.accomodation_coefficient=alpha;
-  POAhP.viscosity=1.68e12;  
+  POAhP.viscosity=1.68e12;
 
   //Group: if no functionnal group in the species use the default species
-  //for the computation of activity coefficients 
-  
+  //for the computation of activity coefficients
+
   double group_tmp_poahp [] = {0.0,0.0,0.0,0.0, // group C
 							   0.0,0.0,0.0,0.0, //group C[OH]
 							   0.0,0.0,0.0,0.0, //group Calcohol
-							   0.0,0.0,0.0,0.0, //group Calcohol-tail  
+							   0.0,0.0,0.0,0.0, //group Calcohol-tail
 							   0.0,0.0,0.0,0.0,0.0, //group C=C
 							   0.0,0.0, //group aromatic carbon (AC)
 							   0.0,0.0,0.0, // group //AC-C
@@ -1037,9 +1037,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 							   0.0, //group H2O
 							   0.0, //group ACOH
 							   0.0,0.0, //group ketone
-							   0.0,   //group aldehyde  
+							   0.0,   //group aldehyde
 							   0.0,0.0, //group ester
-							   0.0,0.0,0.0, //group ether  
+							   0.0,0.0,0.0, //group ether
 							   0.0,  //group acid
 							   0.0,   //group ACNO2
 							   0.0,0.0,0.0, //group NO3
@@ -1075,15 +1075,15 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   SOAlP.rho=1300.0;
   SOAlP.KDiffusion_air=1.0e-5;
   SOAlP.accomodation_coefficient=alpha;
-  SOAlP.viscosity=1.68e12;  
+  SOAlP.viscosity=1.68e12;
 
   //Group: if no functionnal group in the species use the default species
-  //for the computation of activity coefficients 
-  
+  //for the computation of activity coefficients
+
   double group_tmp_soalp [] = {0.0,0.0,0.0,0.0, // group C
 							   0.0,0.0,0.0,0.0, //group C[OH]
 							   0.0,0.0,0.0,0.0, //group Calcohol
-							   0.0,0.0,0.0,0.0, //group Calcohol-tail  
+							   0.0,0.0,0.0,0.0, //group Calcohol-tail
 							   0.0,0.0,0.0,0.0,0.0, //group C=C
 							   0.0,0.0, //group aromatic carbon (AC)
 							   0.0,0.0,0.0, // group //AC-C
@@ -1091,9 +1091,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 							   0.0, //group H2O
 							   0.0, //group ACOH
 							   0.0,0.0, //group ketone
-							   0.0,   //group aldehyde  
+							   0.0,   //group aldehyde
 							   0.0,0.0, //group ester
-							   0.0,0.0,0.0, //group ether  
+							   0.0,0.0,0.0, //group ether
 							   0.0,  //group acid
 							   0.0,   //group ACNO2
 							   0.0,0.0,0.0, //group NO3
@@ -1130,15 +1130,15 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   SOAmP.KDiffusion_air=1.0e-5;
   SOAmP.accomodation_coefficient=alpha;
   SOAmP.viscosity=1.68e12;
-  
+
 
   //Group: if no functionnal group in the species use the default species
-  //for the computation of activity coefficients 
-  
+  //for the computation of activity coefficients
+
   double group_tmp_soamp [] = {0.0,0.0,0.0,0.0, // group C
 							   0.0,0.0,0.0,0.0, //group C[OH]
 							   0.0,0.0,0.0,0.0, //group Calcohol
-							   0.0,0.0,0.0,0.0, //group Calcohol-tail  
+							   0.0,0.0,0.0,0.0, //group Calcohol-tail
 							   0.0,0.0,0.0,0.0,0.0, //group C=C
 							   0.0,0.0, //group aromatic carbon (AC)
 							   0.0,0.0,0.0, // group //AC-C
@@ -1146,9 +1146,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 							   0.0, //group H2O
 							   0.0, //group ACOH
 							   0.0,0.0, //group ketone
-							   0.0,   //group aldehyde  
+							   0.0,   //group aldehyde
 							   0.0,0.0, //group ester
-							   0.0,0.0,0.0, //group ether  
+							   0.0,0.0,0.0, //group ether
 							   0.0,  //group acid
 							   0.0,   //group ACNO2
 							   0.0,0.0,0.0, //group NO3
@@ -1184,15 +1184,15 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   SOAhP.rho=1300.0;
   SOAhP.KDiffusion_air=1.0e-5;
   SOAhP.accomodation_coefficient=alpha;
-  SOAhP.viscosity=1.68e12;  
+  SOAhP.viscosity=1.68e12;
 
   //Group: if no functionnal group in the species use the default species
-  //for the computation of activity coefficients 
-  
+  //for the computation of activity coefficients
+
   double group_tmp_soahp [] = {0.0,0.0,0.0,0.0, // group C
 							   0.0,0.0,0.0,0.0, //group C[OH]
 							   0.0,0.0,0.0,0.0, //group Calcohol
-							   0.0,0.0,0.0,0.0, //group Calcohol-tail  
+							   0.0,0.0,0.0,0.0, //group Calcohol-tail
 							   0.0,0.0,0.0,0.0,0.0, //group C=C
 							   0.0,0.0, //group aromatic carbon (AC)
 							   0.0,0.0,0.0, // group //AC-C
@@ -1200,9 +1200,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 							   0.0, //group H2O
 							   0.0, //group ACOH
 							   0.0,0.0, //group ketone
-							   0.0,   //group aldehyde  
+							   0.0,   //group aldehyde
 							   0.0,0.0, //group ester
-							   0.0,0.0,0.0, //group ether  
+							   0.0,0.0,0.0, //group ether
 							   0.0,  //group acid
 							   0.0,   //group ACNO2
 							   0.0,0.0,0.0, //group NO3
@@ -1243,8 +1243,8 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   Monomer.KDiffusion_air=1.0e-5;
   Monomer.accomodation_coefficient=alpha;
   Monomer.viscosity=1.68e12;
-  
-  
+
+
   //Group: if no functionnal group in the species use the default species
   //for the computation of activity coefficients
   //
@@ -1259,9 +1259,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   							   0.0, //group H2O
   							   0.0, //group ACOH
   							   0.0,0.0, //group ketone
-  							   0.0,   //group aldehyde  
+  							   0.0,   //group aldehyde
   							   0.0,0.0, //group ester
-  							   0.0,0.0,0.0, //group ether 
+  							   0.0,0.0,0.0, //group ether
   							   1.0,  //group acid
   							   1.0,   //group ACNO2
   							   0.0,0.0,0.0, //group NO3
@@ -1269,7 +1269,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 
   size = sizeof(group_tmp_Monomer)/sizeof(double);
   assert(size == 45);
-	
+
   for(int i = 0; i < size; ++i)
   	Monomer.groups[i] = group_tmp_Monomer[i];
 
@@ -1278,7 +1278,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   for (int i = 0; i < nsp; ++i)
     if (species_list_aer[i].substr(1,-1) == Monomer.name)
       Monomer.soap_ind = i;
-  
+
   surrogate.push_back(Monomer);
 
 
@@ -1305,8 +1305,8 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   Dimer.KDiffusion_air=1.0e-5;
   Dimer.accomodation_coefficient=alpha;
   Dimer.viscosity=1.68e12;
-  
-  
+
+
   //Group: if no functionnal group in the species use the default species
   //for the computation of activity coefficients
   //
@@ -1321,9 +1321,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   							   0.0, //group H2O
   							   0.0, //group ACOH
   							   0.0,0.0, //group ketone
-  							   0.0,   //group aldehyde  
+  							   0.0,   //group aldehyde
   							   0.0,0.0, //group ester
-  							   0.0,0.0,0.0, //group ether 
+  							   0.0,0.0,0.0, //group ether
   							   1.0,  //group acid
   							   1.0,   //group ACNO2
   							   0.0,0.0,0.0, //group NO3
@@ -1331,7 +1331,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 
   size = sizeof(group_tmp_dimer)/sizeof(double);
   assert(size == 45);
-	
+
   for(int i = 0; i < size; ++i)
   	Dimer.groups[i] = group_tmp_dimer[i];
 
@@ -1340,7 +1340,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   for (int i = 0; i < nsp; ++i)
     if (species_list_aer[i].substr(1,-1) == Dimer.name)
       Dimer.soap_ind = i;
-  
+
   surrogate.push_back(Dimer);
 
 
@@ -1384,19 +1384,19 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
                                0.0, //group H2O
                                0.0, //group ACOH
                                0.0,0.0, //group ketone
-                               0.0,   //group aldehyde  
+                               0.0,   //group aldehyde
                                0.0,0.0, //group ester
-                               0.0,0.0,0.0, //group ether 
+                               0.0,0.0,0.0, //group ether
                                3.0,  //group acid
                                0.0,   //group ACNO2
                                0.0,0.0,0.0, //group NO3
                                0.0,0.0,0.0}; //group CO-OH
-  
+
 
 
   size = sizeof(group_tmp_bia3d)/sizeof(double);
   assert(size = 45);
-	
+
   for(int i = 0; i < size; ++i)
 	BiA3D.groups[i] = group_tmp_bia3d[i];
 
@@ -1433,8 +1433,8 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   orgNIT.KDiffusion_air=1.0e-5;
   orgNIT.accomodation_coefficient=alpha;
   orgNIT.viscosity=1.68e12;
-  
-  
+
+
   //Group: if no functionnal group in the species use the default species
   //for the computation of activity coefficients
   //
@@ -1449,9 +1449,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   							   0.0, //group H2O
   							   0.0, //group ACOH
   							   0.0,0.0, //group ketone
-  							   0.0,   //group aldehyde  
+  							   0.0,   //group aldehyde
   							   0.0,0.0, //group ester
-  							   0.0,0.0,0.0, //group ether 
+  							   0.0,0.0,0.0, //group ether
   							   1.0,  //group acid
   							   1.0,   //group ACNO2
   							   0.0,0.0,0.0, //group NO3
@@ -1459,7 +1459,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 
   size = sizeof(group_tmp_orgNIT)/sizeof(double);
   assert(size == 45);
-	
+
   for(int i = 0; i < size; ++i)
   	orgNIT.groups[i] = group_tmp_orgNIT[i];
 
@@ -1468,7 +1468,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   for (int i = 0; i < nsp; ++i)
     if (species_list_aer[i].substr(1,-1) == orgNIT.name)
       orgNIT.soap_ind = i;
-  
+
   surrogate.push_back(orgNIT);
 
 
@@ -1484,21 +1484,21 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   H2O.hydrophilic=true; // Does the species condense on the aqueous phase?
   H2O.hydrophobic=true;  // Does the species condense on the organic phase?
   H2O.nonvolatile=false;
-  H2O.kp_from_experiment=false; 
+  H2O.kp_from_experiment=false;
   H2O.compute_gamma_org=true;  // Compute the activity coefficients of the organic phase for this compound?
   H2O.compute_gamma_aq=true;  // Compute the activity coefficients of the aqueous phase for this compound
   H2O.Koligo_org=0.0;
   H2O.rho=1000.0;
   H2O.KDiffusion_air=1.0e-5;
   H2O.accomodation_coefficient=alpha;
-  H2O.viscosity=1.0;  
+  H2O.viscosity=1.0;
 
   //Group: if no functionnal group in the species use the default species
-  //for the computation of activity coefficients 
+  //for the computation of activity coefficients
   double group_tmp_h2o [] = {0.0,0.0,0.0,0.0, // group C
 							 0.0,0.0,0.0,0.0, //group C[OH]
 							 0.0,0.0,0.0,0.0, //group Calcohol
-							   0.0,0.0,0.0,0.0, //group Calcohol-tail  
+							   0.0,0.0,0.0,0.0, //group Calcohol-tail
 							 0.0,0.0,0.0,0.0,0.0, //group C=C
 							 0.0,0.0, //group aromatic carbon (AC)
 							 0.0,0.0,0.0, // group //AC-C
@@ -1506,9 +1506,9 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 							 1.0, //group H2O
 							 0.0, //group ACOH
 							 0.0,0.0, //group ketone
-							 0.0,   //group aldehyde  
+							 0.0,   //group aldehyde
 							 0.0,0.0, //group ester
-							 0.0,0.0,0.0, //group ether 
+							 0.0,0.0,0.0, //group ether
 							 0.0,  //group acid
 							 0.0,   //group ACNO2
 							 0.0,0.0,0.0, //group NO3
@@ -1516,7 +1516,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
 
   size = sizeof(group_tmp_h2o)/sizeof(double);
   assert(size == 45);
-  
+
   for(int i = 0; i < size; ++i)
     H2O.groups[i] = group_tmp_h2o[i];
 
@@ -1525,7 +1525,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   for (int i = 0; i < nsp; ++i)
     if (species_list_aer[i].substr(1,-1) == H2O.name)
       H2O.soap_ind = i;
-  
+
   surrogate.push_back(H2O);
 
   species SO4;
@@ -1539,7 +1539,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   SO4.compute_gamma_aq=false;  // Compute the activity coefficients of the aqueous phase for this compound
   SO4.charge=-2;
   SO4.index_ion_aiomfac=11;
-  SO4.rho=1300.0; //1400.0;    
+  SO4.rho=1300.0; //1400.0;
   SO4.KDiffusion_air=1.0e-5;
   SO4.accomodation_coefficient=0.5;
   SO4.viscosity=1.0;
@@ -1674,7 +1674,7 @@ void creation_species( vector<species>& surrogate, vector<string> species_list_a
   H2SO4.hydrophobic=false;  // Does the species condense on the organic phase?
   H2SO4.compute_gamma_org=false;  // Compute the activity coefficients of the organic phase for this compound?
   H2SO4.compute_gamma_aq=false;  // Compute the activity coefficients of the aqueous phase for this compound
-  H2SO4.accomodation_coefficient=0.5;  
+  H2SO4.accomodation_coefficient=0.5;
   H2SO4.KDiffusion_air=1.07e-5;
   H2SO4.viscosity=1.0;
 

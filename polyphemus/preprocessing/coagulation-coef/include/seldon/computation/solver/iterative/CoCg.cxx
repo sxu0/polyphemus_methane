@@ -25,15 +25,15 @@ namespace Seldon
   //! Solves a linear system by using Conjugate Orthogonal Conjugate Gradient
   /*!
     Solves the symmetric complex linear system A x = b.
-    
+
     return value of 0 indicates convergence within the
     maximum number of iterations (determined by the iter object).
     return value of 1 indicates a failure to converge.
-    
+
     See H. Van der Vorst, J. Melissen,
     A Petrow-Galerkin type method solving Ax=b where A is symmetric complex
     IEEE Trans. Mag., vol 26, no 2, pp 706-708, 1990
-    
+
     \param[in] A  Complex Symmetric Matrix
     \param[in,out] x  Vector on input it is the initial guess
     on output it is the solution
@@ -48,27 +48,27 @@ namespace Seldon
     const int N = A.GetM();
     if (N <= 0)
       return 0;
-    
+
     typedef typename Vector1::value_type Complexe;
     Complexe rho, rho_1(0), alpha, beta, delta, zero;
     zero = b(0)*Titer(0);
     rho = zero+Titer(1);
-    
+
     Vector1 p(b), q(b), r(b), z(b);
     p.Fill(zero); q.Fill(zero); r.Fill(zero); z.Fill(zero);
-    
+
     // for implementation see Cg
     // we initialize iter
     int success_init = iter.Init(b);
     if (success_init != 0)
       return iter.ErrorCode();
-    
+
     Copy(b,r);
     if (!iter.IsInitGuess_Null())
       MltAdd(Complexe(-1), A, x, Complexe(1), r);
     else
       x.Fill(zero);
-    
+
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are reached
     while (! iter.Finished(r))
@@ -84,7 +84,7 @@ namespace Seldon
 	    iter.Fail(1, "Cocg breakdown #1");
 	    break;
 	  }
-	
+
 	if (iter.First())
 	  Copy(z, p);
 	else
@@ -95,7 +95,7 @@ namespace Seldon
 	  }
 	// product matrix vector
 	Mlt(A, p, q);
-	
+
 	delta = DotProd(p, q);
 	if (delta == zero)
 	  {
@@ -103,19 +103,19 @@ namespace Seldon
 	    break;
 	  }
 	alpha = rho / delta;
-	
+
 	Add(alpha, p, x);
 	Add(-alpha, q, r);
-	
+
 	rho_1 = rho;
-	
+
 	++iter;
       }
-    
+
     return iter.ErrorCode();
   }
 
-  
+
 } // end namespace
 
 #define ITERATIVE_COCG_CXX

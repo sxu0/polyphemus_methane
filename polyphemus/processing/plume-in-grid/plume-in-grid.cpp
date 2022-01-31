@@ -58,9 +58,9 @@ int main(int argc, char** argv)
   typedef Polair3DChemistry < double, SplitAdvectionDST3<double>,
                               DiffusionROS2<double>,
                               Photochemistry<double> > ClassEulerianModel;
-  typedef GaussianPuffChemistry<double, 
+  typedef GaussianPuffChemistry<double,
                                 Photochemistry<double> > ClassLocalModel;
-  typedef PlumeInGridChemistry<double, ClassEulerianModel, 
+  typedef PlumeInGridChemistry<double, ClassEulerianModel,
                                ClassLocalModel> ClassModel;
 
 

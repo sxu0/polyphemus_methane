@@ -42,15 +42,15 @@
 
 namespace Seldon
 {
-  
-    
+
+
   /////////////////////////////////
   // STANDARD EIGENVALUE PROBLEM //
-  
-  
+
+
   /* RowMajor */
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvalues(Matrix<float, Prop, RowMajor, Allocator1>& A,
 		      Vector<float, VectFull, Allocator2>& wr,
@@ -74,8 +74,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvaluesEigenvectors(Matrix<float, Prop, RowMajor, Allocator1>& A,
@@ -100,7 +100,7 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-    
+
     Transpose(zr);
     // conjugate if necessary
     int i = 0;
@@ -111,15 +111,15 @@ namespace Seldon
 	    {
 	      for (int j = 0; j < n; j++)
 		zr(j,i+1) = -zr(j,i+1);
-	      
+
 	      i++;
 	    }
-	
+
 	i++;
       }
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<float>, Prop, RowMajor, Allocator1>& A,
 		      Vector<complex<float>, VectFull, Allocator2>& w,
@@ -141,8 +141,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<complex<float>,
 				  Prop, RowMajor, Allocator1>& A,
@@ -160,7 +160,7 @@ namespace Seldon
     cgeev_(&jobl, &jobr, &n, A.GetDataVoid(), &n, w.GetDataVoid(),
 	   z.GetDataVoid(), &n, z.GetData(), &n, work.GetDataVoid(), &lwork,
 	   rwork.GetData(), &info.GetInfoRef());
-    
+
 #ifdef SELDON_LAPACK_CHECK_INFO
     if (info.GetInfo() != 0)
       throw LapackError(info.GetInfo(), "GetEigenvalues",
@@ -169,8 +169,8 @@ namespace Seldon
 
     TransposeConj(z);
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvalues(Matrix<double, Prop, RowMajor, Allocator1>& A,
 		      Vector<double, VectFull, Allocator2>& wr,
@@ -192,8 +192,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvaluesEigenvectors(Matrix<double, Prop, RowMajor, Allocator1>& A,
@@ -216,7 +216,7 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-    
+
     Transpose(zr);
     // conjugate if necessary
     int i = 0;
@@ -227,15 +227,15 @@ namespace Seldon
 	    {
 	      for (int j = 0; j < n; j++)
 		zr(j,i+1) = -zr(j,i+1);
-	      
+
 	      i++;
 	    }
-	
+
 	i++;
       }
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<double>, Prop, RowMajor, Allocator1>& A,
 		      Vector<complex<double>, VectFull, Allocator2>& w,
@@ -257,8 +257,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<complex<double>,
 				  Prop, RowMajor, Allocator1>& A,
@@ -283,14 +283,14 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-    
+
     TransposeConj(z);
   }
-  
-  
+
+
   /* ColMajor */
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvalues(Matrix<float, Prop, ColMajor, Allocator1>& A,
 		      Vector<float, VectFull, Allocator2>& wr,
@@ -312,7 +312,7 @@ namespace Seldon
 #endif
 
   }
-  
+
   template<class Prop, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvaluesEigenvectors(Matrix<float, Prop, ColMajor, Allocator1>& A,
@@ -336,10 +336,10 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-    
+
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<float>, Prop, ColMajor, Allocator1>& A,
 		      Vector<complex<float>, VectFull, Allocator2>& w,
@@ -361,8 +361,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<complex<float>,
 				  Prop, ColMajor, Allocator1>& A,
@@ -389,7 +389,7 @@ namespace Seldon
 #endif
 
   }
-  
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvalues(Matrix<double, Prop, ColMajor, Allocator1>& A,
 		      Vector<double, VectFull, Allocator2>& wr,
@@ -411,8 +411,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvaluesEigenvectors(Matrix<double, Prop, ColMajor, Allocator1>& A,
@@ -436,10 +436,10 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-    
+
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<double>, Prop, ColMajor, Allocator1>& A,
 		      Vector<complex<double>, VectFull, Allocator2>& w,
@@ -461,8 +461,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<complex<double>,
 				  Prop, ColMajor, Allocator1>& A,
@@ -489,11 +489,11 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   /* RowSym */
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<float, Prop, RowSym, Allocator1>& A,
 		      Vector<float, VectFull, Allocator2>& w,
@@ -513,8 +513,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<float, Prop, RowSym, Allocator1>& A,
 				  Vector<float, VectFull, Allocator2>& w,
@@ -529,7 +529,7 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
- 
+
     ssyev_(&job, &uplo, &n, z.GetData(), &n, w.GetData(), work.GetData(),
 	   &lwork, &info.GetInfoRef());
 
@@ -538,10 +538,10 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-    
+
     Transpose(z);
   }
-  
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<float>, Prop, RowSym, Allocator1>& A,
 		      Vector<complex<float>, VectFull, Allocator2>& w,
@@ -553,10 +553,10 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-    
+
     GetEigenvalues(B, w);
   }
-  
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<complex<float>,
 				  Prop, RowSym, Allocator1>& A,
@@ -573,11 +573,11 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-    
+
     GetEigenvaluesEigenvectors(B, w, z);
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<double, Prop, RowSym, Allocator1>& A,
 		      Vector<double, VectFull, Allocator2>& w,
@@ -597,8 +597,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<double, Prop, RowSym, Allocator1>& A,
 				  Vector<double, VectFull, Allocator2>& w,
@@ -613,7 +613,7 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
- 
+
     dsyev_(&job, &uplo, &n, z.GetData(), &n, w.GetData(), work.GetData(),
 	   &lwork, &info.GetInfoRef());
 
@@ -622,10 +622,10 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-    
+
     Transpose(z);
   }
-  
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<double>, Prop, RowSym, Allocator1>& A,
 		      Vector<complex<double>, VectFull, Allocator2>& w,
@@ -637,10 +637,10 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-    
+
     GetEigenvalues(B, w);
   }
-  
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<complex<double>,
 				  Prop, RowSym, Allocator1>& A,
@@ -655,16 +655,16 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-    
+
     w.Reallocate(n);
     z.Reallocate(n, n);
     GetEigenvaluesEigenvectors(B, w, z);
   }
-  
-  
+
+
   /* ColSym */
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<float, Prop, ColSym, Allocator1>& A,
 		      Vector<float, VectFull, Allocator2>& w,
@@ -683,8 +683,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<float, Prop, ColSym, Allocator1>& A,
 				  Vector<float, VectFull, Allocator2>& w,
@@ -699,7 +699,7 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-    
+
     ssyev_(&job, &uplo, &n, z.GetData(), &n, w.GetData(),
 	   work.GetData(), &lwork, &info.GetInfoRef());
 
@@ -710,8 +710,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<float>, Prop, ColSym, Allocator1>& A,
 		      Vector<complex<float>, VectFull, Allocator2>& w,
@@ -723,11 +723,11 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-    
+
     GetEigenvalues(B, w);
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<complex<float>,
 				  Prop, ColSym, Allocator1>& A,
@@ -742,13 +742,13 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-    
+
     w.Reallocate(n);
     z.Reallocate(n, n);
     GetEigenvaluesEigenvectors(B, w, z);
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<double, Prop, ColSym, Allocator1>& A,
 		      Vector<double, VectFull, Allocator2>& w,
@@ -767,8 +767,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<double, Prop, ColSym, Allocator1>& A,
 				  Vector<double, VectFull, Allocator2>& w,
@@ -783,7 +783,7 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-    
+
     dsyev_(&job, &uplo, &n, z.GetData(), &n, w.GetData(),
 	   work.GetData(), &lwork, &info.GetInfoRef());
 
@@ -794,8 +794,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<double>, Prop, ColSym, Allocator1>& A,
 		      Vector<complex<double>, VectFull, Allocator2>& w,
@@ -807,11 +807,11 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-    
+
     GetEigenvalues(B, w);
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<complex<double>,
 				  Prop, ColSym, Allocator1>& A,
@@ -826,16 +826,16 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-    
+
     w.Reallocate(n);
     z.Reallocate(n, n);
     GetEigenvaluesEigenvectors(B, w, z);
   }
-  
-  
+
+
   /* RowHerm */
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<float>, Prop, RowHerm, Allocator1>& A,
 		      Vector<float, VectFull, Allocator2>& w,
@@ -857,8 +857,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<complex<float>,
 				  Prop, RowHerm, Allocator1>& A,
@@ -876,10 +876,10 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-    
+
     cheev_(&job, &uplo,&n, z.GetDataVoid(),&n, w.GetData(), work.GetDataVoid(),
 	   &lwork, rwork.GetData(), &info.GetInfoRef());
-    
+
 #ifdef SELDON_LAPACK_CHECK_INFO
     if (info.GetInfo() != 0)
       throw LapackError(info.GetInfo(), "GetEigenvalues",
@@ -888,7 +888,7 @@ namespace Seldon
 
     Transpose(z);
   }
-  
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<double>, Prop, RowHerm, Allocator1>& A,
 		      Vector<double, VectFull, Allocator2>& w,
@@ -910,8 +910,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<complex<double>,
 				  Prop, RowHerm, Allocator1>& A,
@@ -929,7 +929,7 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-    
+
     zheev_(&job, &uplo,&n, z.GetDataVoid(),&n, w.GetData(), work.GetDataVoid(),
 	   &lwork, rwork.GetData() , &info.GetInfoRef());
 
@@ -938,14 +938,14 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-    
+
     Transpose(z);
   }
-  
-  
+
+
   /* ColHerm */
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<float>, Prop, ColHerm, Allocator1>& A,
 		      Vector<float, VectFull, Allocator2>& w,
@@ -967,8 +967,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<complex<float>,
 				  Prop, ColHerm, Allocator1>& A,
@@ -986,7 +986,7 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-    
+
     cheev_(&job, &uplo, &n, z.GetDataVoid(), &n,
 	   w.GetData(), work.GetDataVoid(),
 	   &lwork, rwork.GetData() , &info.GetInfoRef());
@@ -998,8 +998,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<double>, Prop, ColHerm, Allocator1>& A,
 		      Vector<double, VectFull, Allocator2>& w,
@@ -1021,8 +1021,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<complex<double>,
 				  Prop, ColHerm, Allocator1>& A,
@@ -1040,7 +1040,7 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-    
+
     zheev_(&job, &uplo, &n, z.GetDataVoid(), &n,
 	   w.GetData(), work.GetDataVoid(),
 	   &lwork, rwork.GetData() , &info.GetInfoRef());
@@ -1052,11 +1052,11 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   /* RowSymPacked */
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<float, Prop, RowSymPacked, Allocator1>& A,
 		      Vector<float, VectFull, Allocator2>& w,
@@ -1076,8 +1076,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<float, Prop,RowSymPacked, Allocator1>& A,
 				  Vector<float, VectFull, Allocator2>& w,
@@ -1097,11 +1097,11 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-    
+
     Transpose(z);
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<float>, Prop, RowSymPacked, Allocator1>& A,
 		      Vector<complex<float>, VectFull, Allocator2>& w,
@@ -1112,11 +1112,11 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-    
+
     w.Reallocate(n);
     GetEigenvalues(B, w);
   }
-  
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<complex<float>, Prop,
 				  RowSymPacked, Allocator1>& A,
@@ -1130,13 +1130,13 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-    
+
     w.Reallocate(n);
     z.Reallocate(n,n);
     GetEigenvaluesEigenvectors(B, w, z);
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<double, Prop, RowSymPacked, Allocator1>& A,
 		      Vector<double, VectFull, Allocator2>& w,
@@ -1155,8 +1155,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<double,Prop,RowSymPacked, Allocator1>& A,
 				  Vector<double, VectFull, Allocator2>& w,
@@ -1175,11 +1175,11 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-    
+
     Transpose(z);
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<double>, Prop, RowSymPacked, Allocator1>& A,
 		      Vector<complex<double>, VectFull, Allocator2>& w,
@@ -1190,12 +1190,12 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-    
+
     w.Reallocate(n);
     GetEigenvalues(B, w);
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<complex<double>, Prop,
 				  RowSymPacked, Allocator1>& A,
@@ -1209,16 +1209,16 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-    
+
     w.Reallocate(n);
     z.Reallocate(n,n);
     GetEigenvaluesEigenvectors(B, w, z);
   }
-  
-  
+
+
   /* ColSymPacked */
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<float, Prop, ColSymPacked, Allocator1>& A,
 		      Vector<float, VectFull, Allocator2>& w,
@@ -1238,8 +1238,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<float, Prop,ColSymPacked, Allocator1>& A,
 				  Vector<float, VectFull, Allocator2>& w,
@@ -1261,8 +1261,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<float>,
 		      Prop, ColSymPacked, Allocator1>& A,
@@ -1274,12 +1274,12 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-    
+
     w.Reallocate(n);
     GetEigenvalues(B, w);
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<complex<float>,
 				  Prop, ColSymPacked, Allocator1>& A,
@@ -1293,13 +1293,13 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-    
+
     w.Reallocate(n);
     z.Reallocate(n,n);
     GetEigenvaluesEigenvectors(B, w, z);
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<double, Prop, ColSymPacked, Allocator1>& A,
 		      Vector<double, VectFull, Allocator2>& w,
@@ -1318,8 +1318,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<double,Prop,ColSymPacked, Allocator1>& A,
 				  Vector<double, VectFull, Allocator2>& w,
@@ -1341,8 +1341,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<double>,
 		      Prop, ColSymPacked, Allocator1>& A,
@@ -1354,12 +1354,12 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-    
+
     w.Reallocate(n);
     GetEigenvalues(B, w);
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<complex<double>,
 				  Prop, ColSymPacked, Allocator1>& A,
@@ -1373,16 +1373,16 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	B(i,j) = A(i,j);
-    
+
     w.Reallocate(n);
     z.Reallocate(n,n);
     GetEigenvaluesEigenvectors(B, w, z);
   }
-  
-  
+
+
   /* RowHermPacked */
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<float>,
 		      Prop, RowHermPacked, Allocator1>& A,
@@ -1404,8 +1404,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<complex<float>,
 				  Prop, RowHermPacked, Allocator1>& A,
@@ -1428,11 +1428,11 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-    
+
     Transpose(z);
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<double>,
 		      Prop, RowHermPacked, Allocator1>& A,
@@ -1454,8 +1454,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<complex<double>,
 				  Prop, RowHermPacked, Allocator1>& A,
@@ -1478,14 +1478,14 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-    
+
     Transpose(z);
   }
-  
-  
+
+
   /* ColHermPacked */
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<float>,
 		      Prop, ColHermPacked, Allocator1>& A,
@@ -1508,8 +1508,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<complex<float>,
 				  Prop, ColHermPacked, Allocator1>& A,
@@ -1534,8 +1534,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2>
   void GetEigenvalues(Matrix<complex<double>,
 		      Prop, ColHermPacked, Allocator1>& A,
@@ -1558,8 +1558,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop, class Allocator1, class Allocator2, class Allocator3>
   void GetEigenvaluesEigenvectors(Matrix<complex<double>,
 				  Prop, ColHermPacked, Allocator1>& A,
@@ -1584,19 +1584,19 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   // STANDARD EIGENVALUE PROBLEM //
   /////////////////////////////////
-  
-  
+
+
   ////////////////////////////////////
   // GENERALIZED EIGENVALUE PROBLEM //
-  
-  
+
+
   /* RowSym */
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator3>
   void GetEigenvalues(Matrix<float, Prop1, RowSym, Allocator1>& A,
@@ -1619,8 +1619,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvaluesEigenvectors(Matrix<float, Prop1, RowSym, Allocator1>& A,
@@ -1638,7 +1638,7 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-    
+
     ssygv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
 
@@ -1649,8 +1649,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator4, class Allocator5>
   void GetEigenvalues(Matrix<complex<float>, Prop1, RowSym, Allocator1>& A,
@@ -1676,8 +1676,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Prop3, class Allocator1,
 	   class Allocator2, class Allocator4,
 	   class Allocator5, class Allocator6>
@@ -1709,11 +1709,11 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-    
+
     TransposeConj(V);
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator3>
   void GetEigenvalues(Matrix<double, Prop1, RowSym, Allocator1>& A,
@@ -1736,8 +1736,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvaluesEigenvectors(Matrix<double, Prop1, RowSym, Allocator1>& A,
@@ -1755,7 +1755,7 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-    
+
     dsygv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
 
@@ -1766,8 +1766,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator4, class Allocator5>
   void GetEigenvalues(Matrix<complex<double>, Prop1, RowSym, Allocator1>& A,
@@ -1793,8 +1793,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Prop3, class Allocator1,
 	   class Allocator2, class Allocator4,
 	   class Allocator5, class Allocator6>
@@ -1826,14 +1826,14 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-    
+
     TransposeConj(V);
   }
-  
-  
+
+
   /* ColSym */
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator3>
   void GetEigenvalues(Matrix<float, Prop1, ColSym, Allocator1>& A,
@@ -1856,8 +1856,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvaluesEigenvectors(Matrix<float, Prop1, ColSym, Allocator1>& A,
@@ -1875,7 +1875,7 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-    
+
     ssygv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
 
@@ -1886,8 +1886,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator4, class Allocator5>
   void GetEigenvalues(Matrix<complex<float>, Prop1, ColSym, Allocator1>& A,
@@ -1913,8 +1913,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Prop3, class Alloc1,
 	   class Alloc2, class Alloc4, class Alloc5, class Alloc6>
   void GetEigenvaluesEigenvectors(Matrix<complex<float>,
@@ -1945,7 +1945,7 @@ namespace Seldon
 #endif
 
   }
-  
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator3>
   void GetEigenvalues(Matrix<double, Prop1, ColSym, Allocator1>& A,
@@ -1968,8 +1968,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvaluesEigenvectors(Matrix<double, Prop1, ColSym, Allocator1>& A,
@@ -1987,7 +1987,7 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-    
+
     dsygv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, &info.GetInfoRef());
 
@@ -1998,8 +1998,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator4, class Allocator5>
   void GetEigenvalues(Matrix<complex<double>, Prop1, ColSym, Allocator1>& A,
@@ -2025,8 +2025,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Prop3, class Alloc1,
 	   class Alloc2, class Alloc4, class Alloc5, class Alloc6>
   void GetEigenvaluesEigenvectors(Matrix<complex<double>,
@@ -2057,11 +2057,11 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   /* RowHerm */
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator3>
   void GetEigenvalues(Matrix<complex<float>, Prop1, RowHerm, Allocator1>& A,
@@ -2086,8 +2086,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvaluesEigenvectors(Matrix<complex<float>,
@@ -2108,7 +2108,7 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-    
+
     Vector<float> rwork(3*n);
     chegv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, rwork.GetData(),
@@ -2121,8 +2121,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator3>
   void GetEigenvalues(Matrix<complex<double>, Prop1, RowHerm, Allocator1>& A,
@@ -2147,8 +2147,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvaluesEigenvectors(Matrix<complex<double>,
@@ -2169,7 +2169,7 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-    
+
     Vector<double> rwork(3*n);
     zhegv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork, rwork.GetData(),
@@ -2182,11 +2182,11 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   /* ColHerm */
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator3>
   void GetEigenvalues(Matrix<complex<float>, Prop1, ColHerm, Allocator1>& A,
@@ -2211,8 +2211,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvaluesEigenvectors(Matrix<complex<float>,
@@ -2233,7 +2233,7 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-    
+
     Vector<float> rwork(3*n);
     chegv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork,
@@ -2246,8 +2246,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator3>
   void GetEigenvalues(Matrix<complex<double>, Prop1, ColHerm, Allocator1>& A,
@@ -2272,8 +2272,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvaluesEigenvectors(Matrix<complex<double>,
@@ -2294,7 +2294,7 @@ namespace Seldon
     for (int i = 0; i < n; i++)
       for (int j = 0; j < n; j++)
 	z(i,j) = A(i,j);
-    
+
     Vector<double> rwork(3*n);
     zhegv_(&itype, &job, &uplo, &n, z.GetData(), &n, B.GetData(), &n,
 	   w.GetData(), work.GetData(), &lwork,
@@ -2307,11 +2307,11 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   /* RowSymPacked */
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator3>
   void GetEigenvalues(Matrix<float, Prop1, RowSymPacked, Allocator1>& A,
@@ -2334,8 +2334,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvaluesEigenvectors(Matrix<float,
@@ -2363,8 +2363,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvalues(Matrix<complex<float>,
@@ -2383,13 +2383,13 @@ namespace Seldon
 	  C(i,j) = A(i,j);
 	  D(i,j) = B(i,j);
 	}
-    
+
     alpha.Reallocate(n);
     beta.Reallocate(n);
     GetEigenvalues(C, D, alpha, beta);
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4, class Allocator5>
   void GetEigenvaluesEigenvectors(Matrix<complex<float>,
@@ -2412,14 +2412,14 @@ namespace Seldon
 	  C(i,j) = A(i,j);
 	  D(i,j) = B(i,j);
 	}
-    
+
     alpha.Reallocate(n);
     beta.Reallocate(n);
     z.Reallocate(n,n);
     GetEigenvaluesEigenvectors(C, D, alpha, beta, z);
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator3>
   void GetEigenvalues(Matrix<double, Prop1, RowSymPacked, Allocator1>& A,
@@ -2442,8 +2442,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvaluesEigenvectors(Matrix<double,
@@ -2471,8 +2471,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvalues(Matrix<complex<double>,
@@ -2491,13 +2491,13 @@ namespace Seldon
 	  C(i,j) = A(i,j);
 	  D(i,j) = B(i,j);
 	}
-    
+
     alpha.Reallocate(n);
     beta.Reallocate(n);
     GetEigenvalues(C, D, alpha, beta);
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4, class Allocator5>
   void GetEigenvaluesEigenvectors(Matrix<complex<double>,
@@ -2520,17 +2520,17 @@ namespace Seldon
 	  C(i,j) = A(i,j);
 	  D(i,j) = B(i,j);
 	}
-    
+
     alpha.Reallocate(n);
     beta.Reallocate(n);
     z.Reallocate(n,n);
     GetEigenvaluesEigenvectors(C, D, alpha, beta, z);
   }
-  
-  
+
+
   /* ColSymPacked */
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator3>
   void GetEigenvalues(Matrix<float, Prop1, ColSymPacked, Allocator1>& A,
@@ -2553,8 +2553,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvaluesEigenvectors(Matrix<float,
@@ -2582,8 +2582,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvalues(Matrix<complex<float>,
@@ -2602,13 +2602,13 @@ namespace Seldon
 	  C(i,j) = A(i,j);
 	  D(i,j) = B(i,j);
 	}
-    
+
     alpha.Reallocate(n);
     beta.Reallocate(n);
     GetEigenvalues(C, D, alpha, beta);
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4, class Allocator5>
   void GetEigenvaluesEigenvectors(Matrix<complex<float>,
@@ -2631,14 +2631,14 @@ namespace Seldon
 	  C(i,j) = A(i,j);
 	  D(i,j) = B(i,j);
 	}
-    
+
     alpha.Reallocate(n);
     beta.Reallocate(n);
     z.Reallocate(n,n);
     GetEigenvaluesEigenvectors(C, D, alpha, beta, z);
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator3>
   void GetEigenvalues(Matrix<double, Prop1, ColSymPacked, Allocator1>& A,
@@ -2661,8 +2661,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvaluesEigenvectors(Matrix<double,
@@ -2690,8 +2690,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvalues(Matrix<complex<double>,
@@ -2710,13 +2710,13 @@ namespace Seldon
 	  C(i,j) = A(i,j);
 	  D(i,j) = B(i,j);
 	}
-    
+
     alpha.Reallocate(n);
     beta.Reallocate(n);
     GetEigenvalues(C, D, alpha, beta);
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4, class Allocator5>
   void GetEigenvaluesEigenvectors(Matrix<complex<double>,
@@ -2739,17 +2739,17 @@ namespace Seldon
 	  C(i,j) = A(i,j);
 	  D(i,j) = B(i,j);
 	}
-    
+
     alpha.Reallocate(n);
     beta.Reallocate(n);
     z.Reallocate(n,n);
     GetEigenvaluesEigenvectors(C, D, alpha, beta, z);
   }
-  
-  
+
+
   /* RowHermPacked */
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator3>
   void GetEigenvalues(Matrix<complex<float>,
@@ -2777,8 +2777,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvaluesEigenvectors(Matrix<complex<float>,
@@ -2808,8 +2808,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator3>
   void GetEigenvalues(Matrix<complex<double>,
@@ -2837,8 +2837,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvaluesEigenvectors(Matrix<complex<double>,
@@ -2868,11 +2868,11 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   /* ColHermPacked */
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator3>
   void GetEigenvalues(Matrix<complex<float>,
@@ -2900,8 +2900,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvaluesEigenvectors(Matrix<complex<float>,
@@ -2932,8 +2932,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator3>
   void GetEigenvalues(Matrix<complex<double>,
@@ -2961,8 +2961,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetEigenvaluesEigenvectors(Matrix<complex<double>,
@@ -2993,11 +2993,11 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   /* RowMajor */
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator3,
 	   class Allocator4, class Allocator5>
@@ -3026,8 +3026,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Prop3, class Allocator1,
 	   class Allocator2, class Allocator3, class Allocator4,
 	   class Allocator5, class Allocator6>
@@ -3057,7 +3057,7 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-    
+
     Transpose(V);
     // conjugate if necessary
     int i = 0;
@@ -3068,15 +3068,15 @@ namespace Seldon
 	    {
 	      for (int j = 0; j < n; j++)
 		V(j,i+1) = -V(j,i+1);
-	      
+
 	      i++;
 	    }
-	
+
 	i++;
       }
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator4, class Allocator5>
   void GetEigenvalues(Matrix<complex<float>, Prop1, RowMajor, Allocator1>& A,
@@ -3102,8 +3102,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Prop3, class Allocator1,
 	   class Allocator2, class Allocator4,
 	   class Allocator5, class Allocator6>
@@ -3136,11 +3136,11 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-    
+
     TransposeConj(V);
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator3,
 	   class Allocator4, class Allocator5>
@@ -3169,8 +3169,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Prop3, class Allocator1,
 	   class Allocator2, class Allocator3, class Allocator4,
 	   class Allocator5, class Allocator6>
@@ -3199,7 +3199,7 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-    
+
     Transpose(V);
     // conjugate if necessary
     int i = 0;
@@ -3210,15 +3210,15 @@ namespace Seldon
 	    {
 	      for (int j = 0; j < n; j++)
 		V(j,i+1) = -V(j,i+1);
-	      
+
 	      i++;
 	    }
-	
+
 	i++;
       }
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator4, class Allocator5>
   void GetEigenvalues(Matrix<complex<double>, Prop1, RowMajor, Allocator1>& A,
@@ -3244,8 +3244,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Prop3, class Allocator1,
 	   class Allocator2, class Allocator4,
 	   class Allocator5, class Allocator6>
@@ -3277,14 +3277,14 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-    
+
     TransposeConj(V);
   }
-  
-  
+
+
   /* ColMajor */
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator3,
 	   class Allocator4, class Allocator5>
@@ -3314,8 +3314,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Prop3, class Allocator1,
 	   class Allocator2, class Allocator3, class Allocator4,
 	   class Allocator5, class Allocator6>
@@ -3346,10 +3346,10 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-    
+
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator4, class Allocator5>
   void GetEigenvalues(Matrix<complex<float>, Prop1, ColMajor, Allocator1>& A,
@@ -3364,7 +3364,7 @@ namespace Seldon
     Vector<float> rwork(8*n);
     alpha.Reallocate(n);
     beta.Reallocate(n);
-    
+
     cggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(),
 	   &n, alpha.GetData(),
 	   beta.GetData(), A.GetData(), &n, A.GetData(), &n, work.GetData(),
@@ -3377,8 +3377,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Prop3, class Allocator1,
 	   class Allocator2, class Allocator4,
 	   class Allocator5, class Allocator6>
@@ -3413,8 +3413,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator3,
 	   class Allocator4, class Allocator5>
@@ -3431,7 +3431,7 @@ namespace Seldon
     alpha_real.Reallocate(n);
     alpha_imag.Reallocate(n);
     beta.Reallocate(n);
-    
+
     dggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(), &n,
 	   alpha_real.GetData(), alpha_imag.GetData(), beta.GetData(),
 	   A.GetData(), &n, A.GetData(), &n,
@@ -3444,8 +3444,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Prop3, class Allocator1,
 	   class Allocator2, class Allocator3, class Allocator4,
 	   class Allocator5, class Allocator6>
@@ -3466,7 +3466,7 @@ namespace Seldon
     alpha_imag.Reallocate(n);
     beta.Reallocate(n);
     V.Reallocate(n,n);
-    
+
     dggev_(&jobvl, &jobvr, &n, A.GetData(), &n, B.GetData(),
 	   &n, alpha_real.GetData(), alpha_imag.GetData(),
 	   beta.GetData(), V.GetData(), &n, V.GetData(), &n,
@@ -3477,10 +3477,10 @@ namespace Seldon
       throw LapackError(info.GetInfo(), "GetEigenvalues",
 			"Failed to find eigenvalues ");
 #endif
-    
+
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Allocator1,
 	   class Allocator2, class Allocator4, class Allocator5>
   void GetEigenvalues(Matrix<complex<double>, Prop1, ColMajor, Allocator1>& A,
@@ -3508,8 +3508,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   template<class Prop1, class Prop2, class Prop3, class Allocator1,
 	   class Allocator2, class Allocator4,
 	   class Allocator5, class Allocator6>
@@ -3544,19 +3544,19 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   // GENERALIZED EIGENVALUE PROBLEM //
   ////////////////////////////////////
-  
-  
+
+
   //////////////////////////////////
   // SINGULAR VALUE DECOMPOSITION //
-  
-  
+
+
   /* RowMajor */
-  
-  
+
+
   template<class Prop1, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetSVD(Matrix<float, Prop1, RowMajor, Allocator1>& A,
@@ -3573,8 +3573,8 @@ namespace Seldon
 	    u.GetData(), &n, v.GetData(), &n, work.GetData(),
 	    &lwork, &info.GetInfoRef());
   }
-  
-  
+
+
   template<class Prop1, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetSVD(Matrix<complex<float>, Prop1, RowMajor, Allocator1>& A,
@@ -3592,7 +3592,7 @@ namespace Seldon
 	    u.GetDataVoid(), &n, v.GetDataVoid(), &n, work.GetDataVoid(),
 	    &lwork, rwork.GetData(), &info.GetInfoRef());
   }
-  
+
   template<class Prop1, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetSVD(Matrix<double, Prop1, RowMajor, Allocator1>& A,
@@ -3609,8 +3609,8 @@ namespace Seldon
 	    u.GetData(), &n, v.GetData(), &n, work.GetData(),
 	    &lwork, &info.GetInfoRef());
   }
-  
-  
+
+
   template<class Prop1, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetSVD(Matrix<complex<double>, Prop1, RowMajor, Allocator1>& A,
@@ -3628,11 +3628,11 @@ namespace Seldon
 	    u.GetDataVoid(), &n, v.GetDataVoid(), &n, work.GetDataVoid(),
 	    &lwork, rwork.GetData(), &info.GetInfoRef());
   }
-  
-  
+
+
   /* ColMajor */
-  
-  
+
+
   template<class Prop1, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetSVD(Matrix<float, Prop1, ColMajor, Allocator1>& A,
@@ -3652,8 +3652,8 @@ namespace Seldon
 	    u.GetData(), &m, v.GetData(), &n, work.GetData(),
 	    &lwork, &info.GetInfoRef());
   }
-  
-  
+
+
   template<class Prop1, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetSVD(Matrix<complex<float>, Prop1, ColMajor, Allocator1>& A,
@@ -3674,8 +3674,8 @@ namespace Seldon
 	    u.GetDataVoid(), &m, v.GetDataVoid(), &n, work.GetDataVoid(),
 	    &lwork, rwork.GetData(), &info.GetInfoRef());
   }
-  
-  
+
+
   template<class Prop1, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetSVD(Matrix<double, Prop1, ColMajor, Allocator1>& A,
@@ -3694,10 +3694,10 @@ namespace Seldon
     dgesvd_(&jobl, &jobr, &m, &n, A.GetData(), &m, lambda.GetData(),
 	    u.GetData(), &m, v.GetData(), &n, work.GetData(),
 	    &lwork, &info.GetInfoRef());
-    
+
   }
-  
-  
+
+
   template<class Prop1, class Allocator1, class Allocator2,
 	   class Allocator3, class Allocator4>
   void GetSVD(Matrix<complex<double>, Prop1, ColMajor, Allocator1>& A,
@@ -3718,8 +3718,8 @@ namespace Seldon
 	    u.GetDataVoid(), &m, v.GetDataVoid(), &n, work.GetDataVoid(),
 	    &lwork, rwork.GetData(), &info.GetInfoRef());
   }
-  
-  
+
+
   // pseudo inverse
   template<class Prop1, class Allocator1>
   void GetPseudoInverse(Matrix<double, Prop1, ColMajor, Allocator1>& A,
@@ -3729,9 +3729,9 @@ namespace Seldon
     Vector<double, VectFull, Allocator1> lambda;
     Matrix<double, General, ColMajor, Allocator1> U;
     Matrix<double, General, ColMajor, Allocator1> V;
-    
+
     GetSVD(A, lambda, U, V);
-    
+
     A.Reallocate(n, m); A.Fill(0);
     // computation of A = V Sigma U^*
     for (int k = 0; k < min(m, n); k++)
@@ -3744,11 +3744,11 @@ namespace Seldon
 	}
   }
 
-  
+
   // SINGULAR VALUE DECOMPOSITION //
   //////////////////////////////////
-  
-  
+
+
 
   void GetHessian(Matrix<complex<double>, General, ColMajor>& A,
 		  Matrix<complex<double>, General, ColMajor>& B,
@@ -3761,25 +3761,25 @@ namespace Seldon
     Vector<complex<double> > work(lwork);
     zgeqrf_(&n, &n, B.GetDataVoid(), &n, tau.GetDataVoid(),
 	    work.GetDataVoid(), &lwork, &info);
-    
+
     Q = B;
     zungqr_(&n, &n, &n, Q.GetDataVoid(), &n, tau.GetDataVoid(),
 	    work.GetDataVoid(), &lwork, &info);
-    
+
     char side('L'), trans('C');
     zunmqr_(&side, &trans, &n, &n, &n, B.GetDataVoid(), &n, tau.GetDataVoid(),
 	    A.GetDataVoid(), &n, work.GetData(), &lwork, &info);
-    
+
     for (int i = 0; i < n; i++)
       for (int j = 0; j < i; j++)
 	B(i, j) = 0;
-    
+
     zgghrd_(&compq, &compz, &n, &ilo, &ihi, A.GetDataVoid(), &n,
 	    B.GetDataVoid(), &n, Q.GetDataVoid(), &n, Z.GetDataVoid(),
 	    &n, &info);
-    
+
   }
-  
+
 
   void GetQZ(Matrix<complex<double>, General, ColMajor>& A,
 	     Matrix<complex<double>, General, ColMajor>& B,
@@ -3792,23 +3792,23 @@ namespace Seldon
     Vector<complex<double> > work(lwork);
     zgeqrf_(&n, &n, B.GetDataVoid(), &n, tau.GetDataVoid(),
 	    work.GetDataVoid(), &lwork, &info);
-    
+
     Q = B;
     zungqr_(&n, &n, &n, Q.GetDataVoid(), &n, tau.GetDataVoid(),
 	    work.GetDataVoid(), &lwork, &info);
-    
+
     char side('L'), trans('C');
     zunmqr_(&side, &trans, &n, &n, &n, B.GetDataVoid(), &n, tau.GetDataVoid(),
 	    A.GetDataVoid(), &n, work.GetData(), &lwork, &info);
-    
+
     for (int i = 0; i < n; i++)
       for (int j = 0; j < i; j++)
 	B(i,j) = 0;
-    
+
     zgghrd_(&compq, &compz, &n, &ilo, &ihi, A.GetDataVoid(), &n,
 	    B.GetDataVoid(), &n, Q.GetDataVoid(), &n, Z.GetDataVoid(),
 	    &n, &info);
-    
+
     char job('S');
     compq = 'V';
     compz = 'V';
@@ -3819,8 +3819,8 @@ namespace Seldon
 	    Q.GetDataVoid(), &n, Z.GetDataVoid(), &n, work.GetDataVoid(),
 	    &lwork, rwork.GetData(), &info);
   }
-  
-  
+
+
   void SolveSylvester(Matrix<complex<double>, General, ColMajor>& A,
 		      Matrix<complex<double>, General, ColMajor>& B,
 		      Matrix<complex<double>, General, ColMajor>& C,
@@ -3832,50 +3832,50 @@ namespace Seldon
     Matrix<complex<double>, General, ColMajor> Q1(n, n), Q2(n, n),
       Z1(n, n), Z2(n, n);
     Matrix<complex<double>, General, ColMajor> Y(n, n), F(n, n);
-    
+
     GetHessian(A, C, Q1, Z1);
     GetQZ(D, B, Q2, Z2);
-    
+
     Y.Zero();
     MltAdd(one, SeldonConjTrans, Q1, SeldonNoTrans, E, zero, Y);
     MltAdd(one, SeldonNoTrans, Y, SeldonNoTrans, Q2, zero, F);
     Y.Zero();
-    
+
     Vector<complex<double> > ftemp(n), Yvec(n), ytmp(n), xtmp(n);
     Vector<int> pivot(n);
     for (int k = n-1; k >= 0; k--)
       {
 	for (int j = 0; j < n; j++)
 	  ftemp(j) = F(j,k);
-	
+
 	for (int j = k+1; j < n; j++)
 	  {
 	    for (int i = 0; i < n; i++)
 	      Yvec(i) = Y(i, j);
-	    
+
 	    Mlt(A, Yvec, xtmp); Mlt(C, Yvec, ytmp);
 	    for (int i = 0; i < n; i++)
 	      ftemp(i) -= (conj(B(k, j)) * xtmp(i) + conj(D(k, j)) * ytmp(i));
-	    
+
 	  }
-	
+
 	for (int i = 0; i < n; i++)
 	  for (int j = 0; j < n; j++)
 	    E(i,j) = conj(B(k, k)) * A(i, j) + conj(D(k, k)) * C(i, j);
-	
+
 	GetLU(E, pivot);
 	Yvec = ftemp;
 	SolveLU(E, pivot, Yvec);
-	
+
 	for (int i = 0; i < n; i++)
 	  Y(i, k) = Yvec(i);
       }
-    
+
     MltAdd(one, SeldonNoTrans, Y, SeldonConjTrans, Z2, zero, F);
     MltAdd(one, Z1, F, zero, E);
   }
 
-  
+
 } // end namespace
 
 #define SELDON_FILE_LAPACK_EIGENVALUES_CXX

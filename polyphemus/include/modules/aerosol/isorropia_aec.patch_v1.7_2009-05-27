@@ -18,7 +18,7 @@
  C *** DELIQUESCENCE RELATIVE HUMIDITIES ********************************
  C
        INTEGER WFTYP
-       COMMON /DRH / DRH2SO4,  DRNH42S4, DRNAHSO4, DRNACL,   DRNANO3, 
+       COMMON /DRH / DRH2SO4,  DRNH42S4, DRNAHSO4, DRNACL,   DRNANO3,
       &              DRNA2SO4, DRNH4HS4, DRLC,     DRNH4NO3, DRNH4CL
 +!$OMP THREADPRIVATE(/DRH/)
 +
@@ -34,22 +34,22 @@
  C *** VARIABLES FOR LIQUID AEROSOL PHASE *******************************
  C
 @@ -51,33 +59,47 @@
-      &              EPSACT,       COH,           CHNO3,       CHCL,         
-      &              WATER,        IONIC,         IACALC,      
+      &              EPSACT,       COH,           CHNO3,       CHCL,
+      &              WATER,        IONIC,         IACALC,
       &              FRST,         CALAIN,        CALAOU,      DRYF
 +!$OMP THREADPRIVATE(/IONS/)
 +
  C
  C *** VARIABLES FOR SOLID AEROSOL PHASE ********************************
  C
-       COMMON /SALT/ CH2SO4,  CNH42S4, CNH4HS4, CNACL,   CNA2SO4, 
+       COMMON /SALT/ CH2SO4,  CNH42S4, CNH4HS4, CNACL,   CNA2SO4,
       &              CNANO3,  CNH4NO3, CNH4CL,  CNAHSO4, CLC
 +!$OMP THREADPRIVATE(/SALT/)
 +
  C
  C *** VARIABLES FOR GAS PHASE ******************************************
  C
-       COMMON /GAS / GNH3, GHNO3, GHCL 
+       COMMON /GAS / GNH3, GHNO3, GHCL
 +!$OMP THREADPRIVATE(/GAS/)
 +
  C
@@ -82,8 +82,8 @@
  C *** ERROR SYSTEM *****************************************************
  C
 @@ -85,11 +107,21 @@
-       INTEGER   ERRSTK, NOFER   
-       LOGICAL   STKOFL   
+       INTEGER   ERRSTK, NOFER
+       LOGICAL   STKOFL
        COMMON /EROR/ STKOFL, NOFER, ERRSTK(NERRMX), ERRMSG(NERRMX)
 +!$OMP THREADPRIVATE(/EROR/)
 +
@@ -95,9 +95,9 @@
 +!$OMP THREADPRIVATE(/CGEN/)
 +
 +C
-+C *** FOR INTERACTION WITH HYDROPHILIC ORGANIC COMPOUNDS  
++C *** FOR INTERACTION WITH HYDROPHILIC ORGANIC COMPOUNDS
 +C
-+      DOUBLE PRECISION ORGANION, WATORG 
++      DOUBLE PRECISION ORGANION, WATORG
 +      COMMON /ORG/ ORGANION, WATORG
 +!$OMP THREADPRIVATE(/ORG/)
  C
@@ -108,12 +108,12 @@
 @@ -124,7 +124,12 @@
  C=======================================================================
  C
-       SUBROUTINE ISOROPIA (WI, RHI, TEMPI,  CNTRL, 
+       SUBROUTINE ISOROPIA (WI, RHI, TEMPI,  CNTRL,
 -     &                     WT, GAS, AERLIQ, AERSLD, SCASI, OTHER)
 +     &                     WT, GAS, AERLIQ, AERSLD, OTHER,
 +     &                     ORGANIONI, WATORGI)
 +C
-+C     Removed "SCASI" argument, because not used for computation and too 
++C     Removed "SCASI" argument, because not used for computation and too
 +C     difficult to pass from C++ or C, also compromize portability 20070205.
 +C
        INCLUDE 'isrpia.inc'
@@ -123,7 +123,7 @@
  C
        METSTBL = NINT(CNTRL(2))
  C
-+C *** FOR INTERACTION WITH HYDROPHILIC ORGANIC COMPOUNDS  
++C *** FOR INTERACTION WITH HYDROPHILIC ORGANIC COMPOUNDS
 +C
 +      ORGANION = ORGANIONI
 +      WATORG = WATORGI
@@ -147,13 +147,13 @@
 +!$OMP THREADPRIVATE(/ASRC/)
  C
        DATA ASSO4/1.0E-9, 2.5E-9, 5.0E-9, 7.5E-9, 1.0E-8,
-      &           2.5E-8, 5.0E-8, 7.5E-8, 1.0E-7, 2.5E-7, 
+      &           2.5E-8, 5.0E-8, 7.5E-8, 1.0E-7, 2.5E-7,
 @@ -2165,7 +2178,6 @@
        MOLAL(7) = MOLAL(7) - DELT
        GHNO3    = MOLAL(1)*MOLAL(7)/ALFA
-       
+
 -      write (*,*) ALFA, MOLAL(1), MOLAL(7), GHNO3, DELT
- C 
+ C
        RETURN
  C
 @@ -2761,6 +2773,7 @@
@@ -169,7 +169,7 @@
           WATER = WATER + MOLALR(I)/M0(I)
  10    CONTINUE
 +C *** FOR INTERACTION WITH HYDROPHILIC ORGANIC COMPOUNDS
-+C ADD ORGANIC LIQUID WATER CONTENT 
++C ADD ORGANIC LIQUID WATER CONTENT
 +      WATER = WATER + WATORG
        WATER = MAX(WATER, TINY)
  C
@@ -179,7 +179,7 @@
           IONIC=IONIC + MOLAL(I)*Z(I)*Z(I)
  30    CONTINUE
 +C *** FOR INTERACTION WITH HYDROPHILIC ORGANIC COMPOUNDS
-+C ASSUME ORGANIC ANIONS HAVE SINGLE NEGATIVE CHARGE 
++C ASSUME ORGANIC ANIONS HAVE SINGLE NEGATIVE CHARGE
 +      IONIC=IONIC + ORGANION
        IONIC = MAX(MIN(0.5*IONIC/WATER,500.d0), TINY)
  C
@@ -302,7 +302,7 @@
 +!$OMP THREADPRIVATE(/EXPNC/)
 +
  C
- C *** Integer part        
+ C *** Integer part
  C
 --- isorropia/isofwd.f	2015-04-18 16:48:44.217657713 +0200
 +++ polyphemus/src/reference/include/isorropia_aec/isofwd.f	2015-04-18 16:52:36.441658531 +0200
@@ -346,7 +346,7 @@
           GRAT1 = XK1*WATER/GAMA(7)*(GAMA(8)/GAMA(7))**2.
 -         DD    = SQRT( (ZK+GRAT1+Y)**2. + 4.0*Y*GRAT1)
 -         KK    = 0.5*(-(ZK+GRAT1+Y) + DD )
-+         DD    = SQRT( (ZK+GRAT1+Y+ORGANION)**2. 
++         DD    = SQRT( (ZK+GRAT1+Y+ORGANION)**2.
 +     &        + 4.0*(Y*GRAT1 - ORGANION*(Y+ZK)) )
 +         KK    = 0.5*(-(ZK+GRAT1+Y+ORGANION) + DD)
  C
@@ -465,7 +465,7 @@
  C *** SETUP PARAMETERS ************************************************
  C
 @@ -1812,7 +1838,8 @@
-          PSI3 = PSI3/(A3*A4*(CHI4-PSI4) + 2.D0*PSI2+PSI1+PSI4) 
+          PSI3 = PSI3/(A3*A4*(CHI4-PSI4) + 2.D0*PSI2+PSI1+PSI4)
           PSI3 = MIN(MAX(PSI3, ZERO), CHI3)
  C
 -         BB   = PSI4 - PSI3
@@ -490,7 +490,7 @@
 -         MOLAL(1) = MOLAL(1) - DELTA                     ! H+   EFFECT
 -         MOLAL(5) = MOLAL(5) - DELTA                     ! SO4  EFFECT
 +c         MOLAL(1) = MOLAL(1) - DELTA                     ! H+   EFFECT
-+         MOLAL(1) = MAX(MOLAL(1) - DELTA,ZERO) ! YK 
++         MOLAL(1) = MAX(MOLAL(1) - DELTA,ZERO) ! YK
 +c      write(*,*) "isofwd.f: L2027 MOLAL(1): ",molal(1)
 +c         MOLAL(5) = MOLAL(5) - DELTA                     ! SO4  EFFECT
 +         MOLAL(5) = MAX(MOLAL(5) - DELTA,ZERO) ! YK
@@ -507,7 +507,7 @@
  C *** SETUP PARAMETERS ************************************************
  C
 @@ -2048,7 +2082,8 @@
-          PSI3  = PSI3/(A3*A4*(CHI4-PSI4) + 2.D0*PSI2+PSI1+PSI4) 
+          PSI3  = PSI3/(A3*A4*(CHI4-PSI4) + 2.D0*PSI2+PSI1+PSI4)
  ccc         PSI3  = MIN(MAX(PSI3, ZERO), CHI3)
  C
 -         BB   = PSI4-PSI3 ! (BB > 0, acidic solution, <0 alkaline)
@@ -535,7 +535,7 @@
 +         MOLAL(1) = MAX(MOLAL(1) - DELTA,ZERO) ! YK
 +c      write(*,*) "isofwd.f: L2321 MOLAL(1): ",molal(1)
 +c         MOLAL(5) = MOLAL(5) - DELTA                    ! SO4  EFFECT
-+         MOLAL(5) = MAX(MOLAL(5) - DELTA,ZERO) ! YK    
++         MOLAL(5) = MAX(MOLAL(5) - DELTA,ZERO) ! YK
           MOLAL(6) = DELTA                               ! HSO4 EFFECT
        ENDIF
  C
@@ -557,7 +557,7 @@
 +     &     + ORGANION
        CALL CALCPH (SMIN, HI, OHI)
        MOLAL (1) = HI
- C 
+ C
 @@ -2424,6 +2468,8 @@
        COMMON /CASEG/ CHI1, CHI2, CHI3, CHI4, CHI5, CHI6, LAMDA,
       &               PSI1, PSI2, PSI3, PSI4, PSI5, PSI6, PSI7,
@@ -574,7 +574,7 @@
 -         MOLAL(1) = MOLAL(1) - DELTA                     ! H+   EFFECT
 -         MOLAL(5) = MOLAL(5) - DELTA                     ! SO4  EFFECT
 +c         MOLAL(1) = MOLAL(1) - DELTA                     ! H+   EFFECT
-+         MOLAL(1) = MAX(MOLAL(1) - DELTA,ZERO) ! YK 
++         MOLAL(1) = MAX(MOLAL(1) - DELTA,ZERO) ! YK
 +c      write(*,*) "isofwd.f: L2535 MOLAL(1): ",molal(1)
 +c         MOLAL(5) = MOLAL(5) - DELTA                     ! SO4  EFFECT
 +         MOLAL(5) = MAX(MOLAL(5) - DELTA,ZERO) ! YK
@@ -600,7 +600,7 @@
  C *** SETUP PARAMETERS ************************************************
  C
 @@ -2802,8 +2855,11 @@
- C 
+ C
        IF (MOLAL(1).GT.TINY .AND. MOLAL(5).GT.TINY) THEN
           CALL CALCHS4 (MOLAL(1), MOLAL(5), ZERO, DELTA)
 -         MOLAL(1) = MOLAL(1) - DELTA                     ! H+   EFFECT
@@ -609,7 +609,7 @@
 +         MOLAL(1) = MAX(MOLAL(1) - DELTA,ZERO) ! YK
 +c      write(*,*) "isofwd.f: L2848 MOLAL(1): ",molal(1)
 +c         MOLAL(5) = MOLAL(5) - DELTA                     ! SO4  EFFECT
-+         MOLAL(5) = MAX(MOLAL(5) - DELTA,ZERO) ! YK 
++         MOLAL(5) = MAX(MOLAL(5) - DELTA,ZERO) ! YK
           MOLAL(6) = DELTA                                ! HSO4 EFFECT
        ENDIF
  C
@@ -642,7 +642,7 @@
  C *** SETUP PARAMETERS ************************************************
  C
 @@ -3111,8 +3173,11 @@
- C 
+ C
        IF (MOLAL(1).GT.TINY .AND. MOLAL(5).GT.TINY) THEN
           CALL CALCHS4 (MOLAL(1), MOLAL(5), ZERO, DELTA)
 -         MOLAL(1) = MOLAL(1) - DELTA     ! H+   AFFECT
@@ -651,7 +651,7 @@
 +         MOLAL(1) = MAX(MOLAL(1) - DELTA,ZERO) ! YK
 +c      write(*,*) "isofwd.f: L3161 MOLAL(1): ",molal(1)
 +c         MOLAL(5) = MOLAL(5) - DELTA     ! SO4  AFFECT
-+         MOLAL(5) = MAX(MOLAL(5) - DELTA,ZERO) ! YK 
++         MOLAL(5) = MAX(MOLAL(5) - DELTA,ZERO) ! YK
           MOLAL(6) = DELTA                ! HSO4 AFFECT
        ENDIF
  C
@@ -673,7 +673,7 @@
 +     &     + ORGANION
        CALL CALCPH (SMIN, HI, OHI)
        MOLAL (1) = HI
- C 
+ C
 @@ -3467,6 +3536,8 @@
        COMMON /SOLUT/ CHI1, CHI2, CHI3, CHI4, CHI5, CHI6, CHI7, CHI8,
       &               PSI1, PSI2, PSI3, PSI4, PSI5, PSI6, PSI7, PSI8,
@@ -690,10 +690,10 @@
 -         MOLAL(1) = MOLAL(1) - DELTA                     ! H+   EFFECT
 -         MOLAL(5) = MOLAL(5) - DELTA                     ! SO4  EFFECT
 +c         MOLAL(1) = MOLAL(1) - DELTA                     ! H+   EFFECT
-+         MOLAL(1) = MAX(MOLAL(1) - DELTA,ZERO) ! YK   
++         MOLAL(1) = MAX(MOLAL(1) - DELTA,ZERO) ! YK
 +c      write(*,*) "isofwd.f: L3585 MOLAL(1): ",molal(1)
 +c         MOLAL(5) = MOLAL(5) - DELTA                     ! SO4  EFFECT
-+         MOLAL(5) = MAX(MOLAL(5) - DELTA,ZERO) ! YK 
++         MOLAL(5) = MAX(MOLAL(5) - DELTA,ZERO) ! YK
           MOLAL(6) = DELTA                                ! HSO4 EFFECT
        ENDIF
  C
@@ -715,7 +715,7 @@
 +     &     + ORGANION
        CALL CALCPH (SMIN, HI, OHI)
        MOLAL (1) = HI
- C 
+ C
 @@ -3678,6 +3756,8 @@
        COMMON /SOLUT/ CHI1, CHI2, CHI3, CHI4, CHI5, CHI6, CHI7, CHI8,
       &               PSI1, PSI2, PSI3, PSI4, PSI5, PSI6, PSI7, PSI8,
@@ -732,7 +732,7 @@
 -         MOLAL(1) = MOLAL(1) - DELTA                     ! H+   EFECT
 -         MOLAL(5) = MOLAL(5) - DELTA                     ! SO4  EFFECT
 +c         MOLAL(1) = MOLAL(1) - DELTA                     ! H+   EFECT
-+         MOLAL(1) = MAX(MOLAL(1) - DELTA,ZERO) ! YK 
++         MOLAL(1) = MAX(MOLAL(1) - DELTA,ZERO) ! YK
 +c      write(*,*) "isofwd.f: L3808 MOLAL(1): ",molal(1)
 +c         MOLAL(5) = MOLAL(5) - DELTA                     ! SO4  EFFECT
 +         MOLAL(5) = MAX(MOLAL(5) - DELTA,ZERO) ! YK
@@ -757,7 +757,7 @@
 +     &     + ORGANION
        CALL CALCPH (SMIN, HI, OHI)
        MOLAL (1) = HI
- C 
+ C
 @@ -3910,6 +3997,8 @@
        COMMON /SOLUT/ CHI1, CHI2, CHI3, CHI4, CHI5, CHI6, CHI7, CHI8,
       &               PSI1, PSI2, PSI3, PSI4, PSI5, PSI6, PSI7, PSI8,
@@ -774,7 +774,7 @@
 -         MOLAL(1) = MOLAL(1) - DELTA                      ! H+   EFFECT
 -         MOLAL(5) = MOLAL(5) - DELTA                      ! SO4  EFFECT
 +c         MOLAL(1) = MOLAL(1) - DELTA                      ! H+   EFFECT
-+         MOLAL(1) = MAX(MOLAL(1) - DELTA,ZERO) ! YK  
++         MOLAL(1) = MAX(MOLAL(1) - DELTA,ZERO) ! YK
 +c      write(*,*) "isofwd.f: L4043 MOLAL(1): ",molal(1)
 +c         MOLAL(5) = MOLAL(5) - DELTA                      ! SO4  EFFECT
 +         MOLAL(5) = MAX(MOLAL(5) - DELTA,ZERO) ! YK
@@ -799,7 +799,7 @@
 +     &     + ORGANION
        CALL CALCPH (SMIN, HI, OHI)
        MOLAL (1) = HI
- C 
+ C
 @@ -4167,6 +4263,8 @@
        COMMON /SOLUT/ CHI1, CHI2, CHI3, CHI4, CHI5, CHI6, CHI7, CHI8,
       &               PSI1, PSI2, PSI3, PSI4, PSI5, PSI6, PSI7, PSI8,
@@ -816,10 +816,10 @@
 -         MOLAL(1) = MOLAL(1) - DELTA                     ! H+   EFFECT
 -         MOLAL(5) = MOLAL(5) - DELTA                     ! SO4  EFFECT
 +c         MOLAL(1) = MOLAL(1) - DELTA                     ! H+   EFFECT
-+         MOLAL(1) = MAX(MOLAL(1) - DELTA,ZERO) !YK 
++         MOLAL(1) = MAX(MOLAL(1) - DELTA,ZERO) !YK
 +c      write(*,*) "isofwd.f: L4303 MOLAL(1): ",molal(1)
 +c         MOLAL(5) = MOLAL(5) - DELTA                     ! SO4  EFFECT
-+         MOLAL(5) = MAX(MOLAL(5) - DELTA,ZERO) !YK   
++         MOLAL(5) = MAX(MOLAL(5) - DELTA,ZERO) !YK
           MOLAL(6) = DELTA                                ! HSO4 EFFECT
        ENDIF
  C
@@ -841,7 +841,7 @@
 +     &     + ORGANION
        CALL CALCPH (SMIN, HI, OHI)
        MOLAL (1) = HI
- C 
+ C
 @@ -4490,6 +4595,8 @@
        COMMON /SOLUT/ CHI1, CHI2, CHI3, CHI4, CHI5, CHI6, CHI7, CHI8,
       &               PSI1, PSI2, PSI3, PSI4, PSI5, PSI6, PSI7, PSI8,
@@ -861,7 +861,7 @@
 +         MOLAL(1) = MAX(MOLAL(1) - DELTA,ZERO) ! YK
 +c      write(*,*) "isofwd.f: L4625 MOLAL(1): ",molal(1)
 +c         MOLAL(5) = MOLAL(5) - DELTA                    ! SO4  EFFECT
-+         MOLAL(5) = MAX(MOLAL(5) - DELTA,ZERO) ! YK    
++         MOLAL(5) = MAX(MOLAL(5) - DELTA,ZERO) ! YK
           MOLAL(6) = DELTA                               ! HSO4 EFFECT
        ENDIF
  C
@@ -884,7 +884,7 @@
 +     &     + ORGANION
        CALL CALCPH (SMIN, HI, OHI)
        MOLAL (1) = HI
- C 
+ C
 @@ -4938,6 +5052,8 @@
        COMMON /SOLUT/ CHI1, CHI2, CHI3, CHI4, CHI5, CHI6, CHI7, CHI8,
       &               PSI1, PSI2, PSI3, PSI4, PSI5, PSI6, PSI7, PSI8,
@@ -1014,7 +1014,7 @@
        PSI4LO = ZERO                ! Low  limit for PSI4
        PSI4HI = CHI4                ! High limit for PSI4
 +
- C    
+ C
  C *** IF NH3 =0, CALL FUNCI3B FOR Y4=0 ********************************
  C
 @@ -5671,6 +5806,7 @@
@@ -1071,7 +1071,7 @@
  10    CONTINUE
 -c      print *, molal(5)
  C
- C *** { YLO, YHI } > 0.0 THE SOLUTION IS ALWAYS SUPERSATURATED WITH LC  
+ C *** { YLO, YHI } > 0.0 THE SOLUTION IS ALWAYS SUPERSATURATED WITH LC
  C
 @@ -5930,6 +6071,8 @@
        COMMON /SOLUT/ CHI1, CHI2, CHI3, CHI4, CHI5, CHI6, CHI7, CHI8,
@@ -1131,7 +1131,7 @@
        MOLAL (4) = ZERO                         ! CLI
 @@ -6229,6 +6377,8 @@
        DOUBLE PRECISION LAMDA, KAPA
-       COMMON /CASEJ/ CHI1, CHI2, CHI3, LAMDA, KAPA, PSI1, PSI2, PSI3, 
+       COMMON /CASEJ/ CHI1, CHI2, CHI3, LAMDA, KAPA, PSI1, PSI2, PSI3,
       &               A1,   A2,   A3
 +!$OMP THREADPRIVATE(/CASEJ/)
 +
@@ -1140,7 +1140,7 @@
  C
 @@ -6326,6 +6476,8 @@
        DOUBLE PRECISION LAMDA, KAPA
-       COMMON /CASEJ/ CHI1, CHI2, CHI3, LAMDA, KAPA, PSI1, PSI2, PSI3, 
+       COMMON /CASEJ/ CHI1, CHI2, CHI3, LAMDA, KAPA, PSI1, PSI2, PSI3,
       &               A1,   A2,   A3
 +!$OMP THREADPRIVATE(/CASEJ/)
 +
@@ -1168,7 +1168,7 @@
        MOLAL (4) = ZERO                          ! CLI
 @@ -6406,6 +6560,8 @@
        DOUBLE PRECISION LAMDA, KAPA
-       COMMON /CASEJ/ CHI1, CHI2, CHI3, LAMDA, KAPA, PSI1, PSI2, PSI3, 
+       COMMON /CASEJ/ CHI1, CHI2, CHI3, LAMDA, KAPA, PSI1, PSI2, PSI3,
       &               A1,   A2,   A3
 +!$OMP THREADPRIVATE(/CASEJ/)
 +
@@ -1177,7 +1177,7 @@
  C
 @@ -6503,6 +6659,8 @@
        DOUBLE PRECISION LAMDA, KAPA
-       COMMON /CASEJ/ CHI1, CHI2, CHI3, LAMDA, KAPA, PSI1, PSI2, PSI3, 
+       COMMON /CASEJ/ CHI1, CHI2, CHI3, LAMDA, KAPA, PSI1, PSI2, PSI3,
       &               A1,   A2,   A3
 +!$OMP THREADPRIVATE(/CASEJ/)
 +
@@ -1193,12 +1193,12 @@
 +      BB   = A3+LAMDA + ORGANION                ! KAPA
        CC   =-A3*(LAMDA + PSI2 + PSI1)
        DD   = BB*BB-4.D0*CC
-       KAPA = 0.5D0*(-BB+SQRT(DD))    
+       KAPA = 0.5D0*(-BB+SQRT(DD))
  C
  C *** SAVE CONCENTRATIONS IN MOLAL ARRAY ******************************
  C
 -      MOLAL (1) = LAMDA + KAPA                  ! HI
-+C *** FOR INTERACTION WITH HYDROPHILIC ORGANIC COMPOUNDS      
++C *** FOR INTERACTION WITH HYDROPHILIC ORGANIC COMPOUNDS
 +      MOLAL (1) = LAMDA + KAPA + ORGANION       ! HI
        MOLAL (2) = PSI1                          ! NAI
        MOLAL (3) = PSI2                          ! NH4I

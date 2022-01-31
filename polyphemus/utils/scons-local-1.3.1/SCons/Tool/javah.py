@@ -42,26 +42,27 @@ import SCons.Node.FS
 import SCons.Tool.javac
 import SCons.Util
 
+
 def emit_java_headers(target, source, env):
     """Create and return lists of Java stub header files that will
     be created from a set of class files.
     """
-    class_suffix = env.get('JAVACLASSSUFFIX', '.class')
-    classdir = env.get('JAVACLASSDIR')
+    class_suffix = env.get("JAVACLASSSUFFIX", ".class")
+    classdir = env.get("JAVACLASSDIR")
 
     if not classdir:
         try:
             s = source[0]
         except IndexError:
-            classdir = '.'
+            classdir = "."
         else:
             try:
                 classdir = s.attributes.java_classdir
             except AttributeError:
-                classdir = '.'
+                classdir = "."
     classdir = env.Dir(classdir).rdir()
 
-    if str(classdir) == '.':
+    if str(classdir) == ".":
         c_ = None
     else:
         c_ = str(classdir) + os.sep
@@ -72,17 +73,17 @@ def emit_java_headers(target, source, env):
             classname = src.attributes.java_classname
         except AttributeError:
             classname = str(src)
-            if c_ and classname[:len(c_)] == c_:
-                classname = classname[len(c_):]
-            if class_suffix and classname[-len(class_suffix):] == class_suffix:
-                classname = classname[:-len(class_suffix)]
+            if c_ and classname[: len(c_)] == c_:
+                classname = classname[len(c_) :]
+            if class_suffix and classname[-len(class_suffix) :] == class_suffix:
+                classname = classname[: -len(class_suffix)]
             classname = SCons.Tool.javac.classname(classname)
         s = src.rfile()
         s.attributes.java_classname = classname
         slist.append(s)
 
     s = source[0].rfile()
-    if not hasattr(s.attributes, 'java_classdir'):
+    if not hasattr(s.attributes, "java_classdir"):
         s.attributes.java_classdir = classdir
 
     if target[0].__class__ is SCons.Node.FS.File:
@@ -93,12 +94,13 @@ def emit_java_headers(target, source, env):
             target[0]._morph()
         tlist = []
         for s in source:
-            fname = string.replace(s.attributes.java_classname, '.', '_') + '.h'
+            fname = string.replace(s.attributes.java_classname, ".", "_") + ".h"
             t = target[0].File(fname)
             t.attributes.java_lookupdir = target[0]
             tlist.append(t)
 
     return tlist, source
+
 
 def JavaHOutFlagGenerator(target, source, env, for_signature):
     try:
@@ -106,30 +108,36 @@ def JavaHOutFlagGenerator(target, source, env, for_signature):
     except (AttributeError, IndexError, TypeError):
         t = target
     try:
-        return '-d ' + str(t.attributes.java_lookupdir)
+        return "-d " + str(t.attributes.java_lookupdir)
     except AttributeError:
-        return '-o ' + str(t)
+        return "-o " + str(t)
 
-def getJavaHClassPath(env,target, source, for_signature):
+
+def getJavaHClassPath(env, target, source, for_signature):
     path = "${SOURCE.attributes.java_classdir}"
-    if env.has_key('JAVACLASSPATH') and env['JAVACLASSPATH']:
-        path = SCons.Util.AppendPath(path, env['JAVACLASSPATH'])
+    if env.has_key("JAVACLASSPATH") and env["JAVACLASSPATH"]:
+        path = SCons.Util.AppendPath(path, env["JAVACLASSPATH"])
     return "-classpath %s" % (path)
+
 
 def generate(env):
     """Add Builders and construction variables for javah to an Environment."""
     java_javah = SCons.Tool.CreateJavaHBuilder(env)
     java_javah.emitter = emit_java_headers
 
-    env['_JAVAHOUTFLAG']    = JavaHOutFlagGenerator
-    env['JAVAH']            = 'javah'
-    env['JAVAHFLAGS']       = SCons.Util.CLVar('')
-    env['_JAVAHCLASSPATH']  = getJavaHClassPath
-    env['JAVAHCOM']         = '$JAVAH $JAVAHFLAGS $_JAVAHOUTFLAG $_JAVAHCLASSPATH ${SOURCES.attributes.java_classname}'
-    env['JAVACLASSSUFFIX']  = '.class'
+    env["_JAVAHOUTFLAG"] = JavaHOutFlagGenerator
+    env["JAVAH"] = "javah"
+    env["JAVAHFLAGS"] = SCons.Util.CLVar("")
+    env["_JAVAHCLASSPATH"] = getJavaHClassPath
+    env[
+        "JAVAHCOM"
+    ] = "$JAVAH $JAVAHFLAGS $_JAVAHOUTFLAG $_JAVAHCLASSPATH ${SOURCES.attributes.java_classname}"
+    env["JAVACLASSSUFFIX"] = ".class"
+
 
 def exists(env):
-    return env.Detect('javah')
+    return env.Detect("javah")
+
 
 # Local Variables:
 # tab-width:4

@@ -6,8 +6,8 @@ Purpose: Unifac parameters Type B (replace file read)
 
 Include dependencies:  Included in Unidriver.c
 
-Notes: 5 primary compounds (EPRI 99): C23H47COOH, C8H17CH=CHC7H14COOH, 
-       4-(2-propio)-syringone, C29H60, 2-carboxybenzoic acid 
+Notes: 5 primary compounds (EPRI 99): C23H47COOH, C8H17CH=CHC7H14COOH,
+       4-(2-propio)-syringone, C29H60, 2-carboxybenzoic acid
        + 5 Type B compounds at 25C
        (Data of Lyman, Reehl, Rosenblatt, 1990)
 
@@ -39,9 +39,9 @@ Notes: 5 primary compounds (EPRI 99): C23H47COOH, C8H17CH=CHC7H14COOH,
          Aromatic Nitro      ACNO2
          Nitrate             NO3
 
-revision History:  1. Developed by Betty Pun, AER, December, 1999 
+revision History:  1. Developed by Betty Pun, AER, December, 1999
 	              under CARB funding
-                   2. Modified by Betty Pun, AER, December, 1999 
+                   2. Modified by Betty Pun, AER, December, 1999
                       under CARB funding for Type B module
 		   3. Changed surrogate compounds for MADRID 1.5
 		      Betty Pun, July 2005
@@ -53,16 +53,16 @@ revision History:  1. Developed by Betty Pun, AER, December, 1999
 #ifndef BUNIPARM_H
 #define BUNIPARM_H
 
-/* no. of molecules */  	
+/* no. of molecules */
 int NMOL = 12;
 
 /* no. of functional groups */
-int NFUNC = 18;	
+int NFUNC = 18;
 
 /* Z = 10 is a fixed parameter in Unifac */
 double Z = 10.0;
 
-/* original file input has temperature, 
+/* original file input has temperature,
 but temperature is in main input file now */
 
 /* group volume parameters */
@@ -75,14 +75,14 @@ double QG[DIMFUN] = {0.8480, 0.5400, 0.2280, 0.0000, 0.8670, 0.6760, 0.4000, 0.1
 
 /* no. of groups in each molecule*/
 int NU[DIMMOL][DIMFUN] = {
-{1, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0}, 
-{1, 14, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0}, 
-{0, 0 , 0, 0, 0, 0, 2, 2, 0, 1, 0, 1, 1, 0, 2, 0, 0, 0}, 
-{2, 27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-{0, 0 , 0, 0, 0, 0, 4, 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0}, 
-{0, 0 , 0, 0, 0, 0, 3, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0}, 
-{0, 0 , 0, 0, 0, 0, 3, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0}, 
-{3, 5 , 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1}, 
+{1, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
+{1, 14, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
+{0, 0 , 0, 0, 0, 0, 2, 2, 0, 1, 0, 1, 1, 0, 2, 0, 0, 0},
+{2, 27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+{0, 0 , 0, 0, 0, 0, 4, 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0},
+{0, 0 , 0, 0, 0, 0, 3, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0},
+{0, 0 , 0, 0, 0, 0, 3, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0},
+{3, 5 , 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1},
 {3, 4 , 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0},
 {1, 1 , 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1},
 {1, 2 , 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 3},
@@ -113,6 +113,3 @@ double A[DIMFUN][DIMFUN] = {
 #endif
 
 /********************END unifacparam.h**********************************/
-
-
-

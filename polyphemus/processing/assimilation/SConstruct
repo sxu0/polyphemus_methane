@@ -38,7 +38,7 @@ include_path = """include/common
                   include/modules/chemistry/RACM
                   include/modules/chemistry/RACM2
                   include/modules/chemistry/CB05
-                  include/modules/chemistry/Leighton 
+                  include/modules/chemistry/Leighton
                   include/models
                   include/driver/common
                   include/driver/common/observation

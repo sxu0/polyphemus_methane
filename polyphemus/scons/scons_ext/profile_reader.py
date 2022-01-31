@@ -34,9 +34,10 @@ def load_profile(utils, env, profile_name):
     compiler, available_profile = list_profile(env)
     if profile_name not in available_profile:
         msg = ""
-        if profile_name != '?':
-            msg += "[ERROR] No '{0}' profile found for '{1}'\n"\
-                      .format(profile_name, compiler)
+        if profile_name != "?":
+            msg += "[ERROR] No '{0}' profile found for '{1}'\n".format(
+                profile_name, compiler
+            )
         if not available_profile:
             msg += "[WARNING] No available profile.\n"
         else:
@@ -51,7 +52,9 @@ def load_profile(utils, env, profile_name):
                 msg += """
  '{0}'
  {1}
-{2}""".format(p_name, '-' * (len(p_name) + 2), p_doc)
+{2}""".format(
+                    p_name, "-" * (len(p_name) + 2), p_doc
+                )
         profile_dir = os.path.dirname(scons_ext.profile.__file__)
         msg += """
 
@@ -59,7 +62,9 @@ def load_profile(utils, env, profile_name):
 |  IMPORTANT: Profiles can be added and enriched, just have a look in: |
 |  "{0}"
 ----------------------------------------------------------------------/
-""".format(profile_dir)
+""".format(
+            profile_dir
+        )
         raise UserError, msg
 
     available_profile[profile_name](utils)
@@ -81,7 +86,7 @@ def list_profile(env):
     compiler_alias = [compiler]
 
     # Strips the version suffix.
-    compiler_alternative = compiler.split('-')[0]
+    compiler_alternative = compiler.split("-")[0]
     if compiler_alternative != compiler:
         compiler_alias.append(compiler_alternative)
 
@@ -94,7 +99,7 @@ def list_profile(env):
             if m_name != c:
                 continue
             for p_name in dir(m):
-                if p_name[0] == '_' or p_name in profile_dict:
+                if p_name[0] == "_" or p_name in profile_dict:
                     continue
                 p = getattr(m, p_name)
                 try:

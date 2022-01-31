@@ -28,7 +28,7 @@ from SCons.Script.SConscript import global_exports
 EnsureSConsVersion(1, 0, 0)
 
 # SCons is able to deal with duplicated environment.
-SetOption('warn', 'no-duplicate-environment')
+SetOption("warn", "no-duplicate-environment")
 
 # BUILD_TARGETS has to be cleared before adding our own targets.
 # Reasons why 'BUILD_TARGETS' is directly managed:
@@ -44,8 +44,9 @@ while len(BUILD_TARGETS) > 0:
     BUILD_TARGETS.pop()
 
 # The command line targets in full path.
-command_line_target = [os.path.join(Dir('#').abspath, p)
-                       for p in COMMAND_LINE_TARGETS][:]
+command_line_target = [os.path.join(Dir("#").abspath, p) for p in COMMAND_LINE_TARGETS][
+    :
+]
 
 
 def quiet(is_quiet=None):
@@ -76,7 +77,7 @@ def sconstruct(script, _cache=dict()):
     initial_exports = global_exports.copy()
     is_quiet = quiet()
     try:
-        Export(src_dir = os.path.dirname(os.path.abspath(script)))
+        Export(src_dir=os.path.dirname(os.path.abspath(script)))
         if not is_quiet:
             print "[SCONSTRUCT]", script
         targets = SConscript(script)
@@ -93,4 +94,3 @@ def sconstruct(script, _cache=dict()):
         quiet(is_quiet)
 
     return targets
-

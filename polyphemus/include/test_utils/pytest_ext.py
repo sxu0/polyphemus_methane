@@ -68,16 +68,13 @@ def recursive_equal(current, expected, comp=np.allclose):
     if type(current) is dict and type(expected) is dict:
         if set(current.keys()) ^ set(expected.keys()):
             return False
-        for current_val, expected_val in zip(current.values(),
-                                             expected.values()):
+        for current_val, expected_val in zip(current.values(), expected.values()):
             if not recursive_equal(current_val, expected_val, comp):
                 return False
         return True
-    elif type(current) in (str, unicode) and \
-         type(expected) in (str, unicode):
+    elif type(current) in (str, unicode) and type(expected) in (str, unicode):
         return current == expected
-    elif type(current) == ma.core.MaskedArray and \
-         type(expected) == ma.core.MaskedArray:
+    elif type(current) == ma.core.MaskedArray and type(expected) == ma.core.MaskedArray:
         if np.any(current.mask != expected.mask):
             return False
         current = current[~current.mask]

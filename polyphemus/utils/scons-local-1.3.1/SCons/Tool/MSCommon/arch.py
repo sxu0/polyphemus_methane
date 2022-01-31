@@ -28,28 +28,29 @@ __doc__ = """Module to define supported Windows chip architectures.
 
 import os
 
+
 class ArchDefinition:
     """
     A class for defining architecture-specific settings and logic.
     """
+
     def __init__(self, arch, synonyms=[]):
         self.arch = arch
         self.synonyms = synonyms
 
+
 SupportedArchitectureList = [
     ArchitectureDefinition(
-        'x86',
-        ['i386', 'i486', 'i586', 'i686'],
+        "x86",
+        ["i386", "i486", "i586", "i686"],
     ),
-
     ArchitectureDefinition(
-        'x86_64',
-        ['AMD64', 'amd64', 'em64t', 'EM64T', 'x86_64'],
+        "x86_64",
+        ["AMD64", "amd64", "em64t", "EM64T", "x86_64"],
     ),
-
     ArchitectureDefinition(
-        'ia64',
-        ['IA64'],
+        "ia64",
+        ["IA64"],
     ),
 ]
 
@@ -58,4 +59,3 @@ for a in SupportedArchitectureList:
     SupportedArchitectureMap[a.arch] = a
     for s in a.synonyms:
         SupportedArchitectureMap[s] = a
-

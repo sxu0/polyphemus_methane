@@ -26,15 +26,21 @@ The targz SRC packager.
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-__revision__ = "src/engine/SCons/Tool/packaging/src_targz.py 5110 2010/07/25 16:14:38 bdeegan"
+__revision__ = (
+    "src/engine/SCons/Tool/packaging/src_targz.py 5110 2010/07/25 16:14:38 bdeegan"
+)
 
 from SCons.Tool.packaging import putintopackageroot
 
+
 def package(env, target, source, PACKAGEROOT, **kw):
-    bld = env['BUILDERS']['Tar']
-    bld.set_suffix('.tar.gz')
-    target, source = putintopackageroot(target, source, env, PACKAGEROOT, honor_install_location=0)
-    return bld(env, target, source, TARFLAGS='-zc')
+    bld = env["BUILDERS"]["Tar"]
+    bld.set_suffix(".tar.gz")
+    target, source = putintopackageroot(
+        target, source, env, PACKAGEROOT, honor_install_location=0
+    )
+    return bld(env, target, source, TARFLAGS="-zc")
+
 
 # Local Variables:
 # tab-width:4

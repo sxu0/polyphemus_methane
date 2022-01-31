@@ -13,8 +13,8 @@ Version 1.2 (2008-11-12)
 ** Improvements:
 
 - Added support for SWIG.
-- Added, in 'ExtStream' and 'ConfigStreams': 
-   + 'GetValue(string name, string constraints, T& value)' and 
+- Added, in 'ExtStream' and 'ConfigStreams':
+   + 'GetValue(string name, string constraints, T& value)' and
      'PeekValue(string name, string constraints, T& value)', which check
      that a numerical value read in a configuration file satisfies a list
      of constraints.
@@ -22,7 +22,7 @@ Version 1.2 (2008-11-12)
      and 'PeekValue(string name, string accepted, string& value,
      string delimiter)', which check that the value read in the configuration
      file is in a list of accepted values.
-   + 'GetValue(string name, T min, T max, T& value)' and 
+   + 'GetValue(string name, T min, T max, T& value)' and
      'PeekValue(string name, T min, T max, T& value)'.
 - Added 'bool ConfigStream::GetElement(T&)'.
 - Modified, in 'ExtStream' and 'ConfigStreams':
@@ -30,18 +30,18 @@ Version 1.2 (2008-11-12)
      now return nothing and raise an exception in case of problem, instead
      of returning a Boolean.
    + 'GetValue(string, T&)' and 'PeekValue(string, T&)' try to get or peek
-     the element immediately following the entry, even if they search for 
+     the element immediately following the entry, even if they search for
      a number.
 - Overloaded 'is_integer' for 'char*' and 'const char*', which may adequately
   shadow the Blitz++ template function 'is_integer'.
-- Put an initialization to the usual delimiters in the default constructor of 
+- Put an initialization to the usual delimiters in the default constructor of
   'ExtStream'.
 - Completed the reorganization of the code to split the declarations from the
   definitions.
 
 ** Bug fixes:
 
-- In 'ExtStream' and 'ConfigStreams', a floating-point number could be 
+- In 'ExtStream' and 'ConfigStreams', a floating-point number could be
   accepted as an integral value.
 
 
@@ -62,10 +62,10 @@ Version 1.0 (2007-04-24)
 
 ** Improvements:
 
-- Improved the parsing of configuration files: fields are now only searched 
-  in current section, and error messages when a field is not found have been 
+- Improved the parsing of configuration files: fields are now only searched
+  in current section, and error messages when a field is not found have been
   improved too.
-- Improved the management of Windows end of line character. 
+- Improved the management of Windows end of line character.
 - Added functions 'is_date(const string& s)' and 'is_delta(const string& s)'.
 - Added function 'GetOrdinalDay()'.
 
@@ -77,7 +77,7 @@ Version 0.4 (2006-09-29)
 
 - Improved the management of dates.
    + Added 'Date::Date(string date)', 'Date::operator=(string date)' and
-     'Date::SetDate(string date)' so that dates provided with strings can be 
+     'Date::SetDate(string date)' so that dates provided with strings can be
      read with high flexibility.
    + Added comparison operators <, <=, >, >=, == and != on dates.
    + Added 'Date::operator=(const Date&)'.
@@ -87,16 +87,16 @@ Version 0.4 (2006-09-29)
 - Added the ability to deal with sections in configuration files.
 - Methods 'ExtStream::ExtStream(string, string, string)' and
   'ExtStream::Open(string, openmode)' now check that the file has been opened.
-- In 'ExtStream' and 'ConfigStream', the files are now opened in binary mode so 
+- In 'ExtStream' and 'ConfigStream', the files are now opened in binary mode so
   that, under MS Windows, 'tellg' may not change the position in the stream.
-- Changed 'fill(const string&, char, int, fmtflags)' into 'fill(const string&, 
+- Changed 'fill(const string&, char, int, fmtflags)' into 'fill(const string&,
   int, char, fmtflags)'.
 - Changed the default alignment in 'fill' and 'to_str_fill' from right to left.
 
 ** Bug fixes:
 
 - In 'Date::Adjust', negative months were not properly handled.
-- In 'Date::Adjust', subtracting n seconds where n is a multiple of 60 did 
+- In 'Date::Adjust', subtracting n seconds where n is a multiple of 60 did
   not work.
 - Fixed a bug in the detection of the end of a file.
 

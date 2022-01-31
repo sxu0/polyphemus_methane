@@ -1,23 +1,23 @@
 C-----------------------------------------------------------------------
 C     Copyright (C) 2003-2007, ENPC - INRIA - EDF R&D
 C     Author(s): Karine Sartelet
-C     
+C
 C     This file is part of the Size Resolved Aerosol Model (SIREAM), a
 C     component of the air quality modeling system Polyphemus.
-C    
+C
 C     Polyphemus is developed in the INRIA - ENPC joint project-team
 C     CLIME and in the ENPC - EDF R&D joint laboratory CEREA.
-C    
+C
 C     Polyphemus is free software; you can redistribute it and/or modify
 C     it under the terms of the GNU General Public License as published
 C     by the Free Software Foundation; either version 2 of the License,
 C     or (at your option) any later version.
-C     
+C
 C     Polyphemus is distributed in the hope that it will be useful, but
 C     WITHOUT ANY WARRANTY; without even the implied warranty of
 C     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 C     General Public License for more details.
-C     
+C
 C     For more information, visit the Polyphemus web site:
 C     http://cerea.enpc.fr/polyphemus/
 C-----------------------------------------------------------------------
@@ -26,50 +26,50 @@ C-----------------------------------------------------------------------
      &      QT,XSF,MSF,DSF,XSD,MSD,DSD, bin_density)
 
 C------------------------------------------------------------------------
-C     
-C     -- DESCRIPTION 
-C     
+C
+C     -- DESCRIPTION
+C
 C     This subroutine computes equilibrium of small bins and
-C     integrates sulfate for all bins     
-C     
+C     integrates sulfate for all bins
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- INPUT VARIABLES
-C     
+C
 C     NEQ : number of equations.
 C     NBIN_AER: number of aerosol bins.
 C     IQ: aerosol pointers.
 C     QT: 1D total aerosol mass in each bin ([\mu.g.m^-3])
-C     XSF: logarithm of fixed mean aerosol mass in bins. ([]) 
+C     XSF: logarithm of fixed mean aerosol mass in bins. ([])
 C     MSF: fixed mean aerosol mass in bins. ([\mu.g])
 C     DSF: fixed mean aerosol diameter in bins. ([\mu.m])
-C     XSD: logarithm of moving mean aerosol mass in bins. ([]) 
+C     XSD: logarithm of moving mean aerosol mass in bins. ([])
 C     MSD: moving mean aerosol mass in bins. ([\mu.g])
 C     DSD: moving mean aerosol diameter in bins. ([\mu.m])
-C     
+C
 C     -- INPUT/OUTPUT VARIABLES
-C  
-C     Q: gas/aerosol concentrations ([\mu.g.m^-3]).  
-C     
+C
+C     Q: gas/aerosol concentrations ([\mu.g.m^-3]).
+C
 C     -- OUTPUT VARIABLES
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- REMARKS
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- MODIFICATIONS
-C     
+C
 C     2005/10: Add ITHRM hook to compute diameter (Edouard Debry, CEREA)
 C	  2013/11/27: Added bin_density (Stephanie Deschamps, CEREA).
 C
 C------------------------------------------------------------------------
-C     
+C
 C     -- AUTHOR(S)
-C     
+C
 C     2005: Karine Sartelet, CEREA.
-C     
+C
 C------------------------------------------------------------------------
       IMPLICIT NONE
 
@@ -79,7 +79,7 @@ C------------------------------------------------------------------------
       INCLUDE 'varg.inc'
       INCLUDE 'varq.inc'
       INCLUDE 'varp.inc'
-      
+
       INTEGER neq,nbin_aer,nesp_aer
       DOUBLE PRECISION q(neq)
       INTEGER iq(nesp_aer,nbin_aer)
@@ -112,7 +112,7 @@ C     Compute diameter with thermo or gerber formula
 C     Integrate sulfate now for all bins
       jesp=ESO4
       aatot=0.D0
-      
+
       DO js=1,nbin_aer
          CALL COMPUTE_CONDENSATION_TRANSFER_RATE(DIFFG(jesp), ! diffusion coef (m2.s-1)
      $        VQMG(jesp),       ! quadratic mean speed (m.s-1)
@@ -124,13 +124,13 @@ C     Integrate sulfate now for all bins
 
       If(aatot.GE.1.d-25) then
          dexploc=DEXP(-aatot*dt2)
-         
+
          DO js=1,nbin_aer
             jj=IQ(jesp,js)
             q(jj)=q(jj)+(AA_tmp(js)*q(js)/aatot)*(1.D0-dexploc)
      &           *q(IG(ESO4))
          END DO
-         q(IG(ESO4))=DMAX1(q(IG(ESO4))*dexploc,0.d0)      
+         q(IG(ESO4))=DMAX1(q(IG(ESO4))*dexploc,0.d0)
       ENDIF
 
       END

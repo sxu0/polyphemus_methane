@@ -169,5 +169,3 @@ C     Turn back to conc vector.
         enddo
 
 	end
-
-

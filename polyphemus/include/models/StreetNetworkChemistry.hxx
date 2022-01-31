@@ -90,7 +90,7 @@ namespace Polyphemus
 
     void ReadConfiguration();
     void CheckConfiguration();
-    void Allocate();    
+    void Allocate();
     void InitPhotolysis(Date date);
 
     void Init();
@@ -106,14 +106,14 @@ namespace Polyphemus
                                   T temperature);
 
     /*** Computational Methods ***/
-    
+
     void Forward();
 
     /*** Access Methods: Chemistry ***/
     void Chemistry();
     void InitChemistry();
     int GetNr_photolysis() const {return Nr_photolysis;}
-    vector<string> GetPhotolysisReactionList() const 
+    vector<string> GetPhotolysisReactionList() const
     {return photolysis_reaction_list;}
     int GetNs_source() const {return 0;}
     int GetNz_source() const {return 0;}

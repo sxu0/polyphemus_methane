@@ -39,27 +39,32 @@ import SCons.Defaults
 import SCons.Tool
 import SCons.Util
 
+
 def generate(env):
     """Add Builders and construction variables for ar to an Environment."""
     SCons.Tool.createStaticLibBuilder(env)
-    
-    if env.Detect('CC'):
-        env['AR']          = 'CC'
-        env['ARFLAGS']     = SCons.Util.CLVar('-ar')
-        env['ARCOM']       = '$AR $ARFLAGS -o $TARGET $SOURCES'
+
+    if env.Detect("CC"):
+        env["AR"] = "CC"
+        env["ARFLAGS"] = SCons.Util.CLVar("-ar")
+        env["ARCOM"] = "$AR $ARFLAGS -o $TARGET $SOURCES"
     else:
-        env['AR']          = 'ar'
-        env['ARFLAGS']     = SCons.Util.CLVar('r')
-        env['ARCOM']       = '$AR $ARFLAGS $TARGET $SOURCES'
-        
-    env['SHLINK']      = '$LINK'
-    env['SHLINKFLAGS'] = SCons.Util.CLVar('$LINKFLAGS -shared')
-    env['SHLINKCOM']   = '$SHLINK $SHLINKFLAGS -o $TARGET $SOURCES $_LIBDIRFLAGS $_LIBFLAGS'
-    env['LIBPREFIX']   = 'lib'
-    env['LIBSUFFIX']   = '.a'
+        env["AR"] = "ar"
+        env["ARFLAGS"] = SCons.Util.CLVar("r")
+        env["ARCOM"] = "$AR $ARFLAGS $TARGET $SOURCES"
+
+    env["SHLINK"] = "$LINK"
+    env["SHLINKFLAGS"] = SCons.Util.CLVar("$LINKFLAGS -shared")
+    env[
+        "SHLINKCOM"
+    ] = "$SHLINK $SHLINKFLAGS -o $TARGET $SOURCES $_LIBDIRFLAGS $_LIBFLAGS"
+    env["LIBPREFIX"] = "lib"
+    env["LIBSUFFIX"] = ".a"
+
 
 def exists(env):
-    return env.Detect('CC') or env.Detect('ar')
+    return env.Detect("CC") or env.Detect("ar")
+
 
 # Local Variables:
 # tab-width:4

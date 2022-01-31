@@ -8,7 +8,7 @@ extern double totA[NAMOL+1], g[NAMOL+1];
 extern int anrerrflag, Newtflag;
 extern int NK[NAMOL+1], aidx[NAAERO+1], aidxmol[NAMOL+1];
 extern double VPAtorr[NAMOL+1];
-extern double VPCrit; 
+extern double VPCrit;
 
 #ifdef POLYPHEMUS_PARALLEL_WITH_OPENMP
 #pragma omp threadprivate(totA, g, anrerrflag, Newtflag, NK, aidx, aidxmol, \
@@ -16,9 +16,9 @@ extern double VPCrit;
 #endif
 
 /**************************************************************************
-Purpose:  Absorption for partitioning Type A compounds with no existing water 
-          If Newtflag = 1, use Newt_double, the globally convergent 
-	  multi-dimensional Newton's method to solve the non-linear 
+Purpose:  Absorption for partitioning Type A compounds with no existing water
+          If Newtflag = 1, use Newt_double, the globally convergent
+	  multi-dimensional Newton's method to solve the non-linear
           simultaneous equations.
           Inner loop: partitionfunc (given Ci, Ki, solve Ai, Gi)
           Outer loop: iterate between Ai used in Unifac and Ai
@@ -26,10 +26,10 @@ Purpose:  Absorption for partitioning Type A compounds with no existing water
           If Newtflag = 0, partition calculated based on input aerosol mass
           and composition (fixed composition and mass of absorbing medium)
 
-Called by: amain 
+Called by: amain
 
 Key calls:  Newt_double, TypeAabs
-                                                          
+
 Notes: 1. Parameters hard coded in glo.h (global variable include file)
           or glodef.h:
           used in bmain:
@@ -38,20 +38,20 @@ Notes: 1. Parameters hard coded in glo.h (global variable include file)
        3. aabaero contains initial PM concentrations (used when newtflag = 0),
           and then gets changed to new concentrations.
 Revision History:  1. Developed by Betty Pun, AER, DEC 00 Under CARB
-                   2. Add code to calculate absorption by assuming fixed 
-		      concentration of existing absorbing medium (not 
+                   2. Add code to calculate absorption by assuming fixed
+		      concentration of existing absorbing medium (not
 		      iterating) for 3-D application, Feb 01.
 *************************************************************************/
 void amainabs (double aabaero[] )
 {
   /* global functions */
-  extern void newt_double (double x[], int n, int * check, 
+  extern void newt_double (double x[], int n, int * check,
 		    void (*vecfunc)(int, double[], double[]));
-  extern void TypeAabs (int n, double x[], double f[]);    
+  extern void TypeAabs (int n, double x[], double f[]);
 
   int neq;                         /* no. of equations to be solved by Newt */
   int check;                       /* flag used by newt */
-  /* need to allocate space for check to avoid overwriting x[1] */     
+  /* need to allocate space for check to avoid overwriting x[1] */
   int idx;                         /* counter for aidx */
   int i,j;                         /* dummy counters */
   check = 0;
@@ -71,9 +71,9 @@ void amainabs (double aabaero[] )
 	idx ++;
       }
       j += NK[i];
-    }                                                                    
+    }
     neq = idx-1;
-    
+
     newt_double (aabaero, neq, &check, TypeAabs);
 
     if (check != 0) {
@@ -83,16 +83,16 @@ void amainabs (double aabaero[] )
     idx = 1;
     for (i = 1; i <= NAMOL; i ++){
       if (i == aidxmol[idx]){
-        
+
 	/* error trap for negative conc */
 	if (aabaero[idx] < 0.0) {
 	  aabaero[idx] = 0.0;
 	}
 	else if ( aabaero[idx] > totA[i]) {
-	  aabaero[idx] = totA[i];    
+	  aabaero[idx] = totA[i];
 	}
-	
-	g[i] = totA[i]- aabaero[idx]; 
+
+	g[i] = totA[i]- aabaero[idx];
 	idx ++;
       }
       else {
@@ -101,9 +101,9 @@ void amainabs (double aabaero[] )
 	g[i] = totA[i];
       }
     }  /* end for */
-    /* reassign aabaero to contain all NASP (including totA = 0) 
+    /* reassign aabaero to contain all NASP (including totA = 0)
      elements for output in main */
-    for (i = 1; i <= NAMOL; i++) 
+    for (i = 1; i <= NAMOL; i++)
       aabaero[i] = totA[i] - g[i];
   } /* end if newtflag = 1 */
   else {

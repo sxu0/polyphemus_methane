@@ -9,11 +9,11 @@ SUBROUTINE TEST_MASS_NB(ns,nesp,rho,dbound,Q,N,Qesp)
   INTEGER, INTENT(in) :: ns, nesp
   DOUBLE PRECISION, DIMENSION(ns), INTENT(in) :: rho
   DOUBLE PRECISION, DIMENSION(ns), INTENT(in) :: dbound
-  DOUBLE PRECISION, DIMENSION(ns), INTENT(inout) :: Q, N 
+  DOUBLE PRECISION, DIMENSION(ns), INTENT(inout) :: Q, N
 !  DOUBLE PRECISION :: Qmin
   DOUBLE PRECISION, DIMENSION(ns, nesp), INTENT(inout) :: Qesp
-  
- 
+
+
   DO k = 1, ns
 
 !     Qmin = rho(k) * (PI/6.D0) * (dbound(1) ** 3D0)
@@ -28,7 +28,7 @@ SUBROUTINE TEST_MASS_NB(ns,nesp,rho,dbound,Q,N,Qesp)
         PRINT*, "Q",Q
         STOP
      ENDIF
-     
+
 ! !    IF(Q(k) .LT. Qmin * N(k) .OR. N(k) .LT. 1D0 .OR. Q(k) .LT. nesp*TINYM) THEN
 !     IF (N(k).LE.TINYN) THEN
 !        !Q(k) = 0.D0

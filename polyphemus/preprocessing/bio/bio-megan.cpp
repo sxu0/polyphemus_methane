@@ -87,7 +87,7 @@ int main(int argc, char** argv)
 
   //! Mapping of LAI and EF data on the simulation domain.
   int nred = 5.0 / min(Delta_y, Delta_x);
-  
+
   // Dates.
   string date_meteo_str;
   config.PeekValue("Date", date_meteo_str);

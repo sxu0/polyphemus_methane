@@ -425,7 +425,7 @@ namespace Polyphemus
     ExtractMeteo(z_c, lat_c, lon_c, isday, option_similarity,
                  meteorological_data, stability, rural);
 
-    if (!option_similarity && !this->evolutive_plume_rise)      
+    if (!option_similarity && !this->evolutive_plume_rise)
       this->GaussianPuffModel->
         SetPuffMeteo(puff_index,
                      meteorological_data["temperature"],

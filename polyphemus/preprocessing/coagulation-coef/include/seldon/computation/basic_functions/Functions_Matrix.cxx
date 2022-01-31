@@ -34,22 +34,22 @@
 
   alpha.A*B + beta.C -> C
   MltAdd(alpha, A, B, beta, C)
-  
+
   alpha*A + B -> B
   Add(alpha, A, B)
-  
+
   LU factorization of matrix A without pivoting.
   GetLU(A)
-  
+
   Highest absolute value of A.
   MaxAbs(A)
-  
+
   1-norm of matrix A.
   Norm1(A)
-  
+
   infinity norm of matrix A.
   NormInf(A)
-  
+
   Transpose(A)
 */
 
@@ -133,7 +133,7 @@ namespace Seldon
     T4 temp;
     T4 alpha_(alpha);
     T4 beta_(beta);
-    
+
     if (beta_ != T4(0))
       for (int i = 0; i < Storage4::GetFirst(mc, nc); i++)
 	for (int j = 0; j < Storage4::GetSecond(mc, nc); j++)
@@ -159,12 +159,12 @@ namespace Seldon
 
   // MLTADD //
   ////////////
-  
 
-  
+
+
   /////////
   // ADD //
-  
+
 
   template<class T0, class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
@@ -177,7 +177,7 @@ namespace Seldon
       for (j = 0; j < A.GetN(); j++)
 	B(i, j) += alpha * A(i, j);
   }
-  
+
 
   template<class T0, class T1, class Storage1, class Allocator1,
 	   class T2, class Storage2, class Allocator2>
@@ -191,12 +191,12 @@ namespace Seldon
 	B(i, j) += alpha * A(i, j);
   }
 
-  
+
   // ADD //
   /////////
 
-  
-  
+
+
   ///////////
   // GETLU //
 
@@ -235,8 +235,8 @@ namespace Seldon
 	  }
       }
   }
-  
-  
+
+
   // GETLU //
   ///////////
 
@@ -418,8 +418,8 @@ namespace Seldon
 
   ///////////
   // NORMS //
-  
-  
+
+
   //! Returns the maximum (in absolute value) of a matrix.
   /*!
     \param A matrix.
@@ -435,8 +435,8 @@ namespace Seldon
 
     return res;
   }
-  
-  
+
+
   //! Returns the 1-norm of a matrix.
   /*!
     \param A matrix.
@@ -451,14 +451,14 @@ namespace Seldon
 	sum = T(0);
 	for (int i = 0; i < A.GetM(); i++)
 	  sum += abs( A(i, j) );
-	
+
 	res = max(res, sum);
       }
-    
+
     return res;
   }
-  
-  
+
+
   //! Returns the infinity-norm of a matrix.
   /*!
     \param A matrix.
@@ -473,14 +473,14 @@ namespace Seldon
 	sum = T(0);
 	for (int j = 0; j < A.GetN(); j++)
 	  sum += abs( A(i, j) );
-	
+
 	res = max(res, sum);
       }
 
     return res;
   }
-  
-  
+
+
   //! Returns the maximum (in modulus) of a matrix.
   /*!
     \param A matrix.
@@ -495,11 +495,11 @@ namespace Seldon
 	{
 	  res = max(res, abs(A(i, j)) );
 	}
-    
+
     return res;
   }
-  
-  
+
+
   //! Returns the 1-norm of a matrix.
   /*!
     \param A matrix.
@@ -514,14 +514,14 @@ namespace Seldon
 	sum = T(0);
 	for (int i = 0; i < A.GetM(); i++)
 	  sum += abs( A(i, j) );
-	
+
 	res = max(res, sum);
       }
-    
+
     return res;
   }
-  
-  
+
+
   //! Returns the infinity-norm of a matrix.
   /*!
     \param A matrix.
@@ -536,30 +536,30 @@ namespace Seldon
 	sum = T(0);
 	for (int j = 0; j < A.GetN(); j++)
 	  sum += abs( A(i, j) );
-	
+
 	res = max(res, sum);
       }
 
     return res;
   }
-  
-  
+
+
   // NORMS //
   ///////////
-  
-  
-  
+
+
+
   ///////////////
   // TRANSPOSE //
-  
-  
+
+
   //! Matrix transposition.
   template<class T, class Prop, class Storage, class Allocator>
   void Transpose(Matrix<T, Prop, Storage, Allocator>& A)
   {
     int m = A.GetM();
     int n = A.GetN();
-    
+
     if (m == n)
       {
 	T tmp;
@@ -581,8 +581,8 @@ namespace Seldon
 	    A(j,i) = B(i,j);
       }
   }
-  
-  
+
+
   //! Matrix transposition and conjugation.
   template<class T, class Prop, class Storage, class Allocator>
   void TransposeConj(Matrix<T, Prop, Storage, Allocator>& A)
@@ -591,7 +591,7 @@ namespace Seldon
 
     int m = A.GetM();
     int n = A.GetN();
-    
+
     if (m == n)
       {
 	T tmp;
@@ -613,16 +613,16 @@ namespace Seldon
 	    A(j, i) = conj(B(i, j));
       }
   }
-  
-  
+
+
   // TRANSPOSE //
   ///////////////
 
-  
+
   ///////////////////////
   // ISSYMMETRICMATRIX //
-  
-  
+
+
   //! returns true if the matrix is symmetric
   template<class T, class Prop, class Storage, class Allocator>
   bool IsSymmetricMatrix(const Matrix<T, Prop, Storage, Allocator>& A)
@@ -630,7 +630,7 @@ namespace Seldon
     return false;
   }
 
-  
+
   //! returns true if the matrix is symmetric
   template<class T, class Storage, class Allocator>
   bool IsSymmetricMatrix(const Matrix<T, Symmetric, Storage, Allocator>& A)
@@ -641,7 +641,7 @@ namespace Seldon
 
   // ISSYMMETRICMATRIX //
   ///////////////////////
-  
+
 } // namespace Seldon.
 
 #define SELDON_FILE_FUNCTIONS_MATRIX_CXX

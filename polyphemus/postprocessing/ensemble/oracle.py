@@ -25,19 +25,18 @@
 mode = "global"
 
 # Best model.
-ebm = BestModel(ens, Nskip = Nskip, option = mode)
+ebm = BestModel(ens, Nskip=Nskip, option=mode)
 print "Best model:", ebm.stat["rmse"]
 
 # Best constant combination with weights in the simplex.
-eccs = ELS(ens, process = True, Nskip = Nskip, constraint = "simplex",
-           option = mode)
+eccs = ELS(ens, process=True, Nskip=Nskip, constraint="simplex", option=mode)
 print "Best constant combination (simplex):", eccs.stat["rmse"]
 
 # Best constant combination.
-ecc = ELS(ens, process = True, Nskip = Nskip, option = mode)
+ecc = ELS(ens, process=True, Nskip=Nskip, option=mode)
 print "Best constant combination:", ecc.stat["rmse"]
 
 if mode == "global":
     # Best combination.
-    eb = ELSd(ens, process = True, Nskip = Nskip)
+    eb = ELSd(ens, process=True, Nskip=Nskip)
     print "Best combination:", eb.stat["rmse"]

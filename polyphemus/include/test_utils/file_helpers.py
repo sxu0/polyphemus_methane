@@ -25,18 +25,19 @@ import fnmatch
 import os
 
 
-def file_list(root_dir='.',
-              file_pattern=None,
-              file_exclude_pattern="*.png",
-              dir_exclude_pattern=".*"):
+def file_list(
+    root_dir=".",
+    file_pattern=None,
+    file_exclude_pattern="*.png",
+    dir_exclude_pattern=".*",
+):
     """Returns the list of the filename that matches the arguments."""
     root_dir = os.path.normpath(root_dir)
     path_begin = len(root_dir) + 1
     for path, dirname_list, filename_list in os.walk(root_dir):
         path = path[path_begin:]
         if file_exclude_pattern:
-            for filename in fnmatch.filter(filename_list,
-                                           file_exclude_pattern):
+            for filename in fnmatch.filter(filename_list, file_exclude_pattern):
                 filename_list.remove(filename)
         if file_pattern:
             filename_list = fnmatch.filter(filename_list, file_pattern)
@@ -59,11 +60,11 @@ def check_path(path):
 
 
 def remove_duplicate_path(path_list):
-    normalized_path_list = [ normalize_path(d) + "/" for d in path_list]
+    normalized_path_list = [normalize_path(d) + "/" for d in path_list]
     normalized_path_list.sort(key=len, reverse=True)
     root_path_list = []
     for i, p in enumerate(normalized_path_list):
-        for p_shorter in normalized_path_list[i+1:]:
+        for p_shorter in normalized_path_list[i + 1 :]:
             if p.startswith(p_shorter):
                 p = None
             break

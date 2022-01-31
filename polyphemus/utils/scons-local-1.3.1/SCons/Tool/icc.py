@@ -35,22 +35,29 @@ __revision__ = "src/engine/SCons/Tool/icc.py 5110 2010/07/25 16:14:38 bdeegan"
 
 import cc
 
+
 def generate(env):
     """Add Builders and construction variables for the OS/2 to an Environment."""
     cc.generate(env)
 
-    env['CC']         = 'icc'
-    env['CCCOM']      = '$CC $CFLAGS $CCFLAGS $CPPFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS /c $SOURCES /Fo$TARGET'
-    env['CXXCOM']     = '$CXX $CXXFLAGS $CPPFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS /c $SOURCES /Fo$TARGET'
-    env['CPPDEFPREFIX']  = '/D'
-    env['CPPDEFSUFFIX']  = ''
-    env['INCPREFIX']  = '/I'
-    env['INCSUFFIX']  = ''
-    env['CFILESUFFIX'] = '.c'
-    env['CXXFILESUFFIX'] = '.cc'
+    env["CC"] = "icc"
+    env[
+        "CCCOM"
+    ] = "$CC $CFLAGS $CCFLAGS $CPPFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS /c $SOURCES /Fo$TARGET"
+    env[
+        "CXXCOM"
+    ] = "$CXX $CXXFLAGS $CPPFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS /c $SOURCES /Fo$TARGET"
+    env["CPPDEFPREFIX"] = "/D"
+    env["CPPDEFSUFFIX"] = ""
+    env["INCPREFIX"] = "/I"
+    env["INCSUFFIX"] = ""
+    env["CFILESUFFIX"] = ".c"
+    env["CXXFILESUFFIX"] = ".cc"
+
 
 def exists(env):
-    return env.Detect('icc')
+    return env.Detect("icc")
+
 
 # Local Variables:
 # tab-width:4

@@ -91,7 +91,7 @@ C     INUM = 1 if the number concentration is followed in the CTM
 C     = 0 if the number concentration is not followed.
 C     IDENS = 1 for varying aerosol density
 C     = 0 for fixed aerosol density.
-C     
+C
 C     -- INPUT/OUTPUT VARIABLES
 C
 C     DLCONC: gas concentrations ([\mu.g/m^3]).
@@ -238,7 +238,7 @@ C     Compute mass and diameter of each section
                MSF(Jb) = 0.d0
             ENDIF
 
-            if ((DLnumconc_aer(Jb).GT. TINYN .or. 
+            if ((DLnumconc_aer(Jb).GT. TINYN .or.
      s           conc_tot.GT.TINYM)
      s           .AND. IDENS .EQ. 1) then
                DSF(Jb) = (MSF(Jb)/cst_PI6/rho_dry(Jb))**cst_FRAC3
@@ -297,20 +297,20 @@ C     Projection.
                ENDDO
 
 C     Initialization of granulo for kinetic cte of heterogeneous rxns
-      
+
       DO Jb=1,Nbin_aer
          conc_tot=0.0D0
          tot_before(Jb) = 0.D0
          DO Jsp=1,Ns_aer-1
-            conc_tot = conc_tot + DLconc_aer(Jb,Jsp) 
-            tot_before(Jb) = tot_before(Jb) +  DLconc_aer(Jb,Jsp) 
+            conc_tot = conc_tot + DLconc_aer(Jb,Jsp)
+            tot_before(Jb) = tot_before(Jb) +  DLconc_aer(Jb,Jsp)
          ENDDO
 C     compute the particle number (mass/geometric mean diameter)
          IF (INUM.EQ.1) THEN
             granulo_aer(Jb) = DLnumconc_aer(Jb)
          ELSE
             if (MSF(Jb) .GT. 0.D0) THEN
-               granulo_aer(Jb) = conc_tot/MSF(Jb)               
+               granulo_aer(Jb) = conc_tot/MSF(Jb)
             else
                write(*,*) , "chem.f : error "
                stop

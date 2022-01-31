@@ -26,15 +26,15 @@ namespace Seldon
   //! Solves a linear system by using Conjugate Gradient (CG)
   /*!
     Solves the symmetric positive definite linear system A x = b.
-    
+
     return value of 0 indicates convergence within the
     maximum number of iterations (determined by the iter object).
     return value of 1 indicates a failure to converge.
-    
+
     See M. R. Hestenes nd E. Stiefel, Methods of conjugate gradients for
     solving linear system, Journal of Research of the National Bureau of
     Standards, 49(1952), pp. 409-436
-    
+
     \param[in] A  Real Symmetric Matrix
     \param[in,out] x  Vector on input it is the initial guess
     on output it is the solution
@@ -49,40 +49,40 @@ namespace Seldon
     const int N = A.GetM();
     if (N <= 0)
       return 0;
-    
+
     typedef typename Vector1::value_type Complexe;
     Complexe rho(1), rho_1(1), alpha, beta,delta;
     Vector1 p(b), q(b), r(b), z(b);
-    
+
     // we initialize iter
     int success_init = iter.Init(b);
     if (success_init != 0)
       return iter.ErrorCode();
-    
+
     // we compute the initial residual r = b - Ax
     Copy(b, r);
     if (!iter.IsInitGuess_Null())
       MltAdd(Complexe(-1), A, x, Complexe(1), r);
     else
       x.Zero();
-    
+
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are satisfied
     while (! iter.Finished(r))
       {
-	
+
 	// Preconditioning z = M^{-1} r
 	M.Solve(A, r, z);
-	
+
 	// rho = (conj(r),z)
 	rho = DotProdConj(r, z);
-	
+
 	if (rho == Complexe(0) )
 	  {
 	    iter.Fail(1, "Cg breakdown #1");
 	    break;
 	  }
-	
+
 	if (iter.First())
 	  Copy(z, p);
 	else
@@ -92,7 +92,7 @@ namespace Seldon
 	    Mlt(beta, p);
 	    Add(Complexe(1), z, p);
 	  }
-	
+
 	// matrix vector product q = A*p
 	Mlt(A, p, q);
 	delta = DotProdConj(p, q);
@@ -102,22 +102,21 @@ namespace Seldon
 	    break;
 	  }
 	alpha = rho / delta;
-	
+
 	// x = x + alpha*p  and r = r - alpha*q  where alpha = rho/(bar(p),q)
 	Add(alpha, p, x);
 	Add(-alpha, q, r);
-	
+
 	rho_1 = rho;
-	
+
 	++iter;
       }
-    
+
     return iter.ErrorCode();
   }
-  
-  
+
+
 } // end namespace
 
 #define SELDON_FILE_ITERATIVE_CG_CXX
 #endif
-

@@ -25,23 +25,26 @@ from glob import glob
 import os, sys
 import pytest
 
-from test_utils.notebook.NotebookKernel import (NotebookKernel,
-                                                NotebookException)
+from test_utils.notebook.NotebookKernel import NotebookKernel, NotebookException
 
 
 def pytest_addoption(parser):
     group = parser.getgroup("general")
     group._addoption(
-        '--ipynb-incremental', action="store_true",
-        dest="ipynb_incremental", default=False,
-        help="Only runs notebooks that have some cells without output or "\
-             "having an error."
+        "--ipynb-incremental",
+        action="store_true",
+        dest="ipynb_incremental",
+        default=False,
+        help="Only runs notebooks that have some cells without output or "
+        "having an error.",
     )
     group._addoption(
-        '--ipynb-verbose', action="store_true",
-        dest="ipynb_verbose", default=False,
-        help="Displays information on success and failure as soon as a test "\
-             "terminates."
+        "--ipynb-verbose",
+        action="store_true",
+        dest="ipynb_verbose",
+        default=False,
+        help="Displays information on success and failure as soon as a test "
+        "terminates.",
     )
 
 
@@ -75,9 +78,9 @@ def pytest_collect_file(path, parent):
 def pytest_ignore_collect(path):
     """Collection ignore hook for Pytest.
 
-        - It is assumed that a ".py" script with the same base name as a
-          ".ipynb" notebook cannot be a test (it is likely the notebook
-          converted to a script).
+    - It is assumed that a ".py" script with the same base name as a
+      ".ipynb" notebook cannot be a test (it is likely the notebook
+      converted to a script).
     """
     # Checks path is not the translation of a IPython Notebook.
     if path.ext == ".py":
@@ -100,9 +103,10 @@ class NotebookCollection(pytest.File):
         self.notebooks = notebooks
 
         if len(self.notebooks) > 1:
-            basenames = [os.path.splitext(os.path.basename(p))[0]
-                         for p in self.notebooks]
-            self.name = path.dirname + "/{" + ','.join(basenames) + "}.ipynb"
+            basenames = [
+                os.path.splitext(os.path.basename(p))[0] for p in self.notebooks
+            ]
+            self.name = path.dirname + "/{" + ",".join(basenames) + "}.ipynb"
 
     def collect(self):
         yield NotebookTestScenario(self.name, self)
@@ -145,14 +149,15 @@ class NotebookTestScenario(pytest.Item):
         if isinstance(excinfo.value, NotebookException):
             return excinfo.value.pretty_str()
         else:
-            tb = excinfo.getrepr(showlocals=True, style='long', abspath=False)
-            return "*** Internal unexpected exception:\n%s\n"\
-                   "Exception message: %s" % (tb, str(excinfo.value))
+            tb = excinfo.getrepr(showlocals=True, style="long", abspath=False)
+            return (
+                "*** Internal unexpected exception:\n%s\n"
+                "Exception message: %s" % (tb, str(excinfo.value))
+            )
 
     def reportinfo(self):
         """Returns the test location, which is displayed in verbose mode."""
-        return self.current_nb_path, 0, \
-            "test scenario: %s" % self.current_nb_name
+        return self.current_nb_path, 0, "test scenario: %s" % self.current_nb_name
 
     def verbose_print(self, status="[INFO]", message=None, cell_index=None):
         if not self.verbose:
@@ -165,6 +170,6 @@ class NotebookTestScenario(pytest.Item):
         write("\n" + status + " in " + self.current_nb_name)
         if cell_index:
             write(", cell index " + str(cell_index))
-        write(" (at \""+ self.current_nb_path + ")")
+        write(' (at "' + self.current_nb_path + ")")
         if message:
             write(":\n" + message + "\n")

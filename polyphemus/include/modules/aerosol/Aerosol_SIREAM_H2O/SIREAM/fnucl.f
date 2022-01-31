@@ -114,22 +114,22 @@ C     mr should be in ppt
          dqdt(jj)=dqdt(jj)+jnucl*ntot/Navog*EMW(ESO4) ! µg.m-3.s-1
          jj=IQ(ENH3,1)
          dqdt(jj)=dqdt(jj)+jnucl*ntotnh3/Navog*EMW(ENH3)
-         
-!****************************     
+
+!****************************
       ELSEIF(ITERN.EQ.2) THEN
 !     Parametrization take in Devilliers' thesis : Kuang
 !         k_fact = 1.26D-14 !! 5.18D-12       ! cm3.s-1
-!         p_fact = 2.01D0        
+!         p_fact = 2.01D0
 
 c     Convert sulfuric acid concentration [µg.m-3] to [molec.cm-3]
          na = q(IG(ESO4)) * 1.D-06 / EMW(ESO4) * Navog
 c     Kuang
-         jnucl = k_fact * (na ** p_fact) ! molec.s-1.cm-3   
+         jnucl = k_fact * (na ** p_fact) ! molec.s-1.cm-3
 
-         jnucl = jnucl * 1.D06  
+         jnucl = jnucl * 1.D06
          dqdt(1) = dqdt(1) +jnucl  ! #part.m-3.s-1
-         jj = IQ(ESO4,1) 
-         dqdt(jj) = dqdt(jj) + jnucl * EMW(ESO4) / Navog 
+         jj = IQ(ESO4,1)
+         dqdt(jj) = dqdt(jj) + jnucl * EMW(ESO4) / Navog
 
 !****************************************
       ELSE                      !sulfuric-acid-water nucl'n

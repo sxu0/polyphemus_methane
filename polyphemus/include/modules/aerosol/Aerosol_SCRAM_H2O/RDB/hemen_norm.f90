@@ -2,17 +2,17 @@ SUBROUTINE HEMEN_NORM(ns, nesp, EH2O, grand, section_pass, dbound, &
      X,diameter_before_redist, fixed_diameter ,kloc, alpha, LMD, DQLIMIT,rho, Qesp, N)
 
 !!$------------------------------------------------------------------------
-!!$     
-!!$     -- DESCRIPTION 
-!!$     
+!!$
+!!$     -- DESCRIPTION
+!!$
 !!$     This subroutine redistribute the concentrations after the GDE.
-!!$     Hybrid Euler Mass Euler Number.     
-!!$     
+!!$     Hybrid Euler Mass Euler Number.
+!!$
 !!$------------------------------------------------------------------------
-!!$     
+!!$
 !!$     -- INPUT VARIABLES
-!!$     
-!!$     
+!!$
+!!$
 !!$     ns             : number of sections
 !!$     nesp           : number of species
 !!$     dbound         : list of limit bound diameter [\mu m]
@@ -24,17 +24,17 @@ SUBROUTINE HEMEN_NORM(ns, nesp, EH2O, grand, section_pass, dbound, &
 !!$     kloc           : list of bin where is diameter_before_redist
 !!$     X              : log(diameter_before_redist)
 !!$     j              : time integration
-!!$     section_pass   : bin include 100nm  
+!!$     section_pass   : bin include 100nm
 !!$     LMD            : list of liquid mass density of each species
-!!$ 
+!!$
 !!$     -- VARIABLES
-!!$     
+!!$
 !!$     Q              : Mass concentration
 !!$     N_esp          : Number concentration by bin and species
 !!$     rho            : density per bin
-!!$     Eps_machine    : tolerance due to the lack of precision of the machine     
-!!$     Qdonne_esp     : Temporary Mass concentration 
-!!$     Ndonne_esp     : Temporary number concentration 
+!!$     Eps_machine    : tolerance due to the lack of precision of the machine
+!!$     Qdonne_esp     : Temporary Mass concentration
+!!$     Ndonne_esp     : Temporary number concentration
 !!$     frac           : fraction define by X and logdiam
 !!$     Qd             : fraction of mass concentration give at the adjacent bin
 !!$     Nd             : fraction of number concentration give at the adjacent bin
@@ -42,13 +42,13 @@ SUBROUTINE HEMEN_NORM(ns, nesp, EH2O, grand, section_pass, dbound, &
 !!$     log_fixed_diameter : log(fixed_diameter)
 !!$
 !!$     -- INPUT/OUTPUT VARIABLES
-!!$      
+!!$
 !!$     N              : Number concentration by bin
 !!$     Qesp           : Mass concentration by bin and species
-!!$      
+!!$
 !!$     -- OUTPUT VARIABLES
-!!$     
-!!$     
+!!$
+!!$
 !!$------------------------------------------------------------------------
 
 
@@ -58,7 +58,7 @@ SUBROUTINE HEMEN_NORM(ns, nesp, EH2O, grand, section_pass, dbound, &
   INCLUDE '../INC/parameuler.inc'
 
 
-!!! ------ Input 
+!!! ------ Input
   INTEGER, INTENT(in) :: ns, nesp, section_pass
   INTEGER, DIMENSION(ns), INTENT(in) :: grand
   DOUBLE PRECISION, DIMENSION(ns), INTENT(in) :: X
@@ -69,11 +69,11 @@ SUBROUTINE HEMEN_NORM(ns, nesp, EH2O, grand, section_pass, dbound, &
   DOUBLE PRECISION, DIMENSION(nesp), INTENT(in) :: LMD
   INTEGER, INTENT(in) :: EH2O
 
-!!! ------ Input/Output 
+!!! ------ Input/Output
   DOUBLE PRECISION, DIMENSION(ns), INTENT(inout) :: N
   DOUBLE PRECISION, DIMENSION(ns, nesp), INTENT(inout) :: Qesp
 
-!!! ------  
+!!! ------
   INTEGER k, jesp, ik
   DOUBLE PRECISION, DIMENSION(ns) :: rho
   DOUBLE PRECISION, DIMENSION(ns, nesp) :: N_esp, Qd_tmp, Nd_tmp
@@ -117,12 +117,12 @@ SUBROUTINE HEMEN_NORM(ns, nesp, EH2O, grand, section_pass, dbound, &
   Ndonne_esp = 0.d0
   Qdonne_esp = 0.d0
 
-  DO k = 1, ns 
+  DO k = 1, ns
 
 !!! ~~~~~~~~~~~~~~~~ redistribute according to Euler number algorithm ~~~~~~~~~~~~~~~~~~~
      IF(kloc(k) .LE. section_pass-1) THEN
         !! ~~~~~~ Redistribute between bins kloc(k)-1 and kloc(k) ~~~~~~~~~~~~~~~~~~~~~~~
-        IF (grand(k) == 0) THEN 
+        IF (grand(k) == 0) THEN
 
            IF (kloc(k) .NE. 1) THEN
               frac = (log_fixed_diameter(k) - X(k)) &
@@ -135,10 +135,10 @@ SUBROUTINE HEMEN_NORM(ns, nesp, EH2O, grand, section_pass, dbound, &
            IF (frac .GT. 1 .or. isNaN(frac)) THEN
               PRINT * , "In SIREAM/hemen_norm.f90: frac > 1."
               PRINT * , "In SIREAM/redistribution.f90: frac > 1, grand = 0"
-              PRINT *, "k ", k , " kloc", kloc(k) 
+              PRINT *, "k ", k , " kloc", kloc(k)
               PRINT *, "d_after", diameter_before_redist(k),&
-                   " logd_before_cond", log_fixed_diameter(kloc(k))  
-              PRINT *, "X(k)", X(k) 
+                   " logd_before_cond", log_fixed_diameter(kloc(k))
+              PRINT *, "X(k)", X(k)
               PRINT *,"d_befor", fixed_diameter(kloc(k)-1), &
                    "logd_befor",DLOG10(fixed_diameter(kloc(k)-1))
               PRINT *, (X(k) - log_fixed_diameter(k)), "/",&
@@ -150,15 +150,15 @@ SUBROUTINE HEMEN_NORM(ns, nesp, EH2O, grand, section_pass, dbound, &
 
            DO jesp = 1, nesp
               Nd = N_esp(k, jesp) * frac
-              IF (kloc(k) .NE. 1) THEN 
+              IF (kloc(k) .NE. 1) THEN
 
                  Ndonne_esp(kloc(k)-1, jesp)  = &
-                      Ndonne_esp(kloc(k)-1, jesp) + Nd 
+                      Ndonne_esp(kloc(k)-1, jesp) + Nd
                  Ndonne_esp(kloc(k), jesp) = &
                       Ndonne_esp(kloc(k), jesp) + N_esp(k, jesp) - Nd
               ELSE
                  Ndonne_esp(kloc(k), jesp) = &
-                      Ndonne_esp(kloc(k), jesp) + N_esp(k, jesp) 
+                      Ndonne_esp(kloc(k), jesp) + N_esp(k, jesp)
               ENDIF
               N_esp(k,jesp) = 0.d0
               if (isNaN(Ndonne_esp(kloc(k), jesp))) then
@@ -180,12 +180,12 @@ SUBROUTINE HEMEN_NORM(ns, nesp, EH2O, grand, section_pass, dbound, &
            ENDIF
            IF (frac .GT. 1 .or. isNaN(frac)) THEN
               PRINT * , "In SIREAM/hemen_norm.f90: frac > 1."
-       
+
               PRINT * , "In SIREAM/redistribution.f90: frac > 1, grand = 1"
-              PRINT *, "k ", k , " kloc", kloc(k) 
+              PRINT *, "k ", k , " kloc", kloc(k)
               PRINT *, "d_after", diameter_before_redist(k),&
-                   " logd_before_cond", log_fixed_diameter(kloc(k))  
-              PRINT *, "X(k)", X(k) 
+                   " logd_before_cond", log_fixed_diameter(kloc(k))
+              PRINT *, "X(k)", X(k)
               PRINT *,"d_befor", fixed_diameter(kloc(k)+1), &
                    "logd_befor",DLOG10(fixed_diameter(kloc(k)+1))
               PRINT *, (X(k) - log_fixed_diameter(k)), "/",&
@@ -225,10 +225,10 @@ SUBROUTINE HEMEN_NORM(ns, nesp, EH2O, grand, section_pass, dbound, &
            IF (frac .GT. 1 .or. isNaN(frac)) THEN
               PRINT * , "In SIREAM/hemen_norm.f90: frac > 1."
               PRINT * , "In SIREAM/redistribution.f90: frac > 1, grand = 0"
-              PRINT *, "k ", k , " kloc", kloc(k) 
+              PRINT *, "k ", k , " kloc", kloc(k)
               PRINT *, "d_after", diameter_before_redist(k),&
-                   " logd_before_cond", log_fixed_diameter(kloc(k))  
-              PRINT *, "X(k)", X(k) 
+                   " logd_before_cond", log_fixed_diameter(kloc(k))
+              PRINT *, "X(k)", X(k)
               PRINT *,"d_befor", fixed_diameter(kloc(k)-1), &
                    "logd_befor",log_fixed_diameter(kloc(k)-1)
               PRINT *, (X(k) - log_fixed_diameter(k)), "/",&
@@ -240,7 +240,7 @@ SUBROUTINE HEMEN_NORM(ns, nesp, EH2O, grand, section_pass, dbound, &
 
 
            DO jesp = 1, nesp
-              
+
               Qd = Qesp(k,jesp) * frac
 
               IF (kloc(k).NE.1) THEN
@@ -253,7 +253,7 @@ SUBROUTINE HEMEN_NORM(ns, nesp, EH2O, grand, section_pass, dbound, &
                       Qdonne_esp(kloc(k), jesp) + Qesp(k, jesp)
               ENDIF
 
-              Qesp(k, jesp) = 0.d0 
+              Qesp(k, jesp) = 0.d0
            ENDDO
            !! ~~~~~~ Redistribute between bins kloc(k)+1 and kloc(k) ~~~~~~~~~~~~~~~~~~~~~~~~~~
         ELSE  ! ~~~~~ grand(k) == 1
@@ -268,10 +268,10 @@ SUBROUTINE HEMEN_NORM(ns, nesp, EH2O, grand, section_pass, dbound, &
            ENDIF
            IF (frac .GT. 1 .or. isNaN(frac)) THEN
               PRINT * , "In SIREAM/hemen_norm.f90: frac > 1."
-              PRINT *, "k ", k , " kloc", kloc(k) 
+              PRINT *, "k ", k , " kloc", kloc(k)
               PRINT *, "d_after", diameter_before_redist(k),&
-                   " logd_before_cond", log_fixed_diameter(kloc(k))  
-              PRINT *, "X(k)", X(k) 
+                   " logd_before_cond", log_fixed_diameter(kloc(k))
+              PRINT *, "X(k)", X(k)
               PRINT *,"d_befor", fixed_diameter(kloc(k)+1), &
                    "logd_befor",log_fixed_diameter(kloc(k)+1)
               PRINT *, (X(k) - log_fixed_diameter(k)), "/",&
@@ -281,31 +281,31 @@ SUBROUTINE HEMEN_NORM(ns, nesp, EH2O, grand, section_pass, dbound, &
               STOP
            ENDIF
 
-           DO jesp = 1, nesp  
+           DO jesp = 1, nesp
               Qd = Qesp(k, jesp) * frac
-              IF (kloc(k).NE.ns) THEN 
+              IF (kloc(k).NE.ns) THEN
                  Qdonne_esp(kloc(k)+1, jesp) = &
                       Qdonne_esp(kloc(k)+1, jesp) + Qd
                  Qdonne_esp(kloc(k), jesp) = &
                       Qdonne_esp(kloc(k), jesp) + Qesp(k, jesp) - Qd
               ELSE
                  Qdonne_esp(kloc(k), jesp) = &
-                      Qdonne_esp(kloc(k), jesp) + Qesp(k, jesp) 
+                      Qdonne_esp(kloc(k), jesp) + Qesp(k, jesp)
 
               ENDIF
-              Qesp(k, jesp) = 0.d0           
+              Qesp(k, jesp) = 0.d0
            ENDDO
 
         ENDIF
 
-     ELSE !! kloc(k) in section_pass: 
-          !! choose between Euler number and Euler mass to redistribute the section k 
-          !! in section_pass and redistribute mass in the section just above 
+     ELSE !! kloc(k) in section_pass:
+          !! choose between Euler number and Euler mass to redistribute the section k
+          !! in section_pass and redistribute mass in the section just above
           !! or number in the section just below
 
 
 
-        IF (grand(k) == 0) THEN 
+        IF (grand(k) == 0) THEN
            frac =   (log_fixed_diameter(k) - X(k))/ &
                    (log_fixed_diameter(k) - DLOG10(fixed_diameter(kloc(k)-1)))
 
@@ -389,7 +389,7 @@ SUBROUTINE HEMEN_NORM(ns, nesp, EH2O, grand, section_pass, dbound, &
   ENDDO
 
   k = section_pass
-  IF (fixed_diameter(section_pass).LE.diam_pass) then 
+  IF (fixed_diameter(section_pass).LE.diam_pass) then
      ! ~~~~ Euler number
      DO jesp = 1, nesp
         N_esp(k, jesp) = N_esp(k, jesp) + Ndonne_esp(k, jesp)
@@ -397,7 +397,7 @@ SUBROUTINE HEMEN_NORM(ns, nesp, EH2O, grand, section_pass, dbound, &
         N(k) = N(k) + N_esp(k, jesp)
         endif
      ENDDO
-  ELSE 
+  ELSE
      ! ~~~~ Euler mass
      DO jesp = 1, nesp
         Qesp(k, jesp) = Qesp(k, jesp) + Qdonne_esp(k, jesp)
@@ -425,7 +425,7 @@ SUBROUTINE HEMEN_NORM(ns, nesp, EH2O, grand, section_pass, dbound, &
   ENDDO
 
   k = section_pass
-  IF (fixed_diameter(section_pass).LE.diam_pass) then 
+  IF (fixed_diameter(section_pass).LE.diam_pass) then
      ! ~~~~ Euler number
      CALL COMPUTE_DENSITY(ns, nesp, eh2o, TINYN, N_esp, LMD, k, rho(k))
      DO jesp = 1, nesp
@@ -435,7 +435,7 @@ SUBROUTINE HEMEN_NORM(ns, nesp, EH2O, grand, section_pass, dbound, &
         Q(k) = Q(k) + Qesp(k,jesp)
         endif
      ENDDO
-  ELSE 
+  ELSE
      ! ~~~~ Euler mass
      CALL COMPUTE_DENSITY(ns, nesp, eh2o,  TINYM,Qesp, LMD, k, rho(k))
      N(k) = Q(k) * 6.D0 / (PI * rho(k) * fixed_diameter(k) * &
@@ -465,7 +465,7 @@ SUBROUTINE HEMEN_NORM(ns, nesp, EH2O, grand, section_pass, dbound, &
   enddo
 
 !******** Normalization
-  do k = 1, ns 
+  do k = 1, ns
      DO jesp=1, nesp
         if (abs(QTOTin(jesp)-QTOTout(jesp)) .GT. DQLIMIT &
              .and. QTOTout(jesp) .GT. 0d0 ) then

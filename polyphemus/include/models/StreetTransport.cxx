@@ -19,7 +19,7 @@ namespace Polyphemus
                     T length, T width, T height,
                     int ns_local, int nr_photolysis):
     street_id_(street_id), begin_inter_(begin_inter), end_inter_(end_inter),
-    length_(length), width_(width), height_(height), 
+    length_(length), width_(width), height_(height),
     ns_local_(ns_local)
   {
     emission_.resize(ns_local_);
@@ -402,7 +402,7 @@ namespace Polyphemus
     \param lmo the Monin-Obukhov length
   */
   template<class T>
-  inline void Street<T>::SetMeteo(T wind_direction, T wind_speed, 
+  inline void Street<T>::SetMeteo(T wind_direction, T wind_speed,
                                   T pblh, T ust, T lmo)
   {
     wind_direction_ = wind_direction;
@@ -460,7 +460,7 @@ namespace Polyphemus
     \param temperature the temperature.
   */
   template<class T>
-  inline void Street<T>::SetMeteoChemistry(T attenuation, T specific_humidity, 
+  inline void Street<T>::SetMeteoChemistry(T attenuation, T specific_humidity,
                                            T pressure, T temperature)
   {
     attenuation_ = attenuation;
@@ -620,7 +620,7 @@ namespace Polyphemus
     return transfer_velocity_;
   }
 
-  //! Sets the transfer velocity at roof. 
+  //! Sets the transfer velocity at roof.
   /*!
     \param transfer_velocity the transfer velocity at roof (m/s).
   */
@@ -684,11 +684,11 @@ namespace Polyphemus
 
    */
   template<class T>
-  Intersection<T>::Intersection(int id, T x, T y, int nstreet, 
+  Intersection<T>::Intersection(int id, T x, T y, int nstreet,
                                 Array<int, 1> street_list, bool is_virtual,
                                 Array<T, 2> flux_matrix, Array<T, 2> gaussian_matrix):
-    id_(id), x_(x), y_(y), nstreet_(nstreet), street_list_(street_list), 
-    is_virtual_(is_virtual), flux_matrix_(flux_matrix), 
+    id_(id), x_(x), y_(y), nstreet_(nstreet), street_list_(street_list),
+    is_virtual_(is_virtual), flux_matrix_(flux_matrix),
     gaussian_matrix_(gaussian_matrix)
   {
     wind_direction_ = 0.0;
@@ -754,7 +754,7 @@ namespace Polyphemus
     \return The list of street id.
   */
   template<class T>
-  inline Array<int, 1>& Intersection<T>::GetStreetList() 
+  inline Array<int, 1>& Intersection<T>::GetStreetList()
   {
     return street_list_;
   }
@@ -764,7 +764,7 @@ namespace Polyphemus
     \return .
   */
   template<class T>
-  inline bool Intersection<T>::IsVirtual() 
+  inline bool Intersection<T>::IsVirtual()
   {
     return is_virtual_;
   }
@@ -775,7 +775,7 @@ namespace Polyphemus
     \return The flux matrix.
   */
   template<class T>
-  inline Array<T, 2>& Intersection<T>::GetFluxMatrix() 
+  inline Array<T, 2>& Intersection<T>::GetFluxMatrix()
   {
     return flux_matrix_;
   }
@@ -795,7 +795,7 @@ namespace Polyphemus
     \return The gaussian matrix.
   */
   template<class T>
-  inline Array<T, 2>& Intersection<T>::GetGaussianMatrix() 
+  inline Array<T, 2>& Intersection<T>::GetGaussianMatrix()
   {
     return gaussian_matrix_;
   }
@@ -819,7 +819,7 @@ namespace Polyphemus
     \param lmo the Monin-Obukhov length.
   */
   template<class T>
-  inline void Intersection<T>::SetMeteo(T wind_direction, T wind_speed, 
+  inline void Intersection<T>::SetMeteo(T wind_direction, T wind_speed,
                                         T pblh, T ust, T lmo)
   {
     wind_direction_ = wind_direction;
@@ -904,4 +904,3 @@ namespace Polyphemus
 
 #define POLYPHEMUS_FILE_MODELS_STREETTRANSPORT_CXX
 #endif
-

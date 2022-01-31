@@ -44,17 +44,18 @@ ccLinker = None
 # search for the acc compiler and linker front end
 
 try:
-    dirs = os.listdir('/opt')
+    dirs = os.listdir("/opt")
 except (IOError, OSError):
     # Not being able to read the directory because it doesn't exist
     # (IOError) or isn't readable (OSError) is okay.
     dirs = []
 
 for dir in dirs:
-    linker = '/opt/' + dir + '/bin/aCC'
+    linker = "/opt/" + dir + "/bin/aCC"
     if os.path.exists(linker):
         ccLinker = linker
         break
+
 
 def generate(env):
     """
@@ -62,13 +63,15 @@ def generate(env):
     an Environment.
     """
     link.generate(env)
-    
-    env['LINKFLAGS']   = SCons.Util.CLVar('-Wl,+s -Wl,+vnocompatwarnings')
-    env['SHLINKFLAGS'] = SCons.Util.CLVar('$LINKFLAGS -b')
-    env['SHLIBSUFFIX'] = '.sl'
+
+    env["LINKFLAGS"] = SCons.Util.CLVar("-Wl,+s -Wl,+vnocompatwarnings")
+    env["SHLINKFLAGS"] = SCons.Util.CLVar("$LINKFLAGS -b")
+    env["SHLIBSUFFIX"] = ".sl"
+
 
 def exists(env):
     return ccLinker
+
 
 # Local Variables:
 # tab-width:4

@@ -7,9 +7,9 @@
   {
     void _unifac(int*, int*, double*, double*, double*, double*, double*,
 				 double*, double*, double*);
- 
+
     void _isoropia(double*,double*,double*,double*,double*,double*,
-                   double*,double*, double*,double*, double*);     
+                   double*,double*, double*,double*, double*);
 
   }
 

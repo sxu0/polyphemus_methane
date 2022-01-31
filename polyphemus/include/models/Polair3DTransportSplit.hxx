@@ -36,7 +36,7 @@ namespace Polyphemus
   using namespace std;
   using namespace AtmoData;
 
-  
+
   //////////////////////
   // FORTRAN FUNCTION //
   //////////////////////
@@ -76,7 +76,7 @@ namespace Polyphemus
   ///////////////////////
   // POLAIR3DTRANSPORT //
   ///////////////////////
-  
+
 
   //! This class is a solver for an advection-diffusion equation.
   template<class T, class ClassAdvection, class ClassDiffusion>
@@ -91,9 +91,9 @@ namespace Polyphemus
     input_files_iterator;
 
   public:
-    
+
     /*** Configuration ***/
-    
+
     //! Are coordinates Cartesian or latitude/longitude?
     bool option_cartesian;
 
@@ -124,14 +124,14 @@ namespace Polyphemus
     RegularGrid<T> GridX4D_interf_bc;
     //! Coordinates of boundary conditions along y.
     RegularGrid<T> GridY4D_interf_bc;
-    
+
     //! Cell widths along x in meters.
     Array<T, 1> CellWidth_x;
     //! Cell widths along y in meters.
     Array<T, 1> CellWidth_y;
     //! Cell widths along z in meters.
     Array<T, 1> CellWidth_z;
-    
+
     //! Distances between cell centers along x in meters.
     Array<T, 1> CellCenterDistance_x;
     //! Distances between cell centers along y in meters.
@@ -153,14 +153,14 @@ namespace Polyphemus
     map<string, T> belot_constant_b;
 
     /*** Winds ***/
-    
+
     //! Zonal wind at current date.
     Data<T, 3> ZonalWind_i;
     //! Meridional wind at current date.
     Data<T, 3> MeridionalWind_i;
     //! Vertical wind at current date.
     Data<T, 3> VerticalWind_i;
-    
+
     //! Zonal wind buffer.
     Data<T, 3> FileZonalWind_i;
     //! Zonal wind buffer.
@@ -173,7 +173,7 @@ namespace Polyphemus
     Data<T, 3> FileVerticalWind_i;
     //! Vertical wind buffer.
     Data<T, 3> FileVerticalWind_f;
-    
+
     /*** Other meteorological fields ***/
 
     //! Temperature at current date.
@@ -204,7 +204,7 @@ namespace Polyphemus
     Data<T, 3> SpecificHumidity_i;
     //! Specific humidity at next date.
     Data<T, 3> SpecificHumidity_f;
- 
+
     //! Temperature buffer.
     Data<T, 3> FileTemperature_i;
     //! Temperature buffer.
@@ -371,12 +371,12 @@ namespace Polyphemus
     ClassDiffusion Diffusion_;
 
   public:
-    
+
     /*** Constructor and destructor ***/
-    
+
     Polair3DTransport(string config_file);
     virtual ~Polair3DTransport();
-    
+
     /*** Configuration ***/
 
     virtual void ReadConfiguration();
@@ -388,28 +388,28 @@ namespace Polyphemus
     int InitialConditionIndex(string name) const;
     string InitialConditionName(int s) const;
     int InitialConditionGlobalIndex(int s) const;
-    
+
     bool HasBoundaryCondition(int s) const;
     bool HasBoundaryCondition(string name) const;
     int BoundaryConditionIndex(int s) const;
     int BoundaryConditionIndex(string name) const;
     string BoundaryConditionName(int s) const;
     int BoundaryConditionGlobalIndex(int s) const;
-    
+
     bool HasDepositionVelocity(int s) const;
     bool HasDepositionVelocity(string name) const;
     int DepositionVelocityIndex(int s) const;
     int DepositionVelocityIndex(string name) const;
     string DepositionVelocityName(int s) const;
     int DepositionVelocityGlobalIndex(int s) const;
-    
+
     bool HasScavenging(int s) const;
     bool HasScavenging(string name) const;
     int ScavengingIndex(int s) const;
     int ScavengingIndex(string name) const;
     string ScavengingName(int s) const;
     int ScavengingGlobalIndex(int s) const;
-    
+
     bool HasSurfaceEmission(int s) const;
     bool HasSurfaceEmission(string name) const;
     int SurfaceEmissionIndex(int s) const;
@@ -418,14 +418,14 @@ namespace Polyphemus
     int SurfaceEmissionGlobalIndex(int s) const;
 
     string AdditionalSurfaceEmissionName(int s) const;
-    
+
     bool HasVolumeEmission(int s) const;
     bool HasVolumeEmission(string name) const;
     int VolumeEmissionIndex(int s) const;
     int VolumeEmissionIndex(string name) const;
     string VolumeEmissionName(int s) const;
     int VolumeEmissionGlobalIndex(int s) const;
-    
+
     /*** Initializations ***/
 
     virtual void Allocate();
@@ -519,7 +519,7 @@ namespace Polyphemus
   protected:
 
     virtual void InitAllData();
-    
+
   };
 
 

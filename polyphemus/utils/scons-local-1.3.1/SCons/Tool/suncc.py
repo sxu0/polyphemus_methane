@@ -36,6 +36,7 @@ import SCons.Util
 
 import cc
 
+
 def generate(env):
     """
     Add Builders and construction variables for Forte C and C++ compilers
@@ -43,13 +44,15 @@ def generate(env):
     """
     cc.generate(env)
 
-    env['CXX']          = 'CC'
-    env['SHCCFLAGS']    = SCons.Util.CLVar('$CCFLAGS -KPIC')
-    env['SHOBJPREFIX']  = 'so_'
-    env['SHOBJSUFFIX']  = '.o'
+    env["CXX"] = "CC"
+    env["SHCCFLAGS"] = SCons.Util.CLVar("$CCFLAGS -KPIC")
+    env["SHOBJPREFIX"] = "so_"
+    env["SHOBJSUFFIX"] = ".o"
+
 
 def exists(env):
-    return env.Detect('CC')
+    return env.Detect("CC")
+
 
 # Local Variables:
 # tab-width:4

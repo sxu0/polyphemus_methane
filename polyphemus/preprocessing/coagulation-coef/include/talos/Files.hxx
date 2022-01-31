@@ -92,9 +92,9 @@ namespace Talos
     void Open(string file_name, openmode mode = in);
 #endif
     void Close();
-    
+
     bool IsEmpty();
-    
+
     ExtStream& Rewind();
 
     string GetFullLine();
@@ -174,7 +174,7 @@ namespace Talos
   protected:
     string markup_tags_;
     string section_;
-    
+
   public:
     ConfigStream();
     ConfigStream(string file_name,
@@ -245,7 +245,7 @@ namespace Talos
     ConfigStreams& Skip();
 
     bool IsEmpty();
-    
+
     ConfigStreams& Rewind();
 
     string GetFullLine();

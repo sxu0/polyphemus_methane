@@ -165,4 +165,3 @@ C     Compute c/e kernels in each section.
       END DO
 
       END
-

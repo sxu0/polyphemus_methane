@@ -135,9 +135,9 @@ namespace Seldon
     try
       {
 #endif
-	
+
 	ind_ = reinterpret_cast<int*>( calloc(nz_, sizeof(int)) );
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -230,10 +230,10 @@ namespace Seldon
     Matrix_Base<T, Allocator>(i, j)
   {
     nz_ = values.GetLength();
-    
+
 #ifdef SELDON_CHECK_DIMENSIONS
     // Checks whether vector sizes are acceptable.
-    
+
     if (ind.GetLength() != nz_)
       {
 	this->m_ = 0;
@@ -306,8 +306,8 @@ namespace Seldon
     ind_ = NULL;
     this->Copy(A);
   }
-  
-  
+
+
   /**************
    * DESTRUCTOR *
    **************/
@@ -324,13 +324,13 @@ namespace Seldon
     try
       {
 #endif
-	
+
 	if (ptr_ != NULL)
 	  {
 	    free(ptr_);
 	    ptr_ = NULL;
 	  }
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -343,13 +343,13 @@ namespace Seldon
     try
       {
 #endif
-	
+
 	if (ind_ != NULL)
 	  {
 	    free(ind_);
 	    ind_ = NULL;
 	  }
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -362,13 +362,13 @@ namespace Seldon
     try
       {
 #endif
-	
+
 	if (this->data_ != NULL)
 	  {
 	    this->allocator_.deallocate(this->data_, nz_);
 	    this->data_ = NULL;
 	  }
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -380,7 +380,7 @@ namespace Seldon
 
     this->nz_ = 0;
   }
-  
+
 
   //! Clears the matrix.
   /*! This methods is equivalent to the destructor. On exit,
@@ -424,10 +424,10 @@ namespace Seldon
     this->m_ = i;
     this->n_ = i;
     this->nz_ = values.GetLength();
-    
+
 #ifdef SELDON_CHECK_DIMENSIONS
     // Checks whether vector sizes are acceptable.
-    
+
     if (ind.GetLength() != nz_)
       {
 	this->m_ = 0;
@@ -487,7 +487,7 @@ namespace Seldon
     values.Nullify();
   }
 
-  
+
   //! Redefines the matrix.
   /*! It clears the matrix and sets it to a new matrix defined by arrays
     'values' (values), 'ptr' (pointers) and 'ind' (indices).
@@ -540,7 +540,7 @@ namespace Seldon
     ind_ = NULL;
   }
 
-  
+
   //! Copies a matrix
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_SymSparse<T, Prop, Storage, Allocator>::
@@ -560,7 +560,7 @@ namespace Seldon
 	this->nz_ = 0;
 	return;
       }
-    
+
 #ifdef SELDON_CHECK_DIMENSIONS
     if (static_cast<long int>(2 * nz_ - 2) / static_cast<long int>(i + 1)
 	>= static_cast<long int>(i))
@@ -586,7 +586,7 @@ namespace Seldon
 
 	ptr_ = reinterpret_cast<int*>( calloc(i + 1, sizeof(int)) );
 	memcpy(this->ptr_, A.ptr_, i+1);
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -618,10 +618,10 @@ namespace Seldon
     try
       {
 #endif
-	
+
 	ind_ = reinterpret_cast<int*>( calloc(nz_, sizeof(int)) );
 	memcpy(this->ind_, A.ind_, nz_);
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -658,7 +658,7 @@ namespace Seldon
 
 	this->data_ = this->allocator_.allocate(nz_, this);
 	this->allocator_.memorycpy(this->data_, A.data_, nz_);
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -688,13 +688,13 @@ namespace Seldon
 #endif
 
   }
-  
+
 
   /*******************
    * BASIC FUNCTIONS *
    *******************/
-  
-  
+
+
   //! Returns the number of elements stored in memory.
   /*!
     \return The number of elements stored in memory (the number
@@ -705,8 +705,8 @@ namespace Seldon
   {
     return nz_;
   }
-  
-  
+
+
   //! Returns the number of elements stored in memory.
   /*!
     \return The number of elements stored in memory (the number
@@ -756,7 +756,7 @@ namespace Seldon
     return (this->m_ + 1);
   }
 
-  
+
   //! Returns the length of the array of (column or row) indices.
   /*!
     Returns the length of the array ('ind_') of (row or column) indices
@@ -843,11 +843,11 @@ namespace Seldon
   ::operator= (const Matrix_SymSparse<T, Prop, Storage, Allocator>& A)
   {
     this->Copy(A);
-    
+
     return *this;
   }
 
-  
+
   /************************
    * CONVENIENT FUNCTIONS *
    ************************/
@@ -871,7 +871,7 @@ namespace Seldon
   }
 
 
- 
+
   //////////////////////////
   // MATRIX<COLSYMSPARSE> //
   //////////////////////////

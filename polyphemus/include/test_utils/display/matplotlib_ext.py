@@ -37,9 +37,11 @@ def show_img(path, **kwargs):
 
     if is_notebook:
         from IPython.display import Image, display
+
         display(Image(path))
     else:
         import webbrowser
+
         webbrowser.open("file://" + os.path.abspath(path))
 
 
@@ -51,15 +53,18 @@ def contourf_map(ax, basemap, data, **kwargs):
     return cs
 
 
-def plot_array_list(array_list,
-                    nb_image_t=1,
-                    nb_image_z=1,
-                    title=None,
-                    array_name_list=None,
-                    plot_func=None,
-                    png_filename=None,
-                    show_figure=True):
+def plot_array_list(
+    array_list,
+    nb_image_t=1,
+    nb_image_z=1,
+    title=None,
+    array_name_list=None,
+    plot_func=None,
+    png_filename=None,
+    show_figure=True,
+):
     if plot_func == None:
+
         def default_plot_func(fig, ax, img, n, t, z):
             cs = ax.contourf(img)
             fig.colorbar(cs, ax=ax)
@@ -71,7 +76,7 @@ def plot_array_list(array_list,
     fig, ax = plt.subplots(nrows, ncols)
 
     if array_name_list:
-        array_name_title = ','.join(array_name_list)
+        array_name_title = ",".join(array_name_list)
         if title is None:
             title = array_name_title
         else:
@@ -83,10 +88,11 @@ def plot_array_list(array_list,
         Nz = data.shape[1]
         sampling_range_t = np.linspace(0, Nt - 1, nb_image_t, dtype=np.int)
         sampling_range_z = np.linspace(0, Nz - 1, nb_image_z, dtype=np.int)
-        img = [dict(img=data[t][z],
-                    n=c,
-                    t=t,
-                    z=z) for z in sampling_range_z for t in sampling_range_t]
+        img = [
+            dict(img=data[t][z], n=c, t=t, z=z)
+            for z in sampling_range_z
+            for t in sampling_range_t
+        ]
 
         label = ""
         if Nt > 1 and Nz > 1:
@@ -97,29 +103,27 @@ def plot_array_list(array_list,
             label = "z={z}"
 
         for r in xrange(0, nrows):
-            ax_rc=ax[r][c]
+            ax_rc = ax[r][c]
             image = img[r]
             plt.sca(ax_rc)
             plot_func(fig, ax_rc, **image)
             if label:
-                ax_rc.set_title(label.format(**image), fontsize='xx-large')
+                ax_rc.set_title(label.format(**image), fontsize="xx-large")
 
     image_shape = array_list[0].shape[2:4]
     image_ratio = float(image_shape[0]) / image_shape[1]
-    image_width = 20.
-    fig.set_size_inches(image_width,
-                        image_width * image_ratio * (float(nrows) / ncols))
+    image_width = 20.0
+    fig.set_size_inches(image_width, image_width * image_ratio * (float(nrows) / ncols))
 
     plt.tight_layout()
 
     if title:
-        title_height=2.5
+        title_height = 2.5
         w, h = fig.get_size_inches()
         h += title_height
         fig.set_size_inches(w, h)
-        plt.subplots_adjust(top=(h - title_height)/h)
-        fig.suptitle(title, fontsize=25, y=(h - title_height/3.)/h)
-
+        plt.subplots_adjust(top=(h - title_height) / h)
+        fig.suptitle(title, fontsize=25, y=(h - title_height / 3.0) / h)
 
     if png_filename:
         plt.savefig(png_filename, dpi=64)
@@ -131,10 +135,12 @@ def plot_array_list(array_list,
     plt.close()
 
 
-def normalize_colormap(data_array_list,
-                       cmap=mpl.cm.get_cmap("seismic"),
-                       zero_centered=True,
-                       log_normed=False):
+def normalize_colormap(
+    data_array_list,
+    cmap=mpl.cm.get_cmap("seismic"),
+    zero_centered=True,
+    log_normed=False,
+):
     # The computation time is optimized for a sequence of numpy arrays
     # or a single numpy array.
 
@@ -164,10 +170,10 @@ def normalize_colormap(data_array_list,
 
             # If the data crosses or comes close to zero, then a linearization
             # of the logarithm is needed for the smallest values.
-            if vmin < 0 or vmin < vmean / 100.:
-                norm = mpl.colors.SymLogNorm(vmin=vmin,
-                                             vmax=vmax,
-                                             linthresh=vmean / 100.)
+            if vmin < 0 or vmin < vmean / 100.0:
+                norm = mpl.colors.SymLogNorm(
+                    vmin=vmin, vmax=vmax, linthresh=vmean / 100.0
+                )
             else:
                 norm = mpl.colors.LogNorm(vmin=vmin, vmax=vmax)
 
@@ -175,24 +181,22 @@ def normalize_colormap(data_array_list,
     return plot_kwargs
 
 
-def dummy_data(Nx=64,
-               Ny=64,
-               Nt=32,
-               Nz=1,
-               amplitude=1,
-               speed=0.1,
-               dtype=np.float32):
+def dummy_data(Nx=64, Ny=64, Nt=32, Nz=1, amplitude=1, speed=0.1, dtype=np.float32):
     L = 5  # Size of the zero centered square domain.
-    x = np.linspace(-L / 2., L / 2., Nx)
-    y = np.linspace(-L / 2., L / 2., Ny)
+    x = np.linspace(-L / 2.0, L / 2.0, Nx)
+    y = np.linspace(-L / 2.0, L / 2.0, Ny)
     y = y[:, np.newaxis]  # transpose
 
     # A dummy function to generate data.
     def f(z, t):
         A = amplitude / z ** 2
-        return A * cos(pi * x * y * t) ** 2 * exp(-(x ** 2 + y ** 2) / 2.)
+        return A * cos(pi * x * y * t) ** 2 * exp(-(x ** 2 + y ** 2) / 2.0)
 
-    dz = 10. / Nz
-    return np.array([[f(z, t) for z in np.arange(1., Nz * dz + 1., dz)]
-                     for t in np.arange(0., Nt * speed * dz, speed * dz)],
-                    dtype)
+    dz = 10.0 / Nz
+    return np.array(
+        [
+            [f(z, t) for z in np.arange(1.0, Nz * dz + 1.0, dz)]
+            for t in np.arange(0.0, Nt * speed * dz, speed * dz)
+        ],
+        dtype,
+    )

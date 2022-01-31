@@ -86,7 +86,7 @@ c     INCLUDE 'smw.inc'
 
       DOUBLE PRECISION wi(5),w(5),gas2(3),cntrl(2), other(6)
       DOUBLE PRECISION liquid(12),solid(9)
-      DOUBLE PRECISION organion2, watorg2, ionic !, gammaH 
+      DOUBLE PRECISION organion2, watorg2, ionic !, gammaH
       INTEGER i,idx             !,j
 
 
@@ -107,7 +107,7 @@ C     concentration in microg.m-3
          idx = isorropia_species(i)
          wi(i) = aero(idx) + gas(idx)
       ENDDO
-      
+
 C     conversion unit for isorropia needed in mol.m-3
       DO i=1,5
          idx = isorropia_species(i)
@@ -141,7 +141,7 @@ C     Aqueous phase total liquid water content and pH (proton) concentration
 !     gammaH is in microg.m-3 which is equivalent to micromol.m-3
 !      gammaH = 10**(-0.511 * (298.0 / temp)**1.5
 !     &     * sqrt(ionic) / (1 + sqrt(ionic)))
-!     proton = liquid(IH) * IMW(IH) * gammaH !! YK gammaH will be calculated later in SOAP 
+!     proton = liquid(IH) * IMW(IH) * gammaH !! YK gammaH will be calculated later in SOAP
       proton = liquid(IH) * IMW(IH) ! microg.m-3
 
       gas(ESO4) = 0.D0

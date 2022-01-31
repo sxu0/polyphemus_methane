@@ -26,7 +26,7 @@ ETH           30.
 ADDC         125.
 HONO          47.
 HKET          74.
-TPAN         147. 
+TPAN         147.
 PAN          121.
 H2O2          34.
 PAA           76.
@@ -85,10 +85,10 @@ CVLIM2        200.
 NH3           17.
 HCL           36.5
 
-! DMS is not in the mechanism. ORA1, ORA2 and SULF are only products. 
+! DMS is not in the mechanism. ORA1, ORA2 and SULF are only products.
 ! CO2 only products : not taken into account.
 !
-! Differences with ciRADM: 
+! Differences with ciRADM:
 ! in RADM: OL2, OL2P, OLN, XNO2
 ! in RACM: ETE, DIEN, API, MACR, UDD, HKET, ETEP, ISOP, APIP, LIMP, PHO,
 !          ADDT, ADDX, ADDC, CSLP, OLNN, OLND, LIM.
@@ -96,4 +96,4 @@ HCL           36.5
 
 ! New semi-volatil species for SOA formation: CV*.
 
-! NH3 and HCL added for aerosol mechanism only. 
+! NH3 and HCL added for aerosol mechanism only.

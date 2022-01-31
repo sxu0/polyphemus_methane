@@ -54,7 +54,7 @@ int main(int argc, char** argv)
     }
 
   typedef double real;
-  typedef Polair3DTransport<double, SplitAdvectionDST3<double>, 
+  typedef Polair3DTransport<double, SplitAdvectionDST3<double>,
 			    DiffusionROS2<double> > ClassEulerianModel;
   typedef GaussianPuffTransport<double> ClassLocalModel;
   typedef PlumeInGridTransport<double, ClassEulerianModel, ClassLocalModel> ClassModel;

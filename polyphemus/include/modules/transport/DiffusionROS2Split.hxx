@@ -74,7 +74,7 @@ namespace Polyphemus
 #define _rosdiffZ rosdiff_z_
 #define _diffZcl diff_zcl_
 #endif
-  
+
   extern "C"
   {
     void _jacdiffX(int*, double*, double*, double*, double*, double*,
@@ -106,7 +106,7 @@ namespace Polyphemus
 		  double*, double*, double*, double*, double*);
   }
 
-  
+
   ///////////////////
   // DIFFUSIONROS2 //
   ///////////////////

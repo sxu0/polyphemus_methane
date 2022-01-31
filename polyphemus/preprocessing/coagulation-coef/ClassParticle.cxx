@@ -98,16 +98,16 @@ namespace CoefficientRepartition
       {
 	cout<<"error, coagulation: "<<" frac1="<<fraction_(s)<<" frac2="<<particle.fraction_(s)<<" "<<coag.mass_<<endl;
 	int i;
-	cin>>i; 	
+	cin>>i;
       }
     }
     //if(tmp_fraction!=1.0)
     //{
 	//  cout<<"error, coagulation "<<tmp_fraction<<endl;
 	//  int i;
-	//  cin>>i;      
+	//  cin>>i;
     //}
-    
+
     return coag;
   }
 }

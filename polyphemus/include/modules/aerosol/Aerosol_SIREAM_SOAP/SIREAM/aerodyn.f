@@ -304,9 +304,9 @@ C     compute the particle number (mass/geometric mean diameter)
          IF(INUM.EQ.1) THEN
             q(js)=ZNA(js)       ! real value
          ELSE
-            q(js)=QT(js)/MSD(js) ! approximate value 
+            q(js)=QT(js)/MSD(js) ! approximate value
          ENDIF
- 
+
       ENDDO
 
 C     compute total gas/aerosol mass in cell.
@@ -345,13 +345,13 @@ C     Compute timestep for each process
      s        bin_density)
 
       conc = 0.d0
-      DO js = 1,nbin_aer 
+      DO js = 1,nbin_aer
          DO jesp = E1,E2
             conc(js, jesp) = q(IQ(jesp,js))
          ENDDO
             numconc(js) = q(js)
       ENDDO
-         
+
       DO jk=1, nbin_aer
          IF (IDENS.EQ.1) THEN
             CALL compute_density(nbin_aer,nesp_aer,EH2O, TINYM,conc,
@@ -404,9 +404,9 @@ c     # through mass conservation for C/E
             enddo
 
             DO js = 1,nbin_aer
-               QT(js) = 0.d0 
+               QT(js) = 0.d0
                DO jesp = E1,E2
-                  QT(js) = QT(js)+q(IQ(jesp,js)) 
+                  QT(js) = QT(js)+q(IQ(jesp,js))
                ENDDO
             ENDDO
 
@@ -443,12 +443,12 @@ C     Compute size bounds
             CALL SIZEBND(nbin_aer,XSF,XBF,XSD,XBD,MBD,DBD,HSD)
 
 C     Redistribution onto the fixed grid
-                         
+
                IF (IREDIST.EQ.1) CALL REDIST_NEW(neq,nesp_aer,
      s           nbin_aer,q,iq,QT,MSD,MSF,DSF,XBF,
      s           MBF,DBF,HSF,XBD,MBD,DBD,HSD)
-            
-                        
+
+
                IF (IREDIST.EQ.2) CALL REDIST(neq,nesp_aer,nbin_aer,q,
      s           iq,QT,XBF,MBF,DBF,HSF,XBD,MBD,DBD,HSD)
 
@@ -456,7 +456,7 @@ C     Redistribution onto the fixed grid
 
 C     Eulerian redistributions
 
-            IF (IREDIST.EQ.3 .OR. IREDIST.EQ.4  
+            IF (IREDIST.EQ.3 .OR. IREDIST.EQ.4
      s           .OR. IREDIST.EQ.5 .OR. IREDIST.EQ.6
      s           .OR. IREDIST.EQ.7 .OR. IREDIST.EQ.8
      s           .OR. IREDIST.EQ.9 .OR. IREDIST.EQ.10) THEN
@@ -470,7 +470,7 @@ C     Eulerian redistributions
                   ENDDO
                   numconc(js)=q(js)
                ENDDO
-               
+
                CALL REDISTRIBUTION(nbin_aer,nesp_aer,EH2O,DBF,
      &              fixed_diameter,RHOA,IDENS,IREDIST,section_pass,LMD,
      &              DQLIMIT,conc,numconc,QT)
@@ -516,7 +516,7 @@ C     update variables for dispersion equation
       ENDDO
 
       IF (totalwat .GE. 1.D06)
-     &     write(6,*) totalwat,'SIREAM (aerodyn.f): total water>1e6', 
+     &     write(6,*) totalwat,'SIREAM (aerodyn.f): total water>1e6',
      &     ZA(NGAS+(nesp_aer-1)*nbin_aer+1),
      &     ZA(NGAS+(nesp_aer-1)*nbin_aer+2),
      &     ZA(NGAS+(nesp_aer-1)*nbin_aer+3),

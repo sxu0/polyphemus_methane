@@ -41,7 +41,7 @@ Nskip = 30
 order = "default"
 
 # Loads ensemble data, with all models.
-ens = EnsembleData(configuration_file, verbose = True)
+ens = EnsembleData(configuration_file, verbose=True)
 ens.ComputeStatistics(ens.all_dates[Nskip:])
 
 Nmodel = ens.Nsim
@@ -57,18 +57,18 @@ restricted_ens.DuplicateEnsemble(ens)
 
 rmse = []
 for i in range(Nmodel):
-     if order is "default":
-          ind = i
-     elif order is "from_best":
-          ind = rmse_index[i]
-     elif order is "from_worst":
-          ind = rmse_index[Nmodel - 1 - i]
-     else:
-          raise Exception, "Unrecognized option."
-     restricted_ens.AddSimulation(ens.sim[ind])
+    if order is "default":
+        ind = i
+    elif order is "from_best":
+        ind = rmse_index[i]
+    elif order is "from_worst":
+        ind = rmse_index[Nmodel - 1 - i]
+    else:
+        raise Exception, "Unrecognized option."
+    restricted_ens.AddSimulation(ens.sim[ind])
 
-     rid = RidgeRegressionDiscounted(restricted_ens)
-     rid.ComputeStatistics(ens.all_dates[Nskip:])
+    rid = RidgeRegressionDiscounted(restricted_ens)
+    rid.ComputeStatistics(ens.all_dates[Nskip:])
 
-     rmse.append(rid.stat["rmse"])
-     print i, rmse[-1], ens.stat["rmse"][ind]
+    rmse.append(rid.stat["rmse"])
+    print i, rmse[-1], ens.stat["rmse"][ind]

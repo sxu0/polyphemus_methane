@@ -34,7 +34,7 @@ bool has_debug_signal = init_debug_signals();
 // init_backtrace is only availalbe under gcc-4.8 or later
 // And has_backtrace is not used (2017/09/21 Youngseob Kim)
 
-//bool has_backtrace = (init_backtrace() == 0); 
+//bool has_backtrace = (init_backtrace() == 0);
 
 
 namespace Talos

@@ -21,7 +21,9 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-__revision__ = "src/engine/SCons/Tool/MSCommon/netframework.py 5110 2010/07/25 16:14:38 bdeegan"
+__revision__ = (
+    "src/engine/SCons/Tool/MSCommon/netframework.py 5110 2010/07/25 16:14:38 bdeegan"
+)
 
 __doc__ = """
 """
@@ -33,9 +35,12 @@ import string
 from common import read_reg, debug
 
 # Original value recorded by dcournapeau
-_FRAMEWORKDIR_HKEY_ROOT = r'Software\Microsoft\.NETFramework\InstallRoot'
+_FRAMEWORKDIR_HKEY_ROOT = r"Software\Microsoft\.NETFramework\InstallRoot"
 # On SGK's system
-_FRAMEWORKDIR_HKEY_ROOT = r'Software\Microsoft\Microsoft SDKs\.NETFramework\v2.0\InstallationFolder'
+_FRAMEWORKDIR_HKEY_ROOT = (
+    r"Software\Microsoft\Microsoft SDKs\.NETFramework\v2.0\InstallationFolder"
+)
+
 
 def find_framework_root():
     # XXX: find it from environment (FrameworkDir)
@@ -52,30 +57,32 @@ def find_framework_root():
 
     return froot
 
+
 def query_versions():
     froot = find_framework_root()
     if froot:
         contents = os.listdir(froot)
 
-        l = re.compile('v[0-9]+.*')
+        l = re.compile("v[0-9]+.*")
         versions = filter(lambda e, l=l: l.match(e), contents)
 
-        def versrt(a,b):
+        def versrt(a, b):
             # since version numbers aren't really floats...
             aa = a[1:]
             bb = b[1:]
-            aal = string.split(aa, '.')
-            bbl = string.split(bb, '.')
+            aal = string.split(aa, ".")
+            bbl = string.split(bb, ".")
             # sequence comparison in python is lexicographical
             # which is exactly what we want.
             # Note we sort backwards so the highest version is first.
-            return cmp(bbl,aal)
+            return cmp(bbl, aal)
 
         versions.sort(versrt)
     else:
         versions = []
 
     return versions
+
 
 # Local Variables:
 # tab-width:4

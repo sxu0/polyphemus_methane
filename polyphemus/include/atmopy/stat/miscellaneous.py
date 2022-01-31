@@ -36,7 +36,7 @@ def spatial_distribution(data, function):
     @param function: The function to be applied to the time series. If
     'function' is a string, it is assumed to be a numpy.array method.
     """
-    m = zeros(data.shape[1:], dtype = 'd')
+    m = zeros(data.shape[1:], dtype="d")
     if data.ndim == 2:
         for i in range(data.shape[1]):
             if isinstance(function, str):
@@ -64,16 +64,17 @@ def spatial_distribution(data, function):
                 for k in range(data.shape[3]):
                     for l in range(data.shape[4]):
                         if isinstance(function, str):
-                            m[i, j, k, l] = getattr(data[:, i, j, k, l],
-                                                    function)()
+                            m[i, j, k, l] = getattr(data[:, i, j, k, l], function)()
                         else:
                             m[i, j, k, l] = function(data[:, i, j, k, l])
     elif data.ndim > 5:
-        raise ValueError, "Too many dimensions (" + str(data.ndim) \
-              + "). There should be 2, 3, 4 or 5 dimensions."
+        raise ValueError, "Too many dimensions (" + str(
+            data.ndim
+        ) + "). There should be 2, 3, 4 or 5 dimensions."
     else:
-        raise ValueError, "Too few dimensions (" + str(data.ndim) \
-              + "). There should be 2, 3, 4 or 5 dimensions."
+        raise ValueError, "Too few dimensions (" + str(
+            data.ndim
+        ) + "). There should be 2, 3, 4 or 5 dimensions."
 
     return m
 

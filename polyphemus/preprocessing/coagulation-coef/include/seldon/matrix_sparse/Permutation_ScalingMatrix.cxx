@@ -22,17 +22,17 @@
 
 /*
   Functions defined in this file:
-  
+
   PermuteMatrix(A, I, J)
-  
+
   ScaleMatrix(A, Drow, Dcol)
-  
+
   ScaleLeftMatrix(A, Drow)
 */
 
 namespace Seldon
 {
-  
+
   //! Permutation of a general matrix stored by rows.
   /*!
     B(row_perm(i), col_perm(j)) = A(i,j) and A = B.
@@ -50,7 +50,7 @@ namespace Seldon
 	rperm(i) = i;
       }
     // A(rperm(i),:) will be the place where is the initial row i.
-    
+
     // Algorithm avoiding the allocation of another matrix.
     for (i = 0; i < m; i++)
       {
@@ -58,17 +58,17 @@ namespace Seldon
 	i2 = rperm(i);
 	// We get the new index of this row.
 	i_ = row_perm(i);
-	
+
 	// We fill ind_tmp of the permuted indices of columns of row i.
 	n = A.GetRowSize(i2);
 	ind_tmp.Reallocate(n);
 	for (j = 0; j < n; j++)
 	  ind_tmp(j) = col_perm(A.Index(i2,j));
-	
+
 	// We swap the two rows i and its destination row_perm(i).
 	A.SwapRow(i2, i_);
 	A.ReplaceIndexRow(i_, ind_tmp);
-	
+
 	// We update the indices iperm and rperm in order to keep in memory
 	// the place where the row row_perm(i) is.
 	int i_tmp = iperm(i_);
@@ -76,13 +76,13 @@ namespace Seldon
 	iperm(i2) = i_tmp;
 	rperm(iperm(i_)) = i_;
 	rperm(iperm(i2)) = i2;
-	
+
 	// We assemble the row i.
 	A.AssembleRow(i_);
       }
   }
-  
-  
+
+
   //! Permutation of a symmetric matrix stored by columns.
   /*!
     B(row_perm(i),col_perm(j)) = A(i,j) and A = B.
@@ -98,7 +98,7 @@ namespace Seldon
     int nnz = A.GetDataSize();
     IVect IndRow(nnz), IndCol(nnz);
     Vector<T, VectFull, Allocator> Val(nnz);
-    
+
     // First we convert the matrix in coordinate format and we permute the
     // indices.
     // IndRow -> indices of the permuted rows
@@ -119,10 +119,10 @@ namespace Seldon
 	    }
 	  k++;
 	}
-    
+
     // We sort with respect to column numbers.
     Sort(nnz, IndCol, IndRow, Val);
-    
+
     // A is filled.
     k = 0;
     for (int i = 0; i < m; i++)
@@ -131,7 +131,7 @@ namespace Seldon
 	// We get the size of the column i.
 	while (k < nnz && IndCol(k) <= i)
 	  k++;
-	
+
 	int size_column = k - first_index;
 	// If column not empty.
 	if (size_column > 0)
@@ -150,8 +150,8 @@ namespace Seldon
 	  A.ClearColumn(i);
       }
   }
-  
-  
+
+
   //! Permutation of a symmetric matrix stored by rows.
   /*!
     B(row_perm(i),col_perm(j)) = A(i,j) and A = B.
@@ -168,7 +168,7 @@ namespace Seldon
     int nnz_real = A.GetRealDataSize(), nnz_imag = A.GetImagDataSize();
     IVect IndRow(nnz_real), IndCol(nnz_real);
     Vector<T, VectFull, Allocator> Val(nnz_real);
-    
+
     // First we convert the matrix in coordinate format and we permute the
     // indices.
     // IndRow -> indices of the permuted rows
@@ -191,10 +191,10 @@ namespace Seldon
 	    k++;
 	  }
       }
-    
+
     // We sort by row number.
     Sort(nnz_real, IndRow, IndCol, Val);
-    
+
     // A is filled.
     k = 0;
     for (int i = 0; i < m; i++)
@@ -203,7 +203,7 @@ namespace Seldon
 	// We get the size of the row i.
 	while (k < nnz_real && IndRow(k) <= i)
 	  k++;
-	
+
 	int size_row = k - first_index;
 	// If row not empty.
 	if (size_row > 0)
@@ -221,13 +221,13 @@ namespace Seldon
 	else
 	  A.ClearRealRow(i);
       }
-    
+
     // Same procedure for imaginary part.
 
     IndRow.Reallocate(nnz_imag);
     IndCol.Reallocate(nnz_imag);
     Val.Reallocate(nnz_imag);
-    
+
     // First we convert the matrix in coordinate format and we permute the
     // indices.
     // IndRow -> indices of the permuted rows
@@ -252,7 +252,7 @@ namespace Seldon
       }
     // We sort by row number.
     Sort(nnz_imag, IndRow, IndCol, Val);
-    
+
     // A is filled
     k = 0;
     for (int i = 0; i < m; i++)
@@ -279,8 +279,8 @@ namespace Seldon
 	  A.ClearImagRow(i);
       }
   }
-  
-  
+
+
   //! Permutation of a symmetric matrix stored by rows.
   /*!
     B(row_perm(i),col_perm(j)) = A(i,j) and A = B.
@@ -296,7 +296,7 @@ namespace Seldon
     int nnz = A.GetDataSize();
     IVect IndRow(nnz), IndCol(nnz);
     Vector<T,VectFull,Allocator> Val(nnz);
-    
+
     // First we convert the matrix in coordinate format and we permute the
     // indices.
     // IndRow -> indices of the permuted rows
@@ -321,7 +321,7 @@ namespace Seldon
       }
     // We sort with respect to row numbers.
     Sort(nnz, IndRow, IndCol, Val);
-    
+
     // A is filled.
     k = 0;
     for (int i = 0; i < m; i++)
@@ -348,8 +348,8 @@ namespace Seldon
 	  A.ClearRow(i);
       }
   }
-  
-  
+
+
   //! Each row and column are scaled.
   /*!
     We compute diag(scale_left)*A*diag(scale_right).
@@ -364,10 +364,10 @@ namespace Seldon
     for (int i = 0; i < m; i++ )
       for (int j = 0; j < A.GetRowSize(i); j++ )
 	A.Value(i,j) *= scale_left(i) * scale_right(A.Index(i, j));
-    
+
   }
-  
-  
+
+
   //! Each row and column are scaled.
   /*!
     We compute diag(scale_left)*A*diag(scale_right).
@@ -382,10 +382,10 @@ namespace Seldon
     for (int i = 0; i < m; i++ )
       for (int j = 0; j < A.GetRowSize(i); j++ )
 	A.Value(i,j) *= scale_left(i) * scale_right(A.Index(i, j));
-    
+
   }
-  
-  
+
+
   //! Each row and column are scaled.
   /*!
     We compute diag(scale_left)*A*diag(scale_right).
@@ -401,13 +401,13 @@ namespace Seldon
       {
 	for (int j = 0; j < A.GetRealRowSize(i); j++ )
 	  A.ValueReal(i,j) *= scale_left(i) * scale_right(A.IndexReal(i, j));
-	
+
 	for (int j = 0; j < A.GetImagRowSize(i); j++ )
 	  A.ValueImag(i,j) *= scale_left(i) * scale_right(A.IndexImag(i, j));
       }
   }
-  
-  
+
+
   //! Each row and column are scaled.
   /*!
     We compute diag(scale_left)*A*diag(scale_right).
@@ -423,13 +423,13 @@ namespace Seldon
       {
 	for (int j = 0; j < A.GetRealRowSize(i); j++ )
 	  A.ValueReal(i,j) *= scale_left(i) * scale_right(A.IndexReal(i, j));
-	
+
 	for (int j = 0; j < A.GetImagRowSize(i); j++ )
 	  A.ValueImag(i,j) *= scale_left(i) * scale_right(A.IndexImag(i, j));
       }
   }
-  
-  
+
+
   //! Each row is scaled.
   /*!
     We compute diag(S)*A where S = scale.
@@ -444,8 +444,8 @@ namespace Seldon
       for (int j = 0; j < A.GetRowSize(i); j++ )
 	A.Value(i,j) *= scale(i);
   }
-  
-  
+
+
   //! Each row is scaled.
   /*!
     We compute diag(S)*A where S = scale.  In order to keep symmetry, the
@@ -462,8 +462,8 @@ namespace Seldon
       for (int j = 0; j < A.GetRowSize(i); j++ )
 	A.Value(i,j) *= scale(i);
   }
-  
-  
+
+
   //! Each row is scaled.
   /*!
     We compute diag(S)*A where S = scale.  In order to keep symmetry, the
@@ -480,13 +480,13 @@ namespace Seldon
       {
 	for (int j = 0; j < A.GetRealRowSize(i); j++ )
 	  A.ValueReal(i,j) *= scale(i);
-	
+
 	for (int j = 0; j < A.GetImagRowSize(i); j++ )
 	  A.ValueImag(i,j) *= scale(i);
       }
   }
-  
-  
+
+
   //! Each row is scaled.
   /*!
     We compute diag(S)*A where S = scale.
@@ -501,13 +501,13 @@ namespace Seldon
       {
 	for (int j = 0; j < A.GetRealRowSize(i); j++ )
 	  A.ValueReal(i,j) *= scale(i);
-	
+
 	for (int j = 0; j < A.GetImagRowSize(i); j++ )
 	  A.ValueImag(i,j) *= scale(i);
       }
-    
+
   }
-  
+
 
 } // end namespace
 

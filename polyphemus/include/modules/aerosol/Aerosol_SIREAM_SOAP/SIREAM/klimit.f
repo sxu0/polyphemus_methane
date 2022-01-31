@@ -1,23 +1,23 @@
 C-----------------------------------------------------------------------
 C     Copyright (C) 2003-2007, ENPC - INRIA - EDF R&D
 C     Author(s): Edouard Debry
-C     
+C
 C     This file is part of the Size Resolved Aerosol Model (SIREAM), a
 C     component of the air quality modeling system Polyphemus.
-C    
+C
 C     Polyphemus is developed in the INRIA - ENPC joint project-team
 C     CLIME and in the ENPC - EDF R&D joint laboratory CEREA.
-C    
+C
 C     Polyphemus is free software; you can redistribute it and/or modify
 C     it under the terms of the GNU General Public License as published
 C     by the Free Software Foundation; either version 2 of the License,
 C     or (at your option) any later version.
-C     
+C
 C     Polyphemus is distributed in the hope that it will be useful, but
 C     WITHOUT ANY WARRANTY; without even the implied warranty of
 C     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 C     General Public License for more details.
-C     
+C
 C     For more information, visit the Polyphemus web site:
 C     http://cerea.enpc.fr/polyphemus/
 C-----------------------------------------------------------------------
@@ -25,49 +25,49 @@ C-----------------------------------------------------------------------
       SUBROUTINE KLIMIT(neq,nesp_aer,nbin_aer,q,iq,k,AA)
 
 C------------------------------------------------------------------------
-C     
-C     -- DESCRIPTION 
-C     
+C
+C     -- DESCRIPTION
+C
 C     This subroutine limits the condensation/evaporation rates for
-C     aerosol and gases in order to avoid clippings.     
+C     aerosol and gases in order to avoid clippings.
 C     Two kinds of limitation are performed:
-C     - the 1st is aerosol clipping : as it may reduce evaporation then 
+C     - the 1st is aerosol clipping : as it may reduce evaporation then
 C     enlarge condensation;, it is done before condensation limitation.
 C     - the 2nd is gas clipping : in practice it may reduce, per species,
 C     aerosol condensation only in bins that leads to gas clipping.
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- INPUT VARIABLES
-C     
+C
 C     NEQ : number of equations.
 C     nbin_aer: number of aerosol bins.
 C     iq: aerosol pointers.
 C     Q   : gas/aerosol concentration ([µg.m-3]).
 C     AA: condensation coefficients ([s^-1]).
-C     
+C
 C     -- INPUT/OUTPUT VARIABLES
-C     
+C
 C     K   :  c/e time derivatives ([µg.m-3.s-1]).
-C     
+C
 C     -- OUTPUT VARIABLES
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- REMARKS
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- MODIFICATIONS
-C     
+C
 C     2005/3/23: cleaning (Bruno Sportisse, CEREA).
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- AUTHOR(S)
-C     
+C
 C     2004: Edouard Debry, CEREA.
-C     
+C
 C------------------------------------------------------------------------
 
       IMPLICIT NONE
@@ -90,7 +90,7 @@ C------------------------------------------------------------------------
 C     ****** prevent aerosol clipping
       DO jesp=E1,E2
          DO js=ICUT+1,nbin_aer
-            jj=IQ(jesp,js)      
+            jj=IQ(jesp,js)
 
                                 ! only when evaporation
             IF (k(jj).LT.0.D0) THEN
@@ -103,7 +103,7 @@ C     ****** prevent aerosol clipping
 
                                 ! test clipping in other cases
 
-               qnew=q(jj)+k(jj)          
+               qnew=q(jj)+k(jj)
                IF (qnew.LT.0.D0) THEN
                                 ! we are sure that q>=tinym
                                 ! otherwise k would be = 0
@@ -132,7 +132,7 @@ C     ****** prevent gas clipping
                                 ! we perform limiting in
                                 ! case of condensation only
          IF (ksum.GT.0.D0) THEN
-            
+
                                 ! this is the total lumped mass
                                 ! to perserve from clipping
 
@@ -150,7 +150,7 @@ C     ****** prevent gas clipping
                                 ! sum of aa(*) c/e coefficient
                aatot=0.D0
                DO js=1,nbin_aer
-                  aatot=aatot+AA(jesp,js) 
+                  aatot=aatot+AA(jesp,js)
                END DO
 
                                 ! tot max rate, µg.m-3.s-1

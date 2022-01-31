@@ -35,8 +35,8 @@ namespace Seldon
     this->m_ = 0;
     this->n_ = 0;
   }
-  
-  
+
+
   //! Constructor.
   /*!
     Builds an empty i by j sparse matrix.
@@ -51,8 +51,8 @@ namespace Seldon
     this->m_ = i;
     this->n_ = j;
   }
-  
-  
+
+
   //! Destructor.
   template <class T, class Prop, class Storage, class Allocat>
   inline Matrix_ArraySparse<T, Prop, Storage, Allocat>::~Matrix_ArraySparse()
@@ -60,8 +60,8 @@ namespace Seldon
     this->m_ = 0;
     this->n_ = 0;
   }
-  
-  
+
+
   //! Clears the matrix.
   /*! This methods is equivalent to the destructor. On exit, the matrix is
     empty (0 by 0).
@@ -71,13 +71,13 @@ namespace Seldon
   {
     this->~Matrix_ArraySparse();
   }
-  
-  
+
+
   /*********************
    * MEMORY MANAGEMENT *
    *********************/
-  
-  
+
+
   //! Reallocates memory to resize the matrix.
   /*!
     On exit, the matrix is a i x j matrix.
@@ -91,15 +91,15 @@ namespace Seldon
   {
     // Clears previous entries.
     Clear();
-    
+
     this->m_ = i;
     this->n_ = j;
-    
+
     int n = Storage::GetFirst(i, j);
     val_.Reallocate(n);
   }
-  
-  
+
+
   //! Reallocates additional memory to resize the matrix.
   /*!
     On exit, the matrix is a i x j matrix.
@@ -116,27 +116,27 @@ namespace Seldon
       {
 	Vector<Vector<T, VectSparse, Allocator>, VectFull,
 	  NewAlloc<Vector<T, VectSparse, Allocator> > > new_val;
-	
+
 	new_val.Reallocate(new_n);
-	
+
 	for (int k = 0 ; k < min(n, new_n) ; k++)
 	  Swap(new_val(k), this->val_(k));
-	
+
 	val_.SetData(new_n, new_val.GetData());
 	new_val.Nullify();
-		
+
       }
-    
+
     this->m_ = i;
     this->n_ = j;
   }
-  
-  
+
+
   /*******************
    * BASIC FUNCTIONS *
    *******************/
-  
-  
+
+
   //! Returns the number of rows.
   /*!
     \return the number of rows.
@@ -146,8 +146,8 @@ namespace Seldon
   {
     return m_;
   }
-  
-  
+
+
   //! Returns the number of columns.
   /*!
     \return the number of columns.
@@ -157,8 +157,8 @@ namespace Seldon
   {
     return n_;
   }
-  
-  
+
+
   //! Returns the number of rows of the matrix possibly transposed.
   /*!
     \param status assumed status about the transposition of the matrix.
@@ -173,8 +173,8 @@ namespace Seldon
     else
       return n_;
   }
-  
-  
+
+
   //! Returns the number of columns of the matrix possibly transposed.
   /*!
     \param status assumed status about the transposition of the matrix.
@@ -189,8 +189,8 @@ namespace Seldon
     else
       return m_;
   }
-  
-  
+
+
   //! Returns the number of non-zero entries.
   /*!
     \return The number of non-zero entries.
@@ -202,11 +202,11 @@ namespace Seldon
     int nnz = 0;
     for (int i = 0; i < this->val_.GetM(); i++)
       nnz += this->val_(i).GetM();
-    
+
     return nnz;
   }
-  
-  
+
+
   //! Returns the number of elements stored in memory.
   /*!
     Returns the number of elements stored in memory, i.e.
@@ -219,8 +219,8 @@ namespace Seldon
   {
     return GetNonZeros();
   }
-  
-  
+
+
   //! Returns (row or column) indices of non-zero entries in row
   /*!
     \param[in] i row (or column) number.
@@ -233,8 +233,8 @@ namespace Seldon
   {
     return val_(i).GetIndex();
   }
-  
-  
+
+
   //! Returns values of non-zero entries of a row/column.
   /*!
     \param[in] i row (or column) number.
@@ -246,8 +246,8 @@ namespace Seldon
   {
     return val_(i).GetData();
   }
-  
-  
+
+
   //! Returns values of non-zero entries.
   /*!
     \return Array of sparse rows
@@ -259,13 +259,13 @@ namespace Seldon
   {
     return val_.GetData();
   }
-  
-  
+
+
   /**********************************
    * ELEMENT ACCESS AND AFFECTATION *
    **********************************/
-  
-  
+
+
   //! Access operator.
   /*!
     Returns the value of element (i, j).
@@ -278,23 +278,23 @@ namespace Seldon
   Matrix_ArraySparse<T, Prop, Storage, Allocator>::operator() (int i, int j)
     const
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::operator()",
 		     "Index should be in [0, " + to_str(this->m_-1) +
 		     "],but is equal to " + to_str(i) + ".");
-    
+
     if (j < 0 || j >= this->n_)
       throw WrongCol("Matrix_ArraySparse::operator()",
 		     "Index should be in [0, " + to_str(this->n_-1) +
 		     "], but is equal to " + to_str(j) + ".");
 #endif
-    
+
     return this->val_(Storage::GetFirst(i, j))(Storage::GetSecond(i, j));
   }
-  
-  
+
+
   //! Access operator.
   /*!
     Returns the value of element (i, j).
@@ -306,23 +306,23 @@ namespace Seldon
   inline T&
   Matrix_ArraySparse<T, Prop, Storage, Allocator>::operator() (int i, int j)
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::operator()",
 		     "Index should be in [0, " + to_str(this->m_-1) +
 		     "],but is equal to " + to_str(i) + ".");
-    
+
     if (j < 0 || j >= this->n_)
       throw WrongCol("Matrix_ArraySparse::operator()",
 		     "Index should be in [0, " + to_str(this->n_-1) +
 		     "], but is equal to " + to_str(j) + ".");
 #endif
-    
+
     return this->val_(Storage::GetFirst(i, j))(Storage::GetSecond(i, j));
   }
-  
-  
+
+
   //! Returns j-th non-zero value of row/column i.
   /*!
     \param[in] i row/column number.
@@ -333,23 +333,23 @@ namespace Seldon
   inline const T& Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   Value (int i, int j) const
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
 		     + to_str(i) + ".");
-    
+
     if ((j < 0)||(j >= this->val_(i).GetM()))
       throw WrongCol("Matrix_ArraySparse::value", "Index should be in [0, " +
 		     to_str(this->val_(i).GetM()-1) + "], but is equal to "
 		     + to_str(j) + ".");
 #endif
-    
+
     return val_(i).Value(j);
   }
-  
-  
+
+
   //! Returns j-th non-zero value of row/column i.
   /*!
     \param[in] i row/column number.
@@ -360,23 +360,23 @@ namespace Seldon
   inline T&
   Matrix_ArraySparse<T, Prop, Storage, Allocator>::Value (int i, int j)
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::value", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
 		     + to_str(i) + ".");
-    
+
     if ((j < 0)||(j >= this->val_(i).GetM()))
       throw WrongCol("Matrix_ArraySparse::value", "Index should be in [0, " +
 		     to_str(this->val_(i).GetM()-1) + "], but is equal to "
 		     + to_str(j) + ".");
 #endif
-    
+
     return val_(i).Value(j);
   }
-  
-  
+
+
   //! Returns column/row number of j-th non-zero value of row/column i.
   /*!
     \param[in] i row/column number.
@@ -387,23 +387,23 @@ namespace Seldon
   int Matrix_ArraySparse<T, Prop, Storage, Allocator>::Index(int i, int j)
     const
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::index", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
 		     + to_str(i) + ".");
-    
+
     if ((j < 0)||(j >= this->val_(i).GetM()))
       throw WrongCol("Matrix_ArraySparse::index", "Index should be in [0, " +
 		     to_str(this->val_(i).GetM()-1) + "], but is equal to "
 		     + to_str(j) + ".");
 #endif
-    
+
     return val_(i).Index(j);
   }
-  
-  
+
+
   //! Returns column/row number of j-th non-zero value of row/column i.
   /*!
     \param[in] i row/column number.
@@ -413,23 +413,23 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator> inline
   int& Matrix_ArraySparse<T, Prop, Storage, Allocator>::Index(int i, int j)
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::index", "Index should be in [0, "
 		     + to_str(this->m_-1) + "], but is equal to "
 		     + to_str(i) + ".");
-    
+
     if (j < 0 || j >= this->val_(i).GetM())
       throw WrongCol("Matrix_ArraySparse::index", "Index should be in [0, " +
 		     to_str(this->val_(i).GetM()-1) + "], but is equal to "
 		     + to_str(j) + ".");
 #endif
-    
+
     return val_(i).Index(j);
   }
-  
-  
+
+
   //! Redefines a row/column of the matrix
   /*!
     \param[in] i row/col number
@@ -443,8 +443,8 @@ namespace Seldon
   {
     val_(i).SetData(n, val, ind);
   }
-  
-  
+
+
   //!  Clears a row without releasing memory.
   /*!
     On exit, the row is empty and the memory has not been released.
@@ -455,8 +455,8 @@ namespace Seldon
   {
     val_(i).Nullify();
   }
-  
-  
+
+
   //! Redefines the matrix.
   /*!
     \param[in] m new number of rows.
@@ -471,8 +471,8 @@ namespace Seldon
     n_ = n;
     val_.SetData(Storage::GetFirst(m, n), val);
   }
-  
-  
+
+
   //!  Clears the matrix without releasing memory.
   /*!
     On exit, the matrix is empty and the memory has not been released.
@@ -485,13 +485,13 @@ namespace Seldon
     n_ = 0;
     val_.Nullify();
   }
-  
-  
+
+
   /************************
    * CONVENIENT FUNCTIONS *
    ************************/
-  
-  
+
+
   //! Displays the matrix on the standard output.
   /*!
     Displays elements on the standard output, in text format.
@@ -516,8 +516,8 @@ namespace Seldon
 		 << " " << this->val_(i).Value(j) << endl;
 	}
   }
-  
-  
+
+
   //! Assembles the matrix
   /*!
     All the column/row numbers are sorted.
@@ -531,8 +531,8 @@ namespace Seldon
     for (int i = 0; i < val_.GetM(); i++)
       val_(i).Assemble();
   }
-  
-  
+
+
   //! Removes small coefficients from entries.
   /*!
     \param[in] epsilon entries whose values are below epsilon are removed.
@@ -545,8 +545,8 @@ namespace Seldon
     for (int i = 0; i < val_.GetM(); i++)
       val_(i).RemoveSmallEntry(epsilon);
   }
-  
-  
+
+
   //! Matrix is initialized to the identity matrix.
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::SetIdentity()
@@ -559,8 +559,8 @@ namespace Seldon
 	val_(i).Value(0) = T(1);
       }
   }
-  
-  
+
+
   //! Non-zero entries are set to 0 (but not removed).
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::Zero()
@@ -568,8 +568,8 @@ namespace Seldon
     for (int i = 0; i < val_.GetM(); i++)
       val_(i).Zero();
   }
-  
-  
+
+
   //! Non-zero entries are filled with values 0, 1, 2, 3 ...
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::Fill()
@@ -579,8 +579,8 @@ namespace Seldon
       for (int j = 0; j < val_(i).GetM(); j++)
 	val_(i).Value(j) = value++;
   }
-  
-  
+
+
   //! Non-zero entries are set to a given value x.
   template <class T, class Prop, class Storage, class Allo> template<class T0>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allo>::Fill(const T0& x)
@@ -588,8 +588,8 @@ namespace Seldon
     for (int i = 0; i < val_.GetM(); i++)
       val_(i).Fill(x);
   }
-  
-  
+
+
   //! Non-zero entries are set to a given value x.
   template <class T, class Prop, class Storage, class Allocator>
   template <class T0>
@@ -598,8 +598,8 @@ namespace Seldon
   {
     this->Fill(x);
   }
-  
-  
+
+
   //! Non-zero entries take a random value.
   template <class T, class Prop, class Storage, class Allocator>
   inline void Matrix_ArraySparse<T, Prop, Storage, Allocator>::FillRand()
@@ -607,8 +607,8 @@ namespace Seldon
     for (int i = 0; i < val_.GetM(); i++)
       val_(i).FillRand();
   }
-  
-  
+
+
   //! Writes the matrix in a file.
   /*!
     Stores the matrix in a file in binary format.
@@ -635,8 +635,8 @@ namespace Seldon
 
     FileStream.close();
   }
-  
-  
+
+
   //! Writes the matrix to an output stream.
   /*!
     Stores the matrix in a file in binary format.
@@ -649,7 +649,7 @@ namespace Seldon
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   Write(ostream& FileStream) const
   {
-    
+
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
@@ -661,12 +661,12 @@ namespace Seldon
 		     sizeof(int));
     FileStream.write(reinterpret_cast<char*>(const_cast<int*>(&this->n_)),
 		     sizeof(int));
-    
+
     for (int i = 0; i < this->m_; i++)
       val_(i).Write(FileStream);
   }
-  
-  
+
+
   //! Writes the matrix in a file.
   /*!
     Stores the matrix in a file in ascii format.
@@ -692,8 +692,8 @@ namespace Seldon
 
     FileStream.close();
   }
-  
-  
+
+
   //! Writes the matrix to an output stream.
   /*!
     Stores the matrix in a file in ascii format.
@@ -705,28 +705,28 @@ namespace Seldon
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   WriteText(ostream& FileStream) const
   {
-    
+
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
       throw IOError("Matrix_ArraySparse::Write(ofstream& FileStream)",
 		    "Stream is not ready.");
 #endif
-    
+
     // conversion in coordinate format (1-index convention)
     IVect IndRow, IndCol; Vector<T> Value;
     const Matrix<T, Prop, Storage, Allocator>& leaf_class =
       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this);
-    
+
     ConvertMatrix_to_Coordinates(leaf_class, IndRow, IndCol,
 				 Value, 1, true);
-    
+
     for (int i = 0; i < IndRow.GetM(); i++)
       FileStream << IndRow(i) << " " << IndCol(i) << " " << Value(i) << '\n';
-    
+
   }
-  
-  
+
+
   //! Reads the matrix from a file.
   /*!
     Reads a matrix stored in binary format in a file.
@@ -748,13 +748,13 @@ namespace Seldon
       throw IOError("Matrix_ArraySparse::Read(string FileName)",
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
-    
+
     this->Read(FileStream);
-    
+
     FileStream.close();
   }
-  
-  
+
+
   //! Reads the matrix from an input stream.
   /*!
     Reads a matrix in binary format from an input stream.
@@ -767,19 +767,19 @@ namespace Seldon
   void Matrix_ArraySparse<T, Prop, Storage, Allocator>::
   Read(istream& FileStream)
   {
-    
+
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
       throw IOError("Matrix_ArraySparse::Write(ofstream& FileStream)",
 		    "Stream is not ready.");
 #endif
-    
+
     FileStream.read(reinterpret_cast<char*>(const_cast<int*>(&this->m_)),
 		    sizeof(int));
     FileStream.read(reinterpret_cast<char*>(const_cast<int*>(&this->n_)),
 		    sizeof(int));
-    
+
     val_.Reallocate(this->m_);
     for (int i = 0; i < this->m_; i++)
       val_(i).Read(FileStream);
@@ -792,10 +792,10 @@ namespace Seldon
 		    + string(" The input file may have been removed")
 		    + " or may not contain enough data.");
 #endif
-    
+
   }
-  
-  
+
+
   //! Reads the matrix from a file.
   /*!
     Reads the matrix from a file in text format.
@@ -816,11 +816,11 @@ namespace Seldon
 #endif
 
     this->ReadText(FileStream);
-    
+
     FileStream.close();
   }
-  
-  
+
+
   //! Reads the matrix from an input stream.
   /*!
     Reads a matrix from a stream in text format.
@@ -832,14 +832,14 @@ namespace Seldon
   {
     // previous elements are removed
     Clear();
-    
+
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
       throw IOError("Matrix_ArraySparse::ReadText(ofstream& FileStream)",
                     "Stream is not ready.");
 #endif
-    
+
     Vector<T, VectFull, Allocator> values;
     Vector<int> row_numbers, col_numbers;
     T entry; int row = 0, col;
@@ -848,7 +848,7 @@ namespace Seldon
       {
 	// new entry is read (1-index)
 	FileStream >> row >> col >> entry;
-	
+
 	if (FileStream.fail())
 	  break;
 	else
@@ -859,16 +859,16 @@ namespace Seldon
 			    "(istream& FileStream)",
 			    string("Error : Row number should be greater ")
 			    + "than 0 but is equal to " + to_str(row));
-	    
+
 	    if (col < 1)
 	      throw IOError(string("Matrix_ArraySparse::ReadText")+
 			    "(istream& FileStream)",
 			    string("Error : Column number should be greater")
 			    + " than 0 but is equal to " + to_str(col));
 #endif
-	
+
 	    nb_elt++;
-	    
+
 	    // inserting new element
 	    if (nb_elt > values.GetM())
 	      {
@@ -876,13 +876,13 @@ namespace Seldon
 		row_numbers.Resize(2*nb_elt);
 		col_numbers.Resize(2*nb_elt);
 	      }
-	    
+
 	    values(nb_elt-1) = entry;
 	    row_numbers(nb_elt-1) = row;
 	    col_numbers(nb_elt-1) = col;
 	  }
       }
-    
+
     if (nb_elt > 0)
       {
 	Matrix<T, Prop, Storage, Allocator>& leaf_class =
@@ -894,13 +894,13 @@ namespace Seldon
 				       leaf_class, 1);
       }
   }
-  
-  
+
+
   /////////////////////////////
   // MATRIX<ARRAY_COLSPARSE> //
   /////////////////////////////
-  
-  
+
+
   //! Default constructor.
   /*!
     Builds an empty matrix.
@@ -910,8 +910,8 @@ namespace Seldon
     Matrix_ArraySparse<T, Prop, ArrayColSparse, Allocator>()
   {
   }
-  
-  
+
+
   //! Constructor.
   /*! Builds a i by j matrix.
     \param i number of rows.
@@ -923,16 +923,16 @@ namespace Seldon
     Matrix_ArraySparse<T, Prop, ArrayColSparse, Allocator>(i, j)
   {
   }
-  
-  
+
+
   //! Clears column i.
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSparse, Allocator>::ClearColumn(int i)
   {
     this->val_(i).Clear();
   }
-  
-  
+
+
   //! Reallocates column i.
   /*!
     \param[in] i column number.
@@ -943,8 +943,8 @@ namespace Seldon
   {
     this->val_(i).Reallocate(j);
   }
-  
-  
+
+
   //! Reallocates column i.
   /*!
     \param[in] i column number.
@@ -955,8 +955,8 @@ namespace Seldon
   {
     this->val_(i).Resize(j);
   }
-  
-  
+
+
   //! Swaps two columns.
   /*!
     \param[in] i first column number.
@@ -967,8 +967,8 @@ namespace Seldon
   {
     Swap(this->val_(i), this->val_(j));
   }
-  
-  
+
+
   //! Sets row numbers of non-zero entries of a column.
   /*!
     \param[in] i column number.
@@ -981,8 +981,8 @@ namespace Seldon
     for (int j = 0; j < this->val_(i).GetM(); j++)
       this->val_(i).Index(j) = new_index(j);
   }
-  
-  
+
+
   //! Returns the number of non-zero entries of a column.
   /*!
     \param[in] i column number.
@@ -994,16 +994,16 @@ namespace Seldon
   {
     return this->val_(i).GetSize();
   }
-  
-  
+
+
   //! Displays non-zero values of a column.
   template <class T, class Prop, class Allocator> inline
   void Matrix<T, Prop, ArrayColSparse, Allocator>::PrintColumn(int i) const
   {
     this->val_(i).Print();
   }
-  
-  
+
+
   //! Assembles a column.
   /*!
     \param[in] i column number.
@@ -1015,8 +1015,8 @@ namespace Seldon
   {
     this->val_(i).Assemble();
   }
-  
-  
+
+
   //! Adds a coefficient in the matrix.
   /*!
     \param[in] i row number.
@@ -1029,8 +1029,8 @@ namespace Seldon
   {
     this->val_(j).AddInteraction(i, val);
   }
-  
-  
+
+
   //! Adds coefficients in a row.
   /*!
     \param[in] i row number.
@@ -1050,8 +1050,8 @@ namespace Seldon
     col.Nullify();
     val.Nullify();
   }
-  
-  
+
+
   //! Adds coefficients in a column.
   /*!
     \param[in] i column number.
@@ -1071,8 +1071,8 @@ namespace Seldon
     row.Nullify();
     val.Nullify();
   }
-  
-  
+
+
   //! Adds coefficients in a row.
   /*!
     \param[in] i row number.
@@ -1088,8 +1088,8 @@ namespace Seldon
     for (int j = 0; j < nb; j++)
       this->val_(col(j)).AddInteraction(i, val(j));
   }
-  
-  
+
+
   //! Adds coefficients in a column.
   /*!
     \param[in] i column number.
@@ -1104,13 +1104,13 @@ namespace Seldon
   {
     this->val_(i).AddInteractionRow(nb, row, val);
   }
-  
-  
+
+
   /////////////////////////////
   // MATRIX<ARRAY_ROWSPARSE> //
   /////////////////////////////
-  
-  
+
+
   //! Default constructor.
   /*!
     Builds a empty matrix.
@@ -1120,8 +1120,8 @@ namespace Seldon
     Matrix_ArraySparse<T, Prop, ArrayRowSparse, Allocator>()
   {
   }
-  
-  
+
+
   //! Constructor.
   /*! Builds a i by j matrix
     \param i number of rows.
@@ -1133,16 +1133,16 @@ namespace Seldon
     Matrix_ArraySparse<T, Prop, ArrayRowSparse, Allocator>(i, j)
   {
   }
-  
-  
+
+
   //! Clears a row
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSparse, Allocator>::ClearRow(int i)
   {
     this->val_(i).Clear();
   }
-  
-  
+
+
   //! Changes the size of a row.
   /*!
     \param[in] i row number.
@@ -1155,8 +1155,8 @@ namespace Seldon
   {
     this->val_(i).Reallocate(j);
   }
-  
-  
+
+
   //! Changes the size of a row.
   /*!
     \param[in] i row number.
@@ -1168,8 +1168,8 @@ namespace Seldon
   {
     this->val_(i).Resize(j);
   }
-  
-  
+
+
   //! Swaps two rows
   /*!
     \param[in] i first row number.
@@ -1180,8 +1180,8 @@ namespace Seldon
   {
     Swap(this->val_(i), this->val_(j));
   }
-  
-  
+
+
   //! Sets column numbers of non-zero entries of a row.
   /*!
     \param[in] i column number.
@@ -1194,8 +1194,8 @@ namespace Seldon
     for (int j = 0; j < this->val_(i).GetM(); j++)
       this->val_(i).Index(j) = new_index(j);
   }
-  
-  
+
+
   //! Returns the number of non-zero entries of a row.
   /*!
     \param[in] i row number.
@@ -1206,16 +1206,16 @@ namespace Seldon
   {
     return this->val_(i).GetSize();
   }
-  
-  
+
+
   //! Displays non-zero values of a row.
   template <class T, class Prop, class Allocator> inline
   void Matrix<T, Prop, ArrayRowSparse, Allocator>::PrintRow(int i) const
   {
     this->val_(i).Print();
   }
-  
-  
+
+
   //! Assembles a row.
   /*!
     \param[in] i row number.
@@ -1227,7 +1227,7 @@ namespace Seldon
   {
     this->val_(i).Assemble();
   }
-  
+
   //! Adds a coefficient in the matrix.
   /*!
     \param[in] i row number.
@@ -1240,8 +1240,8 @@ namespace Seldon
   {
     this->val_(i).AddInteraction(j, val);
   }
-  
-  
+
+
   //! Adds coefficients in a row.
   /*!
     \param[in] i row number.
@@ -1261,8 +1261,8 @@ namespace Seldon
     col.Nullify();
     val.Nullify();
   }
-  
-  
+
+
   //! Adds coefficients in a column.
   /*!
     \param[in] i column number.
@@ -1282,8 +1282,8 @@ namespace Seldon
     row.Nullify();
     val.Nullify();
   }
-  
-  
+
+
   //! Adds coefficients in a row.
   /*!
     \param[in] i row number.
@@ -1298,8 +1298,8 @@ namespace Seldon
   {
     this->val_(i).AddInteractionRow(nb, col, val);
   }
-  
-  
+
+
   //! Adds coefficients in a column.
   /*!
     \param[in] i column number.
@@ -1315,13 +1315,13 @@ namespace Seldon
     for (int j = 0; j < nb; j++)
       this->val_(row(j)).AddInteraction(i, val(j));
   }
-  
-  
+
+
   ////////////////////////////////
   // MATRIX<ARRAY_COLSYMSPARSE> //
   ////////////////////////////////
-  
-  
+
+
   //! Default constructor.
   /*!
     Builds a empty matrix.
@@ -1331,8 +1331,8 @@ namespace Seldon
     Matrix_ArraySparse<T, Prop, ArrayColSymSparse, Allocator>()
   {
   }
-  
-  
+
+
   //! Constructor.
   /*! Builds a i by j matrix
     \param i number of rows.
@@ -1344,13 +1344,13 @@ namespace Seldon
     Matrix_ArraySparse<T, Prop, ArrayColSymSparse, Allocator>(i, j)
   {
   }
-  
-  
+
+
   /**********************************
    * ELEMENT ACCESS AND AFFECTATION *
    **********************************/
-  
-  
+
+
   //! Access operator.
   /*!
     Returns the value of element (i, j).
@@ -1363,7 +1363,7 @@ namespace Seldon
   Matrix<T, Prop, ArrayColSymSparse, Allocator>::operator() (int i, int j)
     const
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix::operator()", "Index should be in [0, "
@@ -1374,14 +1374,14 @@ namespace Seldon
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
 #endif
-    
+
     if (i <= j)
       return this->val_(j)(i);
-    
+
     return this->val_(i)(j);
   }
-  
-  
+
+
   //! Access operator.
   /*!
     Returns the value of element (i, j).
@@ -1393,7 +1393,7 @@ namespace Seldon
   inline T&
   Matrix<T, Prop, ArrayColSymSparse, Allocator>::operator() (int i, int j)
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix::operator()", "Index should be in [0, "
@@ -1404,22 +1404,22 @@ namespace Seldon
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
 #endif
-    
+
     if (i < j)
       return this->val_(j)(i);
-    
+
     return this->val_(i)(j);
   }
-  
-  
+
+
   //! Clears a column.
   template <class T, class Prop, class Allocator> inline
   void Matrix<T, Prop, ArrayColSymSparse, Allocator>::ClearColumn(int i)
   {
     this->val_(i).Clear();
   }
-  
-  
+
+
   //! Reallocates column i.
   /*!
     \param[in] i column number.
@@ -1432,8 +1432,8 @@ namespace Seldon
   {
     this->val_(i).Reallocate(j);
   }
-  
-  
+
+
   //! Reallocates column i.
   /*!
     \param[in] i column number.
@@ -1445,8 +1445,8 @@ namespace Seldon
   {
     this->val_(i).Resize(j);
   }
-  
-  
+
+
   //! Swaps two columns.
   /*!
     \param[in] i first column number.
@@ -1458,8 +1458,8 @@ namespace Seldon
   {
     Swap(this->val_(i), this->val_(j));
   }
-  
-  
+
+
   //! Sets row numbers of non-zero entries of a column.
   /*!
     \param[in] i column number.
@@ -1472,8 +1472,8 @@ namespace Seldon
     for (int j = 0; j < this->val_(i).GetM(); j++)
       this->val_(i).Index(j) = new_index(j);
   }
-  
-  
+
+
   //! Returns the number of non-zero entries of a column.
   /*!
     \param[in] i column number.
@@ -1485,8 +1485,8 @@ namespace Seldon
   {
     return this->val_(i).GetSize();
   }
-  
-  
+
+
   //! Displays non-zero values of a column.
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayColSymSparse, Allocator>::
@@ -1494,8 +1494,8 @@ namespace Seldon
   {
     this->val_(i).Print();
   }
-  
-  
+
+
   //! Assembles a column.
   /*!
     \param[in] i column number.
@@ -1508,8 +1508,8 @@ namespace Seldon
   {
     this->val_(i).Assemble();
   }
-  
-  
+
+
   //! Adds coefficients in a row.
   /*!
     \param[in] i row number.
@@ -1529,8 +1529,8 @@ namespace Seldon
     col.Nullify();
     val.Nullify();
   }
-  
-  
+
+
   //! Adds coefficients in a column.
   /*!
     \param[in] i column number.
@@ -1550,8 +1550,8 @@ namespace Seldon
     row.Nullify();
     val.Nullify();
   }
-  
-  
+
+
   //! Adds a coefficient in the matrix.
   /*!
     \param[in] i row number.
@@ -1565,8 +1565,8 @@ namespace Seldon
     if (i <= j)
       this->val_(j).AddInteraction(i, val);
   }
-  
-  
+
+
   //! Adds coefficients in a row.
   /*!
     \param[in] i row number.
@@ -1581,8 +1581,8 @@ namespace Seldon
   {
     AddInteractionColumn(i, nb, col, val);
   }
-  
-  
+
+
   //! Adds coefficients in a column.
   /*!
     \param[in] i column number.
@@ -1604,16 +1604,16 @@ namespace Seldon
 	  new_row(nb) = row(j);
 	  new_val(nb) = val(j); nb++;
 	}
-    
+
     this->val_(i).AddInteractionRow(nb, new_row, new_val);
   }
-  
-  
+
+
   ////////////////////////////////
   // MATRIX<ARRAY_ROWSYMSPARSE> //
   ////////////////////////////////
-  
-  
+
+
   //! Default constructor.
   /*!
     Builds a empty matrix.
@@ -1623,8 +1623,8 @@ namespace Seldon
     Matrix_ArraySparse<T, Prop, ArrayRowSymSparse, Allocator>()
   {
   }
-  
-  
+
+
   //! Constructor.
   /*! Builds a i by j matrix
     \param i number of rows.
@@ -1636,13 +1636,13 @@ namespace Seldon
     Matrix_ArraySparse<T, Prop, ArrayRowSymSparse, Allocator>(i, j)
   {
   }
-  
-  
+
+
   /**********************************
    * ELEMENT ACCESS AND AFFECTATION *
    **********************************/
-  
-  
+
+
   //! Access operator.
   /*!
     Returns the value of element (i, j).
@@ -1655,7 +1655,7 @@ namespace Seldon
   Matrix<T, Prop, ArrayRowSymSparse, Allocator>::operator() (int i, int j)
     const
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_ArraySparse::operator()", "Index should be in [0, "
@@ -1666,14 +1666,14 @@ namespace Seldon
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
 #endif
-    
+
     if (i <= j)
       return this->val_(i)(j);
-    
+
     return this->val_(j)(i);
   }
-  
-  
+
+
   //! Access operator.
   /*!
     Returns the value of element (i, j).
@@ -1685,7 +1685,7 @@ namespace Seldon
   inline T&
   Matrix<T, Prop, ArrayRowSymSparse, Allocator>::operator() (int i, int j)
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix::operator()", "Index should be in [0, "
@@ -1696,23 +1696,23 @@ namespace Seldon
 		     + to_str(this->n_-1) + "], but is equal to "
 		     + to_str(j) + ".");
 #endif
-    
+
     if (i <= j)
       return this->val_(i)(j);
-    
+
     return this->val_(j)(i);
-    
+
   }
-  
-  
+
+
   //! Clears a row.
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::ClearRow(int i)
   {
     this->val_(i).Clear();
   }
-  
-  
+
+
   //! Reallocates row i.
   /*!
     \param[in] i row number.
@@ -1725,8 +1725,8 @@ namespace Seldon
   {
     this->val_(i).Reallocate(j);
   }
-  
-  
+
+
   //! Reallocates row i.
   /*!
     \param[in] i column number.
@@ -1738,8 +1738,8 @@ namespace Seldon
   {
     this->val_(i).Resize(j);
   }
-  
-  
+
+
   //! Swaps two rows.
   /*!
     \param[in] i first row number.
@@ -1751,8 +1751,8 @@ namespace Seldon
   {
     Swap(this->val_(i), this->val_(j));
   }
-  
-  
+
+
   //! Sets column numbers of non-zero entries of a row.
   /*!
     \param[in] i row number.
@@ -1765,8 +1765,8 @@ namespace Seldon
     for (int j = 0; j < this->val_(i).GetM(); j++)
       this->val_(i).Index(j) = new_index(j);
   }
-  
-  
+
+
   //! Returns the number of non-zero entries of a row.
   /*!
     \param[in] i row number.
@@ -1778,8 +1778,8 @@ namespace Seldon
   {
     return this->val_(i).GetSize();
   }
-  
-  
+
+
   //! Displays non-zero values of a column.
   template <class T, class Prop, class Allocator>
   inline void Matrix<T, Prop, ArrayRowSymSparse, Allocator>::PrintRow(int i)
@@ -1787,8 +1787,8 @@ namespace Seldon
   {
     this->val_(i).Print();
   }
-  
-  
+
+
   //! Assembles a column.
   /*!
     \param[in] i column number.
@@ -1800,8 +1800,8 @@ namespace Seldon
   {
     this->val_(i).Assemble();
   }
-  
-  
+
+
   //! Adds a coefficient in the matrix.
   /*!
     \param[in] i row number.
@@ -1815,8 +1815,8 @@ namespace Seldon
     if (i <= j)
       this->val_(i).AddInteraction(j, val);
   }
-  
-  
+
+
   //! Adds coefficients in a row.
   /*!
     \param[in] i row number.
@@ -1836,8 +1836,8 @@ namespace Seldon
     col.Nullify();
     val.Nullify();
   }
-  
-  
+
+
   //! Adds coefficients in a column.
   /*!
     \param[in] i column number.
@@ -1857,8 +1857,8 @@ namespace Seldon
     row.Nullify();
     val.Nullify();
   }
-  
-  
+
+
   //! Adds coefficients in a row.
   /*!
     \param[in] i row number.
@@ -1880,11 +1880,11 @@ namespace Seldon
 	  new_col(nb) = col(j);
 	  new_val(nb) = val(j); nb++;
 	}
-    
+
     this->val_(i).AddInteractionRow(nb, new_col, new_val);
   }
-  
-  
+
+
   //! Adds coefficients in a column.
   /*!
     \param[in] i column number.
@@ -1900,48 +1900,48 @@ namespace Seldon
     // Symmetric matrix, row = column.
     AddInteractionRow(i, nb, row, val);
   }
-  
-  
+
+
   template <class T, class Prop, class Allocator>
   ostream& operator <<(ostream& out,
 		       const Matrix<T, Prop, ArrayRowSparse, Allocator>& A)
   {
     A.WriteText(out);
-       
+
     return out;
   }
-  
-  
+
+
   template <class T, class Prop, class Allocator>
   ostream& operator <<(ostream& out,
 		       const Matrix<T, Prop, ArrayColSparse, Allocator>& A)
   {
     A.WriteText(out);
-       
+
     return out;
   }
-  
-  
+
+
   template <class T, class Prop, class Allocator>
   ostream& operator <<(ostream& out,
 		       const Matrix<T, Prop, ArrayRowSymSparse, Allocator>& A)
   {
     A.WriteText(out);
-       
+
     return out;
   }
-  
-  
+
+
   template <class T, class Prop, class Allocator>
   ostream& operator <<(ostream& out,
 		       const Matrix<T, Prop, ArrayColSymSparse, Allocator>& A)
   {
     A.WriteText(out);
-       
+
     return out;
   }
-  
-  
+
+
 } // namespace Seldon
 
 #define SELDON_FILE_MATRIX_ARRAY_SPARSE_CXX

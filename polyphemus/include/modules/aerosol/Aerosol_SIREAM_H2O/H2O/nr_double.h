@@ -538,4 +538,3 @@ void newt1_double(double x[], int n, int *check, void (*vecfunc)(int, double [],
 
 
 #endif /* _NR_H_ */
-

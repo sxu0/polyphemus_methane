@@ -6,8 +6,8 @@ Ordinate: 47.50989479
 Altitude: 70.0
 
 Type: continuous
-Species: Tracer Iode1 Iode2 Iode3 Iode4 
-Rate: 1 1 1 1 1 
+Species: Tracer Iode1 Iode2 Iode3 Iode4
+Rate: 1 1 1 1 1
 Date_beg: 2012-06-30_00-00
 Date_end: 2013-01-01_23-00
 

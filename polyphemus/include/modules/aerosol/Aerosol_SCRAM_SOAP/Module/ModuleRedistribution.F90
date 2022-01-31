@@ -88,7 +88,7 @@ contains
 	enddo
       enddo
     enddo
-	  
+
   end subroutine redistribution_size
 
   subroutine redistribution_fraction()
@@ -110,9 +110,9 @@ contains
     double precision:: numb_var(N_size)!number variation map
     double precision::mass_total,f1,f2
     !calculate redistribution map
-!! Initialize to zero the variation in mass and number concentrations due to 
+!! Initialize to zero the variation in mass and number concentrations due to
 !! redistribution
-    do j= 1, N_size  
+    do j= 1, N_size
        numb_var(j)=0.d0
        do jesp=1,N_aerosol
        	  mass_var(j,jesp)=0.d0
@@ -125,7 +125,7 @@ contains
 
     do j= 1, N_size !!for each grid the number of size sections x fraction sections
       mass_total_grid (j)=0.d0
-!      Compute fraction of each species in the grid point before redistribution      
+!      Compute fraction of each species in the grid point before redistribution
       do s=1,(N_aerosol-1)
 	jesp=List_species(s)
 	g=index_groups(jesp)
@@ -138,9 +138,9 @@ contains
 	  frac_grid(j,g) =mass_groups(j,g)/mass_total_grid (j)
 	endif
       enddo
-      
+
       i1 =concentration_index(j, 1)!size bin index
-!     Loop on fraction combinations in the size bin i1 to find out where the 
+!     Loop on fraction combinations in the size bin i1 to find out where the
 !     original fraction section (before condensation/evaporation) has moved to.
       do i=1,N_fracmax
 	dj=0
@@ -158,9 +158,9 @@ contains
 	    endif
 	  endif
 	enddo
-	
-!       The fraction of each species is identified. 
-!       i is then the correct fraction combination (after redistribution). 
+
+!       The fraction of each species is identified.
+!       i is then the correct fraction combination (after redistribution).
 	if(dj.eq.(N_groups-1)) then
 	  k=concentration_index_iv(i1,i)
 	  numb_var(k)=numb_var(k)+concentration_number(j)
@@ -173,7 +173,7 @@ contains
 	endif
       enddo
     enddo
-    
+
     !Update mass and number concentrations after redistribution
     do j= 1, N_size !!for each grid point
       concentration_number(j)=concentration_number(j)+numb_var(j)
@@ -181,7 +181,7 @@ contains
       do g= 1, N_groups
 	frac_grid(j,g)=0.d0!Fraction of group g in grid j
 	mass_groups(j,g)=0.d0
-      enddo      
+      enddo
       !renew Temperature frac of each grid
       do s= 1, N_aerosol !(N_aerosol-1)
 	jesp=List_species(s)
@@ -198,8 +198,8 @@ contains
 	endif
       enddo
     enddo
-    
-    
+
+
   end subroutine redistribution_fraction
 
   subroutine redistribution_lwc(lwc,ionic,proton,liquid, &
@@ -239,7 +239,7 @@ contains
           concentration_mass(js, EH2O) = lwc * inorg_bin(js) / inorg_total
           lwc_Nsize(js) = lwc * inorg_bin(js) / inorg_total
           proton_Nsize(js) = proton * inorg_bin(js) / inorg_total
-          ionic_Nsize(js) = ionic 
+          ionic_Nsize(js) = ionic
           do jesp=1,12
             liquid_Nsize(jesp,js) = liquid(jesp)
           enddo
@@ -249,7 +249,7 @@ contains
     enddo
 
   end subroutine redistribution_lwc
-  
+
   subroutine redistribution_lwcorg(lwcorg,lwcorg_Nsize)
 !------------------------------------------------------------------------
 !
@@ -305,5 +305,5 @@ contains
     enddo
 
   end subroutine redistribution_lwcorg
-  
+
 end Module eRedistribution

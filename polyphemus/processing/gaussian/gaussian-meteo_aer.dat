@@ -64,5 +64,3 @@ aer1_0  0.00111923	aer1_1  0.00399724	aer1_2  0.00615575	aer1_3  0.0137105	aer2_
 # Deposition velocity of the aerosol species (m/s)
 Deposition_velocity_aer =
 aer1_0  6.75365	aer1_1  11.6977	aer1_2  13.5073	aer1_3  16.543	aer2_0  4.9256	aer2_1  8.53139	aer2_2  9.8512	aer2_3  12.0652	aer3_0  10.9366	aer3_1  18.9428	aer3_2  21.8732	aer3_3  26.7891
-
-

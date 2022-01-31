@@ -147,8 +147,8 @@ namespace Polyphemus
 
     /*** Meteorological and species data ***/
 
-    virtual bool HasNumberConcentration_aer();         
-    void UpdateMeteo(int puff_index);         
+    virtual bool HasNumberConcentration_aer();
+    void UpdateMeteo(int puff_index);
     void ExtractMeteo(T height, T lat, T lon, bool isday,
                       bool option_similarity, map<string, T>& met_data,
                       string& stability, bool& rural);
@@ -167,7 +167,7 @@ namespace Polyphemus
     void PuffTransfer_aer(T quantity, T sigmaz, int s, T z,
                           T lat, T lon, bool isday,
                           Data<T, 5>& Concentration_out_aer, int b);
- 
+
    void PuffTransfer_number(T quantity, T sigmaz, T z,
 			    T lat, T lon, bool isday,
 			    Data<T, 4>& Concentration_out_number, int b);

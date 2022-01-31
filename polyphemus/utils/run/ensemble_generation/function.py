@@ -39,23 +39,35 @@ def create_output_dir(program, dependency_list, parameter_dict):
     @return A string.
     """
     result = program + "/"
-    general_list = ["luc", "vertical_resolution", "first_layer_height", \
-                    "cloud_attenuation", "min_height_cloud", \
-                    "critical_relative_humidity", "min_kz", "min_urban_kz", \
-                    "apply_vert", "tm_stable", "exponent_p_tm", "sbl_ratio", \
-                    "boundary_layer", "deposition_velocity", "Ra", "Rb", \
-                    "ground_emission", "mozart_bc"]
+    general_list = [
+        "luc",
+        "vertical_resolution",
+        "first_layer_height",
+        "cloud_attenuation",
+        "min_height_cloud",
+        "critical_relative_humidity",
+        "min_kz",
+        "min_urban_kz",
+        "apply_vert",
+        "tm_stable",
+        "exponent_p_tm",
+        "sbl_ratio",
+        "boundary_layer",
+        "deposition_velocity",
+        "Ra",
+        "Rb",
+        "ground_emission",
+        "mozart_bc",
+    ]
     if "None" in dependency_list:
         return result
     # Checks if each dependency is in general_list.
     for d in dependency_list:
         if d not in general_list:
-            raise Exception, "The dependency: \"" + d + "\" does not appear" \
-                  + " in this function. You must change its name " \
-                  + " or add it in this function."
+            raise Exception, 'The dependency: "' + d + '" does not appear' + " in this function. You must change its name " + " or add it in this function."
     # Luc
     if "luc" in dependency_list:
-        result += parameter_dict['luc'] + "/"
+        result += parameter_dict["luc"] + "/"
     # Levels
     if "vertical_resolution" in dependency_list:
         result += "Nz-" + parameter_dict["vertical_resolution"] + "/"
@@ -94,8 +106,8 @@ def create_output_dir(program, dependency_list, parameter_dict):
         result += parameter_dict["ground_emission"] + "/"
     # Mozart bc
     if "mozart_bc" in dependency_list:
-        if parameter_dict['mozart_bc'] == "perturb":
-            result += parameter_dict['mozart_bc'] + "/"
+        if parameter_dict["mozart_bc"] == "perturb":
+            result += parameter_dict["mozart_bc"] + "/"
 
     return result[0:-1]
 
@@ -106,13 +118,14 @@ def get_bc_init_date(date_min):
     """
 
     import datetime
+
     init_date = datetime.datetime(date_min.year, date_min.month, date_min.day)
     if init_date.day == 1 and init_date.month == 1:
         init_date = datetime.datetime(init_date.year - 1, 12, 31)
     else:
         year = init_date.year
         Nday = (init_date - datetime.datetime(year, 01, 01)).days
-        while ((Nday + 6) % 10 != 0):
+        while (Nday + 6) % 10 != 0:
             init_date = init_date - datetime.timedelta(1)
             Nday = (init_date - datetime.datetime(year, 01, 01)).days
 
@@ -129,6 +142,7 @@ def check_program(polyphemus_dir, program):
     """
 
     import os
+
     list_file = os.listdir(polyphemus_dir + "/processing/")
     list_file += os.listdir(polyphemus_dir + "/preprocessing/bc/")
     list_file += os.listdir(polyphemus_dir + "/preprocessing/bio/")
@@ -138,9 +152,7 @@ def check_program(polyphemus_dir, program):
     list_file += os.listdir(polyphemus_dir + "/preprocessing/ic/")
     list_file += os.listdir(polyphemus_dir + "/preprocessing/meteo/")
     if program not in list_file:
-        raise Exception, "The program \"" + program \
-              + "\" does not exist in " + polyphemus_dir \
-              + "/driver and /preprocessing."
+        raise Exception, 'The program "' + program + '" does not exist in ' + polyphemus_dir + "/driver and /preprocessing."
 
 
 def get_perturbed_field(field, parameter_dict, name):
@@ -155,19 +167,19 @@ def get_perturbed_field(field, parameter_dict, name):
     @return Strings lines.
     """
     if not isinstance(name, list) and not isinstance(name, str):
-        raise Exception, "In function::get_perturbed_field, the name: \"" \
-              + str(name) + "\" must be a list or strings."
+        raise Exception, 'In function::get_perturbed_field, the name: "' + str(
+            name
+        ) + '" must be a list or strings.'
     if not isinstance(parameter_dict, dict):
-        raise Exception, "In function::get_perturbed_field, the" \
-              + " paramter_dict: \"" + str(parameter_dict) \
-              + "\" must be a dictionary."
+        raise Exception, "In function::get_perturbed_field, the" + ' paramter_dict: "' + str(
+            parameter_dict
+        ) + '" must be a dictionary.'
     if field not in parameter_dict.keys():
         return ""
     else:
         result = ""
         if not isinstance(parameter_dict[field], tuple):
-            raise Exception, "The value of the key \"" + field + "\" must " \
-                  + "be a tuple."
+            raise Exception, 'The value of the key "' + field + '" must ' + "be a tuple."
         value = parameter_dict[field][0]
         type_perturbation = parameter_dict[field][-1]
         if isinstance(name, str):
@@ -175,7 +187,5 @@ def get_perturbed_field(field, parameter_dict, name):
         if len(name) == 1:
             return name[0] + " \t " + type_perturbation + " \t " + str(value)
         for s in name:
-            result += s + " \t " + type_perturbation + " \t " + str(value) \
-                      + "\n"
+            result += s + " \t " + type_perturbation + " \t " + str(value) + "\n"
         return result
-

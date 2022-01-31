@@ -4,10 +4,10 @@ C     Author(s): Kathleen Fahey, Maryline Tombette
 C
 C     This file is part of the Simple Aqueous model (SIMPLE_AQUEOUS), a
 C     component of the air quality modeling system Polyphemus.
-C    
+C
 C     Polyphemus is developed in the INRIA - ENPC joint project-team
 C     CLIME and in the ENPC - EDF R&D joint laboratory CEREA.
-C    
+C
 C     Polyphemus is free software; you can redistribute it and/or modify
 C     it under the terms of the GNU General Public License as published
 C     by the Free Software Foundation; either version 2 of the License,

@@ -39,9 +39,11 @@ import SCons.Util
 class _Null:
     pass
 
+
 # This is used instead of None as a default argument value so None can be
 # used as an actual argument value.
 _null = _Null
+
 
 def Scanner(function, *args, **kw):
     """
@@ -61,14 +63,16 @@ def Scanner(function, *args, **kw):
         return apply(Base, (function,) + args, kw)
 
 
-
 class FindPathDirs:
     """A class to bind a specific *PATH variable name to a function that
     will return all of the *path directories."""
+
     def __init__(self, variable):
         self.variable = variable
+
     def __call__(self, env, dir=None, target=None, source=None, argument=None):
         import SCons.PathList
+
         try:
             path = env[self.variable]
         except KeyError:
@@ -79,25 +83,26 @@ class FindPathDirs:
         return tuple(dir.Rfindalldirs(path))
 
 
-
 class Base:
     """
     The base class for dependency scanners.  This implements
     straightforward, single-pass scanning of a single file.
     """
 
-    def __init__(self,
-                 function,
-                 name = "NONE",
-                 argument = _null,
-                 skeys = _null,
-                 path_function = None,
-                 # Node.FS.Base so that, by default, it's okay for a
-                 # scanner to return a Dir, File or Entry.
-                 node_class = SCons.Node.FS.Base,
-                 node_factory = None,
-                 scan_check = None,
-                 recursive = None):
+    def __init__(
+        self,
+        function,
+        name="NONE",
+        argument=_null,
+        skeys=_null,
+        path_function=None,
+        # Node.FS.Base so that, by default, it's okay for a
+        # scanner to return a Dir, File or Entry.
+        node_class=SCons.Node.FS.Base,
+        node_factory=None,
+        scan_check=None,
+        recursive=None,
+    ):
         """
         Construct a new scanner object given a scanner function.
 
@@ -194,7 +199,7 @@ class Base:
         else:
             return self.path_function(env, dir, target, source)
 
-    def __call__(self, node, env, path = ()):
+    def __call__(self, node, env, path=()):
         """
         This method scans a single object. 'node' is the node
         that will be passed to the scanner function, and 'env' is the
@@ -212,8 +217,8 @@ class Base:
             list = self.function(node, env, path)
 
         kw = {}
-        if hasattr(node, 'dir'):
-            kw['directory'] = node.dir
+        if hasattr(node, "dir"):
+            kw["directory"] = node.dir
         node_factory = env.get_factory(self.node_factory)
         nodes = []
         for l in list:
@@ -279,12 +284,21 @@ class Selector(Base):
     used by various Tool modules and therefore was likely a template
     for custom modules that may be out there.)
     """
+
     def __init__(self, dict, *args, **kw):
-        apply(Base.__init__, (self, None,)+args, kw)
+        apply(
+            Base.__init__,
+            (
+                self,
+                None,
+            )
+            + args,
+            kw,
+        )
         self.dict = dict
         self.skeys = dict.keys()
 
-    def __call__(self, node, env, path = ()):
+    def __call__(self, node, env, path=()):
         return self.select(node)(node, env, path)
 
     def select(self, node):
@@ -308,8 +322,10 @@ class Current(Base):
     def __init__(self, *args, **kw):
         def current_check(node, env):
             return not node.has_builder() or node.is_up_to_date()
-        kw['scan_check'] = current_check
+
+        kw["scan_check"] = current_check
         apply(Base.__init__, (self,) + args, kw)
+
 
 class Classic(Current):
     """
@@ -333,11 +349,11 @@ class Classic(Current):
                 return []
             return self.scan(node, path)
 
-        kw['function'] = _scan
-        kw['path_function'] = FindPathDirs(path_variable)
-        kw['recursive'] = 1
-        kw['skeys'] = suffixes
-        kw['name'] = name
+        kw["function"] = _scan
+        kw["path_function"] = FindPathDirs(path_variable)
+        kw["recursive"] = 1
+        kw["skeys"] = suffixes
+        kw["name"] = name
 
         apply(Current.__init__, (self,) + args, kw)
 
@@ -357,7 +373,7 @@ class Classic(Current):
         if node.includes is not None:
             includes = node.includes
         else:
-            includes = self.find_include_names (node)
+            includes = self.find_include_names(node)
             # Intern the names of the include files. Saves some memory
             # if the same header is included many times.
             node.includes = map(SCons.Util.silent_intern, includes)
@@ -376,8 +392,11 @@ class Classic(Current):
             n, i = self.find_include(include, source_dir, path)
 
             if n is None:
-                SCons.Warnings.warn(SCons.Warnings.DependencyWarning,
-                                    "No dependency generated for file: %s (included from: %s) -- file not found" % (i, node))
+                SCons.Warnings.warn(
+                    SCons.Warnings.DependencyWarning,
+                    "No dependency generated for file: %s (included from: %s) -- file not found"
+                    % (i, node),
+                )
             else:
                 sortkey = self.sort_key(include)
                 nodes.append((sortkey, n))
@@ -385,6 +404,7 @@ class Classic(Current):
         nodes.sort()
         nodes = map(lambda pair: pair[1], nodes)
         return nodes
+
 
 class ClassicCPP(Classic):
     """
@@ -396,6 +416,7 @@ class ClassicCPP(Classic):
     to the constructor must return the leading bracket in group 0, and
     the contained filename in group 1.
     """
+
     def find_include(self, include, source_dir, path):
         if include[0] == '"':
             paths = (source_dir,) + tuple(path)
@@ -409,6 +430,7 @@ class ClassicCPP(Classic):
 
     def sort_key(self, include):
         return SCons.Node.FS._my_normcase(string.join(include))
+
 
 # Local Variables:
 # tab-width:4

@@ -123,4 +123,3 @@ c     Normalize so fdist sums to 1
 
       return
       end
-

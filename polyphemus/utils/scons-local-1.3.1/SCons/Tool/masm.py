@@ -37,12 +37,13 @@ import SCons.Defaults
 import SCons.Tool
 import SCons.Util
 
-ASSuffixes = ['.s', '.asm', '.ASM']
-ASPPSuffixes = ['.spp', '.SPP', '.sx']
-if SCons.Util.case_sensitive_suffixes('.s', '.S'):
-    ASPPSuffixes.extend(['.S'])
+ASSuffixes = [".s", ".asm", ".ASM"]
+ASPPSuffixes = [".spp", ".SPP", ".sx"]
+if SCons.Util.case_sensitive_suffixes(".s", ".S"):
+    ASPPSuffixes.extend([".S"])
 else:
-    ASSuffixes.extend(['.S'])
+    ASSuffixes.extend([".S"])
+
 
 def generate(env):
     """Add Builders and construction variables for masm to an Environment."""
@@ -60,15 +61,19 @@ def generate(env):
         static_obj.add_emitter(suffix, SCons.Defaults.StaticObjectEmitter)
         shared_obj.add_emitter(suffix, SCons.Defaults.SharedObjectEmitter)
 
-    env['AS']        = 'ml'
-    env['ASFLAGS']   = SCons.Util.CLVar('/nologo')
-    env['ASPPFLAGS'] = '$ASFLAGS'
-    env['ASCOM']     = '$AS $ASFLAGS /c /Fo$TARGET $SOURCES'
-    env['ASPPCOM']   = '$CC $ASPPFLAGS $CPPFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS /c /Fo$TARGET $SOURCES'
-    env['STATIC_AND_SHARED_OBJECTS_ARE_THE_SAME'] = 1
+    env["AS"] = "ml"
+    env["ASFLAGS"] = SCons.Util.CLVar("/nologo")
+    env["ASPPFLAGS"] = "$ASFLAGS"
+    env["ASCOM"] = "$AS $ASFLAGS /c /Fo$TARGET $SOURCES"
+    env[
+        "ASPPCOM"
+    ] = "$CC $ASPPFLAGS $CPPFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS /c /Fo$TARGET $SOURCES"
+    env["STATIC_AND_SHARED_OBJECTS_ARE_THE_SAME"] = 1
+
 
 def exists(env):
-    return env.Detect('ml')
+    return env.Detect("ml")
+
 
 # Local Variables:
 # tab-width:4

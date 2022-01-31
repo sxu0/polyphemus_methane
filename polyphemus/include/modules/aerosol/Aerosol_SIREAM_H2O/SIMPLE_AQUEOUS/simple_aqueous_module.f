@@ -51,7 +51,7 @@ C
 C     -- INPUT/OUTPUT VARIABLES
 C
 C     ZA: gas-phase and aerosol concentration ([\mu.g/m^3]).
-C     ZNA: aerosol number concentration ([#/m^3]).   
+C     ZNA: aerosol number concentration ([#/m^3]).
 C
 C     -- OUTPUT VARIABLES
 C
@@ -148,7 +148,7 @@ C     Concentration updated with the pH.
 
       double precision liquid_density(naers)
       data liquid_density /0.97D-06, 0.91D-06,
-     &     1.50D-06, 1.15D-06, 1.84D-06, 1.00D-06, 2.25D-06, 
+     &     1.50D-06, 1.15D-06, 1.84D-06, 1.00D-06, 2.25D-06,
      &     1.30D-06, 2.94D-06/
 
 C     Initialisation.
@@ -492,13 +492,13 @@ C     -----------------------------------------
      &              aerosol(i,nao)+aerosol(i,nae)+aerosol(i,nar)
 
                numberconc(i)=totmass(i)/(dsf_aero(i)**3.d0)
-     &              /cst_pi6/fixed_density_aer 
-        
+     &              /cst_pi6/fixed_density_aer
+
             endif
          enddo
 
-      ELSEIF (IREDIST .EQ. 3 .OR. IREDIST .EQ. 4 .OR.IREDIST .EQ. 5 
-     &        .OR.IREDIST .EQ. 6 .OR.IREDIST .EQ. 7 .OR.IREDIST .EQ. 8 
+      ELSEIF (IREDIST .EQ. 3 .OR. IREDIST .EQ. 4 .OR.IREDIST .EQ. 5
+     &        .OR.IREDIST .EQ. 6 .OR.IREDIST .EQ. 7 .OR.IREDIST .EQ. 8
      &        .OR.IREDIST .EQ. 9 .OR.IREDIST .EQ. 10) then ! others
 
          call redistribution(nbin_aer,naers,naw,DBF_AERO,

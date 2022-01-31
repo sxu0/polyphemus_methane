@@ -42,11 +42,9 @@ import sys
 
 
 class Polyphemus:
-    """This class manages the execution of several Polyphemus programs.
-    """
+    """This class manages the execution of several Polyphemus programs."""
 
-
-    def __init__(self, net = None):
+    def __init__(self, net=None):
         """Initializes the network.
 
         \param net the network over which the simulations should be launched.
@@ -63,14 +61,12 @@ class Polyphemus:
         ## A network.Network instance.
         self.net = net
 
-
     def SetNetwork(self, net):
         """Sets the network.
 
         \param net the network over which the simulations should be launched.
         """
         self.net = net
-
 
     def AddProgram(self, program):
         """Adds a program.
@@ -81,6 +77,7 @@ class Polyphemus:
             self.program_list.append(Program(program))
         else:
             self.program_list.append(program)
+
         def compare(x, y):
             if x.group < y.group:
                 return -1
@@ -88,34 +85,32 @@ class Polyphemus:
                 return 1
             else:
                 return 0
+
         self.program_list.sort(compare)
 
-
     def Clear(self):
-        """Clears the program list.
-        """
+        """Clears the program list."""
         self.program_list = []
 
-
-    def Run(self, log = sys.stdout):
-        """Executes the set of programs on localhost.
-        """
+    def Run(self, log=sys.stdout):
+        """Executes the set of programs on localhost."""
         for program in self.program_list:
             print "Program name: ", program.name.split("/")[-1]
             program.Run(log)
             log.write(self.log_separator)
             if program.status != 0:
-                raise Exception, "Program \"" + program.basename \
-                      + "\" failed  (status " + str(program.status) + ")."
+                raise Exception, 'Program "' + program.basename + '" failed  (status ' + str(
+                    program.status
+                ) + ")."
 
-
-    def RunNetwork(self, log = sys.stdout, delay = 30):
+    def RunNetwork(self, log=sys.stdout, delay=30):
         """Executes the set of programs on the network.
 
         \param delay the minimum period of time between the launch of two
         programs. Unit: seconds.
         """
         import time, commands
+
         self.process = []
         host = []
         beg_time = []
@@ -129,7 +124,7 @@ class Polyphemus:
         Ncpu_list = [x[1] for x in host_available]
         # Sum of available cpus.
         Ncpu = sum(Ncpu_list)
-        cpu_cumsum = [sum(Ncpu_list[0:x + 1]) for x in range(len(Ncpu_list))]
+        cpu_cumsum = [sum(Ncpu_list[0 : x + 1]) for x in range(len(Ncpu_list))]
         # Copies and replaces for configuration files.
         for i in range(len(self.program_list)):
             program = self.program_list[i]
@@ -137,7 +132,7 @@ class Polyphemus:
         # Program runs on Network.
         for i in range(len(self.program_list)):
             program = self.program_list[i]
-            if i > i_group and program.group != self.program_list[i-1].group:
+            if i > i_group and program.group != self.program_list[i - 1].group:
                 # If any process from the previous group is still up.
                 while min([x.poll() for x in self.process[i_group:]]) == -1:
                     time.sleep(delay)
@@ -147,34 +142,32 @@ class Polyphemus:
                 host_available = self.net.GetAvailableHosts()
                 Ncpu_list = [x[1] for x in host_available]
                 Ncpu = sum(Ncpu_list)
-                cpu_cumsum = [sum(Ncpu_list[0:x + 1]) for x \
-                              in range(len(Ncpu_list))]
+                cpu_cumsum = [sum(Ncpu_list[0 : x + 1]) for x in range(len(Ncpu_list))]
             # If all hosts are busy.
             if count_program > Ncpu:
-                time.sleep(70.)
+                time.sleep(70.0)
                 host_available = self.net.GetAvailableHosts()
                 Ncpu_list = [x[1] for x in host_available]
                 Ncpu = sum(Ncpu_list)
-                cpu_cumsum = [sum(Ncpu_list[0:x + 1]) for x \
-                              in range(len(Ncpu_list))]
+                cpu_cumsum = [sum(Ncpu_list[0 : x + 1]) for x in range(len(Ncpu_list))]
                 count_host = 0
                 count_program = 1
                 while Ncpu == 0:
-                    time.sleep(60.)
+                    time.sleep(60.0)
                     host_available = self.net.GetAvailableHosts()
                     Ncpu_list = [x[1] for x in host_available]
                     Ncpu = sum(Ncpu_list)
-                cpu_cumsum = [sum(Ncpu_list[0:x + 1]) for x \
-                              in range(len(Ncpu_list))]
+                cpu_cumsum = [sum(Ncpu_list[0 : x + 1]) for x in range(len(Ncpu_list))]
 
             # Changes host.
             if count_program > cpu_cumsum[count_host]:
                 count_host += 1
 
             current_host = host_available[count_host][0]
-            print "Program: ", program.name.split("/")[-1], \
-                  " - Available host: ", current_host
-            p = self.net.LaunchBG(program.Command(), host = current_host)
+            print "Program: ", program.name.split("/")[
+                -1
+            ], " - Available host: ", current_host
+            p = self.net.LaunchBG(program.Command(), host=current_host)
             self.process.append(p)
             count_program += 1
             host.append(current_host)
@@ -187,12 +180,13 @@ class Polyphemus:
             # Checks process status.
             for j in range(i):
                 if self.process[j].poll() != -1 and self.process[j].wait() != 0:
-                    raise Exception, "The command: \"" + self.process[j].cmd \
-                          + "\" does not work.\n" \
-                          + "status: " + str(self.process[j].wait()) + ".\n" \
-                          + "Error message: " \
-                          + commands.getoutput("cat " +
-                                               self.process[j].cmd.split()[-1])
+                    raise Exception, 'The command: "' + self.process[
+                        j
+                    ].cmd + '" does not work.\n' + "status: " + str(
+                        self.process[j].wait()
+                    ) + ".\n" + "Error message: " + commands.getoutput(
+                        "cat " + self.process[j].cmd.split()[-1]
+                    )
 
         # Waits for the latest programs.
         while min([x.poll() for x in self.process[i_group:]]) == -1:
@@ -206,29 +200,42 @@ class Polyphemus:
             program = self.program_list[i]
             log_str = ""
             # New group ?
-            if i > i_group and program.group != self.program_list[i-1].group:
-                log_str += ("### GROUP " + str(program.group)
-                            + " ###").center(78) + "\n" + self.log_separator
+            if i > i_group and program.group != self.program_list[i - 1].group:
+                log_str += (
+                    ("### GROUP " + str(program.group) + " ###").center(78)
+                    + "\n"
+                    + self.log_separator
+                )
                 i_group = i
 
-            log_str += program.Command() + "\n" \
-                       + "\nStatus: " + str(self.process[i].poll()) + "\n" \
-                       + "Hostname: " + str(host[i]) + "\n" \
-                       + "Started at " + str(beg_time[i]) + "\n" \
-                       + "Ended approximatively at " + str(ens_time[i]) \
-                       + "\n" + self.log_separator
+            log_str += (
+                program.Command()
+                + "\n"
+                + "\nStatus: "
+                + str(self.process[i].poll())
+                + "\n"
+                + "Hostname: "
+                + str(host[i])
+                + "\n"
+                + "Started at "
+                + str(beg_time[i])
+                + "\n"
+                + "Ended approximatively at "
+                + str(ens_time[i])
+                + "\n"
+                + self.log_separator
+            )
             log.write(log_str)
 
-
-    def Try(self, log = sys.stdout):
-        """Performs a dry run.
-        """
+    def Try(self, log=sys.stdout):
+        """Performs a dry run."""
         for program in self.program_list:
             program.Try(log)
             log.Write(self.log_separator)
             if program.status != 0:
-                raise Exception, "Program \"" + program.basename \
-                      + "\" failed (status " + str(program.status) + ")."
+                raise Exception, 'Program "' + program.basename + '" failed (status ' + str(
+                    program.status
+                ) + ")."
 
 
 ###########
@@ -237,11 +244,9 @@ class Polyphemus:
 
 
 class Program:
-    """This class manages a program associated with configuration files.
-    """
+    """This class manages a program associated with configuration files."""
 
-
-    def __init__(self, name = None, config = None, arguments_format = " %a", group = 0):
+    def __init__(self, name=None, config=None, arguments_format=" %a", group=0):
         """Full initialization.
 
         \param name the program name.
@@ -282,13 +287,13 @@ class Program:
         ## The status of the program.
         self.status = None
 
-    def Run(self, log = sys.stdout):
-        """Executes the program.
-        """
+    def Run(self, log=sys.stdout):
+        """Executes the program."""
         self.config.Proceed()
         from subprocess import Popen, PIPE
+
         p = Popen([self.name, self.arguments_format], stdout=PIPE, bufsize=1)
-        for line in iter(p.stdout.readline, b''):
+        for line in iter(p.stdout.readline, b""):
             if line is not None:
                 log.write(line)
         p.communicate()
@@ -300,15 +305,23 @@ class Program:
         The program must be ready to be launched.
         """
         if not self.IsReady():
-            raise Exception, "Program \"" + self.name + "\" is not ready."
+            raise Exception, 'Program "' + self.name + '" is not ready.'
         arguments_format = self.arguments_format[:]
-        command = "nice time " + self.name \
-                  + arguments_format.replace("%a", self.config.GetArgument())
+        command = (
+            "nice time "
+            + self.name
+            + arguments_format.replace("%a", self.config.GetArgument())
+        )
         return command
 
-
-    def SetConfiguration(self, config, mode = "random", path = None,
-                         replacement = None, additional_file_list = []):
+    def SetConfiguration(
+        self,
+        config,
+        mode="random",
+        path=None,
+        replacement=None,
+        additional_file_list=[],
+    ):
         """Sets the program configuration files.
 
         \param config the configuration files associated with the program.
@@ -330,28 +343,24 @@ class Program:
         if isinstance(config, list) or isinstance(config, str):
             if mode is None:
                 mode = "tmp"
-            self.config = Configuration(config, mode, path,
-                                        additional_file_list)
+            self.config = Configuration(config, mode, path, additional_file_list)
             if replacement is not None:
                 self.config.SetReplacementMap(replacement)
         else:
             self.config = config
 
-
-    def Try(self, log = sys.stdout):
-        """Performs a dry run.
-        """
+    def Try(self, log=sys.stdout):
+        """Performs a dry run."""
         self.config.Proceed()
         import os
+
         if os.path.isfile(self.name):
             self.status = 0
         else:
             self.status = 1
         arguments_format = self.arguments_format[:]
         command = self.name + arguments_format.replace("%a", self.config.GetArgument())
-        log.write( "Running program \"" + self.basename + "\":\n" \
-                   + "   " + command )
-
+        log.write('Running program "' + self.basename + '":\n' + "   " + command)
 
     def IsReady(self):
         """Checks whether the program can be launched.
@@ -372,9 +381,7 @@ class Configuration:
     It proceeds replacements in the files and makes copies of the files.
     """
 
-
-    def __init__(self, file_list = [], mode = "random", path = None,
-                 additional_file_list = []):
+    def __init__(self, file_list=[], mode="random", path=None, additional_file_list=[]):
         """Initialization of configuration information.
 
         \param file_list the configuration file or the list of configuration
@@ -390,6 +397,7 @@ class Configuration:
         copies, but are not considered as program arguments.
         """
         import os
+
         if isinstance(file_list, str):
             ## The configuration file or list of configuration to be managed.
             self.raw_file_list = [file_list]
@@ -405,7 +413,7 @@ class Configuration:
             self.raw_file_list += additional_file_list
         for f in self.raw_file_list:
             if not os.path.isfile(f):
-                raise Exception, "Unable to find \"" + f + "\"."
+                raise Exception, 'Unable to find "' + f + '".'
 
         ## The list of replaced configuration files.
         self.file_list = []
@@ -419,19 +427,17 @@ class Configuration:
         ## The map of replaced strings and the replacement values.
         self.config = {}
 
-
-    def SetMode(self, mode = "random"):
+    def SetMode(self, mode="random"):
         """Sets the copy mode.
         \param mode the copy mode. Mode "raw" just copies to the target path,
         while mode "random" appends a random string at the end of the file
         name. Mode "random_path" appends a random directory in the path.
         """
         if mode not in ["random", "random_path", "raw"]:
-            raise Exception, "Mode \"" + str(mode) + "\" is not supported."
+            raise Exception, 'Mode "' + str(mode) + '" is not supported.'
 
         ## The copy mode.
         self.mode = mode
-
 
     def SetPath(self, path):
         """Sets the path.
@@ -444,7 +450,6 @@ class Configuration:
         else:
             self.path = "/tmp/"
 
-
     def IsReady(self):
         """Tests whether the configuration files are ready for use.
 
@@ -453,14 +458,12 @@ class Configuration:
         """
         return self.ready or self.raw_file_list == []
 
-
     def GetReplacementMap(self):
         """Returns the map of replaced strings and the replacement values.
 
         @return the map of replaced strings and the replacement values.
         """
         return self.config
-
 
     def SetReplacementMap(self, config):
         """Sets the map of replaced strings and the replacement values.
@@ -470,8 +473,7 @@ class Configuration:
         """
         self.config = config
 
-
-    def SetConfiguration(self, config, mode = "random", path = None):
+    def SetConfiguration(self, config, mode="random", path=None):
         """Initialization of configuration information, except file names.
 
         \param config the map of replaced strings and the replacement
@@ -487,25 +489,24 @@ class Configuration:
         self.SetReplacementMap(config)
         self.Proceed()
 
-
     def Proceed(self):
-        """Proceeds replacement in configuration files and copy them.
-        """
+        """Proceeds replacement in configuration files and copy them."""
         import os, shutil, fileinput
+
         self.file_list = []
         if self.mode == "random_path" and self.raw_file_list is not []:
             import tempfile
-            random_path = tempfile.mkdtemp(prefix = self.path)
+
+            random_path = tempfile.mkdtemp(prefix=self.path)
         for f in self.raw_file_list:
             if self.mode == "raw":
                 if os.path.dirname(f) == self.path:
-                    raise Exception, "Error: attempt to overwrite" \
-                          + " the raw configuration file \"" + f + "\"."
+                    raise Exception, "Error: attempt to overwrite" + ' the raw configuration file "' + f + '".'
                 name = os.path.join(self.path, os.path.basename(f))
                 shutil.copy(f, name)
             elif self.mode == "random":
                 name = os.path.join(self.path, os.path.basename(f))
-                _, name = tempfile.mkstemp(prefix = name + "-")
+                _, name = tempfile.mkstemp(prefix=name + "-")
                 shutil.copy(f, name)
             elif self.mode == "random_path":
                 name = os.path.join(random_path, os.path.basename(f))
@@ -523,14 +524,12 @@ class Configuration:
             fileinput.close()
         self.ready = True
 
-
     def GetRawFileList(self):
         """Returns the list of reference (or raw) configuration files.
 
         @return the list of reference (or raw) configuration files.
         """
         return self.raw_file_list
-
 
     def SetRawFileList(self, file_list):
         """Sets the list of reference (or raw) configuration files.
@@ -540,17 +539,14 @@ class Configuration:
         self.raw_file_list = file_list
         self.ready = False
 
-
     def Clear(self):
-        """Clears all, including configuration file names.
-        """
+        """Clears all, including configuration file names."""
         self.raw_file_list = []
         self.file_list = []
         self.ready = False
         self.mode = "random"
         self.path = "/tmp/"
         self.config = {}
-
 
     def GetArgument(self):
         """Returns the list of program arguments.
@@ -559,6 +555,6 @@ class Configuration:
         split by an empty space).
         """
         if self.IsReady():
-            return " ".join(self.file_list[:self.Narg])
+            return " ".join(self.file_list[: self.Narg])
         else:
             raise Exception, "Not ready."

@@ -24,14 +24,14 @@
 import numpy
 import datetime
 import os, sys
-sys.path.insert(0,
-                os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])
+
+sys.path.insert(0, os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])
 import observation
+
 sys.path.pop(0)
 
 
-def load_stations(filename, type, origins = (0, 0), \
-                  deltas = (0, 0), lengths = (0, 0)):
+def load_stations(filename, type, origins=(0, 0), deltas=(0, 0), lengths=(0, 0)):
     """
     Loads stations description from text file. Removes stations
     outside the domain described by origins, deltas and
@@ -62,8 +62,7 @@ def load_stations(filename, type, origins = (0, 0), \
         f = open(filename)
         for i in f.readlines():
             station = observation.Station(i, type)
-            if deltas == (0,0) or \
-                   station.IsInsideGridBox(origins, deltas, lengths):
+            if deltas == (0, 0) or station.IsInsideGridBox(origins, deltas, lengths):
                 stations.append(station)
         f.close()
     except IOError:
@@ -93,6 +92,7 @@ def load_station(filename, type, station_name):
         if station.name == station_name:
             return station
 
+
 def load_file_observations(name, directory):
     """
     Loads observations data from a file and puts it in a sequence.
@@ -107,7 +107,7 @@ def load_file_observations(name, directory):
     array.
     """
 
-    filename = os.path.normpath(directory) + '/' + name
+    filename = os.path.normpath(directory) + "/" + name
     dates = []
     observations = []
     try:
@@ -127,7 +127,7 @@ def load_file_observations(name, directory):
         f.close()
     except IOError:
         pass
-    return dates, numpy.array(observations, 'Float32')
+    return dates, numpy.array(observations, "Float32")
 
 
 def load_observations(stations, directory):

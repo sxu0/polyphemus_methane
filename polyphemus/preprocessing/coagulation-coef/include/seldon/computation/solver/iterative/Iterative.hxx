@@ -25,20 +25,20 @@ namespace Seldon
   class Preconditioner_Base
   {
   public :
-    
+
     Preconditioner_Base();
-    
+
     // solving M z = r
     template<class Matrix1, class Vector1>
     void Solve(const Matrix1& A, const Vector1 & r, Vector1 & z);
-    
+
     // solving M^t z = r
     template<class Matrix1, class Vector1>
     void TransSolve(const Matrix1& A, const Vector1& r, Vector1 & z);
-    
+
   };
-  
-  
+
+
   //! Class containing parameters for an iterative resolution
   /*!
     Titer is the precision (float or double), the solved
@@ -65,29 +65,29 @@ namespace Seldon
     int type_solver; //!< iterative solver used
     int parameter_restart; //!< restart parameter (for Gmres and Gcr)
     int type_preconditioning; //!< preconditioner used
-    
+
   public :
-    
+
     Iteration();
     Iteration(int max_iteration, const Titer& tol);
     Iteration(const Iteration<Titer>& outer);
-    
+
     int GetTypeSolver() const;
     int GetRestart() const;
     Titer GetFactor() const;
     Titer GetTolerance() const;
     int GetNumberIteration() const;
-    
+
     void SetSolver(int type_resolution, int param_restart, int type_prec);
     void SetRestart(int m);
     void SetTolerance(Titer stopping_criterion);
     void SetMaxNumberIteration(int max_iteration);
     void SetNumberIteration(int nb);
-    
+
     void ShowMessages();
     void ShowFullHistory();
     void HideMessages();
-    
+
     template<class Vector1>
     int Init(const Vector1& r);
     bool First() const;
@@ -98,15 +98,15 @@ namespace Seldon
     template<class Vector1>
     bool Finished(const Vector1& r) const;
     bool Finished(const Titer& r) const;
-    
+
     void Fail(int i, const string& s);
-    
+
     Iteration& operator ++ (void);
-    
+
     int ErrorCode() const;
-    
+
   };
-  
+
 } // end namespace
 
 #define SELDON_FILE_ITERATIVE_HXX

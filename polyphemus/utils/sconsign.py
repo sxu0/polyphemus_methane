@@ -67,33 +67,33 @@ libs = []
 if os.environ.has_key("SCONS_LIB_DIR"):
     libs.append(os.environ["SCONS_LIB_DIR"])
 
-local_version = 'scons-local-' + __version__
-local = 'scons-local'
+local_version = "scons-local-" + __version__
+local = "scons-local"
 if script_dir:
     local_version = os.path.join(script_dir, local_version)
     local = os.path.join(script_dir, local)
 libs.append(os.path.abspath(local_version))
 libs.append(os.path.abspath(local))
 
-scons_version = 'scons-%s' % __version__
+scons_version = "scons-%s" % __version__
 
 prefs = []
 
-if sys.platform == 'win32':
+if sys.platform == "win32":
     # sys.prefix is (likely) C:\Python*;
     # check only C:\Python*.
     prefs.append(sys.prefix)
-    prefs.append(os.path.join(sys.prefix, 'Lib', 'site-packages'))
+    prefs.append(os.path.join(sys.prefix, "Lib", "site-packages"))
 else:
     # On other (POSIX) platforms, things are more complicated due to
     # the variety of path names and library locations.  Try to be smart
     # about it.
-    if script_dir == 'bin':
+    if script_dir == "bin":
         # script_dir is `pwd`/bin;
         # check `pwd`/lib/scons*.
         prefs.append(os.getcwd())
     else:
-        if script_dir == '.' or script_dir == '':
+        if script_dir == "." or script_dir == "":
             script_dir = os.getcwd()
         head, tail = os.path.split(script_dir)
         if tail == "bin":
@@ -125,12 +125,15 @@ else:
         # check only /foo/lib/scons*.
         prefs.append(sys.prefix)
 
-    temp = map(lambda x: os.path.join(x, 'lib'), prefs)
-    temp.extend(map(lambda x: os.path.join(x,
-                                           'lib',
-                                           'python' + sys.version[:3],
-                                           'site-packages'),
-                           prefs))
+    temp = map(lambda x: os.path.join(x, "lib"), prefs)
+    temp.extend(
+        map(
+            lambda x: os.path.join(
+                x, "lib", "python" + sys.version[:3], "site-packages"
+            ),
+            prefs,
+        )
+    )
     prefs = temp
 
     # Add the parent directory of the current python's library to the
@@ -153,9 +156,9 @@ else:
     except ImportError:
         pass
     else:
-        # when running from an egg add the egg's directory 
+        # when running from an egg add the egg's directory
         try:
-            d = pkg_resources.get_distribution('scons')
+            d = pkg_resources.get_distribution("scons")
         except pkg_resources.DistributionNotFound:
             pass
         else:
@@ -164,7 +167,7 @@ else:
 # Look first for 'scons-__version__' in all of our preference libs,
 # then for 'scons'.
 libs.extend(map(lambda x: os.path.join(x, scons_version), prefs))
-libs.extend(map(lambda x: os.path.join(x, 'scons'), prefs))
+libs.extend(map(lambda x: os.path.join(x, "scons"), prefs))
 
 sys.path = libs + sys.path
 
@@ -179,6 +182,7 @@ import whichdb
 
 import SCons.SConsign
 
+
 def my_whichdb(filename):
     if filename[-7:] == ".dblite":
         return "SCons.dblite"
@@ -190,26 +194,31 @@ def my_whichdb(filename):
         pass
     return _orig_whichdb(filename)
 
+
 _orig_whichdb = whichdb.whichdb
 whichdb.whichdb = my_whichdb
 
+
 def my_import(mname):
-    if '.' in mname:
-        i = string.rfind(mname, '.')
+    if "." in mname:
+        i = string.rfind(mname, ".")
         parent = my_import(mname[:i])
-        fp, pathname, description = imp.find_module(mname[i+1:],
-                                                    parent.__path__)
+        fp, pathname, description = imp.find_module(mname[i + 1 :], parent.__path__)
     else:
         fp, pathname, description = imp.find_module(mname)
     return imp.load_module(mname, fp, pathname, description)
 
+
 class Flagger:
     default_value = 1
+
     def __setitem__(self, item, value):
         self.__dict__[item] = value
         self.default_value = 0
+
     def __getitem__(self, item):
         return self.__dict__.get(item, self.default_value)
+
 
 Do_Call = None
 Print_Directories = []
@@ -218,12 +227,14 @@ Print_Flags = Flagger()
 Verbose = 0
 Readable = 0
 
+
 def default_mapper(entry, name):
     try:
-        val = eval("entry."+name)
+        val = eval("entry." + name)
     except:
         val = None
     return str(val)
+
 
 def map_action(entry, name):
     try:
@@ -231,7 +242,8 @@ def map_action(entry, name):
         bactsig = entry.bactsig
     except AttributeError:
         return None
-    return '%s [%s]' % (bactsig, bact)
+    return "%s [%s]" % (bactsig, bact)
+
 
 def map_timestamp(entry, name):
     try:
@@ -242,6 +254,7 @@ def map_timestamp(entry, name):
         return "'" + time.ctime(timestamp) + "'"
     else:
         return str(timestamp)
+
 
 def map_bkids(entry, name):
     try:
@@ -256,15 +269,17 @@ def map_bkids(entry, name):
         return None
     return string.join(result, "\n        ")
 
+
 map_field = {
-    'action'    : map_action,
-    'timestamp' : map_timestamp,
-    'bkids'     : map_bkids,
+    "action": map_action,
+    "timestamp": map_timestamp,
+    "bkids": map_bkids,
 }
 
 map_name = {
-    'implicit'  : 'bkids',
+    "implicit": "bkids",
 }
+
 
 def field(name, entry, verbose=Verbose):
     if not Print_Flags[name]:
@@ -276,21 +291,23 @@ def field(name, entry, verbose=Verbose):
         val = name + ": " + val
     return val
 
+
 def nodeinfo_raw(name, ninfo, prefix=""):
     # This just formats the dictionary, which we would normally use str()
     # to do, except that we want the keys sorted for deterministic output.
     d = ninfo.__dict__
     try:
-        keys = ninfo.field_list + ['_version_id']
+        keys = ninfo.field_list + ["_version_id"]
     except AttributeError:
         keys = d.keys()
         keys.sort()
     l = []
     for k in keys:
-        l.append('%s: %s' % (repr(k), repr(d.get(k))))
-    if '\n' in name:
+        l.append("%s: %s" % (repr(k), repr(d.get(k))))
+    if "\n" in name:
         name = repr(name)
-    return name + ': {' + string.join(l, ', ') + '}'
+    return name + ": {" + string.join(l, ", ") + "}"
+
 
 def nodeinfo_cooked(name, ninfo, prefix=""):
     try:
@@ -298,16 +315,18 @@ def nodeinfo_cooked(name, ninfo, prefix=""):
     except AttributeError:
         field_list = []
     f = lambda x, ni=ninfo, v=Verbose: field(x, ni, v)
-    if '\n' in name:
+    if "\n" in name:
         name = repr(name)
-    outlist = [name+':'] + filter(None, map(f, field_list))
+    outlist = [name + ":"] + filter(None, map(f, field_list))
     if Verbose:
-        sep = '\n    ' + prefix
+        sep = "\n    " + prefix
     else:
-        sep = ' '
+        sep = " "
     return string.join(outlist, sep)
 
+
 nodeinfo_string = nodeinfo_cooked
+
 
 def printfield(name, entry, prefix=""):
     outlist = field("implicit", entry, 0)
@@ -321,6 +340,7 @@ def printfield(name, entry, prefix=""):
             print "    action: " + outact
         else:
             print "        " + outact
+
 
 def printentries(entries, location):
     if Print_Entries:
@@ -349,6 +369,7 @@ def printentries(entries, location):
             else:
                 print nodeinfo_string(name, entry.ninfo)
             printfield(name, entry.binfo)
+
 
 class Do_SConsignDB:
     def __init__(self, dbm_name, dbm):
@@ -389,10 +410,15 @@ class Do_SConsignDB:
         except KeyboardInterrupt:
             raise
         except cPickle.UnpicklingError:
-            sys.stderr.write("sconsign: ignoring invalid `%s' file `%s'\n" % (self.dbm_name, fname))
+            sys.stderr.write(
+                "sconsign: ignoring invalid `%s' file `%s'\n" % (self.dbm_name, fname)
+            )
             return
         except Exception, e:
-            sys.stderr.write("sconsign: ignoring invalid `%s' file `%s': %s\n" % (self.dbm_name, fname, e))
+            sys.stderr.write(
+                "sconsign: ignoring invalid `%s' file `%s': %s\n"
+                % (self.dbm_name, fname, e)
+            )
             return
 
         if Print_Directories:
@@ -410,12 +436,13 @@ class Do_SConsignDB:
                 self.printentries(dir, db[dir])
 
     def printentries(self, dir, val):
-        print '=== ' + dir + ':'
+        print "=== " + dir + ":"
         printentries(cPickle.loads(val), dir)
+
 
 def Do_SConsignDir(name):
     try:
-        fp = open(name, 'rb')
+        fp = open(name, "rb")
     except (IOError, OSError), e:
         sys.stderr.write("sconsign: %s\n" % (e))
         return
@@ -427,9 +454,12 @@ def Do_SConsignDir(name):
         sys.stderr.write("sconsign: ignoring invalid .sconsign file `%s'\n" % (name))
         return
     except Exception, e:
-        sys.stderr.write("sconsign: ignoring invalid .sconsign file `%s': %s\n" % (name, e))
+        sys.stderr.write(
+            "sconsign: ignoring invalid .sconsign file `%s': %s\n" % (name, e)
+        )
         return
     printentries(sconsign.entries, args[0])
+
 
 ##############################################################################
 
@@ -452,26 +482,38 @@ Options:
   -v, --verbose               Verbose, describe each field.
 """
 
-opts, args = getopt.getopt(sys.argv[1:], "acd:e:f:hirstv",
-                            ['act', 'action',
-                             'csig', 'dir=', 'entry=',
-                             'format=', 'help', 'implicit',
-                             'raw', 'readable',
-                             'size', 'timestamp', 'verbose'])
+opts, args = getopt.getopt(
+    sys.argv[1:],
+    "acd:e:f:hirstv",
+    [
+        "act",
+        "action",
+        "csig",
+        "dir=",
+        "entry=",
+        "format=",
+        "help",
+        "implicit",
+        "raw",
+        "readable",
+        "size",
+        "timestamp",
+        "verbose",
+    ],
+)
 
 
 for o, a in opts:
-    if o in ('-a', '--act', '--action'):
-        Print_Flags['action'] = 1
-    elif o in ('-c', '--csig'):
-        Print_Flags['csig'] = 1
-    elif o in ('-d', '--dir'):
+    if o in ("-a", "--act", "--action"):
+        Print_Flags["action"] = 1
+    elif o in ("-c", "--csig"):
+        Print_Flags["csig"] = 1
+    elif o in ("-d", "--dir"):
         Print_Directories.append(a)
-    elif o in ('-e', '--entry'):
+    elif o in ("-e", "--entry"):
         Print_Entries.append(a)
-    elif o in ('-f', '--format'):
-        Module_Map = {'dblite'   : 'SCons.dblite',
-                      'sconsign' : None}
+    elif o in ("-f", "--format"):
+        Module_Map = {"dblite": "SCons.dblite", "sconsign": None}
         dbm_name = Module_Map.get(a, a)
         if dbm_name:
             try:
@@ -483,20 +525,20 @@ for o, a in opts:
             Do_Call = Do_SConsignDB(a, dbm)
         else:
             Do_Call = Do_SConsignDir
-    elif o in ('-h', '--help'):
+    elif o in ("-h", "--help"):
         print helpstr
         sys.exit(0)
-    elif o in ('-i', '--implicit'):
-        Print_Flags['implicit'] = 1
-    elif o in ('--raw',):
+    elif o in ("-i", "--implicit"):
+        Print_Flags["implicit"] = 1
+    elif o in ("--raw",):
         nodeinfo_string = nodeinfo_raw
-    elif o in ('-r', '--readable'):
+    elif o in ("-r", "--readable"):
         Readable = 1
-    elif o in ('-s', '--size'):
-        Print_Flags['size'] = 1
-    elif o in ('-t', '--timestamp'):
-        Print_Flags['timestamp'] = 1
-    elif o in ('-v', '--verbose'):
+    elif o in ("-s", "--size"):
+        Print_Flags["size"] = 1
+    elif o in ("-t", "--timestamp"):
+        Print_Flags["timestamp"] = 1
+    elif o in ("-v", "--verbose"):
         Verbose = 1
 
 if Do_Call:
@@ -506,7 +548,7 @@ else:
     for a in args:
         dbm_name = whichdb.whichdb(a)
         if dbm_name:
-            Map_Module = {'SCons.dblite' : 'dblite'}
+            Map_Module = {"SCons.dblite": "dblite"}
             dbm = my_import(dbm_name)
             Do_SConsignDB(Map_Module.get(dbm_name, dbm_name), dbm)(a)
         else:

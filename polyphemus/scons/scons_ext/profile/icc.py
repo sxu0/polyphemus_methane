@@ -101,9 +101,9 @@ def debug(utils):
         friendly optimization (the default) and 'fast' for maximum optimization.
     """
     utils.add_argument("undefined_behavior", ["abort", "log"])
-    utils.add_argument("float_div_by_zero",  ["abort", "log", "ignore"])
-    utils.add_argument("float_overflow",     ["abort", "ignore"])
-    utils.add_argument("optim",              ["none", "light", "fast"])
+    utils.add_argument("float_div_by_zero", ["abort", "log", "ignore"])
+    utils.add_argument("float_overflow", ["abort", "ignore"])
+    utils.add_argument("optim", ["none", "light", "fast"])
 
     ############
     # Warnings #
@@ -111,66 +111,63 @@ def debug(utils):
 
     p = _warning(utils)
     # An additional _warning that gives performance hints.
-    #p.flag_cpp += " -Weffc++"
+    # p.flag_cpp += " -Weffc++"
 
     ##########
     # Macros #
     ##########
 
-    p.preprocessor_defines += " " + " ".join([
-        # Activates glibc buffer overflow checking, notably for:
-        # memcpy, mempcpy, memmove, memset, stpcpy, strcpy, strncpy,
-        # strcat, strncat, sprintf, snprintf, vsprintf, vsnprintf,
-        # and gets.
-        "_FORTIFY_SOURCE=2",
-
-        # libstdc++ debug mode.
-        "_GLIBCXX_DEBUG",
-        # Enforces undefined/forbidden behaviors from the standard.
-        "_GLIBCXX_DEBUG_PEDANTIC",
-
-        # Blitz debug mode.
-        "BZ_DEBUG",
-
-        # Polyphemus related macros.
-        "TALOS_DEBUG",
-        "SELDONDATA_DEBUG_LEVEL_4",
-        "SELDON_DEBUG_LEVEL_4",
-        "VERDANDI_DEBUG_LEVEL_4",
-        "SELDON_WITH_ABORT",
-        "VERDANDI_WITH_ABORT",
-        "OPS_WITH_ABORT"
-    ])
+    p.preprocessor_defines += " " + " ".join(
+        [
+            # Activates glibc buffer overflow checking, notably for:
+            # memcpy, mempcpy, memmove, memset, stpcpy, strcpy, strncpy,
+            # strcat, strncat, sprintf, snprintf, vsprintf, vsnprintf,
+            # and gets.
+            "_FORTIFY_SOURCE=2",
+            # libstdc++ debug mode.
+            "_GLIBCXX_DEBUG",
+            # Enforces undefined/forbidden behaviors from the standard.
+            "_GLIBCXX_DEBUG_PEDANTIC",
+            # Blitz debug mode.
+            "BZ_DEBUG",
+            # Polyphemus related macros.
+            "TALOS_DEBUG",
+            "SELDONDATA_DEBUG_LEVEL_4",
+            "SELDON_DEBUG_LEVEL_4",
+            "VERDANDI_DEBUG_LEVEL_4",
+            "SELDON_WITH_ABORT",
+            "VERDANDI_WITH_ABORT",
+            "OPS_WITH_ABORT",
+        ]
+    )
 
     ######################
     # GCC built-in debug #
     ######################
     if ARGUMENTS["optim"] == "none":
-        p.flag_compiler +=  " -O0"
+        p.flag_compiler += " -O0"
     elif ARGUMENTS["optim"] == "light":
         # -Og is optimizing while prioritizing debugging
         #     (sets -fno-omit-frame-pointer -fno-inline etc.)
-        p.flag_compiler +=  " -Og"
+        p.flag_compiler += " -Og"
     elif ARGUMENTS["optim"] == "fast":
         # Using portable optimization since it will be slow anyway.
         fast_portable(utils)
 
     p.flag_compiler += " -march=native"
 
-    p.flag_compiler +=  " " + " ".join([
-        # -g3 is -g2 (the default) with macro symbols added.
-        "-g3",
-
-        # Adds stack memory guards to detect buffer overflows.
-        "-fstack-protector-all",
-
-        # Undefined behavior sanitizer, aka ubsan.
-        # (This flag enables common ubsan functionalities.)
-        # It is not working in old version (YK).
-       # "-fsanitize=undefined",
-
-        # Floating-point to integer conversion checking.
-        # "-fsanitize=float-cast-overflow",
+    p.flag_compiler += " " + " ".join(
+        [
+            # -g3 is -g2 (the default) with macro symbols added.
+            "-g3",
+            # Adds stack memory guards to detect buffer overflows.
+            "-fstack-protector-all",
+            # Undefined behavior sanitizer, aka ubsan.
+            # (This flag enables common ubsan functionalities.)
+            # It is not working in old version (YK).
+            # "-fsanitize=undefined",
+            # Floating-point to integer conversion checking.
+            # "-fsanitize=float-cast-overflow",
             # This option enables floating-point type to integer conversion checking.
             # We check that the result of the conversion does not overflow.  Unlike
             # other similar options, -fsanitize=float-cast-overflow is not enabled by
@@ -178,7 +175,8 @@ def debug(utils):
             # useful invalid floating point exception, aka "FE_INVALID".
             # The macro TALOS_DEBUG enables "FE_INVALID", please define the macro
             # 'TALOS_NO_FE_INVALID' if using '-fsanitize=float-cast-overflow'.
-    ])
+        ]
+    )
 
     if ARGUMENTS["float_overflow"] != "abort":
         p.preprocessor_defines += " TALOS_NO_FE_OVERFLOW"
@@ -198,26 +196,26 @@ def debug(utils):
     # TO FIX: SANITIZER limitation at least in gcc-5.3
     #         cannot produce core dump on float division by zero
     #         (also, cannot find an handle to break on with gdb)
-#         abort_list.append("float-divide-by-zero")
-# -fno-sanitize-recover= is not working (YK).
-#    if abort_list:
-#        p.flag_compiler += " -fno-sanitize-recover=" + ",".join(abort_list)
-
+    #         abort_list.append("float-divide-by-zero")
+    # -fno-sanitize-recover= is not working (YK).
+    #    if abort_list:
+    #        p.flag_compiler += " -fno-sanitize-recover=" + ",".join(abort_list)
 
     ###########################
     # GFortran built-in debug #
     ###########################
-    p.flag_fortran += " " + " ".join([
-        # All sort of runtime check - includes bounds checking.
-
-        # The run-time error 'recursive call to nonrecursive procedure' appears
-        #        "-fcheck=all", (YK)
-        "-fcheck=array-temps,bounds,do,mem,pointer",
-        # Equivalent to "implicit none" in every procedure.
-        #-fimplicit-none
-        # Display the stack on fatal error
-        "-fbacktrace",
-    ])
+    p.flag_fortran += " " + " ".join(
+        [
+            # All sort of runtime check - includes bounds checking.
+            # The run-time error 'recursive call to nonrecursive procedure' appears
+            #        "-fcheck=all", (YK)
+            "-fcheck=array-temps,bounds,do,mem,pointer",
+            # Equivalent to "implicit none" in every procedure.
+            # -fimplicit-none
+            # Display the stack on fatal error
+            "-fbacktrace",
+        ]
+    )
 
     # GFortran can trap invalid operations and float overflow. It can also trap
     # float division by zero, but we rely on the sanitizer for this.
@@ -228,25 +226,24 @@ def debug(utils):
 
     # GFortran can sets default values to a some unitialized memory, but it
     # would silent '-Wunitialized' so it is not enabled.
-    #-finit-character=65 -finit-integer=42424242 -finit-real=snan
-
+    # -finit-character=65 -finit-integer=42424242 -finit-real=snan
 
     #############
     # Libraries #
     #############
-    p.library_list += " " + " ".join([
-        # Undefined behavior sanitizer library.
-        "ubsan",
-
-        # Asks to 'malloc', defined in Glibc, to check the consistency
-        # of dynamic memory by using the 'mcheck' functions.
-        # Is equivalent do defines env variable MALLOC_CHECK_ to 3.
-        # *** DISABLED since not thread safe
-#        "mcheck",
-
-        # Used to generate a backtrace in Talos.
-        "backtrace",
-    ])
+    p.library_list += " " + " ".join(
+        [
+            # Undefined behavior sanitizer library.
+            "ubsan",
+            # Asks to 'malloc', defined in Glibc, to check the consistency
+            # of dynamic memory by using the 'mcheck' functions.
+            # Is equivalent do defines env variable MALLOC_CHECK_ to 3.
+            # *** DISABLED since not thread safe
+            #        "mcheck",
+            # Used to generate a backtrace in Talos.
+            "backtrace",
+        ]
+    )
 
     return p
 
@@ -287,12 +284,12 @@ def debug_mem(utils):
     # p.flag_compiler += " -fsanitize=address"
 
     # It is implied by -fsanitize=address
-    #p.flag_compiler += " -fsanitize=leak"
+    # p.flag_compiler += " -fsanitize=leak"
 
     p.flag_link += " -fsanitize=address"
 
     # Asan library needs the Ubsan one, so it must be put ahead in the list.
-    p.library_list = "asan " +  p.library_list
+    p.library_list = "asan " + p.library_list
 
     return p
 
@@ -317,10 +314,10 @@ def debug_thread(utils):
     # => memory usage may increase by 5-10x and execution time by 2-20x.
     # Can be be used if neither undefined nor thread sanitizers are enabled.
     # See https://code.google.com/p/address-sanitizer/wiki/LeakSanitizer
-    #-fsanitize=thread
-    p.flag_compiler +=  " -fsanitize=thread"
+    # -fsanitize=thread
+    p.flag_compiler += " -fsanitize=thread"
 
     p.flag_link += " -fsanitize=thread"
-    p.library_list = "tsan " +  p.library_list
+    p.library_list = "tsan " + p.library_list
 
     return p

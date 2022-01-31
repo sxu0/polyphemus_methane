@@ -230,5 +230,3 @@ void lwcorgfunc(int n, double dLWC[], double f[])
   f[1] = 100. * (gamma[NAMOL] * x[NAMOL] / RH - 1.0);
 
 }
-
-

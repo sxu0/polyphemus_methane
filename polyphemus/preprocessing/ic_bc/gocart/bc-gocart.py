@@ -47,8 +47,12 @@ cfg_general_default = "../general.cfg"
 
 # configuration files corresponding to species
 # in "species_list" (same order !).
-cfg_species_list = ["bc-gocart-CC.cfg", "bc-gocart-DU.cfg",
-                    "bc-gocart-SU.cfg", "bc-gocart-SS.cfg"]
+cfg_species_list = [
+    "bc-gocart-CC.cfg",
+    "bc-gocart-DU.cfg",
+    "bc-gocart-SU.cfg",
+    "bc-gocart-SS.cfg",
+]
 
 # configuration file for nh4.
 cfg_nh4 = "bc-nh4.cfg"
@@ -63,24 +67,37 @@ bc_nh4_prog = "./bc-nh4"
 
 ##########
 # SCRIPT #
-usage = "%prog [options] general_config_file beg_date number_of_days \n\n" \
-    + " Computes aerosol Polair3D boundary conditions" \
-    + " from Gocart data.\n\n" \
-    + " general_config_file : general configuration file, optional, default is " \
-    + cfg_general_default + " .\n" \
-    + " beg_date            : beginning date in the format YYYY-MM-DD.\n" \
+usage = (
+    "%prog [options] general_config_file beg_date number_of_days \n\n"
+    + " Computes aerosol Polair3D boundary conditions"
+    + " from Gocart data.\n\n"
+    + " general_config_file : general configuration file, optional, default is "
+    + cfg_general_default
+    + " .\n"
+    + " beg_date            : beginning date in the format YYYY-MM-DD.\n"
     + " number_of_days      : number of days to perform."
-version= "%prog 1.0"
+)
+version = "%prog 1.0"
 
-parser = OptionParser(usage=usage,version=version)
+parser = OptionParser(usage=usage, version=version)
 
-parser.add_option("-n", "--dry-run", action="count", \
-          dest="dry_run", default=0, help="says what it would do," \
-          + " but actually does NOT do it.")
-parser.add_option("--nh4", action="store_true", \
-          dest="nh4", default=False, help="compute ammonia" \
-          + " which is not directly provided by Gocart," \
-          + " default is to not compute.")
+parser.add_option(
+    "-n",
+    "--dry-run",
+    action="count",
+    dest="dry_run",
+    default=0,
+    help="says what it would do," + " but actually does NOT do it.",
+)
+parser.add_option(
+    "--nh4",
+    action="store_true",
+    dest="nh4",
+    default=False,
+    help="compute ammonia"
+    + " which is not directly provided by Gocart,"
+    + " default is to not compute.",
+)
 
 (options, args) = parser.parse_args()
 
@@ -91,7 +108,7 @@ if len(args) != 3 and len(args) != 2:
 
 # General config file
 if len(args) == 3:
-      cfg_general = args[0]
+    cfg_general = args[0]
 elif len(args) == 2:
     cfg_general = cfg_general_default
 
@@ -103,14 +120,14 @@ else:
 
 # Dates.
 if len(args) == 3:
-    beg_date = [ int(x) for x in args[1].split("-") ]
+    beg_date = [int(x) for x in args[1].split("-")]
     number_of_days = int(args[2])
 elif len(args) == 2:
-    beg_date = [ int(x) for x in args[0].split("-") ]
+    beg_date = [int(x) for x in args[0].split("-")]
     number_of_days = int(args[1])
 
 beg_date = datetime.date(beg_date[0], beg_date[1], beg_date[2])
-number_of_days = datetime.timedelta(days = number_of_days)
+number_of_days = datetime.timedelta(days=number_of_days)
 end_date = beg_date + number_of_days
 
 sys.stderr.write("beginning date=" + beg_date.strftime("%Y-%m-%d") + "\n")
@@ -126,12 +143,15 @@ for year in range(beg_date.year, end_date.year + 1):
     sys.stderr.write("year " + str_year + "\n")
 
     month = [1, 12]
-    if year == beg_date.year: month[0] = beg_date.month
-    if year == end_date.year: month[1] = end_date.month
+    if year == beg_date.year:
+        month[0] = beg_date.month
+    if year == end_date.year:
+        month[1] = end_date.month
 
     for month in range(month[0], month[1] + 1):
         str_month = str(month)
-        if month < 10: str_month = "0" + str_month
+        if month < 10:
+            str_month = "0" + str_month
 
         sys.stderr.write("  month " + str_month + "\n")
 
@@ -140,9 +160,20 @@ for year in range(beg_date.year, end_date.year + 1):
             file_name = file_name.replace("%M", str_month)
             file_name = file_name.replace("%S", species)
 
-            command = bc_gocart_prog + " " + cfg_general + " " \
-                  + cfg + " " + file_name + " " \
-                  + str_year + str_month + " " + str(number_of_days.days)
+            command = (
+                bc_gocart_prog
+                + " "
+                + cfg_general
+                + " "
+                + cfg
+                + " "
+                + file_name
+                + " "
+                + str_year
+                + str_month
+                + " "
+                + str(number_of_days.days)
+            )
 
             if options.dry_run > 0:
                 sys.stderr.write("    " + command + "\n")
@@ -157,8 +188,7 @@ for year in range(beg_date.year, end_date.year + 1):
 
 # Perform NH4 for all month range.
 if options.nh4:
-    command = bc_nh4_prog + " " + cfg_general \
-          + " " + cfg_nh4
+    command = bc_nh4_prog + " " + cfg_general + " " + cfg_nh4
 
     if options.dry_run > 0:
         sys.stderr.write(command + "\n")

@@ -85,12 +85,12 @@ contains
 	jesp=List_species(s)
 	qti=qti+qext(jesp)     !total dry mass µg.m-3
       end do
-      
+
       ! if (qti.gt.TINYM*N_aerosol) then
-      ! The threshold 0.0 for the minimum aerosol concentration 
+      ! The threshold 0.0 for the minimum aerosol concentration
       ! should be avoided because it leads to a too small particle diameter.
       ! The threshold is set to 1.d-6 (YK).
-      if (qti.gt.1.d-6) then 
+      if (qti.gt.1.d-6) then
 	  if(wet_diam_estimation.eq.0) then !with isorropia
 	    do i=1,nesp_isorropia
 	      jesp=isorropia_species(i)
@@ -152,13 +152,13 @@ contains
                print *, j," fastdiam, after gerber",&
                    "wet diam", wet_d(j), "dry diameter", dry_d(j),&
                    "TEMP", Temperature, "RH", Relative_humidity
-            endif	   
+            endif
             if (wet_d(j) .lt. 1.D-3) then
                print *, j," fastdiam, after gerber: ",&
                    "wet diam", wet_d(j), "dry diameter", dry_d(j),&
                    "TEMP", Temperature, "RH", Relative_humidity,&
                    "dry conc", qti, "water conc", qext(EH2O),"number",c_number(j)
-            endif	   
+            endif
 	 endif
       else
 	! if too few aerosols or too few mass
@@ -171,7 +171,7 @@ contains
       endif
 !       write(unit=10,FMT=*),"wet_diameter",j,wet_d(j)
     enddo
-!       CLOSE(10)    
+!       CLOSE(10)
   end subroutine compute_wet_mass_diameter
 
   subroutine calculatewater(aero,qinti,lwc)
@@ -381,11 +381,11 @@ contains
 ! #ifdef WITHOUT_NACL_IN_THERMODYNAMICS
      vil=vil + qext(ENa)/mass_density_aer(ENa)
 ! #endif
-! 
+!
 ! #ifndef WITHOUT_NACL_IN_THERMODYNAMICS
      vil=vil + qinti(INa)/mass_density_aer(ENa)
 ! #endif
-! 
+!
 ! #ifdef WITHOUT_NACL_IN_THERMODYNAMICS
      vil = vil + qext(ECl)/mass_density_aer(ECl) ! HCl volume
 ! #endif
@@ -776,7 +776,7 @@ contains
   end subroutine HPLFLIM
 
 
-  ! YK 
+  ! YK
   subroutine equi_const(TEMP, XK3, XK4, XK6, XK8, XK9, XK10)
     implicit none
     double precision TEMP, T0, T0T, COEF
@@ -803,7 +803,7 @@ contains
       ENDIF
 
   end subroutine equi_const
-  
+
   subroutine DRYIN(Temperature,qinti,N_size_loc,init_bulk_gas,ce_kernal_coef_i,&
    Kelvin_effect,surface_equilibrium_conc,ce_kernel)
 !------------------------------------------------------------------------
@@ -1205,7 +1205,7 @@ contains
       worg_poa = worg_poa + aero(j)
 !       if(IsNaN(worg_poa*0.d0)) print*,11,worg_poa,i,"AEC_DRV"
     enddo
-      
+
     worg(nesp_aec+1) = REAL(worg_poa)
 
 
@@ -1221,7 +1221,7 @@ contains
     endif
     mwaom_mix =  mwaom_mix * 1.d-06 ! from microg/mol to g/mol
     if(IsNaN(mwaom_mix*0.d0)) print*,12,mwaom_mix,"AEC_DRV"
-      
+
     fmwaom_mix = REAL(mwaom_mix)
 !     print*,"input oamain:"
 !     print*,"ftempk:",ftempk,"frh",frh
@@ -1239,7 +1239,7 @@ contains
 !     print*,"drh_loc",drh_loc
 !     print*,"dhvap_loc",dhvap_loc
 !     print*,"thermodynamic_model",thermodynamic_model
-    
+
 
 !cccccccccccccccccccccccccccccccccc
 !    ftempk in K
@@ -1477,7 +1477,7 @@ contains
 !     print*,"watorg2",watorg2
 !     Temperature=286.23904418945313
 !     Relative_Humidity=0.80978611178696158
-    
+
     call ISOROPIA(wi, Relative_Humidity, Temperature, cntrl, w, gas2,&
 	liquid, solid, other, organion2, watorg2)
 

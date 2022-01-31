@@ -62,7 +62,3 @@ void Kpart(int n, double ac[], double mwom, double KB[], double VPB[], double HV
         KB[i] *= 1 + K0[i];
     }
 }
-
-
-
-

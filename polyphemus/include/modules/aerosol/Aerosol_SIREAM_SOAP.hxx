@@ -302,9 +302,9 @@ namespace Polyphemus
 
     /*! \brief SOAP model parameters defined in species.h
       \param model_config class for model configuration
-      \param species class for species   
+      \param species class for species
      */
-    //! Model configuration defined in parameter.cxx 
+    //! Model configuration defined in parameter.cxx
     model_config soap_config;
     //! Vector of the species defined in species.cxx
     vector<species> surrogate;
@@ -317,7 +317,7 @@ namespace Polyphemus
 
 
     /*** Constructor ***/
-    
+
     Aerosol_SIREAM_SOAP();
 
     /*** Other methods ***/
@@ -429,7 +429,7 @@ namespace Polyphemus
 					 Data<T, 3>& pH,
 					 Data<T, 4>& NumberConcentration_aer,
 					 Data<T, 3>& InCloudWetDepositionFluxNumber_aer);
-	
+
 	void Forward_aer(T current_time,
 					 T& specifichumidity,
 					 T& temperature,

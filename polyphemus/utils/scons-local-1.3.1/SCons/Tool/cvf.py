@@ -31,25 +31,36 @@ __revision__ = "src/engine/SCons/Tool/cvf.py 5110 2010/07/25 16:14:38 bdeegan"
 
 import fortran
 
-compilers = ['f90']
+compilers = ["f90"]
+
 
 def generate(env):
     """Add Builders and construction variables for compaq visual fortran to an Environment."""
 
     fortran.generate(env)
 
-    env['FORTRAN']        = 'f90'
-    env['FORTRANCOM']     = '$FORTRAN $FORTRANFLAGS $_FORTRANMODFLAG $_FORTRANINCFLAGS /compile_only ${SOURCES.windows} /object:${TARGET.windows}'
-    env['FORTRANPPCOM']   = '$FORTRAN $FORTRANFLAGS $CPPFLAGS $_CPPDEFFLAGS $_FORTRANMODFLAG $_FORTRANINCFLAGS /compile_only ${SOURCES.windows} /object:${TARGET.windows}'
-    env['SHFORTRANCOM']   = '$SHFORTRAN $SHFORTRANFLAGS $_FORTRANMODFLAG $_FORTRANINCFLAGS /compile_only ${SOURCES.windows} /object:${TARGET.windows}'
-    env['SHFORTRANPPCOM'] = '$SHFORTRAN $SHFORTRANFLAGS $CPPFLAGS $_CPPDEFFLAGS $_FORTRANMODFLAG $_FORTRANINCFLAGS /compile_only ${SOURCES.windows} /object:${TARGET.windows}'
-    env['OBJSUFFIX']      = '.obj'
-    env['FORTRANMODDIR'] = '${TARGET.dir}'
-    env['FORTRANMODDIRPREFIX'] = '/module:'
-    env['FORTRANMODDIRSUFFIX'] = ''
+    env["FORTRAN"] = "f90"
+    env[
+        "FORTRANCOM"
+    ] = "$FORTRAN $FORTRANFLAGS $_FORTRANMODFLAG $_FORTRANINCFLAGS /compile_only ${SOURCES.windows} /object:${TARGET.windows}"
+    env[
+        "FORTRANPPCOM"
+    ] = "$FORTRAN $FORTRANFLAGS $CPPFLAGS $_CPPDEFFLAGS $_FORTRANMODFLAG $_FORTRANINCFLAGS /compile_only ${SOURCES.windows} /object:${TARGET.windows}"
+    env[
+        "SHFORTRANCOM"
+    ] = "$SHFORTRAN $SHFORTRANFLAGS $_FORTRANMODFLAG $_FORTRANINCFLAGS /compile_only ${SOURCES.windows} /object:${TARGET.windows}"
+    env[
+        "SHFORTRANPPCOM"
+    ] = "$SHFORTRAN $SHFORTRANFLAGS $CPPFLAGS $_CPPDEFFLAGS $_FORTRANMODFLAG $_FORTRANINCFLAGS /compile_only ${SOURCES.windows} /object:${TARGET.windows}"
+    env["OBJSUFFIX"] = ".obj"
+    env["FORTRANMODDIR"] = "${TARGET.dir}"
+    env["FORTRANMODDIRPREFIX"] = "/module:"
+    env["FORTRANMODDIRSUFFIX"] = ""
+
 
 def exists(env):
     return env.Detect(compilers)
+
 
 # Local Variables:
 # tab-width:4

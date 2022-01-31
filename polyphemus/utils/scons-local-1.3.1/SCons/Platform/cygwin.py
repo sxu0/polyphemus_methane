@@ -35,18 +35,20 @@ __revision__ = "src/engine/SCons/Platform/cygwin.py 5110 2010/07/25 16:14:38 bde
 import posix
 from SCons.Platform import TempFileMunge
 
+
 def generate(env):
     posix.generate(env)
 
-    env['PROGPREFIX']  = ''
-    env['PROGSUFFIX']  = '.exe'
-    env['SHLIBPREFIX'] = ''
-    env['SHLIBSUFFIX'] = '.dll'
-    env['LIBPREFIXES'] = [ '$LIBPREFIX', '$SHLIBPREFIX' ]
-    env['LIBSUFFIXES'] = [ '$LIBSUFFIX', '$SHLIBSUFFIX' ]
-    env['TEMPFILE']    = TempFileMunge
-    env['TEMPFILEPREFIX'] = '@'
-    env['MAXLINELENGTH']  = 2048
+    env["PROGPREFIX"] = ""
+    env["PROGSUFFIX"] = ".exe"
+    env["SHLIBPREFIX"] = ""
+    env["SHLIBSUFFIX"] = ".dll"
+    env["LIBPREFIXES"] = ["$LIBPREFIX", "$SHLIBPREFIX"]
+    env["LIBSUFFIXES"] = ["$LIBSUFFIX", "$SHLIBSUFFIX"]
+    env["TEMPFILE"] = TempFileMunge
+    env["TEMPFILEPREFIX"] = "@"
+    env["MAXLINELENGTH"] = 2048
+
 
 # Local Variables:
 # tab-width:4

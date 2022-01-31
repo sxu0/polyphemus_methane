@@ -6,14 +6,13 @@ import numpy as _numpy
 
 
 class Particle(_core.Particle):
-
     def GetFraction(self):
         data = _core.VectorDouble()
         self.CollectFraction(data)
-        return _numpy.array(data, dtype = _numpy.float64)
+        return _numpy.array(data, dtype=_numpy.float64)
 
     def Set(self, mass, fraction):
-        fraction = _numpy.array(fraction, dtype = _numpy.float64)
+        fraction = _numpy.array(fraction, dtype=_numpy.float64)
 
         if len(fraction) != self.GetNs():
             raise Exception("Length of fraction list must equal the number of species.")

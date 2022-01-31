@@ -23,7 +23,6 @@ import os, sys, unittest
 
 
 class EnsembleParameterTest(unittest.TestCase):
-
     def setUp(self):
         # The loop number for the random number generation.
         self.Nloop = 1000
@@ -39,9 +38,8 @@ class EnsembleParameterTest(unittest.TestCase):
         ep = EnsembleParameter()
 
         # Raises an Exception for a wrong file.
-        self.assertRaises(Exception, ep.LoadConfiguration, 'nofile_sorry')
-        self.assertRaises(Exception, ep.ReadIdEnsembleFile, 'nofile_sorry',
-                          True)
+        self.assertRaises(Exception, ep.LoadConfiguration, "nofile_sorry")
+        self.assertRaises(Exception, ep.ReadIdEnsembleFile, "nofile_sorry", True)
         # An empty ensemble.
         self.assert_(len(ep.id_ensemble) == 0)
 
@@ -70,8 +68,7 @@ class EnsembleParameterTest(unittest.TestCase):
         self.assert_(len(ep.occurrence_frequency) == Ntmp)
         for i in range(Ntmp):
             self.assert_(len(ep.value[i]) == ep.parameter_size[i])
-            self.assert_(len(ep.occurrence_frequency[i]) \
-                             == ep.parameter_size[i])
+            self.assert_(len(ep.occurrence_frequency[i]) == ep.parameter_size[i])
 
     def testGenerateEnsemble(self):
         import random
@@ -91,8 +88,7 @@ class EnsembleParameterTest(unittest.TestCase):
         self.assert_(len(ep.occurrence_frequency) == Ntmp)
         for i in range(Ntmp):
             self.assert_(len(ep.value[i]) == ep.parameter_size[i])
-            self.assert_(len(ep.occurrence_frequency[i]) \
-                             == ep.parameter_size[i])
+            self.assert_(len(ep.occurrence_frequency[i]) == ep.parameter_size[i])
 
         # Generates an ensemble.
         ep.GenerateIdEnsemble()
@@ -111,5 +107,5 @@ class EnsembleParameterTest(unittest.TestCase):
             self.assert_(index_choice in choice_list)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main(argv=sys.argv)

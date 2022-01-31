@@ -25,7 +25,7 @@
 
 namespace Talos
 {
-  
+
   //! Tests whether a file exists.
   /*!
     \param file_name file name.
@@ -38,7 +38,7 @@ namespace Talos
     ifstream file_stream(file_name.c_str(), ifstream::in);
     bool ans = file_stream.is_open();
     file_stream.close();
-    
+
     return ans;
   }
 
@@ -239,7 +239,7 @@ namespace Talos
 	  throw "Error in satisfies_constraint: the constraint \""
 	    + expression + "\" cannot be parsed or is not supported.";
       }
-    
+
     return true;
   }
 
@@ -256,7 +256,7 @@ namespace Talos
     vector<string> constraint_list = split(constraint, "|");
 
     string output = "";
-    
+
     string expression, str, termination;
     for (int i = 0; i < int(constraint_list.size()); i++)
       {
@@ -675,7 +675,7 @@ namespace Talos
       index --;
     else
       index = line.size();
-    
+
     while (delimiters_.find_first_of(line[--index]) != string::npos);
 
     return line.substr(0, index + 1);
@@ -706,7 +706,7 @@ namespace Talos
       index --;
     else
       index = line.size();
-    
+
     while (delimiters_.find_first_of(line[--index]) != string::npos);
 
     line = line.substr(0, index + 1);
@@ -1810,7 +1810,7 @@ namespace Talos
   {
     return current_;
   }
-  
+
   //! Adds a file to the streams.
   /*!
     \param file file to be added.
@@ -1821,7 +1821,7 @@ namespace Talos
     streams_.push_back(new ConfigStream(file));
     current_ = streams_.begin() + l;
   }
-  
+
   //! Deselects the section.
   /*!
     Deselects the section (this is equivalent to SetSection("")) and rewinds

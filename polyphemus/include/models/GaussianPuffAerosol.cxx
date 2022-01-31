@@ -94,7 +94,7 @@ namespace Polyphemus
 	species = config_species.GetElement();
 	config_species.GetNumber(parameter[species]);
       }
-    
+
     for (int i = 0; i < this->Ns_aer; i++)
       {
 	iter = parameter.find(this->species_list_aer[i]);
@@ -414,7 +414,7 @@ namespace Polyphemus
                 quantity_number_aer.resize(this->Nbin_aer);
                 quantity_number_aer = 0.0;
               }
-            
+
             // Creating one puff for each location with all species.
             Npoint = point_emission.extent(0);
 
@@ -433,7 +433,7 @@ namespace Polyphemus
                                        this->photolysis_reaction_list,
                                        this->species_list_aer,
                                        this->bin_list,
-                                       quantity_aer,      
+                                       quantity_aer,
                                        quantity_number_aer,
                                        is_volume_source, source_id);
                 puff->InitPuff();
@@ -651,7 +651,7 @@ namespace Polyphemus
 
     if (this->option_process["with_chemistry"])
       {
-   
+
         if (puff->HasMeteo()){
             // puff->GetAdditionalMeteo(liquid_water_content_);
 	  liquid_water_content_ = ComputePuffAdditionalLWC(this->temperature_,
@@ -735,7 +735,7 @@ namespace Polyphemus
   ::GetPuffBackgroundConcentration_aer(int index, int s, int b)
   {
     this->SetCurrentPuff(index);
-    
+
     return (*this->current_puff)->GetBackgroundConcentration(s, b);
   }
 
@@ -750,14 +750,14 @@ namespace Polyphemus
   ::SetPuffBackgroundConcentration_number(int index, Array<T, 1> concentration_number)
   {
     this->SetCurrentPuff(index);
-    
+
     int size_ns_number = concentration_number.size();
     if (size_ns_number != this->Nbin_aer)
       throw string("The number of species_aer is set to ")
 	+ to_str<int>(this->Nbin_aer) + " but the array is of size "
 	+ to_str<int>(size_ns_number);
 
-    for (int b = 0; b < this->Nbin_aer; b++) 
+    for (int b = 0; b < this->Nbin_aer; b++)
       (*this->current_puff)->SetBackgroundNumberConcentration(concentration_number(b), b);
   }
 
@@ -767,7 +767,7 @@ namespace Polyphemus
   ::GetPuffBackgroundConcentration_number(int index, int b)
   {
     this->SetCurrentPuff(index);
-    
+
     return (*this->current_puff)->GetBackgroundNumberConcentration(b);
   }
 
@@ -783,7 +783,7 @@ namespace Polyphemus
   {
     this->SetCurrentPuff(index);
     for(int s = 0; s < this->Ns_aer; s++)
-      for (int b = 0; b < this->Nbin_aer; b++) 
+      for (int b = 0; b < this->Nbin_aer; b++)
 	{
 	  (*this->current_puff)->SetQuantity(quantity_aer(s, b), s, b);
 	}
@@ -794,7 +794,7 @@ namespace Polyphemus
   ::SetPuffQuantity_number(int index, Array<T, 1> quantity_number)
   {
     this->SetCurrentPuff(index);
-    for (int b = 0; b < this->Nbin_aer; b++) 
+    for (int b = 0; b < this->Nbin_aer; b++)
       {
 	(*this->current_puff)->SetNumberQuantity(quantity_number(b), b);
       }
@@ -825,10 +825,10 @@ namespace Polyphemus
       rho = 1.;
     else
       rho = 1.e-6 * TotalMass/subrho;
-    
-   
+
+
     return rho;
-	
+
   }
 
 
@@ -849,7 +849,7 @@ namespace Polyphemus
               this->PointEmissionManager->GetEmittedSpeciesIndex_aer(emission);
     int Ns_emitted_number_aer = emitted_species_index_number_aer.size();
 
-    vector<map <string, string> > emitted_species_list_number_aer_bin = 
+    vector<map <string, string> > emitted_species_list_number_aer_bin =
               this->PointEmissionManager->GetEmittedAerosolSpecies(emission);
     int bin_aer;
     int species_aer;
@@ -859,18 +859,18 @@ namespace Polyphemus
     Array<T, 2> quantity_aer_number_tmp;
     quantity_aer_number_tmp.resize(this->Ns_aer, this->Nbin_aer);
     quantity_aer_number_tmp = 0.0;
- 
+
     int i, j, k;
     float TotalMass; // ug.m-3
-    float Rho_aer; 
+    float Rho_aer;
     float MeanDiameter; //= 1.e6 * sqrt(BinBound_aer(b + 1) * BinBound_aer(b)); // um
 
     vector<float> Rho_species; // g.cm-3 -> 10-6 ug.um-3
-	
+
     Data<T, 1> Conc_aer_tmp;
     Conc_aer_tmp.Resize(this->Ns_aer);
     Conc_aer_tmp.SetZero();
-	
+
     int Nt_puff = max(int(this->Delta_t_puff / this->Delta_t), 1);
     Date puff_next_date = this->current_date;
     puff_next_date.AddSeconds(this->Delta_t * Nt_puff);
@@ -879,17 +879,17 @@ namespace Polyphemus
 
 	species_name_tmp = emitted_species_list_number_aer_bin[s]["species"];
 	species_aer = this->GetSpeciesIndex_aer(species_name_tmp);
-	
+
 	bin_aer = convert<int>(emitted_species_list_number_aer_bin[s]["bin"]);
-	
+
 	this->PointEmissionManager->
                       GetEmission_aer(this->current_date,
                                       puff_next_date, s, emission,
-                                      quantity_aer_number_bin_tmp); 
+                                      quantity_aer_number_bin_tmp);
 
 	quantity_aer_number_tmp(species_aer, bin_aer) = quantity_aer_number_bin_tmp;
       }
-    
+
     for (int b = 0; b < this->Nbin_aer; b++){
       TotalMass = 0.0;
       Rho_aer = 0.0;
@@ -898,7 +898,7 @@ namespace Polyphemus
       	Conc_aer_tmp(s) = quantity_aer_number_tmp(s, b);
       }
       MeanDiameter = 1.e6 * sqrt(BinBound_aer(b + 1) * BinBound_aer(b));
-      // puff_number_emissions(b) = 1. / PI * 6. 
+      // puff_number_emissions(b) = 1. / PI * 6.
       // 	/ (MeanDiameter*MeanDiameter*MeanDiameter) / (1.e-6);
       Rho_aer = ComputeDensity(Conc_aer_tmp, Mass_Density_aer, TotalMass, this->Ns_aer - 1);
 
@@ -928,7 +928,7 @@ namespace Polyphemus
   ::ComputeNumberPuff(int b, Array<T,2> concentration_list_aer)
   {
     float MeanDiameter; //= 1.e6 * sqrt(BinBound_aer(b + 1) * BinBound_aer(b)); // um
-    float Rho_aer; 
+    float Rho_aer;
 
     Data<T, 1> Conc_aer_bin_tmp;
     int s;
@@ -936,7 +936,7 @@ namespace Polyphemus
     Conc_aer_bin_tmp.SetZero();
     T tot_mass = 0.0;
     T number_concentration;
-    MeanDiameter= 1.e6 * sqrt(BinBound_aer(b + 1) * BinBound_aer(b)); 
+    MeanDiameter= 1.e6 * sqrt(BinBound_aer(b + 1) * BinBound_aer(b));
 
     for (s=0; s<this->Ns_aer-1; s++)
       {
@@ -975,7 +975,7 @@ namespace Polyphemus
     Data<T, 1> conc_background_tmp(this->Ns_aer);
     conc_tot_tmp.SetZero();
     conc_background_tmp.SetZero();
-    
+
     for (int s = 0; s < this->Ns_aer-1; s++)
       {
 	conc_tot += concentration_list_aer(s, b);
@@ -987,21 +987,21 @@ namespace Polyphemus
 
     rho_tot = ComputeDensity(conc_tot_tmp, Rho_species, conc_tot, this->Ns_aer-1);
     rho_background = ComputeDensity(conc_background_tmp, Rho_species, conc_background, this->Ns_aer-1);
-   
+
     if (background_concentration_number(b) == 0. && concentration_list_number(b) == 0.)
       return 0.;
 
     //Compute Dn
     T delta_number;
-    T delta_ratio, background_ratio;   
+    T delta_ratio, background_ratio;
 
     if (conc_tot > 0. && conc_background > 0.)
       {
 	delta_ratio = (conc_tot - conc_background) / conc_tot;
 	background_ratio = conc_background / conc_tot;
 
-	delta_number = (concentration_list_number(b) * (rho_tot / conc_tot) 
-			- background_ratio * background_concentration_number(b) 
+	delta_number = (concentration_list_number(b) * (rho_tot / conc_tot)
+			- background_ratio * background_concentration_number(b)
 			* (rho_background / conc_background));
 	delta_number *= ((m_0 / Rho_0) / delta_ratio);
       }
@@ -1024,8 +1024,8 @@ namespace Polyphemus
       }
 
 
-    return delta_number;       
-  } 
+    return delta_number;
+  }
 
   template<class T, class ClassChemistry>
   T GaussianPuffAerosol<T, ClassChemistry>
@@ -1059,29 +1059,29 @@ namespace Polyphemus
       }
 
     for (int s = 0; s < this->Ns_aer-1; s++)
-      {	
+      {
 	conc_tot += concentration_list_aer(s, b);
 	conc_background_tmp(s) = background_concentration_aer(s, b);
 	conc_tot_tmp(s) = concentration_list_aer(s, b);
-	conc_background += background_concentration_aer(s, b);	
+	conc_background += background_concentration_aer(s, b);
       }
-    
+
     if (conc_tot == 0.)
       return 0.;
     else if (conc_tot == conc_background)
       return background_concentration_number(b);
-   
+
     //Compute rho
     T rho_background, rho_tot;
 
     rho_background = ComputeDensity(conc_background_tmp, Rho_species, conc_background, this->Ns_aer-1);
     rho_tot = ComputeDensity(conc_tot_tmp, Rho_species, conc_tot, this->Ns_aer-1);
 
-    //    delta_concentration_list_number(b) *= 1.e-6; //Delta N normalized with rho0 = 1.e-6; 
+    //    delta_concentration_list_number(b) *= 1.e-6; //Delta N normalized with rho0 = 1.e-6;
     T delta_ratio, background_ratio;
 
     if (conc_background == 0 && conc_tot > 0.)
-      number_tot = delta_concentration_list_number(b) 
+      number_tot = delta_concentration_list_number(b)
 	* (Rho_0 / m_0) * (conc_tot / rho_tot);
     else
       {
@@ -1089,7 +1089,7 @@ namespace Polyphemus
 	delta_ratio = (conc_tot - conc_background) / conc_tot;
 	background_ratio = conc_background / conc_tot;
 	number_tot = (delta_ratio * delta_concentration_list_number(b) * (Rho_0 / m_0)
-		      + background_ratio * background_concentration_number(b) 
+		      + background_ratio * background_concentration_number(b)
 		      * (rho_background / conc_background));
 	number_tot *= (conc_tot / rho_tot);
       }
@@ -1116,9 +1116,9 @@ namespace Polyphemus
 
       }
 
-   
 
-    return number_tot;        
+
+    return number_tot;
 
   }
 
@@ -1146,7 +1146,7 @@ namespace Polyphemus
 
   {
 
-    float Rho_aer; 
+    float Rho_aer;
 
 
 
@@ -1258,7 +1258,7 @@ namespace Polyphemus
 
     T concentration_list_aer_tot;
     int species_comp, species_comp_aer;
-    
+
     // For interactions.
     T tmp, tmp2, c_init;
     Array<vector<int>, 1 > PuffInteractionList(this->Npuff);
@@ -1337,7 +1337,7 @@ namespace Polyphemus
 	T tot_number_tmp;
 	tot_number_tmp = 0.;
     	for (b = 0; b < this->Nbin_aer; b++){
-    	  quantity_list_number(alpha, b) = (*iter)->GetNumberQuantity(b);	    	   
+    	  quantity_list_number(alpha, b) = (*iter)->GetNumberQuantity(b);
     	}
 
         // Interaction coefficient for all puff pairs.
@@ -1423,7 +1423,7 @@ namespace Polyphemus
 		else
 		  overlap_volume(s) = 1. /
 		    (interaction_coefficient(alpha, alpha) * tmp2);
-		overlap_volume2(s) = 1. / 
+		overlap_volume2(s) = 1. /
 		  (interaction_coefficient(alpha, alpha) * tmp2);
 	      }
             else
@@ -1499,7 +1499,7 @@ namespace Polyphemus
 		for (i = 0; i < Ninteraction; i++)
 		  {
 		    for (b = 0; b < this->Nbin_aer ; b++)
-		      {		    		      
+		      {
 			beta = PuffList_tmp[i];
 			tmp += interaction_coefficient(alpha, beta)
 			  * quantity_list_aer(beta, s, b);
@@ -1515,7 +1515,7 @@ namespace Polyphemus
 			puff->GetBackgroundConcentration(s, b);
 		    else
 		      background_concentration_aer(s, b) = background_concentration_aer_(s, b);
-		    
+
 		    Cback_tmp += background_concentration_aer(s, b);
 		    Qpuff_tmp += quantity_list_aer(alpha, s, b);
 		  }
@@ -1524,14 +1524,14 @@ namespace Polyphemus
 		if (Ctot_tmp + Cback_tmp < 0.)
 		  Ctot_tmp = 0.;
 
-		
+
 		if (Ctot_tmp > 0.)
 		  for (b = 0; b < this->Nbin_aer ; b++)
 		    {
 		      overlap_volume_aer(s, b) = Qpuff_tmp / Ctot_tmp;
-		      overlap_volume_aer2(s, b) = 1. / 
+		      overlap_volume_aer2(s, b) = 1. /
 			(interaction_coefficient(alpha, alpha) * tmp2);
-		  
+
 		      if (overlap_volume_aer(s, b) > 1. / interaction_coefficient(alpha, alpha))
 			overlap_volume_aer(s, b) = 1. / interaction_coefficient(alpha, alpha);
 		      if (overlap_volume_aer2(s, b) > 1. / interaction_coefficient(alpha, alpha))
@@ -1542,9 +1542,9 @@ namespace Polyphemus
 		    {
 		      overlap_volume_aer(s, b) = 1. /
 			(interaction_coefficient(alpha, alpha) * tmp2);
-		      overlap_volume_aer2(s, b) = 1. / 
+		      overlap_volume_aer2(s, b) = 1. /
 			(interaction_coefficient(alpha, alpha) * tmp2);
-		      
+
 		      if (overlap_volume_aer(s, b) > 1. / interaction_coefficient(alpha, alpha))
 			overlap_volume_aer(s, b) = 1. / interaction_coefficient(alpha, alpha);
 		      if (overlap_volume_aer2(s, b) > 1. / interaction_coefficient(alpha, alpha))
@@ -1558,7 +1558,7 @@ namespace Polyphemus
 
 	    for (b = 0; b < this->Nbin_aer ; b++)
 	      {
-		
+
 		InCloudWetDepositionFlux_aer2D(s, b) = 0.0;
 		//Background concentrations.
 		if (puff->HasMeteo())
@@ -1593,14 +1593,14 @@ namespace Polyphemus
 		    concentration_list_aer(s, b) = 0.;
                   }
 		else
-		  concentration_list_aer(s, b) += background_concentration_aer(s, b);		  
+		  concentration_list_aer(s, b) += background_concentration_aer(s, b);
 	      }
-	  } 
+	  }
 
 	T Ntot_tmp;
 	T Cnback_tmp;
 	T Cntot_tmp;
-	
+
 	if (this->option_process["with_puff_interaction"] && Ninteraction > 1)
 	  {
 	    tmp = 0.;
@@ -1633,12 +1633,12 @@ namespace Polyphemus
 	    Cntot_tmp = tmp;
 	    if (Cntot_tmp + Cnback_tmp < 0.)
 	      Cntot_tmp = 0.;
-	    
+
 	    if (Cntot_tmp > 0.)
 	      for (b = 0; b < this->Nbin_aer; b++)
 		{
 		  overlap_volume_number(b) = Ntot_tmp / Cntot_tmp;
-		  overlap_volume_number2(b) = 1. / 
+		  overlap_volume_number2(b) = 1. /
 		    (interaction_coefficient(alpha, alpha) * tmp2);
 
 		  if (overlap_volume_number(b) > 1. / interaction_coefficient(alpha, alpha))
@@ -1651,9 +1651,9 @@ namespace Polyphemus
 		{
 		  overlap_volume_number(b) = 1. /
 		    (interaction_coefficient(alpha, alpha) * tmp2);
-		  overlap_volume_number2(b) = 1. / 
+		  overlap_volume_number2(b) = 1. /
 		    (interaction_coefficient(alpha, alpha) * tmp2);
-		  
+
 		  if (overlap_volume_number(b) > 1. / interaction_coefficient(alpha, alpha))
 		    overlap_volume_number(b) = 1. / interaction_coefficient(alpha, alpha);
 		  if (overlap_volume_number2(b) > 1. / interaction_coefficient(alpha, alpha))
@@ -1713,13 +1713,13 @@ namespace Polyphemus
 	    if (conc_tot_aer <= 0.)
 	      for (b = 0; b < this->Nbin_aer; b++)
 		concentration_list_aer(s, b) = 0.;
-	    else	     
+	    else
 	      for (b = 0; b < this->Nbin_aer; b++)
 		{
-		  T ratio_mass;			    
+		  T ratio_mass;
 		  ratio_mass = concentration_list_aer(s, b) / conc_tot_aer;
 		  if (deltaMass_aer(s) < 0.)
-		    concentration_list_aer(s, b) = max(concentration_list_aer(s, b) 
+		    concentration_list_aer(s, b) = max(concentration_list_aer(s, b)
 						       + deltaMass_aer(s, b) * ratio_mass, 0.);
 
 		}
@@ -1757,7 +1757,7 @@ namespace Polyphemus
 	      }
 	    rho_p0 = ComputeDensity(conc0_tmp, Mass_Density_aer, conc0_tot, this->Ns_aer-1);
 	    rho_p1 = ComputeDensity(conc1_tmp, Mass_Density_aer, conc1_tot, this->Ns_aer-1);
-	    
+
 	    if (conc1_tot == 0.)
 	      number_new = 0.;
 	    else
@@ -1773,7 +1773,7 @@ namespace Polyphemus
 	      }
 	    concentration_list_number(b) = number_new;
 	    if (concentration_list_number(b) < 0.)
-	      concentration_list_number(b) = 0.;	    
+	      concentration_list_number(b) = 0.;
 	  }
 
 
@@ -1790,7 +1790,7 @@ namespace Polyphemus
 
 	    if (concentration_list_number(b) == 0. && tot_puff > 0.)
 	      concentration_list_number(b) = ComputeNumberPuff(b, concentration_list_aer);
-	      
+
 	    if (background_concentration_number(b) == 0. && tot_back > 0.)
 	      background_concentration_number(b) = ComputeNumberPuff(b, background_concentration_aer);
 	  }
@@ -2602,7 +2602,7 @@ namespace Polyphemus
     T Pvsat;
     T Qsat;
     T lwc_puff;
-    
+
     Pvsat = 610.78 * exp(17.2694 * (temperature - 273.15) / (temperature - 35.86));
     // cout << "Pvsat : " << Pvsat << endl;
 
@@ -2640,7 +2640,7 @@ namespace Polyphemus
   {
     this->SetCurrentPuff(index);
     this->SetCurrentMeteo(*this->current_puff);
-    return ComputePuffIntegral_number(*this->current_puff, b, 
+    return ComputePuffIntegral_number(*this->current_puff, b,
                                       x, y, z, lx, ly, lz);
   }
 
@@ -2648,7 +2648,7 @@ namespace Polyphemus
   //!  Combine two overlapping puff.
   template<class T, class ClassChemistry>
   void GaussianPuffAerosol<T, ClassChemistry>
-  ::CombineOverlappingPuff(int alpha, int beta, 
+  ::CombineOverlappingPuff(int alpha, int beta,
                            T volume_alpha, T volume_beta)
   {
     Puff<T>* puff_alpha;
@@ -2735,7 +2735,7 @@ namespace Polyphemus
     else
       dx_new = volume_alpha * delta_x / (volume_alpha + volume_beta);
     x_out = x_min + dx_new;
- 
+
    if (y_min == y_alpha)
       dy_new = volume_beta * delta_y / (volume_alpha + volume_beta);
     else
@@ -2846,7 +2846,7 @@ namespace Polyphemus
 
     x_ = puff->GetX();
     y_ = puff->GetY();
-    
+
 
     // Conversion.
     T x_c = x_ * this->cos_angle_ + y_ * this->sin_angle_;
@@ -2859,7 +2859,7 @@ namespace Polyphemus
     T initial_sigma_x_2;
     T initial_sigma_y_2;
     T initial_sigma_z_2;
-    
+
     if (this->option_process["with_adms_dispersion_formula"])
       {
 	initial_sigma_x_2 = 0.;
@@ -2872,7 +2872,7 @@ namespace Polyphemus
 	initial_sigma_y_2 = puff->GetInitialSigma_y();
 	initial_sigma_z_2 = puff->GetInitialSigma_z();
       }
-    
+
     sigma_x = sqrt(sigma_x * sigma_x + initial_sigma_x_2);
     sigma_y = sqrt(sigma_y * sigma_y + initial_sigma_y_2);
     sigma_z = sqrt(sigma_z * sigma_z + initial_sigma_z_2);
@@ -2929,7 +2929,7 @@ namespace Polyphemus
 		T dzi = z2 + z_c - 2. * inversion_height_;
 		T dzig = z2 - z_c + 2. * inversion_height_;
 		T dzgi = z2 - z_c - 2. * inversion_height_;
-		
+
 		FzI2 += 0.5 * erf(dzi / (sqrt_2 * sigma_z))
 		  + 0.5 * erf(dzgi / (sqrt_2 * sigma_z))
 		  + 0.5 * erf(dzig / (sqrt_2 * sigma_z));
@@ -2937,7 +2937,7 @@ namespace Polyphemus
 		dzi = z1 + z_c - 2. * inversion_height_;
 		dzig = z1 - z_c + 2. * inversion_height_;
 		dzgi = z1 - z_c - 2. * inversion_height_;
-	
+
 		FzI1 += 0.5 * erf(dzi / (sqrt_2 * sigma_z))
 		  + 0.5 * erf(dzgi / (sqrt_2 * sigma_z))
 		  + 0.5 * erf(dzig / (sqrt_2 * sigma_z));
@@ -2990,7 +2990,7 @@ namespace Polyphemus
   //! Computes the integral of a puff over a given volume.
   template<class T, class ClassChemistry>
   T GaussianPuffAerosol<T, ClassChemistry>
-    ::ComputePuffIntegral_number(Puff<T>* puff, int b, 
+    ::ComputePuffIntegral_number(Puff<T>* puff, int b,
                               T x, T y, T z,
                               T lx, T ly, T lz)
   {
@@ -3093,7 +3093,7 @@ namespace Polyphemus
 		T dzi = z2 + z_c - 2. * inversion_height_;
 		T dzig = z2 - z_c + 2. * inversion_height_;
 		T dzgi = z2 - z_c - 2. * inversion_height_;
-		
+
 		FzI2 += 0.5 * erf(dzi / (sqrt_2 * sigma_z))
 		  + 0.5 * erf(dzgi / (sqrt_2 * sigma_z))
 		  + 0.5 * erf(dzig / (sqrt_2 * sigma_z));
@@ -3101,7 +3101,7 @@ namespace Polyphemus
 		dzi = z1 + z_c - 2. * inversion_height_;
 		dzig = z1 - z_c + 2. * inversion_height_;
 		dzgi = z1 - z_c - 2. * inversion_height_;
-		
+
 		FzI1 += 0.5 * erf(dzi / (sqrt_2 * sigma_z))
 		  + 0.5 * erf(dzgi / (sqrt_2 * sigma_z))
 		  + 0.5 * erf(dzig / (sqrt_2 * sigma_z));
@@ -3183,7 +3183,7 @@ namespace Polyphemus
     Puff<T>* puff;
     int Npuff, ipuff;
     Npuff = 100;
-    
+
     vector<string> id_list;
 
     T x_p, y_p, z_p_c, z_p_above, z_p;
@@ -3191,7 +3191,7 @@ namespace Polyphemus
     string puff_id;
     const T pi = 3.14159265358979323846264;
     const T earth_radius = 6371229.;
-    
+
     if (this->PuffList.size() > 0)
       {
 	for (iter = this->PuffList.begin(); iter != this->PuffList.end(); iter++)
@@ -3199,7 +3199,7 @@ namespace Polyphemus
 	    puff = *iter;
 	    int Nid_tmp = id_list.size();
 	    int l = 0;
-	    
+
 	    puff_id = puff->GetSourceId();
 	    if (Nid_tmp == 0)
 	      id_list.push_back(puff_id);
@@ -3207,21 +3207,21 @@ namespace Polyphemus
 	      while (l < Nid_tmp && puff_id != id_list[l])
 		l++;
 	    if (l == Nid_tmp && Nid_tmp != 0)
-	      id_list.push_back(puff_id);		    
+	      id_list.push_back(puff_id);
 	  }
-	    
+
 	for (int l = 0; l < int(id_list.size()); l++)
 	  {
 	    Data<T, 2> puff_coordinate_out(Npuff, 6);
 	    Data<T, 2> puff_mass_out(Npuff, this->Ns);
 	    Data<T, 3> puff_mass_out_aer(Npuff, this->Ns_aer, this->Nbin_aer);
-	    
+
 	    puff_coordinate_out.Fill(-1.0);
 	    puff_mass_out.Fill(-1.0);
 	    puff_mass_out_aer.Fill(-1.0);
 
 	    puff_id = id_list[l];
-	    	
+
 	    ipuff = 0;
 	    for (iter2 = this->PuffList.rbegin(); iter2 != this->PuffList.rend(); iter2++)
 	      {
@@ -3234,25 +3234,25 @@ namespace Polyphemus
 		    z_p_c=puff->GetZ();
 		    z_p_above=puff->GetHeightAboveBL();
 		    z_p;
-		    
+
 		    if (z_p_c !=0.)
 		      z_p=z_p_c;
 		    else
 		      z_p = z_p_above;
-		    
+
 		    lat_p= (y_p / earth_radius) * (180. / pi);
 		    lon_p = x_p / (earth_radius * cos(lat_p * pi / 180.)) * (180. / pi);
-		    
+
 		    puff_coordinate_out(ipuff, 0) = z_p;
 		    puff_coordinate_out(ipuff, 1) = lat_p;
-		    puff_coordinate_out(ipuff, 2) = lon_p; 
+		    puff_coordinate_out(ipuff, 2) = lon_p;
 		    puff_coordinate_out(ipuff, 3) = puff->GetSigma_z();
 		    puff_coordinate_out(ipuff, 4) = puff->GetSigma_y();
 		    puff_coordinate_out(ipuff, 5) = puff->GetSigma_x();
-		    
-		    for (int s = 0; s < this->Ns; s++)	     
+
+		    for (int s = 0; s < this->Ns; s++)
 		      puff_mass_out(ipuff, s) = puff->GetQuantity(s);
-		    
+
 		    for (int s = 0; s < this->Ns_aer ; s++)
 		      for (int b = 0; b < this->Nbin_aer ; b++)
 			puff_mass_out_aer(ipuff, s, b) = puff->GetQuantity(s, b);
@@ -3279,7 +3279,7 @@ namespace Polyphemus
     Puff<T>* puff;
     int Npuff, ipuff;
     Npuff = 100;
-    
+
     vector<string> id_list;
 
     T x_p, y_p, z_p_c, z_p_above, z_p;
@@ -3287,7 +3287,7 @@ namespace Polyphemus
     string puff_id;
     const T pi = 3.14159265358979323846264;
     const T earth_radius = 6371229.;
-    
+
     if (this->PuffList.size() > 0)
       {
 	for (iter = this->PuffList.begin(); iter != this->PuffList.end(); iter++)
@@ -3295,7 +3295,7 @@ namespace Polyphemus
 	    puff = *iter;
 	    int Nid_tmp = id_list.size();
 	    int l = 0;
-	    
+
 	    puff_id = puff->GetSourceId();
 	    if (Nid_tmp == 0)
 	      id_list.push_back(puff_id);
@@ -3303,22 +3303,22 @@ namespace Polyphemus
 	      while (l < Nid_tmp && puff_id != id_list[l])
 		l++;
 	    if (l == Nid_tmp && Nid_tmp != 0)
-	      id_list.push_back(puff_id);		    
+	      id_list.push_back(puff_id);
 	  }
-	    
+
 	for (int l = 0; l < int(id_list.size()); l++)
 	  {
 	    Data<T, 2> puff_number_out(Npuff, this->Nbin_aer);
-	    
+
 	    puff_number_out.Fill(-1.0);
 	    puff_id = id_list[l];
-	    	
+
 	    ipuff = 0;
 	    for (iter2 = this->PuffList.rbegin(); iter2 != this->PuffList.rend(); iter2++)
 	      {
 		puff = *iter2;
 		if (puff->GetSourceId() == puff_id)
-		  {		    
+		  {
 		    for (int b = 0; b < this->Nbin_aer ; b++)
 			puff_number_out(ipuff, b) = puff->GetNumberQuantity(b);
 		    ipuff++;
@@ -3360,12 +3360,12 @@ namespace Polyphemus
 	    string puff_id = puff->GetSourceId();
 	    string file_puff_concentration = directory_puff_concentration + to_str(release_time) +
 	      "-" + puff_id;
-	    string file_puff_concentration_aer = directory_puff_concentration + to_str(release_time) + 
+	    string file_puff_concentration_aer = directory_puff_concentration + to_str(release_time) +
 	      "-aer-" + puff_id;
 
-	    string file_background = directory_puff_background_concentration + 
+	    string file_background = directory_puff_background_concentration +
 	      to_str(release_time) + "-" + puff_id;
-	    string file_background_aer = directory_puff_background_concentration + 
+	    string file_background_aer = directory_puff_background_concentration +
 	      to_str(release_time) + "-aer-" + puff_id;
 
 	    T volume_puff_tmp = 1. / this->ComputeInteractionCoefficient(puff, puff);
@@ -3380,7 +3380,7 @@ namespace Polyphemus
 	      }
 	      FormatBinary<float>().Append(species_concentration_out, file_puff_concentration);
 	      FormatBinary<float>().Append(species_concentration_background_out, file_background);
-	      
+
 	      for (int s = 0; s < this->Ns_aer ; s++)
 		for (int b = 0; b < this->Nbin_aer ; b++){
 		  species_concentration_aer_out_tmp(s, b) = puff->GetQuantity(s, b);
@@ -3404,7 +3404,7 @@ namespace Polyphemus
 	    string puff_id = puff->GetSourceId();
 	    string file_puff = directory_puff_mass + to_str(release_time) + "-" + puff_id;
 	    string file_puff_aer = directory_puff_mass + to_str(release_time) + "-aer-" + puff_id;
-	    string file_puff_coordinate = directory_puff_coordinate + 
+	    string file_puff_coordinate = directory_puff_coordinate +
 	      to_str(release_time) + "-" + puff_id;
 
 	    if (fmod(release_time,delta_t_output) == 0)
@@ -3412,11 +3412,11 @@ namespace Polyphemus
 		for (int s = 0; s < this->Ns; s++)
 		  species_quantity_out(s) = puff->GetQuantity(s);
 		FormatBinary<float>().Append(species_quantity_out, file_puff);
-		
+
 		for (int s = 0; s < this->Ns_aer ; s++)
 		  for (int b = 0; b < this->Nbin_aer ; b++)
 		    species_quantity_aer_out (s, b) = puff->GetQuantity(s, b);
-		FormatBinary<float>().Append(species_quantity_aer_out, file_puff_aer);	
+		FormatBinary<float>().Append(species_quantity_aer_out, file_puff_aer);
 	      }
 	  }
       }
@@ -3428,7 +3428,7 @@ namespace Polyphemus
 	    puff = *iter;
 	    T release_time = puff->GetReleaseTime();
 	    string puff_id = puff->GetSourceId();
-	    string file_puff_coordinate = directory_puff_coordinate + 
+	    string file_puff_coordinate = directory_puff_coordinate +
 	      to_str(release_time) + "-" + puff_id;
 
 	    //! Get puff coordinate
@@ -3437,7 +3437,7 @@ namespace Polyphemus
 	    T z_p_c=puff->GetZ();
 	    T z_p_above=puff->GetHeightAboveBL();
 	    T z_p;
-	    
+
 	    if (z_p_c !=0.)
 	      z_p=z_p_c;
 	    else
@@ -3450,15 +3450,15 @@ namespace Polyphemus
 	      const T pi = 3.14159265358979323846264;
 	      const T earth_radius = 6371229.;
 	      T lat_p= (y_p / earth_radius) * (180. / pi);
-	      T lon_p = x_p / (earth_radius * cos(lat_p * pi / 180.)) * (180. / pi); 
+	      T lon_p = x_p / (earth_radius * cos(lat_p * pi / 180.)) * (180. / pi);
 
 	      //! Get Puff LWC
-	      T LWC; 
+	      T LWC;
 	      puff->GetAdditionalMeteo(LWC);
 
 	      puff_coordinate_out(0) = z_p;
 	      puff_coordinate_out(1) = lat_p;
-	      puff_coordinate_out(2) = lon_p; 
+	      puff_coordinate_out(2) = lon_p;
 	      puff_coordinate_out(3) = puff->GetSigma_z();
 	      puff_coordinate_out(4) = puff->GetSigma_y();
 	      puff_coordinate_out(5) = puff->GetSigma_x();
@@ -3467,7 +3467,7 @@ namespace Polyphemus
 	      FormatBinary<float>().Append(puff_coordinate_out, file_puff_coordinate);
 	    }
 	  }
-      } 
+      }
   }
 
   //!  Saves the quantities of species in Puffs.
@@ -3476,14 +3476,14 @@ namespace Polyphemus
   {
     typename list<Puff<T>* >::iterator iter;
     Puff<T>* puff;
-    bool savingpuff = true; 
+    bool savingpuff = true;
     Data<T, 1> species_quantity_out(this->Nbin_aer);
     Data<T, 1> species_concentration_out_tmp(this->Nbin_aer);
     Data<T, 1> species_concentration_out(this->Nbin_aer);
     Data<T, 1> species_concentration_background_out(this->Nbin_aer);
     species_quantity_out.SetZero();
 
- 
+
     if (this->option_process["with_output_plume_number"])
       {
 	for (iter = this->PuffList.begin(); iter != this->PuffList.end(); iter++)
@@ -3492,7 +3492,7 @@ namespace Polyphemus
 	    T release_time = puff->GetReleaseTime();
 	    string puff_id = puff->GetSourceId();
 	    string file_puff = directory_puff_number + to_str(release_time) + "-" + puff_id;
-	      
+
 	    for (int b = 0; b < this->Nbin_aer ; b++)
 	      species_quantity_out(b) = puff->GetNumberQuantity(b);
 	    FormatBinary<float>().Append(species_quantity_out, file_puff);

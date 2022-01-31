@@ -163,7 +163,7 @@ namespace Polyphemus
                   * Model.D2("StreetConcentration")(this->species_index[s], st);
 
             Concentration_.GetArray() /= T(this->interval_length);
-            
+
             if (Model.GetCurrentDate() >= this->date_beg
         	&& Model.GetCurrentDate() <= this->date_end)
               for (s = 0; s < this->Ns; s++)

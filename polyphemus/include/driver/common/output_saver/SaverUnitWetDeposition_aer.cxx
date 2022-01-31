@@ -99,7 +99,7 @@ namespace Polyphemus
        Model.D3("WetDepositionFluxNumber_aer").GetLength(2) != Model.GetNx())
       throw string("The model does not collect the wet deposition flux number") +
 		" of particulate species.";
-	
+
     // Output filename.
     string filename = config_stream.GetValue("Output_file");
     // Output filenames for all species and bins.
@@ -156,7 +156,7 @@ namespace Polyphemus
                 + "formatted: it cannot be parsed by the output saver.";
 
             species = split(field, "_")[0];
-            
+
             if (species == "Number")
               {
                 bounds = split(vsplit[1], "-");
@@ -179,7 +179,7 @@ namespace Polyphemus
 
                     // Field base name is replaced in the generic file name.
                     file = find_replace(filename, "&f", species);
-     
+
                     // Field number is also replaced.
                     file = find_replace(file, "&n", to_str(k));
                     // Adds the corresponding output file.
@@ -230,7 +230,7 @@ namespace Polyphemus
                     output_file[j].push_back(file);
                   }
               }
-          } 
+          }
       }
 
     // Indices in the model.
@@ -244,7 +244,7 @@ namespace Polyphemus
 
     for (b = 0; b < int(number_list_aer.size()); b++)
       ofstream tmp_number_stream(output_number[b].c_str());
-	
+
     if (this->averaged)
       {
         for (s = 0; s < int(this->species_list_aer.size()); s++)
@@ -331,10 +331,10 @@ namespace Polyphemus
                 for (i = 0; i < this->base_Nx; i++)
                   WetDepositionFluxNumber_aer_[b](j, i) += 0.5
                     * Model.D3("WetDepositionFluxNumber_aer")(base_b, j, i);
-	      
+
               WetDepositionFluxNumber_aer_[b].GetArray() /=
                 T(this->interval_length);
-              
+
               if (Model.GetCurrentDate() >= this->date_beg
                   && Model.GetCurrentDate() <= this->date_end)
                 FormatBinary<float>().Append(WetDepositionFluxNumber_aer_[b],
@@ -400,7 +400,7 @@ namespace Polyphemus
                                          output_number[b]);
           }
       }
-	
+
   }
 
 } // namespace Polyphemus.

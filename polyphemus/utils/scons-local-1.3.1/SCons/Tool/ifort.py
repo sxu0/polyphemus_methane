@@ -40,48 +40,55 @@ import SCons.Defaults
 from SCons.Scanner.Fortran import FortranScan
 from FortranCommon import add_all_to_env
 
+
 def generate(env):
     """Add Builders and construction variables for ifort to an Environment."""
     # ifort supports Fortran 90 and Fortran 95
     # Additionally, ifort recognizes more file extensions.
     fscan = FortranScan("FORTRANPATH")
-    SCons.Tool.SourceFileScanner.add_scanner('.i', fscan)
-    SCons.Tool.SourceFileScanner.add_scanner('.i90', fscan)
+    SCons.Tool.SourceFileScanner.add_scanner(".i", fscan)
+    SCons.Tool.SourceFileScanner.add_scanner(".i90", fscan)
 
-    if not env.has_key('FORTRANFILESUFFIXES'):
-        env['FORTRANFILESUFFIXES'] = ['.i']
+    if not env.has_key("FORTRANFILESUFFIXES"):
+        env["FORTRANFILESUFFIXES"] = [".i"]
     else:
-        env['FORTRANFILESUFFIXES'].append('.i')
+        env["FORTRANFILESUFFIXES"].append(".i")
 
-    if not env.has_key('F90FILESUFFIXES'):
-        env['F90FILESUFFIXES'] = ['.i90']
+    if not env.has_key("F90FILESUFFIXES"):
+        env["F90FILESUFFIXES"] = [".i90"]
     else:
-        env['F90FILESUFFIXES'].append('.i90')
+        env["F90FILESUFFIXES"].append(".i90")
 
     add_all_to_env(env)
 
-    fc = 'ifort'
+    fc = "ifort"
 
-    for dialect in ['F77', 'F90', 'FORTRAN', 'F95']:
-        env['%s' % dialect] = fc
-        env['SH%s' % dialect] = '$%s' % dialect
-        if env['PLATFORM'] == 'posix':
-            env['SH%sFLAGS' % dialect] = SCons.Util.CLVar('$%sFLAGS -fPIC' % dialect)
+    for dialect in ["F77", "F90", "FORTRAN", "F95"]:
+        env["%s" % dialect] = fc
+        env["SH%s" % dialect] = "$%s" % dialect
+        if env["PLATFORM"] == "posix":
+            env["SH%sFLAGS" % dialect] = SCons.Util.CLVar("$%sFLAGS -fPIC" % dialect)
 
-    if env['PLATFORM'] == 'win32':
+    if env["PLATFORM"] == "win32":
         # On Windows, the ifort compiler specifies the object on the
         # command line with -object:, not -o.  Massage the necessary
         # command-line construction variables.
-        for dialect in ['F77', 'F90', 'FORTRAN', 'F95']:
-            for var in ['%sCOM' % dialect, '%sPPCOM' % dialect,
-                        'SH%sCOM' % dialect, 'SH%sPPCOM' % dialect]:
-                env[var] = string.replace(env[var], '-o $TARGET', '-object:$TARGET')
-        env['FORTRANMODDIRPREFIX'] = "/module:"
+        for dialect in ["F77", "F90", "FORTRAN", "F95"]:
+            for var in [
+                "%sCOM" % dialect,
+                "%sPPCOM" % dialect,
+                "SH%sCOM" % dialect,
+                "SH%sPPCOM" % dialect,
+            ]:
+                env[var] = string.replace(env[var], "-o $TARGET", "-object:$TARGET")
+        env["FORTRANMODDIRPREFIX"] = "/module:"
     else:
-        env['FORTRANMODDIRPREFIX'] = "-module "
+        env["FORTRANMODDIRPREFIX"] = "-module "
+
 
 def exists(env):
-    return env.Detect('ifort')
+    return env.Detect("ifort")
+
 
 # Local Variables:
 # tab-width:4

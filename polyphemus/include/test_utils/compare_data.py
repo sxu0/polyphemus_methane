@@ -34,20 +34,19 @@ from atmopy import talos
 from atmopy.display import getd, getm
 
 from config_helpers import as_config, get_result_dir_list
-from file_helpers import (check_path,
-                          normalize_path,
-                          remove_duplicate_path,
-                          file_list)
+from file_helpers import check_path, normalize_path, remove_duplicate_path, file_list
 from test_utils.compare_array import compare_array
 from test_utils.display.matplotlib_ext import *
 from test_utils.ParallelTaskRunner import ParallelTaskRunner
 
 
-def compare_result(config,
-                   base_dir="$POLYPHEMUS",
-                   ref_base_dir="$REF_POLYPHEMUS",
-                   task_runner=ParallelTaskRunner(),
-                   **kwargs):
+def compare_result(
+    config,
+    base_dir="$POLYPHEMUS",
+    ref_base_dir="$REF_POLYPHEMUS",
+    task_runner=ParallelTaskRunner(),
+    **kwargs
+):
     """Compares the data files between two result directories.
 
     The comparison itself is done by the function 'compare_path' called
@@ -83,22 +82,26 @@ def compare_result(config,
     if type(config) not in (str, unicode, talos.Config):
         difference = {}
         for c in config:
-            difference.update(compare_result(c, base_dir, ref_base_dir,
-                                             task_runner, **kwargs))
+            difference.update(
+                compare_result(c, base_dir, ref_base_dir, task_runner, **kwargs)
+            )
         return difference
 
     config = as_config(config)
     result_dir_list = get_result_dir_list(config)
-    return compare_dir(result_dir_list, config, base_dir, ref_base_dir,
-                       task_runner, **kwargs)
+    return compare_dir(
+        result_dir_list, config, base_dir, ref_base_dir, task_runner, **kwargs
+    )
 
 
-def compare_dir(data_dir=None,
-                config=None,
-                base_dir="$POLYPHEMUS",
-                ref_base_dir="$REF_POLYPHEMUS",
-                task_runner=ParallelTaskRunner(),
-                **kwargs):
+def compare_dir(
+    data_dir=None,
+    config=None,
+    base_dir="$POLYPHEMUS",
+    ref_base_dir="$REF_POLYPHEMUS",
+    task_runner=ParallelTaskRunner(),
+    **kwargs
+):
     """Compares the data files between two directories.
 
     The full 'data_dir' must begins with 'base_dir', the reference data
@@ -135,8 +138,9 @@ def compare_dir(data_dir=None,
     if type(data_dir) not in (str, unicode):
         difference = {}
         for d in remove_duplicate_path(data_dir):
-            difference.update(compare_dir(d, config, base_dir, ref_base_dir,
-                                          task_runner, **kwargs))
+            difference.update(
+                compare_dir(d, config, base_dir, ref_base_dir, task_runner, **kwargs)
+            )
         return difference
 
     base_dir = normalize_path(base_dir)
@@ -147,9 +151,10 @@ def compare_dir(data_dir=None,
     abs_data_dir = normalize_path(data_dir)
 
     if not abs_data_dir.startswith(base_dir):
-        raise ValueError, "The compared data directory 'data_dir' (\"%s\") "\
-                    "must be under the base directory 'base_dir' (\"%s\")." %\
-                    (abs_data_dir, base_dir)
+        raise ValueError, "The compared data directory 'data_dir' (\"%s\") " "must be under the base directory 'base_dir' (\"%s\")." % (
+            abs_data_dir,
+            base_dir,
+        )
 
     ref_data_dir = abs_data_dir.replace(base_dir, ref_base_dir)
 
@@ -161,12 +166,13 @@ def compare_dir(data_dir=None,
         if not os.path.exists(ref_data_dir):
             return {}
         else:
-            return {data_key: 'lacking directory'}
+            return {data_key: "lacking directory"}
     elif not os.path.exists(ref_data_dir):
-        return {data_key: 'unexpected directory'}
+        return {data_key: "unexpected directory"}
 
-    difference = compare_path(data_dir, ref_data_dir, task_runner,
-                              config=config, **kwargs)
+    difference = compare_path(
+        data_dir, ref_data_dir, task_runner, config=config, **kwargs
+    )
     task_runner.retrieve()
 
     if difference:
@@ -176,8 +182,7 @@ def compare_dir(data_dir=None,
     return {}
 
 
-def compare_path(data_dir, ref_data_dir, task_runner, show_figure=True,
-                 **kwargs):
+def compare_path(data_dir, ref_data_dir, task_runner, show_figure=True, **kwargs):
     """Compares the data files between the two input directories.
 
     A self-describing dictionary reporting the differences is generated.
@@ -212,7 +217,11 @@ def compare_path(data_dir, ref_data_dir, task_runner, show_figure=True,
     full_ref_data_dir = os.path.realpath(ref_data_dir)
     print "Comparing {}\nwith {}\n".format(full_data_dir, full_ref_data_dir)
 
-    data_file_list = set(file_list(data_dir, ))
+    data_file_list = set(
+        file_list(
+            data_dir,
+        )
+    )
     ref_data_file_list = set(file_list(ref_data_dir))
     difference = {}
 
@@ -224,14 +233,16 @@ def compare_path(data_dir, ref_data_dir, task_runner, show_figure=True,
         def callback(name, diff):
             if diff:
                 different_content[name] = diff
-                if 'different' not in difference:
-                    difference['different'] = different_content
-                if show_figure and 'plot' in diff:
-                    show_img(diff['plot'])
+                if "different" not in difference:
+                    difference["different"] = different_content
+                if show_figure and "plot" in diff:
+                    show_img(diff["plot"])
 
-        task_runner.append(compare_file,
-                           (data_file, data_path, ref_data_path, kwargs),
-                           partial(callback, data_file))
+        task_runner.append(
+            compare_file,
+            (data_file, data_path, ref_data_path, kwargs),
+            partial(callback, data_file),
+        )
 
     unexpected_list = list(data_file_list - ref_data_file_list)
     lacking_list = list(ref_data_file_list - data_file_list)
@@ -239,22 +250,20 @@ def compare_path(data_dir, ref_data_dir, task_runner, show_figure=True,
     if unexpected_list:
         unexpected_dict = {}
         for unexpected_file in unexpected_list:
-            unexpected_size = os.path.getsize(os.path.join(data_dir,
-                                                           unexpected_file))
-            unexpected_dict[unexpected_file] = 'Unexpected "{}" ({:,} bytes).'\
-                                               .format(unexpected_file,
-                                                       unexpected_size)
-        difference['unexpected'] = unexpected_dict
+            unexpected_size = os.path.getsize(os.path.join(data_dir, unexpected_file))
+            unexpected_dict[unexpected_file] = 'Unexpected "{}" ({:,} bytes).'.format(
+                unexpected_file, unexpected_size
+            )
+        difference["unexpected"] = unexpected_dict
 
     if lacking_list:
         lacking_dict = {}
         for lacking_file in lacking_list:
-            lacking_size = os.path.getsize(os.path.join(ref_data_dir,
-                                                        lacking_file))
-            lacking_dict[lacking_file] = 'Cannot find "{}" ({:,} bytes).'\
-                                    .format(lacking_file,
-                                            lacking_size)
-        difference['lacking'] = lacking_dict
+            lacking_size = os.path.getsize(os.path.join(ref_data_dir, lacking_file))
+            lacking_dict[lacking_file] = 'Cannot find "{}" ({:,} bytes).'.format(
+                lacking_file, lacking_size
+            )
+        difference["lacking"] = lacking_dict
 
     return difference
 
@@ -271,13 +280,17 @@ def compare_file(name, data_path, ref_data_path, kwargs):
         return compare_raw_file(data_path, ref_data_path)
 
 
-def compare_bin_file(name, bin_path, ref_bin_path,
-                     config=None,
-                     show_figure=False,
-                     with_map=True,
-                     nb_image_t=5,
-                     nb_image_z=5,
-                     comparison_func=compare_array):
+def compare_bin_file(
+    name,
+    bin_path,
+    ref_bin_path,
+    config=None,
+    show_figure=False,
+    with_map=True,
+    nb_image_t=5,
+    nb_image_z=5,
+    comparison_func=compare_array,
+):
     """Compares two ".bin" files.
 
     A self-describing dictionary reporting the differences is generated.
@@ -317,8 +330,7 @@ def compare_bin_file(name, bin_path, ref_bin_path,
     @return: A self-describing dictionary reporting the comparison results.
     It can contains path to plot image files generated by the comparison, along
     with some statistics.
-    If there is no difference, an empty dictionary is returned.
-"""
+    If there is no difference, an empty dictionary is returned."""
     ## Compares the size.
     size_difference = compare_file_size(bin_path, ref_bin_path)
     if size_difference:
@@ -337,8 +349,8 @@ def compare_bin_file(name, bin_path, ref_bin_path,
         Nz = ref_array.shape[1]
     else:
         # Without config file, binary files are interpreted as mono dimensional.
-        array = fromfile(bin_path, 'f')
-        ref_array = fromfile(ref_bin_path, 'f')
+        array = fromfile(bin_path, "f")
+        ref_array = fromfile(ref_bin_path, "f")
         Nz = len(array)
         Nt = 1
 
@@ -348,15 +360,13 @@ def compare_bin_file(name, bin_path, ref_bin_path,
         return {}
 
     diff_array = None
-    if 'diff_array' in difference:
-        diff_array = difference['diff_array']
-        del difference['diff_array']
+    if "diff_array" in difference:
+        diff_array = difference["diff_array"]
+        del difference["diff_array"]
 
     if diff_array is not None and config:
-        value_map = normalize_colormap([array, ref_array], cmap='PiYG',
-                                       log_normed=True)
-        diff_map = normalize_colormap(diff_array, cmap='seismic',
-                                      log_normed=True)
+        value_map = normalize_colormap([array, ref_array], cmap="PiYG", log_normed=True)
+        diff_map = normalize_colormap(diff_array, cmap="seismic", log_normed=True)
         cmap_kwargs = [value_map, value_map, diff_map]
         map_error = [None]
 
@@ -374,22 +384,24 @@ def compare_bin_file(name, bin_path, ref_bin_path,
 
         png_filename = os.path.splitext(bin_path)[0] + ".png"
         try:
-            plot_array_list(array_list=[array, ref_array, diff_array],
-                            title=os.path.splitext(name)[0],
-                            array_name_list=["current", "reference", "difference"],
-                            nb_image_t=min(nb_image_t, Nt),
-                            nb_image_z=min(nb_image_z, Nz),
-                            plot_func=plot_colormap,
-                            png_filename=png_filename,
-                            show_figure=show_figure)
-            difference['plot'] = png_filename
+            plot_array_list(
+                array_list=[array, ref_array, diff_array],
+                title=os.path.splitext(name)[0],
+                array_name_list=["current", "reference", "difference"],
+                nb_image_t=min(nb_image_t, Nt),
+                nb_image_z=min(nb_image_z, Nz),
+                plot_func=plot_colormap,
+                png_filename=png_filename,
+                show_figure=show_figure,
+            )
+            difference["plot"] = png_filename
         except Exception, e:
-            print "[ERROR] Cannot plot a comparison for \"{}\":\n{}\n\n"\
-                    .format(name, e)
+            print '[ERROR] Cannot plot a comparison for "{}":\n{}\n\n'.format(name, e)
 
         if map_error[0]:
-            print "[WARNING] Cannot display a map layer for \"{}\":\n{}\n\n"\
-                    .format(name, map_error[0])
+            print '[WARNING] Cannot display a map layer for "{}":\n{}\n\n'.format(
+                name, map_error[0]
+            )
 
     return difference
 
@@ -412,8 +424,9 @@ def compare_file_size(filepath, ref_filepath):
     byte_size = os.path.getsize(filepath)
     ref_byte_size = os.path.getsize(ref_filepath)
     if byte_size != ref_byte_size:
-        return "Size of {:,} bytes whereas reference file has {:,} bytes."\
-                                             .format(byte_size, ref_byte_size)
+        return "Size of {:,} bytes whereas reference file has {:,} bytes.".format(
+            byte_size, ref_byte_size
+        )
     ## No difference.
     return None
 
@@ -422,5 +435,6 @@ def assert_no_difference(*difference_list):
     difference = {}
     for d in difference_list:
         difference.update(d)
-    assert not difference, "The following differences were detected:\n" + \
-                           pformat(difference)
+    assert not difference, "The following differences were detected:\n" + pformat(
+        difference
+    )

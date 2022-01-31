@@ -979,7 +979,7 @@ namespace AtmoData
                     }
                   else
                     {
-                      if (LUC(j, i) == 13) 
+                      if (LUC(j, i) == 13)
                         Ratio = Ratio_urb
                           / real(Ratio_urb * Nurb_emep(j_emep, i_emep)
                                  + Ratio_for * Nfor_emep(j_emep, i_emep)

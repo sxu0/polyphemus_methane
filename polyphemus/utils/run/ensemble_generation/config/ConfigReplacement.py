@@ -32,12 +32,9 @@ class ConfigReplacement:
     configuration files and will be replaced by the values of the parameters.
     """
 
-
     def __init__(self):
-        """An empty constructor.
-        """
+        """An empty constructor."""
         pass
-
 
     def GetConfigVariable(self, model_index, ensemble_program):
         """Returns the dictionary with as keys the variables which will be
@@ -50,7 +47,6 @@ class ConfigReplacement:
         """
         return {}
 
-
     def GetDefaultDict(self):
         """Returns the default dictionary.
 
@@ -60,7 +56,6 @@ class ConfigReplacement:
         """
         return {}
 
-
     def GetBinaryFile(self, model_index, ensemble_program):
         """Returns the dictionary with the path of the preprocessing binary files.
 
@@ -69,7 +64,6 @@ class ConfigReplacement:
         @return A dictionary.
         """
         return {}
-
 
     def GetPerturbedFieldDict(self, model_index, ensemble_program):
         """Gets the name of fields and the associated perturbation values.

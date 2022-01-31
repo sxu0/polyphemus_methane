@@ -1,23 +1,23 @@
 C-----------------------------------------------------------------------
 C     Copyright (C) 2007, ENPC - INRIA - EDF R&D
 C     Author(s): Maryline Tombette
-C     
+C
 C     This file is part of the Simple Aqueous model (SIMPLE_AQUEOUS), a
 C     component of the air quality modeling system Polyphemus.
-C    
+C
 C     Polyphemus is developed in the INRIA - ENPC joint project-team
 C     CLIME and in the ENPC - EDF R&D joint laboratory CEREA.
-C    
+C
 C     Polyphemus is free software; you can redistribute it and/or modify
 C     it under the terms of the GNU General Public License as published
 C     by the Free Software Foundation; either version 2 of the License,
 C     or (at your option) any later version.
-C     
+C
 C     Polyphemus is distributed in the hope that it will be useful, but
 C     WITHOUT ANY WARRANTY; without even the implied warranty of
 C     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 C     General Public License for more details.
-C     
+C
 C     For more information, visit the Polyphemus web site:
 C     http://cerea.enpc.fr/polyphemus/
 C-----------------------------------------------------------------------
@@ -30,13 +30,13 @@ C-----------------------------------------------------------------------
      &     n_pom,section_pass,IREDIST,with_fixed_density)
 
 C------------------------------------------------------------------------
-C     
-C     -- DESCRIPTION 
-C     
+C
+C     -- DESCRIPTION
+C
 C     This routine solves the aqueous-phase model.
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- INPUT VARIABLES
 C
 C     HUMID : specific humidity    ([kg.kg^{-1}]).
@@ -54,37 +54,37 @@ C     NICD: number of cloud interact species
 C     NB: number of size section
 C
 C     -- INPUT/OUTPUT VARIABLES
-C     
+C
 C     C_GAS: gas-phase concentration ([\mu.g/m^3]).
 C     C_AER: aerosol concentration ([\mu.g/m^3]).
 C     C_NUM: number concentration ([#/m^3]).
 
 C     -- OUTPUT VARIABLES
-C     
+C
 C     PH : pH.
 C     qscav_gas : scavenged gas quantity by in-cloud scavenging
 C     qscav_aer : scavenged aerosol quantity by in-cloud scavenging
 C     qscav_num : scavenged number quantity by in-cloud scavenging
 C     for dissolved aerosols species ([\mu.g/m^3])
 C     and dissolves gas      species ([ppm])
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- REMARKS
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- MODIFICATIONS
 C
 C    Shupeng ZHU: add composition support for SCRAM (Oct.2014)
 C
 C------------------------------------------------------------------------
-C     
+C
 C     -- AUTHOR(S)
-C     
-C     Marilyne Tombette, CEREA, , on the basis of Pandis/Seinfeld book, 
-C     pp. 
-C     
+C
+C     Marilyne Tombette, CEREA, , on the basis of Pandis/Seinfeld book,
+C     pp.
+C
 C------------------------------------------------------------------------
 
       IMPLICIT NONE
@@ -111,14 +111,14 @@ C------------------------------------------------------------------------
       INTEGER ifirstact!first activated bin
       INTEGER isect,isp,i,istep,nistep,ind_ok,j,jj,jb
       integer with_fixed_density ! YK
-      
+
       double precision d(NB)
       double precision mass_rdb(NB,naers)
       double precision totQ(NB)
       double precision Nub(NB)
       double precision dqlimit
       double precision dold(NS)
-      double precision volume(NS)      
+      double precision volume(NS)
 
       double precision coefloc,tinit,coefloc2, coef_cte
       double precision dh2SO4,dso2
@@ -147,13 +147,13 @@ C------------------------------------------------------------------------
       double precision dsf_aero(NS),xbf_aero(NB+1)
       double precision fixed_rho_aero,totmasstot
       double precision fixed_diameter(NS)
-      
+
       double precision dsivdt_o3,dsivdt_h2o2,dsivdt
       double precision fc_o3, fc_h2o2, fc_siv
       double precision tot_sulf
       double precision tot_nit,tot_amm,fo3,fh2o2
       double precision ptotso2
-      double precision conc_in(5), conc_out(10)      
+      double precision conc_in(5), conc_out(10)
 
       double precision henrys(ngas_aq)
       double precision cst_dissoc(nreact_dissoc)
@@ -161,10 +161,10 @@ C------------------------------------------------------------------------
       double precision tnitold, ammonold,sulfateold
       double precision so2g,henrys_eff_so2
 
-      double precision cst_pr,cst_pr2,cst_RT, cst_RTLWC     
+      double precision cst_pr,cst_pr2,cst_RT, cst_RTLWC
 
       data collision_eff /0.9d0/
-      
+
 c     Initialisation
 c     --------------
       cst_pr = 1.987d-3         ! perfect gas constant in kcal.K-1.mol-1
@@ -202,7 +202,7 @@ c   Initialize system pointer
       EH2O=NAER
       E1=1
       E2=NAER-1
-      
+
       do jesp=1,n_isorropia
 	isorropia_species(jesp) = List_species(2+jesp)
       enddo
@@ -220,7 +220,7 @@ c   Initialize system pointer
 	poa_species(jesp) =
      &        List_species(2+n_isorropia+n_aec+n_pankow+jesp)
       enddo
-    
+
       !nesp = NGAS+NS*NAER
 
       press_in_atm  = press_in_pa/101325.d0 ! pressure in atm
@@ -238,7 +238,7 @@ c   Initialize system pointer
       do i=1,ngas_aq
          gas(i)=0.d0
       enddo
-      
+
       do isect=1,NS
          totmass(isect)=0.d0
       enddo
@@ -255,7 +255,7 @@ c   Initialize system pointer
 
       do isp=1,NS!SZ
          qscav_num(isp)=0.d0
-      enddo      
+      enddo
 
       do j=1,NS
          do isp=1,naers
@@ -272,7 +272,7 @@ C     --------------------------------
 
 C     Compute henry's and equilibrium constants.
 C     ------------------------------------------
-      
+
       coef_cte= (1.d0/temp - 1.d0/temp_ref)
 
       do i=1,ngas_aq
@@ -280,16 +280,16 @@ C     ------------------------------------------
       enddo
 
       do i=1,nreact_dissoc
-         cst_dissoc(i) = ckdissoc(i) 
+         cst_dissoc(i) = ckdissoc(i)
      $        * exp(dhkdissoc(i)*coef_cte)
       enddo
 
       do i=1,nreact_oxydation
-         cst_oxydation(i) = ckoxydation(i) 
-     $        * exp(-dhkoxydation(i)*coef_cte 
+         cst_oxydation(i) = ckoxydation(i)
+     $        * exp(-dhkoxydation(i)*coef_cte
      $        / cst_pr)
       enddo
-      
+
 C     Compute sectional diameters and bimodal distribution
 C     -------------------------------------------------------
 
@@ -344,8 +344,8 @@ C     totmass en \mu g.m-3 without sulfate
 
          aerosol(i,naw) = C_AER(i,EH2O) ! H2O
       ENDDO
-      
-C     Transfer all H2SO4(g) to aerosol phase      
+
+C     Transfer all H2SO4(g) to aerosol phase
 C     ------------------------------------------
       dh2SO4 = (C_GAS(ictmH2SO4)/NS) * mmSO4/mmH2SO4
       DO i=1,NS
@@ -381,7 +381,7 @@ C     ------------------------------------------
          endif
 
          !!! added by SZ
-         if (dold(i) .LT. DBF_AERO(b) 
+         if (dold(i) .LT. DBF_AERO(b)
      $        .or. dold(i) .GT. DBF_AERO(b+1)) THEN
             dold(i)=sqrt(DBF_AERO(b)*DBF_AERO(b+1))
          endif
@@ -401,7 +401,7 @@ C     Calculation of the bulk distribution factors fdist
       do i=ifirstact,NS
          fdist(i) = totmass(i)/totmasstot
       enddo
-     
+
 C     Compute total sulfate, ammonium and nitrate.
 C     -------------------------------------------
       tot_sulf = 0.d0
@@ -409,11 +409,11 @@ C     -------------------------------------------
       tot_amm = 0.d0
 
       DO i=ifirstact,NS
-         tot_sulf = tot_sulf + aerosol(i,na4) 
-         tot_nit = tot_nit + aerosol(i,nan) 
-         tot_amm = tot_amm + aerosol(i,naa) 
+         tot_sulf = tot_sulf + aerosol(i,na4)
+         tot_nit = tot_nit + aerosol(i,nan)
+         tot_amm = tot_amm + aerosol(i,naa)
       enddo
-      
+
       sulfateold=tot_sulf
       tnitold=tot_nit
       ammonold=tot_amm
@@ -462,7 +462,7 @@ C     rate Seinfel Pandis for O3
          dsivdt_o3 = - (cst_oxydation(1)*conc_out(2) !SO2 aq
      $        + cst_oxydation(2)*conc_out(3) !HSO3-
      $        + cst_oxydation(3)*conc_out(4)) !SO3--
-     $        * aqo3 
+     $        * aqo3
 
 C     rate VSRM for H2O2
 
@@ -541,7 +541,7 @@ C     Dissolved HNO3 is added to gas phase HNO3.
       gas(ighno3) = conc_out(9) + conc_out(5) * cst_RTLWC ! in atm
 
 C     Dissolved NH3 is added to gas phase NH3.
-      gas(ignh3) = conc_out(10) + conc_out(7) * cst_RTLWC ! in atm      
+      gas(ignh3) = conc_out(10) + conc_out(7) * cst_RTLWC ! in atm
 
 C     Compute new distribution by projection to
 C     the aerosol population (as in VSRM).
@@ -549,8 +549,8 @@ C     ----------------------------------------------
 
       do isect=1,NS
          aerosol(isect,nan)    = aerosol(isect,nan)
-     &        + fdist(isect) * (tot_nit - tnitold) ! NITRATE (aq) 
-         aerosol(isect,naa)    = aerosol(isect,naa) 
+     &        + fdist(isect) * (tot_nit - tnitold) ! NITRATE (aq)
+         aerosol(isect,naa)    = aerosol(isect,naa)
      &        + fdist(isect) * (tot_amm - ammonold) ! AMMONIUM (aq)
          aerosol(isect,na4)    = aerosol(isect,na4)
      &        + fdist(isect) * (tot_sulf - sulfateold) ! SULFATE (aq)
@@ -560,7 +560,7 @@ C     ----------------------------------------------
          do isect=1,NS
             aerosol(isect,isp)=dmax1(aerosol(isect,isp),tinyaq2)
          enddo
-      enddo     
+      enddo
 
       do i = 1,NS
          totmass(i)=aerosol(i,naa)+aerosol(i,na4)+
@@ -596,7 +596,7 @@ C     ----------------------------------------------
      &              /cst_pi6/fixed_rho_aero
 
 	      endif
-	  enddo	
+	  enddo
 
 	ELSEIF (IREDIST .EQ. 3 .OR. IREDIST .EQ. 4 .OR.IREDIST .EQ. 5
      &        .OR.IREDIST .EQ. 6 .OR.IREDIST .EQ. 7 .OR.IREDIST .EQ. 8
@@ -638,7 +638,7 @@ c$$$	    dnew(i)=sqrt(DBF_AERO(i)*DBF_AERO(i+1))
 c$$$
 c$$$	endif
 c$$$      enddo !! test YK
-      
+
 C     14) Update gas & aerosol concentrations in model.
 C     -------------------------------------------------
 
@@ -668,7 +668,7 @@ C     -------------------------------------------------
          ENDDO
          C_AER(i,EH2O)= aerosol(i,naw) ! H2O
       ENDDO
-      
+
       do i = 1, NS
          C_NUM(i) = numberconc(i)
       enddo
@@ -716,7 +716,7 @@ C     Number concentration
       ENDIF
 
 C     Treshold TINYAQ.
-C---- 
+C----
 !       DO i=1,NGAS!problem of dimension
 !          C_GAS(i)=dmax1(C_GAS(i),TINYAQ)
 !       ENDDO
@@ -724,7 +724,7 @@ C----
 ! 	DO jesp= 1, NAER
 !          C_AER(i,jesp)=dmax1(C_AER(i,jesp),TINYAQ)
 !         ENDDO
-!       ENDDO      
+!       ENDDO
 !       DO i=1,NS
 !          C_NUM(i) = dmax1(C_NUM(i), TINYNAQ)
 !       ENDDO

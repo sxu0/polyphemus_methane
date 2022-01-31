@@ -1,23 +1,23 @@
 C-----------------------------------------------------------------------
 C     Copyright (C) 2003-2007, ENPC - INRIA - EDF R&D
 C     Author(s): Edouard Debry
-C     
+C
 C     This file is part of the Size Resolved Aerosol Model (SIREAM), a
 C     component of the air quality modeling system Polyphemus.
-C    
+C
 C     Polyphemus is developed in the INRIA - ENPC joint project-team
 C     CLIME and in the ENPC - EDF R&D joint laboratory CEREA.
-C    
+C
 C     Polyphemus is free software; you can redistribute it and/or modify
 C     it under the terms of the GNU General Public License as published
 C     by the Free Software Foundation; either version 2 of the License,
 C     or (at your option) any later version.
-C     
+C
 C     Polyphemus is distributed in the hope that it will be useful, but
 C     WITHOUT ANY WARRANTY; without even the implied warranty of
 C     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 C     General Public License for more details.
-C     
+C
 C     For more information, visit the Polyphemus web site:
 C     http://cerea.enpc.fr/polyphemus/
 C-----------------------------------------------------------------------
@@ -26,16 +26,16 @@ C-----------------------------------------------------------------------
      s      XBF,MBF,DBF,HSF,XBD,MBD,DBD,HSD)
 
 C------------------------------------------------------------------------
-C     
-C     -- DESCRIPTION 
-C     
+C
+C     -- DESCRIPTION
+C
 C     This subroutine redistributes the number and mass aerosol
 C     concentrations onto the fixed sectional grid.
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- INPUT VARIABLES
-C     
+C
 C     NEQ : number of equations.
 C     nbin_aer: number of aerosol bins.
 C     Q   : gas/aerosol concentration ([\mu.g.m^-3]).
@@ -50,29 +50,29 @@ C     HSF: fixed width of aerosol bins ([adim]).
 C     MBD: moving aerosol bound dry mass ([\mu g]).
 C     DBD: moving aerosol bound dry diameter [\mu m]).
 C     HSD: moving width of aerosol bins ([adim]).
-C     
+C
 C     -- INPUT/OUTPUT VARIABLES
 C
-C     QT: total aerosol concentration per bin ([\mu g.m^-3]).  
-C     
+C     QT: total aerosol concentration per bin ([\mu g.m^-3]).
+C
 C     -- OUTPUT VARIABLES
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- REMARKS
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- MODIFICATIONS
-C     
+C
 C     2005/3/23: cleaning (Bruno Sportisse, CEREA).
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- AUTHOR(S)
-C     
+C
 C     2004: Edouard Debry, CEREA.
-C     
+C
 C------------------------------------------------------------------------
 
       IMPLICIT NONE
@@ -116,14 +116,14 @@ C     ******zero init
 
 C     ******compute redistribution
 C     x2lo=DSD(1) !lagrangian diameter
-C     
+C
 C     CALL LOCATE(nbin_aer,DSF,x2lo,j1lo)
 
       DO js2=1,nbin_aer
 
          x2hi=(MSD(js2)/(rhoa*cst_pi6))**(1.d0/3.D0) ! lagrangian diameter
          CALL LOCATE(nbin_aer,DSF,x2hi,j1hi)
-         
+
          IF (q(js2).GT.TINYN) THEN
                                 ! redistribute over fixed sections
             IF (j1hi.EQ.0) THEN ! number change
@@ -131,7 +131,7 @@ C     CALL LOCATE(nbin_aer,DSF,x2lo,j1lo)
                DO jesp=E1,E2
                   ji=IQ(jesp,1)
                   jj=IQ(jesp,js2)
-                  
+
                   qnew(ji)=qnew(ji)+q(jj)
                   Qtotal = Qtotal+qnew(ji)
                END DO
@@ -141,7 +141,7 @@ C     CALL LOCATE(nbin_aer,DSF,x2lo,j1lo)
                DO jesp=E1,E2
                   ji=IQ(jesp,nbin_aer)
                   jj=IQ(jesp,js2)
-                  
+
                   qnew(ji)=qnew(ji)+q(jj)
                   Qtotal = Qtotal+qnew(ji)
                END DO
@@ -152,40 +152,40 @@ C     CALL LOCATE(nbin_aer,DSF,x2lo,j1lo)
                DO jesp=E1,E2
                   ji=IQ(jesp,j1hi)
                   jj=IQ(jesp,js2)
-                  jk=IQ(jesp,j1hi+1)                  
+                  jk=IQ(jesp,j1hi+1)
                   qnew(ji)=qnew(ji)+ q(jj)*(1-(diam2/x2hi)**3.D0)/
      &                 (1-(diam2/diam1)**3.D0)
                   qnew(jk)=qnew(jk)+ q(jj)*(1-(diam1/x2hi)**3.D0)/
      &                 (1-(diam1/diam2)**3.D0)
 
-               END DO 
+               END DO
                qnew(j1hi)=qnew(j1hi)+q(js2)*(x2hi**3-diam2**3.D0)/
-     &              (diam1**3-diam2**3) 
+     &              (diam1**3-diam2**3)
                qnew(j1hi+1)=qnew(j1hi+1)+q(js2)*(x2hi**3-diam1**3.D0)/
-     &              (diam2**3-diam1**3) 
+     &              (diam2**3-diam1**3)
 
             ENDIF
-         ENDIF 
+         ENDIF
       END DO
-      
+
 C     ******check if quantities are not too small
       icpt=1                    ! to enter in the loop
       icpt = 0
       DO WHILE (icpt.GT.0)
          icpt = 0
-         
+
          DO js1=1,nbin_aer
             DO jesp=E1,E2
                ji=IQ(jesp,js1)
                qtnew(js1)=qtnew(js1)+qnew(ji)
             END DO
-            
+
             tmp1= qnew(js1)*( qnew(js1)-TINYN)
             tmp2=qtnew(js1)*(qtnew(js1)-TINYM)
-            
+
             IF ( tmp1.LT.0.D0.OR.
      &           tmp2.LT.0.D0 ) THEN
-               
+
                IF (qnew(js1).EQ.0.d0) THEN
                   WRITE(6,*)'SIREAM (redist.f): (1)Q<0 ',qnew(js1)
                   STOP
@@ -195,16 +195,16 @@ C     ******check if quantities are not too small
      &                 qtnew(js1)/qnew(js1)
                   STOP
                ENDIF
-               
+
                xx=DLOG(qtnew(js1)/qnew(js1))
                frac=(xx-XBD(js1))/HSD(js1)
 
                js2=js1+1
                IF (frac.LT.5.D-01) js2=js1-1
-               
+
                IF (js1.EQ.1)   js2=js1+1
                IF (js1.EQ.nbin_aer) js2=js1-1
-               
+
                qnew(js2)=qnew(js2)+qnew(js1)
                qtnew(js2)=qtnew(js2)+qtnew(js1)
                qnew(js1)=0.d0
@@ -222,19 +222,19 @@ C     ******check if quantities are not too small
          END DO
 
       END DO
-      
+
 C     ******turn back to concentration vector
 
-      
+
       DO jj=1,IQ(E2,nbin_aer)
          q(jj)=qnew(jj)
       END DO
-      
+
                                 ! tot mass conc
       DO js1=1,nbin_aer
          QT(js1)=qtnew(js1)
       END DO
-      
+
 C     ******aerosol bound concentration : return to fixed sizes
       DO js1=1,nbin_aer+1
          MBD(js1)=MBF(js1)

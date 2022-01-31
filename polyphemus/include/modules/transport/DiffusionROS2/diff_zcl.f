@@ -589,6 +589,3 @@ C
       DLBCCL(1) = DLBCCL(1)+DLXCCL(1)*(1d0/BET)
       DLXCCL(1) = 0d0
       END
-
-
-

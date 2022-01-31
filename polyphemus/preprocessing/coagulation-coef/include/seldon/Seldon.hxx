@@ -24,7 +24,7 @@
 
 namespace Seldon
 {
-  
+
 
   // Vector class - specialized for each used type.
   template <class T, class Storage, class Allocator>
@@ -82,7 +82,7 @@ namespace Seldon
       return cblas_status_;
     }
 #endif
-    
+
     char Char() const
     {
       if (status_ == 0)
@@ -92,7 +92,7 @@ namespace Seldon
       else
 	return 'C';
     }
-    
+
     char RevChar() const
     {
       if (status_ == 0)
@@ -102,7 +102,7 @@ namespace Seldon
       else
 	return 'N';
     }
-    
+
     bool Trans() const {return (status_ == 0);}
     bool NoTrans() const {return (status_ == 1);}
     bool ConjTrans() const {return (status_ == 2);}
@@ -158,7 +158,7 @@ namespace Seldon
       return cblas_status_;
     }
 #endif
-    
+
     char Char() const { return (status_ == 0) ? 'N' : 'U'; }
     bool NonUnit() const {return (status_ == 0);}
     bool Unit() const {return (status_ == 1);}
@@ -207,7 +207,7 @@ namespace Seldon
       return cblas_status_;
     }
 #endif
-    
+
     operator char() const
     {
       return (status_ == 0) ? 'U' : 'L';
@@ -242,12 +242,12 @@ namespace Seldon
     {
       status_ = status;
     }
-    
+
     operator char() const
     {
       return (status_ == 0) ? 'I' : '1';
     }
-    
+
     char Char() const
     {
       return (status_ == 0) ? 'I' : '1';
@@ -256,9 +256,9 @@ namespace Seldon
     {
       return (status_ == 0) ? '1' : 'I';
     }
-    
+
   };
-  
+
   SeldonNorm SeldonNormInf(0);
   SeldonNorm SeldonNorm1(1);
 
@@ -282,7 +282,7 @@ namespace Seldon
 
   SeldonConjugate SeldonUnconj(false);
   SeldonConjugate SeldonConj(true);
-  
+
 
   //
 
@@ -322,7 +322,7 @@ namespace Seldon
       return cblas_status_;
     }
 #endif
-    
+
     bool Left() const {return (status_ == 0);}
     bool Right() const {return (status_ == 1);}
   };

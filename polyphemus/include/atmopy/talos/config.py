@@ -30,8 +30,9 @@ class Config:
     configuration file.
     """
 
-    def __init__(self, filename, additional_content = [], new_content = [],
-                 show_error = False):
+    def __init__(
+        self, filename, additional_content=[], new_content=[], show_error=False
+    ):
         """
         Config constructor. It reads a set of attributes in a configuration
         file.
@@ -62,38 +63,41 @@ class Config:
         """
         self.filename = filename
         self.stream = config_stream.ConfigStream(self.filename)
-        self.content = [("t_min", "", "DateTime"), \
-                            ("x_min", "", "Float"), \
-                            ("y_min", "", "Float"), \
-                            ("time_angle_min", "", "Float"), \
-                            ("day_min", "", "Float"), \
-                            ("Delta_t", "", "Float"), \
-                            ("Delta_x", "", "Float"), \
-                            ("Delta_y", "", "Float"), \
-                            ("Delta_time_angle", "", "Float"), \
-                            ("Delta_t", "", "Float"), \
-                            ("Nt", "", "Int"), ("Nx", "", "Int"), \
-                            ("Ny", "", "Int"), ("Nz", "", "Int"), \
-                            ("Ntheta", "", "Int"), ("Ndays", "", "Int"), \
-                            ("[levels_heights]", "",
-                             "levels", "IntList"), \
-                            ("[Jlevels_height]", "", "Jlevels", "IntList"), \
-                            ("file", "", "input_file", "String"), \
-                            ("species", "", "String"), \
-                            ("obs_dir", "", "String"), \
-                            ("station_file", "", "String"), \
-                            ("station_file_type", "", "String"), \
-                            ("type", "[output]", "String"), \
-                            ("terminal", "[output]", "String"), \
-                            ("t_range", "[output]", "DateTimeList"), \
-                            ("x_range", "[output]", "NumList"), \
-                            ("y_range", "[output]", "NumList"), \
-                            ("station", "[output]", "String"), \
-                            ("file", "[output]", "output_file", "String"), \
-                            ("[species_list]", "", "species_list",
-                             "StringSection"), \
-                            ("[dir_list]", "", "dir_list", "StringSection"), \
-                            ("[file_list]", "", "file_list", "StringSection")]
+        self.content = [
+            ("t_min", "", "DateTime"),
+            ("x_min", "", "Float"),
+            ("y_min", "", "Float"),
+            ("time_angle_min", "", "Float"),
+            ("day_min", "", "Float"),
+            ("Delta_t", "", "Float"),
+            ("Delta_x", "", "Float"),
+            ("Delta_y", "", "Float"),
+            ("Delta_time_angle", "", "Float"),
+            ("Delta_t", "", "Float"),
+            ("Nt", "", "Int"),
+            ("Nx", "", "Int"),
+            ("Ny", "", "Int"),
+            ("Nz", "", "Int"),
+            ("Ntheta", "", "Int"),
+            ("Ndays", "", "Int"),
+            ("[levels_heights]", "", "levels", "IntList"),
+            ("[Jlevels_height]", "", "Jlevels", "IntList"),
+            ("file", "", "input_file", "String"),
+            ("species", "", "String"),
+            ("obs_dir", "", "String"),
+            ("station_file", "", "String"),
+            ("station_file_type", "", "String"),
+            ("type", "[output]", "String"),
+            ("terminal", "[output]", "String"),
+            ("t_range", "[output]", "DateTimeList"),
+            ("x_range", "[output]", "NumList"),
+            ("y_range", "[output]", "NumList"),
+            ("station", "[output]", "String"),
+            ("file", "[output]", "output_file", "String"),
+            ("[species_list]", "", "species_list", "StringSection"),
+            ("[dir_list]", "", "dir_list", "StringSection"),
+            ("[file_list]", "", "file_list", "StringSection"),
+        ]
         self.content.extend(additional_content)
         if len(new_content) != 0:
             self.content = new_content[:]
@@ -123,7 +127,7 @@ class Config:
            lines.
         """
         try:
-            val = self.stream.GetElement(x[0], section = x[1], type = x[-1])
+            val = self.stream.GetElement(x[0], section=x[1], type=x[-1])
             if len(x) == 4:
                 setattr(self, x[2], val)
             else:
@@ -188,7 +192,7 @@ def write_configuration_file(config, filename):
             else:
                 sorted_config[field[1]] = [output]
 
-    f = open(filename, 'w')
+    f = open(filename, "w")
 
     # Writes fields outside of sections.
     for field in sorted_config.pop(""):

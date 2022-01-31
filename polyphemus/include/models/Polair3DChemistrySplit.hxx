@@ -36,11 +36,11 @@ namespace Polyphemus
   using namespace std;
   using namespace AtmoData;
 
-  
+
   ///////////////////////
   // POLAIR3DCHEMISTRY //
   ///////////////////////
-  
+
 
   //! This class is a solver for an advection-diffusion-reaction equation.
   template<class T, class ClassAdvection,
@@ -57,9 +57,9 @@ namespace Polyphemus
     input_files_iterator;
 
   public:
-    
+
     /*** Configuration ***/
-    
+
     //! List of species with forced concentrations.
     vector<string> species_list_forced;
     //! List of species with photolysis reactions.
@@ -70,7 +70,7 @@ namespace Polyphemus
     bool source_splitting;
 
     /*** Photolysis rates and attenuation ***/
-    
+
     //! Number of photolysis reactions.
     int Nr_photolysis;
     //! Grid for photolysis reactions.
@@ -110,7 +110,7 @@ namespace Polyphemus
     Data<T, 4> PhotolysisRate_i;
     //! Photolysis rates at next date.
     Data<T, 4> PhotolysisRate_f;
-    
+
     //! Attenuation coefficients at current date.
     Data<T, 3> Attenuation_i;
     //! Attenuation coefficients at next date.
@@ -134,14 +134,14 @@ namespace Polyphemus
     Data<T, 4> FileForcedConcentration_i;
     //! Forced concentrations buffer.
     Data<T, 4> FileForcedConcentration_f;
-    
+
     /*** Sources (source splitting) ***/
 
     //! Sources at current date (for source splitting).
     Data<T, 4> Source_i;
     //! Sources at next date (for source splitting).
     Data<T, 4> Source_f;
-    
+
     /*** Chemical mechanism ***/
 
     //! Chemical mechanism and chemical numerical scheme.
@@ -155,12 +155,12 @@ namespace Polyphemus
     Data<T, 4> Source_f_ccl;
 
   public:
-    
+
     /*** Constructor and destructor ***/
-    
+
     Polair3DChemistry(string config_file);
     virtual ~Polair3DChemistry();
-    
+
     /*** Configuration ***/
 
     void ReadConfiguration();
@@ -172,7 +172,7 @@ namespace Polyphemus
     int ForcedConcentrationIndex(string name) const;
     string ForcedConcentrationName(int s) const;
     int ForcedConcentrationGlobalIndex(int s) const;
-    
+
     /*** Initializations ***/
 
     void Allocate();
@@ -216,7 +216,7 @@ namespace Polyphemus
   protected:
 
     virtual void InitAllData();
-    
+
   };
 
 

@@ -36,10 +36,11 @@ import SCons.Warnings
 from BoolOption import BoolOption  # okay
 from EnumOption import EnumOption  # okay
 from ListOption import ListOption  # naja
-from PackageOption import PackageOption # naja
-from PathOption import PathOption # okay
+from PackageOption import PackageOption  # naja
+from PathOption import PathOption  # okay
 
 warned = False
+
 
 class Options(SCons.Variables.Variables):
     def __init__(self, *args, **kw):
@@ -48,24 +49,19 @@ class Options(SCons.Variables.Variables):
             msg = "The Options class is deprecated; use the Variables class instead."
             SCons.Warnings.warn(SCons.Warnings.DeprecatedOptionsWarning, msg)
             warned = True
-        apply(SCons.Variables.Variables.__init__,
-              (self,) + args,
-              kw)
+        apply(SCons.Variables.Variables.__init__, (self,) + args, kw)
 
     def AddOptions(self, *args, **kw):
-        return apply(SCons.Variables.Variables.AddVariables,
-                     (self,) + args,
-                     kw)
+        return apply(SCons.Variables.Variables.AddVariables, (self,) + args, kw)
 
     def UnknownOptions(self, *args, **kw):
-        return apply(SCons.Variables.Variables.UnknownVariables,
-                     (self,) + args,
-                     kw)
+        return apply(SCons.Variables.Variables.UnknownVariables, (self,) + args, kw)
 
     def FormatOptionHelpText(self, *args, **kw):
-        return apply(SCons.Variables.Variables.FormatVariableHelpText,
-                     (self,) + args,
-                     kw)
+        return apply(
+            SCons.Variables.Variables.FormatVariableHelpText, (self,) + args, kw
+        )
+
 
 # Local Variables:
 # tab-width:4

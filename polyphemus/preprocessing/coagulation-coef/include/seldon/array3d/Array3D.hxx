@@ -29,7 +29,7 @@
 namespace Seldon
 {
 
-  
+
   //! 3D array.
   /*!
     This class implements 3D arrays.
@@ -70,7 +70,7 @@ namespace Seldon
     Array3D();
     Array3D(int i, int j, int k);
     Array3D(const Array3D<T, Allocator>& A);
-  
+
     // Destructor.
     ~Array3D();
 
@@ -99,7 +99,7 @@ namespace Seldon
     void Fill(const T0& x);
     void FillRand();
     void Print() const;
-    
+
     // Input/output functions
     void Write(string FileName) const;
     void Write(ofstream& FileStream) const;

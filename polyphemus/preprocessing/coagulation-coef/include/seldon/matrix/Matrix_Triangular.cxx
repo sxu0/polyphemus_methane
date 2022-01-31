@@ -29,7 +29,7 @@ namespace Seldon
   /****************
    * CONSTRUCTORS *
    ****************/
-  
+
 
   //! Default constructor.
   /*!
@@ -125,8 +125,8 @@ namespace Seldon
     for (int k = 0; k < i; k++, ptr += lgth)
       me_[k] = ptr;
   }
-  
-  
+
+
   //! Copy constructor.
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_Triangular<T, Prop, Storage, Allocator>
@@ -138,11 +138,11 @@ namespace Seldon
     this->n_ = 0;
     this->data_ = NULL;
     this->me_ = NULL;
-    
+
     this->Copy(A);
   }
 
-  
+
   /**************
    * DESTRUCTOR *
    **************/
@@ -152,18 +152,18 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_Triangular<T, Prop, Storage, Allocator>::~Matrix_Triangular()
   {
-    
+
 #ifdef SELDON_CHECK_MEMORY
     try
       {
 #endif
-	
+
 	if (this->data_ != NULL)
 	  {
 	    this->allocator_.deallocate(this->data_, this->m_ * this->n_);
 	    this->data_ = NULL;
 	  }
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -330,7 +330,7 @@ namespace Seldon
       }
   }
 
-  
+
   //! Reallocates memory to resize the matrix and keeps previous entries.
   /*!
     On exit, the matrix is a i x i matrix.
@@ -343,7 +343,7 @@ namespace Seldon
   inline void Matrix_Triangular<T, Prop, Storage, Allocator>
   ::Resize(int i, int j)
   {
-    
+
     if (i != this->m_)
       {
 	// Storing the previous values of the matrix.
@@ -351,10 +351,10 @@ namespace Seldon
 	Vector<value_type, VectFull, Allocator> xold(this->GetDataSize());
 	for (int k = 0; k < this->GetDataSize(); k++)
 	  xold(k) = this->data_[k];
-	
+
 	// Reallocation.
 	this->Reallocate(i, i);
-	
+
 	// Filling the matrix with its previous values.
 	int imin = min(iold, i);
 	for (int k = 0; k < imin; k++)
@@ -362,8 +362,8 @@ namespace Seldon
 	    this->data_[k*i + l] = xold(k*iold + l);
       }
   }
-  
-  
+
+
   //! Changes the size of the matrix and sets its data array
   //! (low level method).
   /*!
@@ -508,7 +508,7 @@ namespace Seldon
       }
   }
 
- 
+
   //! Access operator.
   /*!
     Returns the value of element (i, j).
@@ -521,7 +521,7 @@ namespace Seldon
   Matrix_Triangular<T, Prop, Storage, Allocator>
   ::operator() (int i, int j) const
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_Triangular::operator() const",
@@ -565,7 +565,7 @@ namespace Seldon
   ::const_reference
   Matrix_Triangular<T, Prop, Storage, Allocator>::Val(int i, int j) const
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_Triangular::Val(int, int) const",
@@ -595,7 +595,7 @@ namespace Seldon
   inline typename Matrix_Triangular<T, Prop, Storage, Allocator>::reference
   Matrix_Triangular<T, Prop, Storage, Allocator>::Val(int i, int j)
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_Triangular::Val(int, int)",
@@ -621,7 +621,7 @@ namespace Seldon
   inline typename Matrix_Triangular<T, Prop, Storage, Allocator>::reference
   Matrix_Triangular<T, Prop, Storage, Allocator>::operator[] (int i)
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->GetDataSize())
       throw WrongIndex("Matrix_Triangular::operator[] (int)",
@@ -629,7 +629,7 @@ namespace Seldon
 		       + to_str(this->GetDataSize()-1) + "], but is equal to "
 		       + to_str(i) + ".");
 #endif
-    
+
     return this->data_[i];
   }
 
@@ -645,7 +645,7 @@ namespace Seldon
   ::const_reference
   Matrix_Triangular<T, Prop, Storage, Allocator>::operator[] (int i) const
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->GetDataSize())
       throw WrongIndex("Matrix_Triangular::operator[] (int) const",
@@ -653,7 +653,7 @@ namespace Seldon
 		       + to_str(this->GetDataSize()-1) + "], but is equal to "
 		       + to_str(i) + ".");
 #endif
-    
+
     return this->data_[i];
   }
 
@@ -714,7 +714,7 @@ namespace Seldon
   void Matrix_Triangular<T, Prop, Storage, Allocator>::SetIdentity()
   {
     this->Fill(T(0));
-    
+
     T one(1);
     for (int i = 0; i < min(this->m_, this->n_); i++)
       this->Val(i, i) = one;
@@ -1004,7 +1004,7 @@ namespace Seldon
 
     FileStream.close();
   }
- 
+
 
   //! Reads the matrix from an input stream.
   /*!
@@ -1044,8 +1044,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   //! Reads the matrix from a file.
   /*!
     Reads a matrix stored in text format in a file.
@@ -1063,13 +1063,13 @@ namespace Seldon
       throw IOError("Matrix_Pointers::ReadText(string FileName)",
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
-    
+
     this->ReadText(FileStream);
 
     FileStream.close();
   }
-  
-  
+
+
   //! Reads the matrix from an input stream.
   /*!
     Reads a matrix in text format from an input stream.
@@ -1081,14 +1081,14 @@ namespace Seldon
   {
     // clears previous matrix
     Clear();
-    
+
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
       throw IOError("Matrix_Pointers::ReadText(ifstream& FileStream)",
                     "Stream is not ready.");
 #endif
-    
+
     // we read first line
     string line;
     getline(FileStream, line);
@@ -1098,39 +1098,39 @@ namespace Seldon
 	// empty file ?
 	return;
       }
-    
+
     // converting first line into a vector
     istringstream line_stream(line);
     Vector<T> first_row;
     first_row.ReadText(line_stream);
-    
+
     // and now the other rows
     Vector<T> other_rows;
     other_rows.ReadText(FileStream);
-    
+
     // number of rows and columns
     int n = first_row.GetM();
     int m = 1 + other_rows.GetM()/n;
-    
+
 #ifdef SELDON_CHECK_IO
     // Checking number of elements
     if (other_rows.GetM() != (m-1)*n)
       throw IOError("Matrix_Pointers::ReadText(ifstream& FileStream)",
                     "The file should contain same number of columns.");
 #endif
-    
+
     this->Reallocate(m,n);
     // filling matrix
     for (int j = 0; j < n; j++)
       this->Val(0, j) = first_row(j);
-    
+
     int nb = 0;
     if (Storage::UpLo())
       for (int i = 1; i < m; i++)
 	{
 	  for (int j = 0; j < i; j++)
 	    nb++;
-	  
+
 	  for (int j = i; j < n; j++)
 	    this->Val(i, j) = other_rows(nb++);
 	}
@@ -1139,12 +1139,12 @@ namespace Seldon
 	{
 	  for (int j = 0; j <= i; j++)
 	    this->Val(i, j) = other_rows(nb++);
-	  
+
 	  for (int j = i+1; j < n; j++)
 	    nb++;
 	}
   }
-  
+
 
 
   /////////////////////////
@@ -1199,8 +1199,8 @@ namespace Seldon
 
     return *this;
   }
-  
-  
+
+
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
@@ -1212,10 +1212,10 @@ namespace Seldon
   {
     for (int i = 0; i < this->GetDataSize();i++)
       this->data_[i] *= x;
-    
+
     return *this;
   }
-  
+
 
 
   /////////////////////////
@@ -1271,7 +1271,7 @@ namespace Seldon
     return *this;
   }
 
-  
+
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
@@ -1283,11 +1283,11 @@ namespace Seldon
   {
     for (int i = 0; i < this->GetDataSize();i++)
       this->data_[i] *= x;
-    
+
     return *this;
   }
-  
-  
+
+
 
   /////////////////////////
   // MATRIX<ROWUPTRIANG> //
@@ -1342,7 +1342,7 @@ namespace Seldon
     return *this;
   }
 
-  
+
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
@@ -1354,11 +1354,11 @@ namespace Seldon
   {
     for (int i = 0; i < this->GetDataSize();i++)
       this->data_[i] *= x;
-    
+
     return *this;
   }
-  
-  
+
+
 
   /////////////////////////
   // MATRIX<ROWLOTRIANG> //
@@ -1413,7 +1413,7 @@ namespace Seldon
     return *this;
   }
 
-  
+
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
@@ -1425,10 +1425,10 @@ namespace Seldon
   {
     for (int i = 0; i < this->GetDataSize();i++)
       this->data_[i] *= x;
-    
+
     return *this;
   }
-  
+
 } // namespace Seldon.
 
 #define SELDON_FILE_MATRIX_TRIANGULAR_CXX

@@ -38,12 +38,14 @@ import SCons.Platform.aix
 
 import cc
 
-packages = ['vac.C', 'ibmcxx.cmp']
+packages = ["vac.C", "ibmcxx.cmp"]
+
 
 def get_xlc(env):
-    xlc = env.get('CC', 'xlc')
-    xlc_r = env.get('SHCC', 'xlc_r')
+    xlc = env.get("CC", "xlc")
+    xlc_r = env.get("SHCC", "xlc_r")
     return SCons.Platform.aix.get_xlc(env, xlc, xlc_r, packages)
+
 
 def generate(env):
     """Add Builders and construction variables for xlc / Visual Age
@@ -55,9 +57,10 @@ def generate(env):
 
     cc.generate(env)
 
-    env['CC'] = _cc
-    env['SHCC'] = _shcc
-    env['CCVERSION'] = version
+    env["CC"] = _cc
+    env["SHCC"] = _shcc
+    env["CCVERSION"] = version
+
 
 def exists(env):
     path, _cc, _shcc, version = get_xlc(env)
@@ -66,6 +69,7 @@ def exists(env):
         if os.path.exists(xlc):
             return xlc
     return None
+
 
 # Local Variables:
 # tab-width:4

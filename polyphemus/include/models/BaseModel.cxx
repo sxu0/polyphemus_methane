@@ -151,9 +151,9 @@ namespace Polyphemus
       }
     infile.close();
     if (Nz + 1 != nvalue)
-      throw string("Number of vertical layer interfaces in \"")  + 
-        file_config + "\", Nz + 1 is " + to_str(Nz + 1) + 
-        ". However " + to_str(nvalue) + " levels are given in \"" + 
+      throw string("Number of vertical layer interfaces in \"")  +
+        file_config + "\", Nz + 1 is " + to_str(Nz + 1) +
+        ". However " + to_str(nvalue) + " levels are given in \"" +
         file_vertical_levels + "\"";
 
     LayerInterface.resize(Nz + 1);
@@ -557,7 +557,7 @@ namespace Polyphemus
   {
     return Ncomposition_aer;
   }
-  
+
   //! Returns the number of size sections (aerosols).
   /*!
     \return The number of size sections.
@@ -1353,8 +1353,8 @@ namespace Polyphemus
   {
     return NumberConcentration_aer;
   }
-  
-  
+
+
   //! Returns the concentrations Data for aerosols.
   /*!
     \return The concentrations Data for aerosols.
@@ -1412,8 +1412,8 @@ namespace Polyphemus
     throw string("\"BaseModel<T>::GetNumberConcentration_aer(int, T, T, T)\"")
       + " is not defined.";
   }
-  
-  
+
+
   //! Checks whether a field is managed by the model (virtual method).
   template<class T>
   bool BaseModel<T>::HasNumberConcentration_aer()
@@ -1746,9 +1746,9 @@ namespace Polyphemus
     T time_distance = date.GetSecondsFrom(date_min_file);
     int record = int(floor(time_distance / Delta_t_file));
     if (record < 0)
-      throw string("ERROR! the begining date \"") + to_str(date) + 
-        string("\" is out of the given input data.\t") + 
-        string("The begining date for the input data is \"") + to_str(date_min_file) + 
+      throw string("ERROR! the begining date \"") + to_str(date) +
+        string("\" is out of the given input data.\t") +
+        string("The begining date for the input data is \"") + to_str(date_min_file) +
         string("\".");
     FormatBinary<float>().ReadRecord(input_file, record, FileData_i);
     FormatBinary<float>().ReadRecord(input_file, record + 1, FileData_f);
@@ -1821,7 +1821,7 @@ namespace Polyphemus
     \param date date at which data are computed.
     \param i index, along the first dimension, where output data is stored.
     \param CurrentData (output) data at date \a date.
-    \param Nc number of composition, for external data    
+    \param Nc number of composition, for external data
     \warning If the input-file name is a number, the data is set to this
     number.
   */
@@ -1835,12 +1835,12 @@ namespace Polyphemus
   {
     // Extracts sub-data first.
     TinyVector<int, N-1> new_shape;
-    
+
     for (int i = 0; i < N - 1; i++)
       new_shape(i) = FileData_i.GetArray().shape()(i + 1);
-    
+
     new_shape(0) =new_shape(0) * Nc;
-    
+
     unsigned data_size=FileData_i.GetNbElements()/FileData_i.GetLength(0);
     unsigned int position = index * Nc * data_size;
     Data<T, N-1> FileData_extract_i(&FileData_i.GetData()[position],
@@ -1853,7 +1853,7 @@ namespace Polyphemus
     InitData(input_file, date_min_file, Delta_t_file, FileData_extract_i,
 	    FileData_extract_f, date, CurrentData_extract);
   }
-  
+
   //! Initializes sub-data at a given date.
   /*! Reads data in file \a input_file. It reads the two steps surrounding the
     date \a date and it interpolates linearly to compute the data at date \a
@@ -1925,7 +1925,7 @@ namespace Polyphemus
     \warning If the input-file name is a number, the data is set to this
     number.
   */
-  template<class T> 
+  template<class T>
   template<int N>
   void BaseModel<T>::InitData(string input_file, Date date_min_file,
 			      T Delta_t_file, Data<T, N>& FileData_i,
@@ -1937,10 +1937,10 @@ namespace Polyphemus
     TinyVector<int, N-2> new_shape;
     for (int i = 0; i < N - 2; i++)
       new_shape(i) = FileData_i.GetArray().shape()(i + 2);
-    
+
     unsigned data_size=FileData_i.GetNbElements()/ FileData_i.GetLength(1)
       /FileData_i.GetLength(0);
-    
+
     unsigned int position = first_index * FileData_i.GetNbElements()/FileData_i.GetLength(0)
       + second_index * data_size * Ncomposition_aer +third_index*data_size;
 
@@ -1990,9 +1990,9 @@ namespace Polyphemus
     TinyVector<int, N-2> new_shape;
     for (int i = 0; i < N - 2; i++)
       new_shape(i) = FileData_i.GetArray().shape()(i + 2);
-    
+
     new_shape(0)=new_shape(0)* Nc;
-    
+
     unsigned data_size=FileData_i.GetNbElements()/ FileData_i.GetLength(1)/FileData_i.GetLength(0);
     unsigned int position = first_index * FileData_i.GetNbElements()/FileData_i.GetLength(0)
       + second_index * Nc * data_size;
@@ -2005,7 +2005,7 @@ namespace Polyphemus
 
     InitData(input_file, date_min_file, Delta_t_file, FileData_extract_i,
 	    FileData_extract_f, date, CurrentData_extract);
-      
+
   }
 
   //! Updates data at current date.
@@ -2256,7 +2256,7 @@ namespace Polyphemus
     \a date.
     \param i index, along the first dimension, where output data is stored.
     \param CurrentData (output) data at current date.
-    \param Nc  number of composition, for external data    
+    \param Nc  number of composition, for external data
     \warning On entry, \a FileData_i and \a FileData_f are arrays (read on
     file) that must surround the previous date.
     \warning If the input-file name is a number, the data is set to this
@@ -2287,7 +2287,7 @@ namespace Polyphemus
 
     UpdateData(input_file, date_min_file, Delta_t_file, FileData_extract_i,
 	      FileData_extract_f, CurrentData_extract);
-  }  
+  }
 
   //! Updates sub-data at current date.
   /*! This reloaded function updates concentration from external format data
@@ -2344,7 +2344,7 @@ namespace Polyphemus
 	       FileData_extract_i, FileData_extract_f,
 	       CurrentData_extract_i, CurrentData_extract_f);
   }
-  
+
   //! Updates sub-data at current date.
   /*! Interpolates data at the current date, on the basis of \a FileData_i and
     \a FileData_f. On entry, \a FileData_i and \a FileData_f are arrays (read
@@ -2395,7 +2395,7 @@ namespace Polyphemus
     UpdateData(input_file, date_min_file, Delta_t_file, FileData_extract_i,
                FileData_extract_f, CurrentData_extract);
   }
-  
+
     //! Updates sub-data at current date.
   /*!This reloaded function updates concentration from internal format data
     Interpolates data at the current date, on the basis of \a FileData_i and
@@ -2454,7 +2454,7 @@ namespace Polyphemus
 				       new_shape);
     Data<T, N-2> CurrentData_extract_f(&CurrentData_f.GetData()[position],
 				       new_shape);
-				       
+
     UpdateData(input_file, date_min_file, Delta_t_file,
 	       FileData_extract_i, FileData_extract_f,
 	       CurrentData_extract_i, CurrentData_extract_f);
@@ -2564,7 +2564,7 @@ namespace Polyphemus
       new_shape(i) = FileData_i.GetArray().shape()(i + 2);
 
     new_shape(0) =new_shape(0)*Nc;
-    
+
     unsigned data_size=FileData_i.GetNbElements()/ FileData_i.GetLength(1)/FileData_i.GetLength(0);
     unsigned int position = first_index * FileData_i.GetNbElements()/FileData_i.GetLength(0)
       + second_index * data_size *Nc;
@@ -2578,7 +2578,7 @@ namespace Polyphemus
     UpdateData(input_file, date_min_file, Delta_t_file, FileData_extract_i,
 	      FileData_extract_f, CurrentData_extract);
   }
-  
+
   //! Updates data at current date and at next date.
   /*! Depending on \a interpolated, it interpolates data at the current date,
     on the basis of \a FileData_i and \a FileData_f or sets it to \a

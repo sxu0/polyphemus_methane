@@ -37,18 +37,22 @@ Usage example:
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-__revision__ = "src/engine/SCons/Variables/EnumVariable.py 5110 2010/07/25 16:14:38 bdeegan"
+__revision__ = (
+    "src/engine/SCons/Variables/EnumVariable.py 5110 2010/07/25 16:14:38 bdeegan"
+)
 
-__all__ = ['EnumVariable',]
+__all__ = [
+    "EnumVariable",
+]
 
 import string
 
 import SCons.Errors
 
+
 def _validator(key, val, env, vals):
     if not val in vals:
-        raise SCons.Errors.UserError(
-            'Invalid value for option %s: %s' % (key, val))
+        raise SCons.Errors.UserError("Invalid value for option %s: %s" % (key, val))
 
 
 def EnumVariable(key, help, default, allowed_values, map={}, ignorecase=0):
@@ -78,27 +82,27 @@ def EnumVariable(key, help, default, allowed_values, map={}, ignorecase=0):
     The 'validator' tests whether the value is in the list of allowed
     values. The 'converter' converts input values according to the
     given 'map'-dictionary (unmapped input values are returned
-    unchanged). 
+    unchanged).
     """
-    help = '%s (%s)' % (help, string.join(allowed_values, '|'))
+    help = "%s (%s)" % (help, string.join(allowed_values, "|"))
     # define validator
     if ignorecase >= 1:
-        validator = lambda key, val, env, vals=allowed_values: \
-                    _validator(key, string.lower(val), env, vals)
+        validator = lambda key, val, env, vals=allowed_values: _validator(
+            key, string.lower(val), env, vals
+        )
     else:
-        validator = lambda key, val, env, vals=allowed_values: \
-                    _validator(key, val, env, vals)
+        validator = lambda key, val, env, vals=allowed_values: _validator(
+            key, val, env, vals
+        )
     # define converter
     if ignorecase == 2:
-        converter = lambda val, map=map: \
-                    string.lower(map.get(string.lower(val), val))
+        converter = lambda val, map=map: string.lower(map.get(string.lower(val), val))
     elif ignorecase == 1:
-        converter = lambda val, map=map: \
-                    map.get(string.lower(val), val)
+        converter = lambda val, map=map: map.get(string.lower(val), val)
     else:
-        converter = lambda val, map=map: \
-                    map.get(val, val)
+        converter = lambda val, map=map: map.get(val, val)
     return (key, help, default, validator, converter)
+
 
 # Local Variables:
 # tab-width:4

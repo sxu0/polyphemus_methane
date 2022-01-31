@@ -126,7 +126,7 @@ C     Update time derivatives.
 
 C      DO jesp=E1,E2 !! YK
 C     Condensation/Evaporation for only inorganic species
-C     The condensation/evaporation rate for organic species is dynamically calculated 
+C     The condensation/evaporation rate for organic species is dynamically calculated
 C     in SOAP.
       DO jesp=E1,ECl
          IF (aerosol_species_interact(jesp).GT.0) THEN

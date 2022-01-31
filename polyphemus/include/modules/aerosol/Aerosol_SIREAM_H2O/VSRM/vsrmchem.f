@@ -48,8 +48,8 @@ C
 C     -- INPUT/OUTPUT VARIABLES
 C
 C     ZA: gas-phase and aerosol concentration ([\mu.g/m^3]).
-C     ZNA: aerosol number concentration ([#/m^3]).     
-C     
+C     ZNA: aerosol number concentration ([#/m^3]).
+C
 C     -- OUTPUT VARIABLES
 C
 C     PH : pH.
@@ -58,7 +58,7 @@ C     for dissolved aerosols species ([\mu.g/m^3])
 C     and dissolves gas      species ([ppm])
 C     qscav_num : scavenged quantity by in-cloud scavenging
 C     for number ([m^3])
-C     
+C
 C------------------------------------------------------------------------
 C
 C     -- REMARKS
@@ -154,19 +154,19 @@ C------------------------------------------------------------------------
       double precision dsf_aero(NS),xbf_aero(NS+1)
       double precision fixed_rho_aero,totmasstot
       double precision fixed_diameter(NS)
-      
+
       integer ifirstact
       integer isect,isp,i,istep,ii,nistep,ind_ok,j,jj,jb
 
       data collision_eff /0.9d0/
 
       double precision liquid_density(naers)
-      data liquid_density /0.97D-06, 0.85D-06, 
+      data liquid_density /0.97D-06, 0.85D-06,
      &     0.91D-06, 1.50D-06, 1.15D-06, 1.84D-06, 1.00D-06,
-     &     2.25D-06, 1.30D-06, 2.33D-06, 1.84D-06, 1.835D-06/ 
+     &     2.25D-06, 1.30D-06, 2.33D-06, 1.84D-06, 1.835D-06/
 
       integer nesp
-      
+
       double precision totmassold(NS), numberconcold(NS)
 
       nesp = NGAS+NS*NAER
@@ -291,17 +291,17 @@ C     -----------------------------------
 
 C     Calculation of aerosol number and diameter of each section before aqueous chemistry
 C     --------------------------------
-      
+
       DO i = 1, NS
          fixed_diameter(i) = sqrt(DBF_AERO(i)*DBF_AERO(i+1))
       ENDDO
 
-      
+
       do i = 1,NS
          totmass_init(i)= aerosol(i,naa)+aerosol(i,na4)+
      &        aerosol(i,nan)+aerosol(i,nac)+aerosol(i,nas)+
      &        aerosol(i,nao)+aerosol(i,nae)+aerosol(i,nar)
-         
+
          if(INUM.EQ.1) then     ! Case when the number concentration is followed
             ! Real value
             numberconc(i) = ZNA(i)
@@ -313,18 +313,18 @@ C     --------------------------------
             else
                dold(i)=sqrt(DBF_AERO(i)*DBF_AERO(i+1))
             endif
-            
+
          else
             ! Calculated value
             numberconc(i)=totmass_init(i)/(dsf_aero(i)**3.d0)
-     &           /cst_pi6/fixed_rho_aero 
+     &           /cst_pi6/fixed_rho_aero
             dold(i)=sqrt(DBF_AERO(i)*DBF_AERO(i+1))
-         
+
          endif
-         
+
       enddo
 
-C     3bis) At low SO2 concentration, transfer all SO2 to 
+C     3bis) At low SO2 concentration, transfer all SO2 to
 C     SO4-- in order to avoid numerical difficulties
 C     ---------------------------------------------------
       IF (gas(ngso2).LE.minso2) THEN
@@ -373,7 +373,7 @@ C     --------------------------------------------------------------
      &     +gas(ngno)+gas(ngno2)+gas(nghno2))/coefloc
 
       do i=1, NS  !!KS ifirstact,NS ???
-         nitbef  = nitbef  + aerosol(i,naa)   /mmNH4 
+         nitbef  = nitbef  + aerosol(i,naa)   /mmNH4
      &        + aerosol(i,nan)   /mmNO3
          sulfbef = sulfbef + aerosol(i,na4)   /mmSO4
      &        + aerosol(i,nahso5)/mmHSO5
@@ -389,10 +389,10 @@ C     --------------------------------
          totmass(i)= aerosol(i,naa)+aerosol(i,na4)+
      &        aerosol(i,nan)+aerosol(i,nac)+aerosol(i,nas)+
      &        aerosol(i,nao)+aerosol(i,nae)+aerosol(i,nar)
-         
+
          if(INUM.EQ.0) then     ! Case when the number concentration is not followed
             numberconc(i)=totmass(i)/(dsf_aero(i)**3.d0)
-     &           /cst_pi6/fixed_rho_aero 
+     &           /cst_pi6/fixed_rho_aero
          endif
       enddo
 
@@ -519,7 +519,7 @@ C     ----------------------------------------------
          else
             rho_aero(i) = fixed_rho_aero
          endif
-         
+
          totmassold(i) = totmass(i)
          numberconcold(i) = numberconc(i)
          ! Calcul of diameter for redistaq
@@ -527,7 +527,7 @@ C     ----------------------------------------------
             dnew(i)=(totmass(i)/numberconc(i)
      &           /rho_aero(i)/cst_pi6)**cst_FRAC3
          else
-            dnew(i) = dsf_aero(i) 
+            dnew(i) = dsf_aero(i)
          endif
       enddo
 
@@ -541,16 +541,16 @@ C     ----------------------------------------------
      &              aerosol(i,nao)+aerosol(i,nae)+aerosol(i,nar)
 
                numberconc(i)=totmass(i)/(dsf_aero(i)**3.d0)
-     &              /cst_pi6/fixed_rho_aero 
-        
+     &              /cst_pi6/fixed_rho_aero
+
             endif
          enddo
 
-      ELSEIF (IREDIST .EQ. 3 .OR. IREDIST .EQ. 4 .OR.IREDIST .EQ. 5 
-     &        .OR.IREDIST .EQ. 6 .OR.IREDIST .EQ. 7 .OR.IREDIST .EQ. 8 
+      ELSEIF (IREDIST .EQ. 3 .OR. IREDIST .EQ. 4 .OR.IREDIST .EQ. 5
+     &        .OR.IREDIST .EQ. 6 .OR.IREDIST .EQ. 7 .OR.IREDIST .EQ. 8
      &        .OR.IREDIST .EQ. 9 .OR.IREDIST .EQ. 10) then
          !! fixed_diameter remplace dold
-         !! Dans le cas ou dold est hors de sa boite en entree, 
+         !! Dans le cas ou dold est hors de sa boite en entree,
          !! la redistribution ne fonctionne plus.
          call redistribution(NS,naers,naw,DBF_AERO, fixed_diameter,
      &        fixed_rho_aero,IDENS,IREDIST,section_pass,liquid_density,
@@ -621,7 +621,7 @@ C     ---------------------------------------
             ZA(ii+(jj-1)*NS)=aerosol(i,nao)
      s           *foa(nesp_pom + nesp_aec + j,i)
          ENDDO
-         ZA(ii+(EH2O-1)*NS)= aerosol(i,naw) ! H2O 
+         ZA(ii+(EH2O-1)*NS)= aerosol(i,naw) ! H2O
       ENDDO
 C     15) Compute in-cloud scavenging
 C     -------------------------------

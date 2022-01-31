@@ -34,8 +34,9 @@ import SCons.Util
 
 import exceptions
 
+
 class BuildError(Exception):
-    """ Errors occuring while building.
+    """Errors occuring while building.
 
     BuildError have the following attributes:
 
@@ -74,11 +75,11 @@ class BuildError(Exception):
         ---------------------------------------------------------
 
         node : the error occured while building this target node(s)
-        
+
         executor : the executor that caused the build to fail (might
                    be None if the build failures is not due to the
                    executor failing)
-        
+
         action : the action that caused the build to fail (might be
                  None if the build failures is not due to the an
                  action failure)
@@ -86,13 +87,21 @@ class BuildError(Exception):
         command : the command line for the action that caused the
                   build to fail (might be None if the build failures
                   is not due to the an action failure)
-        """
+    """
 
-    def __init__(self, 
-                 node=None, errstr="Unknown error", status=2, exitstatus=2,
-                 filename=None, executor=None, action=None, command=None,
-                 exc_info=(None, None, None)):
-        
+    def __init__(
+        self,
+        node=None,
+        errstr="Unknown error",
+        status=2,
+        exitstatus=2,
+        filename=None,
+        executor=None,
+        action=None,
+        command=None,
+        exc_info=(None, None, None),
+    ):
+
         self.errstr = errstr
         self.status = status
         self.exitstatus = exitstatus
@@ -104,29 +113,45 @@ class BuildError(Exception):
         self.action = action
         self.command = command
 
-        Exception.__init__(self, node, errstr, status, exitstatus, filename, 
-                           executor, action, command, exc_info)
+        Exception.__init__(
+            self,
+            node,
+            errstr,
+            status,
+            exitstatus,
+            filename,
+            executor,
+            action,
+            command,
+            exc_info,
+        )
 
     def __str__(self):
         if self.filename:
-            return self.filename + ': ' + self.errstr
+            return self.filename + ": " + self.errstr
         else:
             return self.errstr
+
 
 class InternalError(Exception):
     pass
 
+
 class UserError(Exception):
     pass
+
 
 class StopError(Exception):
     pass
 
+
 class EnvironmentError(Exception):
     pass
 
+
 class MSVCError(IOError):
     pass
+
 
 class ExplicitExit(Exception):
     def __init__(self, node=None, status=None, *args):
@@ -134,6 +159,7 @@ class ExplicitExit(Exception):
         self.status = status
         self.exitstatus = status
         apply(Exception.__init__, (self,) + args)
+
 
 def convert_to_BuildError(status, exc_info=None):
     """
@@ -148,57 +174,55 @@ def convert_to_BuildError(status, exc_info=None):
 
     if isinstance(status, BuildError):
         buildError = status
-        buildError.exitstatus = 2   # always exit with 2 on build errors
+        buildError.exitstatus = 2  # always exit with 2 on build errors
     elif isinstance(status, ExplicitExit):
         status = status.status
-        errstr = 'Explicit exit, status %s' % status
+        errstr = "Explicit exit, status %s" % status
         buildError = BuildError(
             errstr=errstr,
-            status=status,      # might be 0, OK here
-            exitstatus=status,      # might be 0, OK here
-            exc_info=exc_info)
+            status=status,  # might be 0, OK here
+            exitstatus=status,  # might be 0, OK here
+            exc_info=exc_info,
+        )
     # TODO(1.5):
-    #elif isinstance(status, (StopError, UserError)):
+    # elif isinstance(status, (StopError, UserError)):
     elif isinstance(status, StopError) or isinstance(status, UserError):
         buildError = BuildError(
-            errstr=str(status),
-            status=2,
-            exitstatus=2,
-            exc_info=exc_info)
+            errstr=str(status), status=2, exitstatus=2, exc_info=exc_info
+        )
     elif isinstance(status, exceptions.EnvironmentError):
         # If an IOError/OSError happens, raise a BuildError.
         # Report the name of the file or directory that caused the
         # error, which might be different from the target being built
         # (for example, failure to create the directory in which the
         # target file will appear).
-        try: filename = status.filename
-        except AttributeError: filename = None
-        buildError = BuildError( 
+        try:
+            filename = status.filename
+        except AttributeError:
+            filename = None
+        buildError = BuildError(
             errstr=status.strerror,
             status=status.errno,
             exitstatus=2,
             filename=filename,
-            exc_info=exc_info)
+            exc_info=exc_info,
+        )
     elif isinstance(status, Exception):
         buildError = BuildError(
-            errstr='%s : %s' % (status.__class__.__name__, status),
+            errstr="%s : %s" % (status.__class__.__name__, status),
             status=2,
             exitstatus=2,
-            exc_info=exc_info)
+            exc_info=exc_info,
+        )
     elif SCons.Util.is_String(status):
-        buildError = BuildError(
-            errstr=status,
-            status=2,
-            exitstatus=2)
+        buildError = BuildError(errstr=status, status=2, exitstatus=2)
     else:
-        buildError = BuildError(
-            errstr="Error %s" % status,
-            status=status,
-            exitstatus=2)
-    
-    #import sys
-    #sys.stderr.write("convert_to_BuildError: status %s => (errstr %s, status %s)"%(status,buildError.errstr, buildError.status))
+        buildError = BuildError(errstr="Error %s" % status, status=status, exitstatus=2)
+
+    # import sys
+    # sys.stderr.write("convert_to_BuildError: status %s => (errstr %s, status %s)"%(status,buildError.errstr, buildError.status))
     return buildError
+
 
 # Local Variables:
 # tab-width:4

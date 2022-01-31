@@ -34,10 +34,12 @@ __revision__ = "src/engine/SCons/Platform/darwin.py 5110 2010/07/25 16:14:38 bde
 
 import posix
 
+
 def generate(env):
     posix.generate(env)
-    env['SHLIBSUFFIX'] = '.dylib'
-    env['ENV']['PATH'] = env['ENV']['PATH'] + ':/sw/bin'
+    env["SHLIBSUFFIX"] = ".dylib"
+    env["ENV"]["PATH"] = env["ENV"]["PATH"] + ":/sw/bin"
+
 
 # Local Variables:
 # tab-width:4

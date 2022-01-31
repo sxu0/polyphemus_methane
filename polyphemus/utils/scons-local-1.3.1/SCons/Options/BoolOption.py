@@ -35,6 +35,7 @@ import SCons.Warnings
 
 warned = False
 
+
 def BoolOption(*args, **kw):
     global warned
     if not warned:
@@ -42,6 +43,7 @@ def BoolOption(*args, **kw):
         SCons.Warnings.warn(SCons.Warnings.DeprecatedOptionsWarning, msg)
         warned = True
     return apply(SCons.Variables.BoolVariable, args, kw)
+
 
 # Local Variables:
 # tab-width:4

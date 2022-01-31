@@ -25,11 +25,11 @@ namespace Seldon
   //! Solves a linear system using Conjugate Gradient Normal Equation (CGNE)
   /*!
     Solves the unsymmetric linear system A x = b.
-    
+
     return value of 0 indicates convergence within the
     maximum number of iterations (determined by the iter object).
     return value of 1 indicates a failure to converge.
-    
+
     \param[in] A  Complex General Matrix
     \param[in,out] x  Vector on input it is the initial guess
     on output it is the solution
@@ -44,24 +44,24 @@ namespace Seldon
     const int N = A.GetM();
     if (N <= 0)
       return 0;
-    
+
     typedef typename Vector1::value_type Complexe;
     Complexe rho(1), rho_1(0), alpha, beta, delta;
     Vector1 p(b), q(b), r(b), z(b);
     Titer dp;
-    
+
     // x should be equal to 0
     // see Cg to understand implementation
     // we solve A^t A x = A^t b
     // left-preconditioner is equal to M M^t
-    
+
     // q = A^t b
     Mlt(SeldonTrans, A, b, q);
     // we initialize iter
     int success_init = iter.Init(q);
     if (success_init != 0)
       return iter.ErrorCode();
-    
+
     if (!iter.IsInitGuess_Null())
       {
 	// r = A^t b - A^t A x
@@ -74,7 +74,7 @@ namespace Seldon
 	Copy(q, r);
 	x.Zero();
       }
-    
+
     dp = Norm2(q);
     iter.SetNumberIteration(0);
     // Loop until the stopping criteria are satisfied
@@ -83,14 +83,14 @@ namespace Seldon
 	// Preconditioning
 	M.TransSolve(A, r, q);
 	M.Solve(A, q, z);
-	
+
 	rho = DotProd(r,z);
 	if (rho == Complexe(0))
 	  {
 	    iter.Fail(1, "Cgne breakdown #1");
 	    break;
 	  }
-	
+
 	if (iter.First())
 	  Copy(z, p);
 	else
@@ -99,11 +99,11 @@ namespace Seldon
 	    Mlt(beta, p);
 	    Add(Complexe(1), z, p);
 	  }
-	
+
 	// instead of q = A*p, we compute q = A^t A *p
 	Mlt(A, p, q);
 	Mlt(SeldonTrans, A, q, z);
-	
+
 	delta = DotProd(p, z);
 	if (delta == Complexe(0))
 	  {
@@ -111,22 +111,22 @@ namespace Seldon
 	    break;
 	  }
 	alpha = rho / delta;
-	
+
 	Add(alpha, p, x);
 	Add(-alpha, z, r);
-	
+
 	rho_1 = rho;
 	dp = Norm2(r);
-	
+
 	// two iterations, because of two multiplications with A
 	++iter;
 	++iter;
       }
-    
+
     return iter.ErrorCode();
   }
-  
-  
+
+
 } // end namespace
 
 #define SELDON_FILE_ITERATIVE_CGNE_CXX

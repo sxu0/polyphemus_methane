@@ -43,18 +43,21 @@ import SCons.Tool
 import SCons.Util
 from SCons.Tool.FortranCommon import add_all_to_env, add_fortran_to_env
 
-compilers = ['f95', 'f90', 'f77']
+compilers = ["f95", "f90", "f77"]
+
 
 def generate(env):
     add_all_to_env(env)
     add_fortran_to_env(env)
 
-    fc = env.Detect(compilers) or 'f77'
-    env['SHFORTRAN'] = fc
-    env['FORTRAN'] = fc
+    fc = env.Detect(compilers) or "f77"
+    env["SHFORTRAN"] = fc
+    env["FORTRAN"] = fc
+
 
 def exists(env):
     return env.Detect(compilers)
+
 
 # Local Variables:
 # tab-width:4

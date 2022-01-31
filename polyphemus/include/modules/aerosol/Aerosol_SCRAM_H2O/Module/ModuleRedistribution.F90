@@ -74,13 +74,13 @@ contains
 ! 	if(IsNaN(N(k)*0.d0)) then
 ! 	  print*,"Error of infinity/NaN before rdb",N(k)
 ! 	  stop
-! 	endif	
+! 	endif
 	do s=1,N_aerosol
 	  jesp=List_species(s)
 ! 	  if(IsNaN(Qesp(k,jesp)*0.d0)) then
 ! 	    print*,"Error of infinity/NaN before rdb",Qesp(k,jesp)
 ! 	    stop
-! 	  endif	  
+! 	  endif
 	  Qesp(k,jesp)=concentration_mass(j,jesp)
 	  d(k)=size_diam_av(k)
 	enddo
@@ -110,7 +110,7 @@ contains
     !update wet and dry diameter
 !     call compute_wet_mass_diameter(1,N_size,concentration_mass,concentration_number,&
 ! 	  concentration_inti,wet_mass,wet_diameter,wet_volume,cell_diam_av)
-	  
+
   end subroutine redistribution_size
 
   subroutine redistribution_fraction()
@@ -132,9 +132,9 @@ contains
     double precision:: numb_var(N_size)!number variation map
     double precision::mass_total,f1,f2
     !calculate redistribution map
-!! Initialize to zero the variation in mass and number concentrations due to 
+!! Initialize to zero the variation in mass and number concentrations due to
 !! redistribution
-    do j= 1, N_size  
+    do j= 1, N_size
        numb_var(j)=0.d0
        do jesp=1,(N_aerosol-1)
        	  mass_var(j,jesp)=0.d0
@@ -147,7 +147,7 @@ contains
 
     do j= 1, N_size !!for each grid the number of size sections x fraction sections
       mass_total_grid (j)=0.d0
-!      Compute fraction of each species in the grid point before redistribution      
+!      Compute fraction of each species in the grid point before redistribution
       do s=1,(N_aerosol-1)
 	jesp=List_species(s)
 	g=index_groups(jesp)
@@ -160,9 +160,9 @@ contains
 	  frac_grid(j,g) =mass_groups(j,g)/mass_total_grid (j)
 	endif
       enddo
-      
+
       i1 =concentration_index(j, 1)!size bin index
-!     Loop on fraction combinations in the size bin i1 to find out where the 
+!     Loop on fraction combinations in the size bin i1 to find out where the
 !     original fraction section (before condensation/evaporation) has moved to.
       do i=1,N_fracmax
 	dj=0
@@ -180,9 +180,9 @@ contains
 	    endif
 	  endif
 	enddo
-	
-!       The fraction of each species is identified. 
-!       i is then the correct fraction combination (after redistribution). 
+
+!       The fraction of each species is identified.
+!       i is then the correct fraction combination (after redistribution).
 	if(dj.eq.(N_groups-1)) then
 	  k=concentration_index_iv(i1,i)
 	  numb_var(k)=numb_var(k)+concentration_number(j)
@@ -195,7 +195,7 @@ contains
 	endif
       enddo
     enddo
-    
+
     !Update mass and number concentrations after redistribution
     do j= 1, N_size !!for each grid point
       concentration_number(j)=concentration_number(j)+numb_var(j)
@@ -203,7 +203,7 @@ contains
       do g= 1, N_groups
 	frac_grid(j,g)=0.d0!Fraction of group g in grid j
 	mass_groups(j,g)=0.d0
-      enddo      
+      enddo
       !renew Temperature frac of each grid
       do s= 1, (N_aerosol-1)
 	jesp=List_species(s)
@@ -215,7 +215,7 @@ contains
       do g= 1, N_groups
 	if(mass_total_grid (j).gt.0d0) then
 	  frac_grid(j,g) =mass_groups(j,g)/mass_total_grid (j)
-	  !print*,"j",j,"g",g,"frac_grid(j,g)",frac_grid(j,g)	  
+	  !print*,"j",j,"g",g,"frac_grid(j,g)",frac_grid(j,g)
 ! 	  if(frac_grid(j,g).gt.1.d0) then
 ! 	    print*,"j",j,"g",g,"frac_grid(j,g)",frac_grid(j,g),&
 ! 	    mass_groups(j,g),mass_total_grid (j)
@@ -223,8 +223,8 @@ contains
 	endif
       enddo
     enddo
-    
-    
+
+
   end subroutine redistribution_fraction
-  
+
 end Module eRedistribution

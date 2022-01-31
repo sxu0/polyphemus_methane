@@ -5,12 +5,12 @@
 // ENPC (http://www.enpc.fr) and EDF R&D (http://www.edf.fr).
 //
 // This file is part of a simulation system for air quality.
-// 
+//
 // This code is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This file is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -88,9 +88,9 @@ int find_composition_id(Data<float,3>& total_mass, Data<float,4>& group_mass,
 
 int main(int argc, char** argv)
 {
- 
+
   TRY;
-  
+
   cout << endl;
 
   string main_config_file("Polair3D.cfg"), sec_config_file("");
@@ -145,7 +145,7 @@ int main(int argc, char** argv)
   configuration.FindFromBeginning("[domain]");
   configuration.PeekValue("Date", date_mother_domain);
   Date date_mother(date_mother_domain);
-  Date date(convert<int>(argv[argc - 1]));  
+  Date date(convert<int>(argv[argc - 1]));
   int record = date.GetDaysFrom(date_mother);
   configuration.PeekValue("Nt", Nt_out);
   configuration.PeekValue("Nz", Nz_out);
@@ -155,7 +155,7 @@ int main(int argc, char** argv)
   configuration.PeekValue("Delta_t_out", Delta_t_out);
   configuration.PeekValue("Delta_y", Delta_y_out);
   configuration.PeekValue("Delta_x", Delta_x_out);
-  
+
   configuration.PeekValue("t_min", t_min_out);
   configuration.PeekValue("y_min", y_min_out);
   configuration.PeekValue("x_min", x_min_out);
@@ -165,7 +165,7 @@ int main(int argc, char** argv)
   configuration.PeekValue("Vertical_levels", vertical_levels_out);
 
   // Input/output directories and files.
-  string gas_file,aerosol_file; 
+  string gas_file,aerosol_file;
   string species_group_file;
   string composition_file,composition_data_file;
   string Directory_in, Directory_out;
@@ -174,12 +174,12 @@ int main(int argc, char** argv)
 
   configuration.PeekValue("Species_Gas", gas_file);
   configuration.PeekValue("Species_Aerosol", aerosol_file);
-  configuration.PeekValue("Species_Group", species_group_file);  
+  configuration.PeekValue("Species_Group", species_group_file);
   configuration.PeekValue("Composition_configure", composition_file);//add composition_bounds configuration
-  configuration.AddFile(composition_file);  
+  configuration.AddFile(composition_file);
   configuration.PeekValue("Ncomposition", Ncomposition);
   configuration.PeekValue("N_frac", Nfrac);
-  configuration.PeekValue("N_groups", Ngroup);  
+  configuration.PeekValue("N_groups", Ngroup);
   configuration.PeekValue("Composition_data", composition_data_file);
   Data<real,3> composition_bounds(Ncomposition,Ngroup,2);
   ExtStream composition_data(composition_data_file);
@@ -209,7 +209,7 @@ int main(int argc, char** argv)
   configuration.PeekValue("Directory_Polair3D-ic", Directory_out);
   cout << " Ncomposition=" <<Ncomposition<< endl;
   cout << " Nfrac="<< Nfrac<< endl;
-  cout << " Ngroup=" <<Ngroup<< endl;  
+  cout << " Ngroup=" <<Ngroup<< endl;
   cout << " done." << endl;
   cout << endl;
 
@@ -217,12 +217,12 @@ int main(int argc, char** argv)
   ///////////
   // GRIDS //
   ///////////
-    
+
   cout << "Memory allocation for data fields..."; cout.flush();
 
   // Output grids.
   RegularGrid<real> GridT_out(t_min_out, Delta_t_out, Nt_out);
-  
+
   RegularGrid<real> GridZ_out(Nz_out);
 
   RegularGrid<real> GridY_out(y_min_out, Delta_y_out, Ny_out);
@@ -250,7 +250,7 @@ int main(int argc, char** argv)
   GridZ_interf_out(0) = 1.5 * GridZ_all_interf_out(Nz_out-1)
     - 0.5 * GridZ_all_interf_out(Nz_out-2);
   // Sets time steps.??? ZS problem how to calculate
-  
+
   //////////
   // DATA //
   //////////
@@ -267,9 +267,9 @@ int main(int argc, char** argv)
   // INITIAL GAS //
   ExtStream gas_species(gas_file);
   string gas_names;
-// 
+//
    FormatBinary<real> InputPolair;
-// 
+//
   if (!gas_species.is_open())
     throw string("Unable to open file \"") + gas_file + "\".";
 
@@ -304,13 +304,13 @@ int main(int argc, char** argv)
     }
 
   gas_species.close();
-  
+
   //INITIAL AEROSOL//
-  
+
   for(int Nb=0;Nb<N_size_bins;Nb++)
   {
     ExtStream aerosol_species(aerosol_file);
-    string aerosol_names;      
+    string aerosol_names;
     if (!aerosol_species.is_open())
       throw string("Unable to open file \"") + aerosol_file + "\".";
 
@@ -327,7 +327,7 @@ int main(int argc, char** argv)
     Conc_group_x.SetZero();
     Conc_group_y.SetZero();
     Conc_group_z.SetZero();
-    
+
     while (aerosol_species.GetElement(aerosol_names))
     {
       if(aerosol_names!="Number")
@@ -338,7 +338,7 @@ int main(int argc, char** argv)
       Data<real, 3> Conc_out_x(GridZ_out, GridY_out, GridX_interf_out);
       Data<real, 3> Conc_out_y(GridZ_out, GridY_interf_out, GridX_out);
       Data<real, 3> Conc_out_z(GridZ_interf_out, GridY_out, GridX_out);
-      
+
       char tostring[3];
       sprintf(tostring,"%d",Nb);
       string File_conc = Directory_in + aerosol_names+"_"+string(tostring)+ "_x.bin";
@@ -365,7 +365,7 @@ int main(int argc, char** argv)
       //compute the total bin/group mass for x
 	  for (int z=0; z<Nz_out; z++)
 	    for (int y=0; y<Ny_out; y++)
-	      {	    
+	      {
 		Conc_total_x(z,y,0)+=Conc_out_x(z,y,0);
 		Conc_group_x( group_id, z, y, 0)+=Conc_out_x(z,y,0);
 		Conc_total_x(z,y,1)+=Conc_out_x(z,y,1);
@@ -384,11 +384,11 @@ int main(int argc, char** argv)
 	      {
 		Conc_total_z(0,y,x)+=Conc_out_z(0,y,x);
 		Conc_group_z(group_id, 0, y, x)+=Conc_out_z(0,y,x);
-	      }	      
+	      }
       }
     }
     aerosol_species.close();
-    
+
     //compute fraction of each group and locate composition_bounds of each grid
     real frac_group;
     Data<real, 1> fraction(Ngroup);
@@ -433,7 +433,7 @@ int main(int argc, char** argv)
       // input fields.
       Data<real, 3> Conc_out_x(GridZ_out, GridY_out, GridX_interf_out);
       Data<real, 3> Conc_out_y(GridZ_out, GridY_interf_out, GridX_out);
-      Data<real, 3> Conc_out_z(GridZ_interf_out, GridY_out, GridX_out);      
+      Data<real, 3> Conc_out_z(GridZ_interf_out, GridY_out, GridX_out);
       // output fields.
       Data<real, 4> Conc_out_aer_x(GridComposition, GridZ_out, GridY_out, GridX_interf_out);
       Data<real, 4> Conc_out_aer_y(GridComposition, GridZ_out, GridY_interf_out, GridX_out);
@@ -514,7 +514,7 @@ int main(int argc, char** argv)
 }
 
   END;
-  
+
   return 0;
 
 }

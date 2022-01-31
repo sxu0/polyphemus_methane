@@ -37,25 +37,28 @@ import SCons.Util
 
 from FortranCommon import add_all_to_env
 
-compilers = ['sunf90', 'f90']
+compilers = ["sunf90", "f90"]
+
 
 def generate(env):
     """Add Builders and construction variables for sun f90 compiler to an
     Environment."""
     add_all_to_env(env)
 
-    fcomp = env.Detect(compilers) or 'f90'
-    env['FORTRAN']  = fcomp
-    env['F90']      = fcomp
+    fcomp = env.Detect(compilers) or "f90"
+    env["FORTRAN"] = fcomp
+    env["F90"] = fcomp
 
-    env['SHFORTRAN']  = '$FORTRAN'
-    env['SHF90']      = '$F90'
+    env["SHFORTRAN"] = "$FORTRAN"
+    env["SHF90"] = "$F90"
 
-    env['SHFORTRANFLAGS'] = SCons.Util.CLVar('$FORTRANFLAGS -KPIC')
-    env['SHF90FLAGS'] = SCons.Util.CLVar('$F90FLAGS -KPIC')
+    env["SHFORTRANFLAGS"] = SCons.Util.CLVar("$FORTRANFLAGS -KPIC")
+    env["SHF90FLAGS"] = SCons.Util.CLVar("$F90FLAGS -KPIC")
+
 
 def exists(env):
     return env.Detect(compilers)
+
 
 # Local Variables:
 # tab-width:4

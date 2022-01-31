@@ -13,7 +13,7 @@ Usage example:
       x11=yes  (will search for the package installation dir)
       x11=/usr/local/X11 (will check this path for existance)
 
-  To replace autoconf's --with-xxx=yyy 
+  To replace autoconf's --with-xxx=yyy
 
   opts = Variables()
   opts.Add(PackageVariable('x11',
@@ -22,7 +22,7 @@ Usage example:
   ...
   if env['x11'] == True:
       dir = ... search X11 in some standard places ...
-      env['x11'] = dir 
+      env['x11'] = dir
   if env['x11']:
       ... build with x11 ...
 """
@@ -50,39 +50,46 @@ Usage example:
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-__revision__ = "src/engine/SCons/Variables/PackageVariable.py 5110 2010/07/25 16:14:38 bdeegan"
+__revision__ = (
+    "src/engine/SCons/Variables/PackageVariable.py 5110 2010/07/25 16:14:38 bdeegan"
+)
 
-__all__ = ['PackageVariable',]
+__all__ = [
+    "PackageVariable",
+]
 
 import string
 
 import SCons.Errors
 
-__enable_strings  = ('1', 'yes', 'true',  'on', 'enable', 'search')
-__disable_strings = ('0', 'no',  'false', 'off', 'disable')
+__enable_strings = ("1", "yes", "true", "on", "enable", "search")
+__disable_strings = ("0", "no", "false", "off", "disable")
+
 
 def _converter(val):
-    """
-    """
+    """ """
     lval = string.lower(val)
-    if lval in __enable_strings: return True
-    if lval in __disable_strings: return False
-    #raise ValueError("Invalid value for boolean option: %s" % val)
+    if lval in __enable_strings:
+        return True
+    if lval in __disable_strings:
+        return False
+    # raise ValueError("Invalid value for boolean option: %s" % val)
     return val
 
 
 def _validator(key, val, env, searchfunc):
     # NB: searchfunc is currenty undocumented and unsupported
-    """
-    """
+    """ """
     # todo: write validator, check for path
     import os
+
     if env[key] is True:
         if searchfunc:
             env[key] = searchfunc(key, val)
     elif env[key] and not os.path.exists(val):
         raise SCons.Errors.UserError(
-            'Path does not exist for option %s: %s' % (key, val))
+            "Path does not exist for option %s: %s" % (key, val)
+        )
 
 
 def PackageVariable(key, help, default, searchfunc=None):
@@ -95,12 +102,15 @@ def PackageVariable(key, help, default, searchfunc=None):
     A 'package list' option may either be 'all', 'none' or a list of
     package names (seperated by space).
     """
-    help = string.join(
-        (help, '( yes | no | /path/to/%s )' % key),
-        '\n    ')
-    return (key, help, default,
-            lambda k, v, e, f=searchfunc: _validator(k,v,e,f),
-            _converter)
+    help = string.join((help, "( yes | no | /path/to/%s )" % key), "\n    ")
+    return (
+        key,
+        help,
+        default,
+        lambda k, v, e, f=searchfunc: _validator(k, v, e, f),
+        _converter,
+    )
+
 
 # Local Variables:
 # tab-width:4

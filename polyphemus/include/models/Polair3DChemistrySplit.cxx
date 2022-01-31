@@ -89,7 +89,7 @@ namespace Polyphemus
     this->field_species["ForcedConcentration_f"] = &species_list_forced;
   }
 
-  
+
   //! Destructor.
   template<class T, class ClassAdvection,
 	   class ClassDiffusion, class ClassChemistry>
@@ -103,7 +103,7 @@ namespace Polyphemus
   // CONFIGURATION //
   ///////////////////
 
-  
+
   //! Reads the configuration.
   /*! It reads the description of the domain, the simulation starting-date,
     species lists, options (especially which processes are included) and the
@@ -127,7 +127,7 @@ namespace Polyphemus
     this->config.PeekValue("With_photolysis",
 			   this->option_process["with_photolysis"]);
     this->config.PeekValue("Source_splitting", source_splitting);
-    
+
     /*** Disables management of useless fields ***/
 
     // Pressure and temperature are not necessary without chemistry and air
@@ -157,7 +157,7 @@ namespace Polyphemus
       && this->option_process["with_chemistry"];
 
     /*** Input files ***/
-    
+
     // The configuration-file path is the field "Data_description" in the main
     // configuration file.
     this->config.SetSection("[data]");
@@ -176,7 +176,7 @@ namespace Polyphemus
 	 i != this->input_files["forced_concentration"].End(); i++)
       species_list_forced.push_back(i->first);
     Ns_forced = int(species_list_forced.size());
-    
+
     // Photolysis rates.
     if (this->option_process["with_photolysis"])
       this->input_files["photolysis_rates"].ReadFiles(data_description_file,
@@ -343,11 +343,11 @@ namespace Polyphemus
     Polair3DTransport<T, ClassAdvection, ClassDiffusion>::Allocate();
 
     /*** Photolysis rates ***/
-    
+
     if (this->option_process["with_photolysis"])
       {
 	GridR_photolysis = RegularGrid<T>(Nr_photolysis);
-    
+
 	PhotolysisRate_i.Resize(GridR_photolysis, this->GridZ4D,
 				this->GridY4D, this->GridX4D);
 	PhotolysisRate_f.Resize(GridR_photolysis, this->GridZ4D,
@@ -423,7 +423,7 @@ namespace Polyphemus
       Chemistry_.Init(*this);
 #endif
   }
-  
+
 
   //! Initializes photolysis rates.
   /*! The rates are computed on the basis of raw photolysis-rates read in
@@ -499,7 +499,7 @@ namespace Polyphemus
 		time_angle = abs(time_angle - 24. * T(nb_days));
 		if (time_angle > 12.)
 		  time_angle = 24. - time_angle;
-		
+
 		angle_in = int((time_angle - photolysis_time_angle_min)
 			       / photolysis_delta_time_angle);
 		alpha_angle = (time_angle - photolysis_time_angle_min
@@ -532,7 +532,7 @@ namespace Polyphemus
 		    * FileRates(angle_in + 1, j_in + 1, k_in + 1);
 	      }
       }
-    
+
   }
 
 
@@ -547,13 +547,13 @@ namespace Polyphemus
     Polair3DTransport<T, ClassAdvection, ClassDiffusion>::InitStep();
 
     /*** Photolysis rates ***/
-    
+
     PhotolysisRate_i.GetArray() = PhotolysisRate_f.GetArray();
     if (this->option_manage["photolysis_rate"])
       InitPhotolysis(this->next_date, PhotolysisRate_f);
 
     /*** Attenuation ***/
-    
+
     if (this->option_manage["attenuation"])
       this->UpdateData("meteo", "Attenuation", FileAttenuation_i,
 		       FileAttenuation_f, Attenuation_i, Attenuation_f);
@@ -645,9 +645,9 @@ namespace Polyphemus
 				     this->AirDensity_f,
                                      this->AirDensity_interf_x_f);
       }
-    
+
     /*** Wind ***/
-    
+
     if (this->option_manage["horizontal_wind"])
       if (!this->option_cartesian)
 	{
@@ -681,7 +681,7 @@ namespace Polyphemus
 	    this->AirDensity_interf_z_f.GetArray()
 	    * this->VerticalDiffusionCoefficient_f.GetArray();
       }
-    
+
     if (this->option_manage["horizontal_diffusion"]
 	&& this->option_isotropic_diffusion)
       {
@@ -805,7 +805,7 @@ namespace Polyphemus
 	  / this->Delta_t;
 	this->Concentration.GetArray() = Source_f.GetArray();
 	Source_f.GetArray() = Source_i.GetArray();
-	
+
 	if (this->option_process["with_volume_emission"])
 	  for (int s = 0; s < this->Ns_vol_emis; s++)
 	    {
@@ -927,9 +927,9 @@ namespace Polyphemus
 				     this->AirDensity_f,
                                      this->AirDensity_interf_x_f);
       }
-    
+
     /*** Wind ***/
-    
+
     if (this->option_manage["horizontal_wind"])
       if (!this->option_cartesian)
 	{
@@ -963,7 +963,7 @@ namespace Polyphemus
 	    this->AirDensity_interf_z_f.GetArray()
 	    * this->VerticalDiffusionCoefficient_f.GetArray();
       }
-    
+
     if (this->option_manage["horizontal_diffusion"]
 	&& this->option_isotropic_diffusion)
       {
@@ -1014,7 +1014,7 @@ namespace Polyphemus
 	  / this->Delta_t;
 	this->Concentration.GetArray() = Source_f.GetArray();
 	Source_f.GetArray() = Source_i.GetArray();
-	
+
 	if (this->option_process["with_volume_emission"])
 	  for (int s = 0; s < this->Ns_vol_emis; s++)
 	    {
@@ -1153,7 +1153,7 @@ namespace Polyphemus
 				     this->AirDensity_f,
                                      this->AirDensity_interf_x_f);
       }
-    
+
     /*** Wind ***/
 
     if (this->option_manage["horizontal_wind"])
@@ -1180,7 +1180,7 @@ namespace Polyphemus
                                   this->VerticalWind_i);
 
     /*** Diffusion coefficients ***/
-    
+
     if (this->option_manage["vertical_diffusion"])
       {
 	// Computes rho * Kz.
@@ -1189,7 +1189,7 @@ namespace Polyphemus
 	    this->AirDensity_interf_z_f.GetArray()
 	    * this->VerticalDiffusionCoefficient_f.GetArray();
       }
-    
+
     if (this->option_manage["horizontal_diffusion"]
 	&& this->option_isotropic_diffusion)
       {
@@ -1232,7 +1232,7 @@ namespace Polyphemus
 
 	this->Advection();
       }
-   
+
     if (this->option_process["with_diffusion"])
       {
 	Array<T, 4> conc(&conc_tap(1, 0, 0, 0, 0),
@@ -1252,7 +1252,7 @@ namespace Polyphemus
 	  / this->Delta_t;
 	this->Concentration.GetArray() = Source_f.GetArray();
 	Source_f.GetArray() = Source_i.GetArray();
-	
+
 	if (this->option_process["with_volume_emission"])
 	  for (int s = 0; s < this->Ns_vol_emis; s++)
 	    {
@@ -1268,7 +1268,7 @@ namespace Polyphemus
 		    }
 	    }
       }
-    
+
     if (this->option_process["with_chemistry"])
       {
 	Array<T, 4> conc(&conc_tap(2, 0, 0, 0, 0),
@@ -1366,7 +1366,7 @@ namespace Polyphemus
 
 	this->Diffusion_b();
       }
-    
+
     if (this->option_process["with_advection"])
       {
 	Array<T, 4> conc(&conc_tap(0, 0, 0, 0, 0),

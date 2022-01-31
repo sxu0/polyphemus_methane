@@ -1,6 +1,8 @@
 import os, sys
-sys.path.insert(0, '../')
+
+sys.path.insert(0, "../")
 from run.ensemble_generation import config, EnsembleProgram
+
 sys.path.pop(0)
 
 ####################################################
@@ -8,12 +10,11 @@ sys.path.pop(0)
 ####################################################
 
 # Polyphemus directory.
-polyphemus_dir = '../../..'
+polyphemus_dir = "../../.."
 polyphemus_dir = os.path.abspath(polyphemus_dir)
 
 # Reads the configuration files.
-epr = EnsembleProgram('parameter.cfg', 'program.cfg',
-                      only_preprocessing = True)
+epr = EnsembleProgram("parameter.cfg", "program.cfg", only_preprocessing=True)
 
 # Sets the Polyphemus directory.
 epr.SetPolyphemusDirectory(polyphemus_dir)
@@ -34,12 +35,12 @@ d = epr.GetGeneralDict(0)
 
 # Gets an instance 'Polyphemus' and creates all directories where you will
 # have the results.
-ens = epr.GetEnsemble(group = 'polyphemus')
+ens = epr.GetEnsemble(group="polyphemus")
 
 # The list of programs names.
 program_name_list = []
 for program in ens.program_list:
-    program_name_list.append(program.name.split('/')[-1])
+    program_name_list.append(program.name.split("/")[-1])
 
 print "\nNprogram: ", len(ens.program_list)
 
@@ -50,4 +51,4 @@ load_averages = ens.net.GetAvailableHosts()
 # You can launch all programs.
 print "\nYou can launch all programs with the method:"
 print "ens.RunNetwork()"
-#ens.RunNetwork()
+# ens.RunNetwork()

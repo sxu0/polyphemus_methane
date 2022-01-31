@@ -40,7 +40,7 @@ C-----------------------------------------------------------------------
      $     aec_species_loc, pankow_species_loc,
      $     poa_species_loc, md_species_loc, bc_species_loc,
      $     nesp_cloud_interact,cloud_species_interact,
-     $     lwcavg, heightfog, ifog, DLnum_conc_aer, 
+     $     lwcavg, heightfog, ifog, DLnum_conc_aer,
      $     Wet_Deposition_Number_aer, DQLIMIT, p_nucl_fact, k_nucl_fact)
 
 C------------------------------------------------------------------------
@@ -84,16 +84,16 @@ C     DLCONC_AER: array of aerosol concentrations ([\mu.g/m^3]).
 C     # Before entry, it is given at initial time of the timestep.
 C     # On exit, it is computed at final time of the timestep.
 C     DLNUM_CONC_AER: array of aerosol number concentration ([m^(-3)])
-C     
+C
 C     -- OUTPUT VARIABLES
 C
 C     Wet_Deposition: 1D wet fluxes of gaseous species due to in-cloud
 C     scavenging ([\mu.g/m^2/s]).
 C     Wet_Deposition_aer: 2D wet fluxes of particulate species due to
 C     in-cloud scavenging ([\mu.g/m^2/s]).
-C     Wet_Deposition_Number_aer: 2D wet number fluxes of particulate species due to 
+C     Wet_Deposition_Number_aer: 2D wet number fluxes of particulate species due to
 C     in-cloud scavenging ([m^-2/s]).
-C     
+C
 C------------------------------------------------------------------------
 C
 C     -- REMARKS
@@ -296,12 +296,12 @@ C     Width of each fixed bin.
 
 !     Section_pass for the repartition_euler module
       section_pass = 1;
-      DO WHILE(diam_pass.GT.DBF(section_pass+1) 
+      DO WHILE(diam_pass.GT.DBF(section_pass+1)
      &     .AND. diam_pass.LE.DBF(nbin_aer+1))
          section_pass = section_pass + 1
       ENDDO
       IF (section_pass .EQ. 1) THEN
-         PRINT * , "These scheme is not adapt, 
+         PRINT * , "These scheme is not adapt,
      & please change redistribution method"
       ENDIF
 
@@ -338,7 +338,7 @@ C     Initialize in-cloud wet fluxes.
             ZA(Jsp) = 0.D0
          ENDIF
       ENDDO
-      
+
       DO Jb=1,nbin_aer
          conc_tot = 0.d0
          DO Jsp=1,nesp_aer
@@ -358,7 +358,7 @@ C     Initialize in-cloud wet fluxes.
       IF (INUM.EQ.1) THEN
          DO Jb=1, nbin_aer
             if (DLnum_conc_aer(Jb) .GT. TINYN) then
-               ZNA(Jb) = DLnum_conc_aer(Jb)   
+               ZNA(Jb) = DLnum_conc_aer(Jb)
             else
                ZNA(Jb) = 0.d0
                DO Jsp=1,nesp_aer
@@ -370,12 +370,12 @@ C     Initialize in-cloud wet fluxes.
       ENDIF
 
       IF (IDENS .EQ. 1) THEN
-         DO Jb=1,nbin_aer 
+         DO Jb=1,nbin_aer
             CALL compute_density(nbin_aer,nesp_aer, nesp_aer,TINYM,
      &                            DLconc_aer,LMD,Jb,rho_aero(Jb))
          ENDDO
       ENDIF
-      
+
       DO Jb=1,nbin_aer
          conc_tot = 0.d0
          DO Jsp = 1, Nesp_aer-1
@@ -496,14 +496,14 @@ C     Loop on grid cells.
                enddo
 
                IF (INUM.EQ.1) THEN
-                  
+
                   DO Jb=1,Nbin_aer
-                     Wet_Deposition_Number_aer(Jb) =  
+                     Wet_Deposition_Number_aer(Jb) =
      $                    Wet_Deposition_Number_aer(Jb) +
-     $                    qscav_num(Jb) * 
+     $                    qscav_num(Jb) *
      $                    layer_height / dtchem_aer
                   ENDDO
-                  
+
                ENDIF
 
             else if(ICLD.EQ.2) then ! Use "simple aqueous" chemical mechanism.
@@ -528,9 +528,9 @@ C     Loop on grid cells.
 
                IF (INUM.EQ.1) THEN
                   DO Jb=1,Nbin_aer
-                     Wet_Deposition_Number_aer(Jb) =  
+                     Wet_Deposition_Number_aer(Jb) =
      $                    Wet_Deposition_Number_aer(Jb) +
-     $                    qscav_num(Jb) * 
+     $                    qscav_num(Jb) *
      $                    layer_height / dtchem_aer
                   ENDDO
                ENDIF
@@ -569,7 +569,7 @@ C     Loop on grid cells.
             call aerodyn(nesp, nesp_aer, nbin_aer, DLtemp, DLpress,
      $           DLhumid, tschem_aer, tfchem_aer, ZA, couples_coag,
      $           first_index_coag, second_index_coag, coefficient_coag,
-     $           XSF, MSF, DSF, XBF, MBF, DBF, HSF, iq, ZNA, 
+     $           XSF, MSF, DSF, XBF, MBF, DBF, HSF, iq, ZNA,
      $           section_pass, DQLIMIT)
 
             DO Jb=1,nbin_aer
@@ -644,21 +644,21 @@ C     Loop on grid cells.
          ENDDO
       ENDDO
 
-C     Number concentration 
+C     Number concentration
       IF(INUM.EQ.1) THEN
          DO Jb=1,nbin_aer
             DLnum_conc_aer(Jb) = ZNA(Jb)
-            if (isNaN(DLnum_conc_aer(Jb))) then 
+            if (isNaN(DLnum_conc_aer(Jb))) then
                write(*,*), "aerosol.f for number concentration :",
      &               Jb, DLnum_conc_aer(Jb)
                 stop
              endif
           ENDDO
        ENDIF
-       
+
        DO Jsp=1,nesp
           DLconc(Jsp) = ZA(Jsp)
-          IF (isNaN(dlconc(Jsp))) THEN 
+          IF (isNaN(dlconc(Jsp))) THEN
              WRITE(*,*) Jsp, dlconc(Jsp)
              STOP "aerosol.f :  concentration is NaN"
           ENDIF
@@ -680,7 +680,7 @@ C     Number concentration
           ELSE
              DSF2(Jb) = DSQRT(DBF(Jb) * DBF(Jb+1))
           ENDIF
-         
+
        enddo
 
          IF (ICLD.GE.1.AND.IINCLD.EQ.1.and.ifog.eq.1) THEN

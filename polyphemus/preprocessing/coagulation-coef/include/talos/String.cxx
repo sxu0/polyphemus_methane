@@ -337,7 +337,7 @@ namespace Talos
 
     if (period.size() > 2 || period.size() == 0)
       return false;
-   
+
     if (period.size() == 2)
       return (is_integer(period[0]) && is_integer(period[1]));
     else
@@ -354,7 +354,7 @@ namespace Talos
   string find_replace(string str, string old_str, string new_str)
   {
     string::size_type index = str.find(old_str);
-    
+
     while (index != string::npos)
       {
 	str.replace(index, old_str.size(), new_str);
@@ -378,7 +378,7 @@ namespace Talos
 
     if (index_beg == string::npos)
       return "";
-    
+
     return str.substr(index_beg, index_end - index_beg + 1);
   }
 
@@ -395,7 +395,7 @@ namespace Talos
 
     if (index == string::npos)
       return "";
-    
+
     return str.substr(index);
   }
 
@@ -431,9 +431,9 @@ namespace Talos
 
     T tmp;
     string::size_type index_beg, index_end;
-    
+
     index_beg = str.find_first_not_of(delimiters);
-    
+
     while (index_beg != string::npos)
       {
 	index_end = str.find_first_of(delimiters, index_beg);
@@ -457,7 +457,7 @@ namespace Talos
     split(str, vect, delimiters);
     return vect;
   }
-  
+
   //! Extracts markups from a string.
   /*!
     The string is split into markups and elements.
@@ -480,9 +480,9 @@ namespace Talos
     T tmp;
     bool is_mark;
     string::size_type index_beg, index_end, markup_end;
-    
+
     index_beg = 0;
-    
+
     while (index_beg != string::npos && index_beg < str.size())
       {
 	is_mark = false;
@@ -568,7 +568,7 @@ namespace Talos
       cout << '\t' << v[i];
     cout << endl;
   }
-  
+
 }  // namespace Talos.
 
 

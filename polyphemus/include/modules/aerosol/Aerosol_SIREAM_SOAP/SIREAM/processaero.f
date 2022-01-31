@@ -117,7 +117,7 @@ C     ******time loop
          IF (ICE2.EQ.1) THEN
 C     Compute gas mass conservation.
             CALL MASSCNSRV(neq,nesp_aer,nbin_aer,q,iq)
-           
+
 
 C     solve sulfate dynamically with timestep DT2
             IF (ISULFCOND.EQ.1) CALL SULFDYN(neq,nesp_aer,nbin_aer,
@@ -179,7 +179,7 @@ C     solve SOA dynamically
      s           coefficient_coag,QT,XSF,MSF,DSF,XSD,MSD,DSD,
      s           bin_density)
 
-     
+
          ELSEIF (KDSLV2.EQ.2) THEN
                                 ! ros2 dynamic solver
             CALL ROS2CONC(neq,nesp_aer,nbin_aer,q1,q,iq,couples_coag,

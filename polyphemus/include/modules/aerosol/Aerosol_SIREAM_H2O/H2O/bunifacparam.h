@@ -115,6 +115,3 @@ double A[DIMFUN][DIMFUN] =
 #endif
 
 /********************END unifacparam.h**********************************/
-
-
-

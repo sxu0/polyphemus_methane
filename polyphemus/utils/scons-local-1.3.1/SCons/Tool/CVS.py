@@ -37,34 +37,38 @@ import SCons.Action
 import SCons.Builder
 import SCons.Util
 
+
 def generate(env):
     """Add a Builder factory function and construction variables for
     CVS to an Environment."""
 
-    def CVSFactory(repos, module='', env=env):
+    def CVSFactory(repos, module="", env=env):
         """ """
         # fail if repos is not an absolute path name?
-        if module != '':
-           # Don't use os.path.join() because the name we fetch might
-           # be across a network and must use POSIX slashes as separators.
-           module = module + '/'
-           env['CVSCOM']   = '$CVS $CVSFLAGS co $CVSCOFLAGS -d ${TARGET.dir} $CVSMODULE${TARGET.posix}'
-        act = SCons.Action.Action('$CVSCOM', '$CVSCOMSTR')
-        return SCons.Builder.Builder(action = act,
-                                     env = env,
-                                     CVSREPOSITORY = repos,
-                                     CVSMODULE = module)
+        if module != "":
+            # Don't use os.path.join() because the name we fetch might
+            # be across a network and must use POSIX slashes as separators.
+            module = module + "/"
+            env[
+                "CVSCOM"
+            ] = "$CVS $CVSFLAGS co $CVSCOFLAGS -d ${TARGET.dir} $CVSMODULE${TARGET.posix}"
+        act = SCons.Action.Action("$CVSCOM", "$CVSCOMSTR")
+        return SCons.Builder.Builder(
+            action=act, env=env, CVSREPOSITORY=repos, CVSMODULE=module
+        )
 
-    #setattr(env, 'CVS', CVSFactory)
+    # setattr(env, 'CVS', CVSFactory)
     env.CVS = CVSFactory
 
-    env['CVS']        = 'cvs'
-    env['CVSFLAGS']   = SCons.Util.CLVar('-d $CVSREPOSITORY')
-    env['CVSCOFLAGS'] = SCons.Util.CLVar('')
-    env['CVSCOM']     = '$CVS $CVSFLAGS co $CVSCOFLAGS ${TARGET.posix}'
+    env["CVS"] = "cvs"
+    env["CVSFLAGS"] = SCons.Util.CLVar("-d $CVSREPOSITORY")
+    env["CVSCOFLAGS"] = SCons.Util.CLVar("")
+    env["CVSCOM"] = "$CVS $CVSFLAGS co $CVSCOFLAGS ${TARGET.posix}"
+
 
 def exists(env):
-    return env.Detect('cvs')
+    return env.Detect("cvs")
+
 
 # Local Variables:
 # tab-width:4

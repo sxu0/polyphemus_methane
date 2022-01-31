@@ -11,14 +11,14 @@ void typeboutput (double PAOM, float gasb[], float aerob[])
   int i;
 
   fout = fopen ("b.out" , "a");
-  
+
   fprintf(fout, "PAOM = %le\n", PAOM);
-  fprintf(fout, " \t  gas  \t  aero \n"); 
+  fprintf(fout, " \t  gas  \t  aero \n");
   for (i = 1; i <= NBSP; i ++){
     if (aerob[i] > 0.0)
       fprintf (fout, "%d\t%le\t%le\n",i, gasb[i], aerob[i]);
-    else fprintf(fout, "%d\t%le\n", i, gasb[i]); 
+    else fprintf(fout, "%d\t%le\n", i, gasb[i]);
   }
-  
-  fclose (fout);   
+
+  fclose (fout);
 }

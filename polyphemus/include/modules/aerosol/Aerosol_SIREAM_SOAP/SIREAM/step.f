@@ -1,23 +1,23 @@
 C-----------------------------------------------------------------------
 C     Copyright (C) 2003-2007, ENPC - INRIA - EDF R&D
 C     Author(s): Edouard Debry
-C     
+C
 C     This file is part of the Size Resolved Aerosol Model (SIREAM), a
 C     component of the air quality modeling system Polyphemus.
-C    
+C
 C     Polyphemus is developed in the INRIA - ENPC joint project-team
 C     CLIME and in the ENPC - EDF R&D joint laboratory CEREA.
-C    
+C
 C     Polyphemus is free software; you can redistribute it and/or modify
 C     it under the terms of the GNU General Public License as published
 C     by the Free Software Foundation; either version 2 of the License,
 C     or (at your option) any later version.
-C     
+C
 C     Polyphemus is distributed in the hope that it will be useful, but
 C     WITHOUT ANY WARRANTY; without even the implied warranty of
 C     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 C     General Public License for more details.
-C     
+C
 C     For more information, visit the Polyphemus web site:
 C     http://cerea.enpc.fr/polyphemus/
 C-----------------------------------------------------------------------
@@ -26,23 +26,23 @@ C-----------------------------------------------------------------------
      &     qgeqi,vaw,dad,daw,rhoaer)
 
 C------------------------------------------------------------------------
-C     
-C     -- DESCRIPTION 
-C     
+C
+C     -- DESCRIPTION
+C
 C     This subroutine computes the local aerosol equilibrium in each bin.
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- INPUT VARIABLES
-C     
+C
 C     QN :   number aerosol concentration   ([#aero.m^-3]).
 C     QEXT : external aerosol concentration ([\mu.g.m^-3]).
-C     
+C
 C     -- INPUT/OUTPUT VARIABLES
-C     
-C     
+C
+C
 C     -- OUTPUT VARIABLES
-C     
+C
 C     QTI   : total dry concentration          ([\mu.g.m^-3]).
 C     QGEQI : equilibrium gas concentration    ([\mu.g.m^-3]).
 C     VAW   : wet volume aerosol concentration ([\mu.m^3.m^-3]).
@@ -50,23 +50,23 @@ C     DAD   : dry aerosol dimaeter             ([\mu.m]).
 C     DAW   : wet aerosol diameter             ([\mu.m]).
 C     RHOAER: aerosol density                  ([\mu.g.\mu.m^-3]).
 C     QINTI : internal inorganic concentration ([\mu.g.m^-3]).
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- REMARKS
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- MODIFICATIONS
-C     
+C
 C     2005/3/23: cleaning (Bruno Sportisse, CEREA).
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- AUTHOR(S)
-C     
+C
 C     2004: Edouard Debry, CEREA.
-C     
+C
 C------------------------------------------------------------------------
 
       IMPLICIT NONE
@@ -86,7 +86,7 @@ C------------------------------------------------------------------------
 
       INTEGER jesp,jj
       DOUBLE PRECISION vad,rhoaer
-      
+
 C     ******zero init
       DO jesp=1,nesp_aer
          qgeqi(jesp)=0.D0
@@ -98,12 +98,12 @@ C     ******total dry mass
          qti=qti+qext(jesp)     ! µg.m-3
       END DO
 C     ******inorganics thermodynamics
-         
+
       DO jesp=1,NINTIS
          qinti(jesp)=0.d0
       ENDDO
       qext(EH2O)=0.d0
-      
+
                                 ! sum of inorganic mass
       qtinorg=0.D0
       DO jj=1,nesp_isorropia

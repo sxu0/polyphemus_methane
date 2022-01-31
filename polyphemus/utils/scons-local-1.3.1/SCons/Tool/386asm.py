@@ -37,22 +37,27 @@ __revision__ = "src/engine/SCons/Tool/386asm.py 5110 2010/07/25 16:14:38 bdeegan
 from SCons.Tool.PharLapCommon import addPharLapPaths
 import SCons.Util
 
-as_module = __import__('as', globals(), locals(), [])
+as_module = __import__("as", globals(), locals(), [])
+
 
 def generate(env):
     """Add Builders and construction variables for ar to an Environment."""
     as_module.generate(env)
 
-    env['AS']        = '386asm'
-    env['ASFLAGS']   = SCons.Util.CLVar('')
-    env['ASPPFLAGS'] = '$ASFLAGS'
-    env['ASCOM']     = '$AS $ASFLAGS $SOURCES -o $TARGET'
-    env['ASPPCOM']   = '$CC $ASPPFLAGS $CPPFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS $SOURCES -o $TARGET'
+    env["AS"] = "386asm"
+    env["ASFLAGS"] = SCons.Util.CLVar("")
+    env["ASPPFLAGS"] = "$ASFLAGS"
+    env["ASCOM"] = "$AS $ASFLAGS $SOURCES -o $TARGET"
+    env[
+        "ASPPCOM"
+    ] = "$CC $ASPPFLAGS $CPPFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS $SOURCES -o $TARGET"
 
     addPharLapPaths(env)
 
+
 def exists(env):
-    return env.Detect('386asm')
+    return env.Detect("386asm")
+
 
 # Local Variables:
 # tab-width:4

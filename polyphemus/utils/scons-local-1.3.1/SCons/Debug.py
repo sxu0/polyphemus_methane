@@ -40,9 +40,12 @@ import time
 try:
     import weakref
 except ImportError:
+
     def logInstanceCreation(instance, name=None):
         pass
+
 else:
+
     def logInstanceCreation(instance, name=None):
         if name is None:
             name = instance.__class__.__name__
@@ -51,51 +54,55 @@ else:
         tracked_classes[name].append(weakref.ref(instance))
 
 
-
 tracked_classes = {}
 
+
 def string_to_classes(s):
-    if s == '*':
+    if s == "*":
         c = tracked_classes.keys()
         c.sort()
         return c
     else:
         return string.split(s)
 
+
 def fetchLoggedInstances(classes="*"):
     classnames = string_to_classes(classes)
     return map(lambda cn: (cn, len(tracked_classes[cn])), classnames)
-  
+
+
 def countLoggedInstances(classes, file=sys.stdout):
     for classname in string_to_classes(classes):
         file.write("%s: %d\n" % (classname, len(tracked_classes[classname])))
 
+
 def listLoggedInstances(classes, file=sys.stdout):
     for classname in string_to_classes(classes):
-        file.write('\n%s:\n' % classname)
+        file.write("\n%s:\n" % classname)
         for ref in tracked_classes[classname]:
             obj = ref()
             if obj is not None:
-                file.write('    %s\n' % repr(obj))
+                file.write("    %s\n" % repr(obj))
+
 
 def dumpLoggedInstances(classes, file=sys.stdout):
     for classname in string_to_classes(classes):
-        file.write('\n%s:\n' % classname)
+        file.write("\n%s:\n" % classname)
         for ref in tracked_classes[classname]:
             obj = ref()
             if obj is not None:
-                file.write('    %s:\n' % obj)
+                file.write("    %s:\n" % obj)
                 for key, value in obj.__dict__.items():
-                    file.write('        %20s : %s\n' % (key, value))
-
+                    file.write("        %20s : %s\n" % (key, value))
 
 
 if sys.platform[:5] == "linux":
     # Linux doesn't actually support memory usage stats from getrusage().
     def memory():
-        mstr = open('/proc/self/stat').read()
+        mstr = open("/proc/self/stat").read()
         mstr = string.split(mstr)[22]
         return int(mstr)
+
 else:
     try:
         import resource
@@ -104,29 +111,37 @@ else:
             import win32process
             import win32api
         except ImportError:
+
             def memory():
                 return 0
+
         else:
+
             def memory():
                 process_handle = win32api.GetCurrentProcess()
-                memory_info = win32process.GetProcessMemoryInfo( process_handle )
-                return memory_info['PeakWorkingSetSize']
+                memory_info = win32process.GetProcessMemoryInfo(process_handle)
+                return memory_info["PeakWorkingSetSize"]
+
     else:
+
         def memory():
             res = resource.getrusage(resource.RUSAGE_SELF)
             return res[4]
 
+
 # returns caller's stack
 def caller_stack(*backlist):
     import traceback
+
     if not backlist:
         backlist = [0]
     result = []
     for back in backlist:
-        tb = traceback.extract_stack(limit=3+back)
+        tb = traceback.extract_stack(limit=3 + back)
         key = tb[0][:3]
-        result.append('%s:%d(%s)' % func_shorten(key))
+        result.append("%s:%d(%s)" % func_shorten(key))
     return result
+
 
 caller_bases = {}
 caller_dicts = {}
@@ -134,7 +149,8 @@ caller_dicts = {}
 # trace a caller's stack
 def caller_trace(back=0):
     import traceback
-    tb = traceback.extract_stack(limit=3+back)
+
+    tb = traceback.extract_stack(limit=3 + back)
     tb.reverse()
     callee = tb[1][:3]
     caller_bases[callee] = caller_bases.get(callee, 0) + 1
@@ -147,38 +163,45 @@ def caller_trace(back=0):
         entry[caller] = entry.get(caller, 0) + 1
         callee = caller
 
+
 # print a single caller and its callers, if any
 def _dump_one_caller(key, file, level=0):
     l = []
-    for c,v in caller_dicts[key].items():
-        l.append((-v,c))
+    for c, v in caller_dicts[key].items():
+        l.append((-v, c))
     l.sort()
-    leader = '      '*level
-    for v,c in l:
-        file.write("%s  %6d %s:%d(%s)\n" % ((leader,-v) + func_shorten(c[-3:])))
+    leader = "      " * level
+    for v, c in l:
+        file.write("%s  %6d %s:%d(%s)\n" % ((leader, -v) + func_shorten(c[-3:])))
         if caller_dicts.has_key(c):
-            _dump_one_caller(c, file, level+1)
+            _dump_one_caller(c, file, level + 1)
+
 
 # print each call tree
 def dump_caller_counts(file=sys.stdout):
     keys = caller_bases.keys()
     keys.sort()
     for k in keys:
-        file.write("Callers of %s:%d(%s), %d calls:\n"
-                    % (func_shorten(k) + (caller_bases[k],)))
+        file.write(
+            "Callers of %s:%d(%s), %d calls:\n" % (func_shorten(k) + (caller_bases[k],))
+        )
         _dump_one_caller(k, file)
 
+
 shorten_list = [
-    ( '/scons/SCons/',          1),
-    ( '/src/engine/SCons/',     1),
-    ( '/usr/lib/python',        0),
+    ("/scons/SCons/", 1),
+    ("/src/engine/SCons/", 1),
+    ("/usr/lib/python", 0),
 ]
 
-if os.sep != '/':
-   def platformize(t):
-       return (string.replace(t[0], '/', os.sep), t[1])
-   shorten_list = map(platformize, shorten_list)
-   del platformize
+if os.sep != "/":
+
+    def platformize(t):
+        return (string.replace(t[0], "/", os.sep), t[1])
+
+    shorten_list = map(platformize, shorten_list)
+    del platformize
+
 
 def func_shorten(func_tuple):
     f = func_tuple[0]
@@ -187,21 +210,22 @@ def func_shorten(func_tuple):
         if i >= 0:
             if t[1]:
                 i = i + len(t[0])
-            return (f[i:],)+func_tuple[1:]
+            return (f[i:],) + func_tuple[1:]
     return func_tuple
 
 
 TraceFP = {}
-if sys.platform == 'win32':
-    TraceDefault = 'con'
+if sys.platform == "win32":
+    TraceDefault = "con"
 else:
-    TraceDefault = '/dev/tty'
+    TraceDefault = "/dev/tty"
 
 TimeStampDefault = None
 StartTime = time.time()
 PreviousTime = StartTime
 
-def Trace(msg, file=None, mode='w', tstamp=None):
+
+def Trace(msg, file=None, mode="w", tstamp=None):
     """Write a trace message to a file.  Whenever a file is specified,
     it becomes the default for the next call to Trace()."""
     global TraceDefault
@@ -225,10 +249,11 @@ def Trace(msg, file=None, mode='w', tstamp=None):
             fp = file
     if tstamp:
         now = time.time()
-        fp.write('%8.4f %8.4f:  ' % (now - StartTime, now - PreviousTime))
+        fp.write("%8.4f %8.4f:  " % (now - StartTime, now - PreviousTime))
         PreviousTime = now
     fp.write(msg)
     fp.flush()
+
 
 # Local Variables:
 # tab-width:4

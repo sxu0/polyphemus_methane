@@ -23,29 +23,29 @@
 /*
   Functions defined in this file:
   (storage ArrayRowSparse, ArrayColSparse, etc)
-  
+
   alpha.M*X + beta.Y -> Y
   MltAdd(alpha, M, X, beta, Y)
-  
+
   alpha.A + B -> B
   Add(alpha, A, B)
-  
+
   alpha.M -> M
   Mlt(alpha, M)
-  
+
 */
 
 namespace Seldon
 {
-  
+
 
   ////////////
   // MltAdd //
-  
-  
+
+
   /*** ArrayRowSymComplexSparse ***/
-  
-  
+
+
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAdd(const T0& alpha, const Matrix<T1, Symmetric,
@@ -58,7 +58,7 @@ namespace Seldon
       C.Fill(T3(0));
     else
       Mlt(beta, C);
-    
+
     int m = A.GetM(), n, p;
     T1 val;
     T3 val_cplx;
@@ -127,8 +127,8 @@ namespace Seldon
 	  }
       }
   }
-  
-  
+
+
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAdd(const T0& alpha,
@@ -140,8 +140,8 @@ namespace Seldon
   {
     MltAdd(alpha, A, B, beta, C);
   }
-  
-  
+
+
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAdd(const T0& alpha,
@@ -153,8 +153,8 @@ namespace Seldon
   {
     MltAdd(alpha, A, B, beta, C);
   }
-  
-  
+
+
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAdd(const T0& alpha,
@@ -237,11 +237,11 @@ namespace Seldon
 	  }
       }
   }
-  
-    
+
+
   /*** ArrayRowComplexSparse ***/
-  
-  
+
+
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAdd(const T0& alpha, const Matrix<T1, General,
@@ -299,8 +299,8 @@ namespace Seldon
 	  }
       }
   }
-  
-  
+
+
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAdd(const T0& alpha,
@@ -312,8 +312,8 @@ namespace Seldon
   {
     MltAdd(alpha, A, B, beta, C);
   }
-  
-  
+
+
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAdd(const T0& alpha,
@@ -372,8 +372,8 @@ namespace Seldon
 	  }
       }
   }
-  
-  
+
+
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAdd(const T0& alpha,
@@ -432,11 +432,11 @@ namespace Seldon
 	  }
       }
   }
-  
-  
+
+
   /*** ArrayRowSymSparse ***/
-  
-  
+
+
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAdd(const T0& alpha, const Matrix<T1, Symmetric,
@@ -447,15 +447,15 @@ namespace Seldon
   {
     if (B.GetM() <= 0)
       return;
-    
+
     T3 zero(B(0));
     zero *= 0;
-    
+
     if (beta == zero)
       C.Fill(zero);
     else
       Mlt(beta, C);
-    
+
     int m = A.GetM(), n, p;
     T1 val;
     if (alpha == T0(1))
@@ -467,7 +467,7 @@ namespace Seldon
 	      {
 		p = A.Index(i, k);
 		val = A.Value(i, k);
-		
+
 		if (p == i)
 		  C(i) += val * B(i);
 		else
@@ -488,7 +488,7 @@ namespace Seldon
 	      {
 		p = A.Index(i, k);
 		val = alpha * A.Value(i, k);
-		
+
 		if (p==i)
 		  C(i) += val * B(i);
 		else
@@ -500,8 +500,8 @@ namespace Seldon
 	  }
       }
   }
-  
-  
+
+
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAdd(const T0& alpha,
@@ -513,8 +513,8 @@ namespace Seldon
   {
     MltAdd(alpha, A, B, beta, C);
   }
-  
-  
+
+
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAdd(const T0& alpha,
@@ -526,11 +526,11 @@ namespace Seldon
   {
     MltAdd(alpha, A, B, beta, C);
   }
-  
-  
+
+
   /*** ArrayRowSparse ***/
-  
-  
+
+
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAdd(const T0& alpha,
@@ -572,8 +572,8 @@ namespace Seldon
 	  }
       }
   }
-  
-  
+
+
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAdd(const T0& alpha,
@@ -585,8 +585,8 @@ namespace Seldon
   {
     MltAdd(alpha, A, B, beta, C);
   }
-  
-  
+
+
   template<class T0, class T1, class T2, class T3, class T4,
 	   class Allocator1, class Allocator2, class Allocator3>
   void MltAdd(const T0& alpha,
@@ -629,17 +629,17 @@ namespace Seldon
 	  }
       }
   }
-  
-  
+
+
   // MltAdd //
   ////////////
-  
-  
-  
+
+
+
   /////////
   // Add //
-  
-  
+
+
   template<class T0, class T1, class T2, class Allocator1, class Allocator2>
   void Add(const T0& alpha,
 	   const Matrix<T1, General, ArrayRowSparse, Allocator1>& A,
@@ -653,13 +653,13 @@ namespace Seldon
 	value.Reallocate(n);
 	for (int j = 0; j < n; j++)
 	  value(j) = T2(A.Value(i, j));
-	
+
 	Mlt(alpha, value);
 	B.AddInteractionRow(i, n, A.GetIndex(i), value.GetData());
       }
   }
-  
-  
+
+
   template<class T0, class T1, class T2, class Allocator1, class Allocator2>
   void Add(const T0& alpha,
 	   const Matrix<T1, Symmetric, ArrayRowSymSparse, Allocator1>& A,
@@ -673,13 +673,13 @@ namespace Seldon
 	value.Reallocate(n);
 	for (int j = 0; j < n; j++)
 	  value(j) = A.Value(i, j);
-	
+
 	Mlt(alpha, value);
 	B.AddInteractionRow(i, n, A.GetIndex(i), value.GetData());
       }
   }
-  
-  
+
+
   template<class T0, class T1, class T2, class Allocator1, class Allocator2>
   void Add(const T0& alpha,
 	   const Matrix<T1, Symmetric,
@@ -700,19 +700,19 @@ namespace Seldon
 	    value(j) = A.ValueReal(i, j);
 	    index(j) = A.IndexReal(i, j);
 	  }
-	
+
 	for (int j = 0; j < ni; j++)
 	  {
 	    value(j+n) = complex<T2>(0, 1) * A.ValueImag(i, j);
 	    index(j+n) = A.IndexImag(i, j);
 	  }
-	
+
 	Mlt(alpha, value);
 	B.AddInteractionRow(i, n+ni, index, value);
       }
   }
-  
-  
+
+
   template<class T0, class T1, class T2, class Allocator1, class Allocator2>
   void Add(const T0& alpha, const Matrix<T1, Symmetric,
 	   ArrayRowSymComplexSparse, Allocator1>& A,
@@ -726,20 +726,20 @@ namespace Seldon
 	value.Reallocate(n);
 	for (int j = 0; j < n; j++)
 	  value(j) = A.ValueReal(i, j);
-	
+
 	Mlt(alpha, value);
 	B.AddInteractionRow(i, n, A.GetRealInd(i), value.GetData());
 	n = A.GetImagRowSize(i);
 	value.Reallocate(n);
 	for (int j = 0; j < n; j++)
 	  value(j) = complex<T1>(0, 1) * A.ValueImag(i, j);
-	
+
 	Mlt(alpha, value);
 	B.AddInteractionRow(i, n, A.GetImagInd(i), value.GetData());
       }
   }
-  
-  
+
+
   template<class T0, class T1, class T2, class Allocator1, class Allocator2>
   void Add(const T0& alpha, const Matrix<T1, General,
 	   ArrayRowComplexSparse, Allocator1>& A,
@@ -753,20 +753,20 @@ namespace Seldon
 	value.Reallocate(n);
 	for (int j = 0; j < n; j++)
 	  value(j) = A.ValueReal(i, j);
-	
+
 	Mlt(alpha, value);
 	B.AddInteractionRow(i, n, A.GetRealInd(i), value.GetData());
 	n = A.GetImagRowSize(i);
 	value.Reallocate(n);
 	for (int j = 0; j < n; j++)
 	  value(j) = complex<T1>(0, 1) * A.ValueImag(i, j);
-	
+
 	Mlt(alpha, value);
 	B.AddInteractionRow(i, n, A.GetImagInd(i), value.GetData());
       }
   }
-  
-  
+
+
   template<class T0, class T1, class T2, class Allocator1,class Allocator2>
   void Add(const T0& alpha, const Matrix<T1, General,
 	   ArrayRowComplexSparse, Allocator1>& A,
@@ -785,19 +785,19 @@ namespace Seldon
 	    value(j) = A.ValueReal(i, j);
 	    index(j) = A.IndexReal(i, j);
 	  }
-	
+
 	for (int j = 0; j < n; j++)
 	  {
 	    value(n+j) = complex<T2>(0, 1) * A.ValueImag(i, j);
 	    index(n+j) = A.IndexImag(i, j);
 	  }
-	
+
 	Mlt(alpha, value);
 	B.AddInteractionRow(i, n+ni, index, value);
       }
   }
-  
-  
+
+
   // C = C + complex(A,B)
   template<class T0, class T1, class T2, class T3, class Allocator1,
 	   class Allocator2, class Allocator3>
@@ -821,7 +821,7 @@ namespace Seldon
 	    ind_row(j) = A.Index(i, j);
 	    val_row(j) = alpha*complex<T3>(A.Value(i, j), 0);
 	  }
-	
+
 	for (int j = 0 ; j < n2 ; j++)
 	  {
 	    ind_row(j+n1) = B.Index(i, j);
@@ -830,7 +830,7 @@ namespace Seldon
 	C.AddInteractionRow(i, size_row, ind_row, val_row);
       }
   }
-  
+
 
   // C = C + complex(A,B)
   template<class T0, class T1, class T2, class T3,
@@ -855,18 +855,18 @@ namespace Seldon
 	    ind_row(j) = A.Index(i, j);
 	    val_row(j) = alpha * complex<T3>(A.Value(i, j), 0);
 	  }
-	
+
 	for (int j = 0 ; j < n2 ; j++)
 	  {
 	    ind_row(j+n1) = B.Index(i, j);
 	    val_row(j+n1) = alpha * complex<T3>(B.Value(i, j));
 	  }
-	
+
 	C.AddInteractionRow(i, size_row, ind_row, val_row);
       }
   }
-  
-  
+
+
   // C = C + complex(A,B)
   template<class T0, class T1, class T2, class T3,
 	   class Allocator1, class Allocator2, class Allocator3>
@@ -888,19 +888,19 @@ namespace Seldon
 	    value(j) = A.Value(i, j);
 	    index(j) = A.Index(i, j);
 	  }
-	
+
 	for (int j = 0; j < ni; j++)
 	  {
 	    value(n+j) = complex<T3>(0, 1) * B.Value(i, j);
 	    index(n+j) = B.Index(i, j);
 	  }
-	
+
 	Mlt(alpha, value);
 	C.AddInteractionRow(i, n+ni, index, value);
       }
   }
-  
-  
+
+
   // C = C + complex(A,B)
   template<class T0, class T1, class T2, class T3,
 	   class Allocator1, class Allocator2, class Allocator3>
@@ -923,28 +923,28 @@ namespace Seldon
 	    value(j) = A.Value(i, j);
 	    index(j) = A.Index(i, j);
 	  }
-	
+
 	for (int j = 0; j < ni; j++)
 	  {
 	    value(n+j) = complex<T3>(0, 1) * B.Value(i, j);
 	    index(n+j) = B.Index(i, j);
 	  }
-	
+
 	Mlt(alpha, value);
 	C.AddInteractionRow(i, n+ni, index, value);
       }
   }
-  
-  
+
+
   // Add //
   /////////
-  
-  
-  
+
+
+
   /////////
   // Mlt //
-  
-  
+
+
   template<class T0, class T, class Allocator>
   void Mlt(const T0& alpha, Matrix<T, General, ArrayRowSparse, Allocator>& A)
   {
@@ -952,8 +952,8 @@ namespace Seldon
       for (int j = 0; j < A.GetRowSize(i); j++)
 	A.Value(i,j) *= alpha;
   }
-  
-  
+
+
   template<class T0, class T, class Allocator>
   void Mlt(const T0& alpha, Matrix<T, General, ArrayColSparse, Allocator>& A)
   {
@@ -961,8 +961,8 @@ namespace Seldon
       for (int j = 0; j < A.GetColSize(i); j++)
 	A.Value(i,j) *= alpha;
   }
-  
-  
+
+
   template<class T0, class T, class Allocator>
   void Mlt(const T0& alpha,
 	   Matrix<T, Symmetric, ArrayRowSymSparse, Allocator>& A)
@@ -971,8 +971,8 @@ namespace Seldon
       for (int j = 0; j < A.GetRowSize(i); j++)
 	A.Value(i,j) *= alpha;
   }
-  
-  
+
+
   template<class T0, class T, class Allocator>
   void Mlt(const T0& alpha,
 	   Matrix<T, Symmetric, ArrayColSymSparse, Allocator>& A)
@@ -981,8 +981,8 @@ namespace Seldon
       for (int j = 0; j < A.GetColSize(i); j++)
 	A.Value(i,j) *= alpha;
   }
-  
-  
+
+
   template<class T0, class T, class Allocator>
   void Mlt(const T0& alpha,
 	   Matrix<T, General, ArrayRowComplexSparse, Allocator>& A)
@@ -995,8 +995,8 @@ namespace Seldon
 	  A.ValueImag(i,j) *= alpha;
       }
   }
-  
-  
+
+
   template<class T0, class T, class Allocator>
   void Mlt(const T0& alpha, Matrix<T, Symmetric,
 	   ArrayRowSymComplexSparse, Allocator>& A)
@@ -1005,13 +1005,13 @@ namespace Seldon
       {
 	for (int j = 0; j < A.GetRealRowSize(i); j++)
 	  A.ValueReal(i,j) *= alpha;
-	
+
 	for (int j = 0; j < A.GetImagRowSize(i); j++)
 	  A.ValueImag(i,j) *= alpha;
       }
   }
-  
-  
+
+
   // Matrix-matrix product (sparse matrix against full matrix)
   template<class T1, class Allocator1, class T2, class Prop2,
 	   class Storage2, class Allocator2, class T3, class Prop3,
@@ -1036,12 +1036,12 @@ namespace Seldon
 	  C(i, j) = val;
 	}
   }
-  
-  
+
+
   // Mlt //
   /////////
-  
-  
+
+
 } // namespace Seldon
 
 #define SELDON_FILE_FUNCTIONS_MATRIX_ARRAY_CXX

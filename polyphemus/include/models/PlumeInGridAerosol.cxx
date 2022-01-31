@@ -234,10 +234,10 @@ namespace Polyphemus
     // this->Concentration_pre.Resize(GridS4D,
     // 				   GridZ4D, GridY4D, GridX4D);
     this->GasCompensation.Resize(GridS4D,
-				   GridZ4D, GridY4D, GridX4D); 
+				   GridZ4D, GridY4D, GridX4D);
     if (this->option_process["with_number_concentration"])
       {
-	this->NumberConcentration_aer.Resize(GridS4D_number, 
+	this->NumberConcentration_aer.Resize(GridS4D_number,
 					     GridZ4D, GridY4D, GridX4D);
       }
   }
@@ -252,13 +252,13 @@ namespace Polyphemus
     PlumeInGridChemistry<T, ClassEulerianModel, ClassLocalModel>
       ::Init();
 
-   /*! Concentration_aer is initialized during the GaussianPuff model 
+   /*! Concentration_aer is initialized during the GaussianPuff model
      initialization. This is needed for Saver initialization.
-   */ 
+   */
     int l,s,b,k,i;
 
     this->Concentration_aer.Copy(this->Model.GetConcentration_aer());
-    
+
     if (this->option_process["collect_dry_flux"])
       {
 	this->DryDepositionFlux_aer.Copy(this->Model.GetDryDepositionFlux_aer());
@@ -268,7 +268,7 @@ namespace Polyphemus
       {
 	this->WetDepositionFlux_aer.Copy(this->Model.GetWetDepositionFlux_aer());
 	this->InCloudWetDepositionFlux_aer.Copy(this->Model.GetInCloudWetDepositionFlux_aer());
-      
+
 	this->WetDepositionFluxNumber_aer.Copy(this->Model.GetWetDepositionFluxNumber_aer());
 	this->InCloudWetDepositionFluxNumber_aer.Copy(this->Model.GetInCloudWetDepositionFluxNumber_aer());
       }
@@ -277,8 +277,8 @@ namespace Polyphemus
       {
 	this->NumberConcentration_aer.Copy(this->Model.GetNumberConcentration_aer());
       }
-  
-    // Meteorological data. 
+
+    // Meteorological data.
     LiquidWaterContent_i.Copy(this->Model.D3("LiquidWaterContent_i"));
   }
 
@@ -314,20 +314,20 @@ namespace Polyphemus
 // #endif
 
 //     cout << "PinG model forward " << rank_size << " " << rank<<  endl;
-    
+
 //     int l, k, j, i, s, b;
 
 //     this->Concentration.Copy(this->Model.GetConcentration());
 //     this->Concentration_aer.Copy(this->Model.GetConcentration_aer());
-   
-//     if (this->option_process["collect_dry_flux"])      
+
+//     if (this->option_process["collect_dry_flux"])
 //       {
 // 	this->DryDepositionFlux_aer.Copy
 //           (this->Model.GetDryDepositionFlux_aer());
 // 	this->DryDepositionFluxNumber_aer.Copy
 //           (this->Model.GetDryDepositionFluxNumber_aer());
 //       }
-    
+
 //     if (this->option_process["collect_wet_flux"])
 //       {
 // 	this->WetDepositionFlux_aer.Copy
@@ -340,7 +340,7 @@ namespace Polyphemus
 // 	this->InCloudWetDepositionFluxNumber_aer.Copy
 //           (this->Model.GetInCloudWetDepositionFluxNumber_aer());
 //       }
-    
+
 //     if (this->option_process["with_number_concentration"])
 //       {
 // 	this->NumberConcentration_aer.Copy
@@ -387,10 +387,10 @@ namespace Polyphemus
 // 						  sigma_y, sigma_z);
 // 	    puff_transfer = 0;
 
-	
+
 // 	    T puff_release_time = this->GaussianPuffModel->
 // 	      GetPuffReleaseTime(puff_index); // YK
-	    
+
 // 	    // Tests if puff has reached the end of the domain.
 // 	    if (index_x == 0 || index_x == this->Nx - 1
 // 		|| index_y == 0 || index_y == this->Ny - 1
@@ -403,14 +403,14 @@ namespace Polyphemus
 // 		if (puff_time >= this->reinjection_time)
 // 		  puff_transfer = 1;
 // 		// Tests if puff size has reached the cell width.
-// 		else if (this->coefficient_y * sigma_y >= cell_width_y)	
+// 		else if (this->coefficient_y * sigma_y >= cell_width_y)
 // 		  puff_transfer = 1;
 // 	      }
 
 // 	    // Tests if puff size has reached the cell width.
 // 	    else if (this->coefficient_y * sigma_y >= cell_width_y)
 // 	      puff_transfer = 1;
-	    
+
 // 	    // Puff transfer.
 // 	    if (puff_transfer)
 // 	      {
@@ -419,13 +419,13 @@ namespace Polyphemus
 // 		    this->delta_number_puff.SetZero();
 // 		    this->PuffIntegratedTransfer
 // 		      (puff_index, this->Model.GetConcentration());
-		    
+
 // 		    this->PuffIntegratedTransfer_aer
-// 		      (puff_index, this->Model.GetConcentration_aer(), 
+// 		      (puff_index, this->Model.GetConcentration_aer(),
 // 		       this->Model.GetConcentration());
 // 		    if (this->option_process["with_number_concentration"])
 // 		      this->PuffIntegratedTransfer_number
-// 			(puff_index, this->Model.GetConcentration_aer(), 
+// 			(puff_index, this->Model.GetConcentration_aer(),
 // 			 this->Model.GetNumberConcentration_aer());
 // 		  }
 // 		else
@@ -438,43 +438,43 @@ namespace Polyphemus
 // 		    for (int s = 0; s < this->Ns_aer; s++)
 // 		      for (int b = 0; b < this->Nbin_aer; b++)
 // 			this->PuffTransfer_aer(this->GaussianPuffModel->
-// 					       GetPuffQuantity_aer(puff_index, s, b), 
-// 					       sigma_z, 
+// 					       GetPuffQuantity_aer(puff_index, s, b),
+// 					       sigma_z,
 // 					       s,  z_c, lat_c, lon_c,
 // 					       isday, this->Model.GetConcentration_aer(), b);
 // 		    if (this->option_process["with_number_concentration"])
 // 		      for (int b = 0; b < this->Nbin_aer; b++)
 // 			this->PuffTransfer_number(this->GaussianPuffModel->
-// 						  GetPuffQuantity_number(puff_index, b), 
-// 						  sigma_z, 
+// 						  GetPuffQuantity_number(puff_index, b),
+// 						  sigma_z,
 // 						  z_c, lat_c, lon_c,
 // 						  isday, this->Model.GetNumberConcentration_aer(), b);
 // 		  }
 // 		this->GaussianPuffModel->ErasePuff(puff_index);
 // 	      }
 // 	  }
-	
+
 // 	/*** Inner time-loop for Gaussian models. ***/
-	
+
 // 	Array<T, 4> PuffConcentration(this->Ns, this->Nz, this->Ny, this->Nx);
-// 	Array<T, 5> PuffConcentration_aer(this->Ns_aer, this->Nbin_aer, 
+// 	Array<T, 5> PuffConcentration_aer(this->Ns_aer, this->Nbin_aer,
 // 					  this->Nz, this->Ny, this->Nx);
 // 	PuffConcentration = 0.;
 // 	PuffConcentration_aer = 0.;
-	
+
 // 	if (this->option_process["with_number_concentration"])
 // 	  {
-// 	    Array<T, 4> PuffConcentration_number(this->Nbin_aer, this->Nz, 
+// 	    Array<T, 4> PuffConcentration_number(this->Nbin_aer, this->Nz,
 // 						 this->Ny, this->Nx);
 // 	    PuffConcentration_number = 0.;
 // 	  }
-	
+
 // 	for (j = 0; j < this->Nt_local; j++)
 // 	  {
 // 	    this->GaussianPuffModel->InitStep();
 // 	    Npuff = this->GaussianPuffModel->GetPuffNumber();
 // 	    Array<int, 2> PuffCellList(Npuff, 3);
-	    
+
 // 	    // Loop on puffs to get the meteorological data.
 // 	    T x_c, y_c, z_c, lon_c, lat_c, puff_distance, puff_time, volume_puff;
 // 	    T CellWidth_y_tmp, CellWidth_x_tmp, CellWidth_z_tmp, CellVolume_tmp;
@@ -485,10 +485,10 @@ namespace Polyphemus
 // 		this->GaussianPuffModel->
 // 		  GetPuffPosition(puff_index, x_c, y_c, z_c, puff_distance,
 // 				  puff_time);
-		
+
 // 		// Conversion to longitude/latitude (degrees).
 // 		this->CartesianToLatLon(x_c, y_c, lon_c, lat_c);
-		
+
 // 		// Gets corresponding cell in Eulerian grid.
 // 		this->GetCellIndices(lon_c, lat_c, z_c, index_z, index_y, index_x);
 // 		PuffCellList(puff_index, 0) = index_z;
@@ -499,22 +499,22 @@ namespace Polyphemus
 // 		if (j == 0 || puff_time == 0.)
 // 		  UpdateMeteo(puff_index);
 // 	      }
-	    
+
 // 	    // Puff effective height.
 // 	    if (!this->evolutive_plume_rise)
 // 	      this->GaussianPuffModel->ComputePlumeRise();
-	    
+
 // 	    // Advection and diffusion for puffs.
 // 	    this->GaussianPuffModel->Advection();
-	    
+
 // 	    if (this->evolutive_plume_rise)
 // 	      this->GaussianPuffModel->ComputeEvolutivePlumeRise();
 // 	    this->GaussianPuffModel->Diffusion();
 // 	    this->GaussianPuffModel->ComputeLossFactor();
-	    
+
 // 	    if (this->merge_puff)
 // 	      {
-// 		//Combine overlaping puff 
+// 		//Combine overlaping puff
 // 		int puff_index_alpha=0;
 // 		int puff_index_beta;
 // 		T puff_alpha_volume;
@@ -522,8 +522,8 @@ namespace Polyphemus
 // 		T puff_alpha_beta_volume;
 // 		T overlap_tmp;
 // 		T tmp2;
-		
-		
+
+
 // 		Array<vector<int>, 1> PuffInteractionList(Npuff);
 // 		vector<int> PuffList_tmp;
 // 		vector<int> Puff_erased;
@@ -532,7 +532,7 @@ namespace Polyphemus
 // 		int Npuff_erase;
 // 		string puff_alpha_id;
 // 		string puff_beta_id;
-		
+
 // 		// Loop to define which puff will be merged
 // 		for (puff_index_alpha = 0; puff_index_alpha < Npuff; puff_index_alpha++)
 // 		  {
@@ -544,25 +544,25 @@ namespace Polyphemus
 // 		      {
 // 			puff_beta_id = this->GaussianPuffModel
 // 			  ->GetPuffSourceId(puff_index_beta);
-			
+
 // 			puff_alpha_volume = this->GaussianPuffModel
 // 			  ->ComputePuffOverlap(puff_index_alpha, puff_index_alpha);
 // 			puff_beta_volume = this->GaussianPuffModel
 // 			  ->ComputePuffOverlap(puff_index_beta, puff_index_beta);
 // 			puff_alpha_beta_volume = this->GaussianPuffModel
 // 			  ->ComputePuffOverlap(puff_index_alpha, puff_index_beta);
-			
+
 // 			if (puff_index_alpha == puff_index_beta)
 // 			  puff_alpha_beta_volume = 0.;
-			
+
 // 			if (puff_alpha_beta_volume == 0.)
 // 			  overlap_tmp = 0.;
 // 			else
 // 			  overlap_tmp = puff_alpha_beta_volume / (puff_alpha_volume * puff_beta_volume);
-// 			// If overlap between puff A and B is greater than 80% 
+// 			// If overlap between puff A and B is greater than 80%
 // 			if (overlap_tmp > 0.8 *  (1. / puff_alpha_volume))
 // 			  if ((1. / puff_alpha_volume) > (1. / puff_beta_volume))
-// 			    {		  
+// 			    {
 // 			      if (this->merge_source_id)
 // 				{
 // 				  if (puff_alpha_id == puff_beta_id)
@@ -575,7 +575,7 @@ namespace Polyphemus
 // 		    //List contains puff to be merged with puff A
 // 		    PuffInteractionList(puff_index_alpha) = PuffList_tmp;
 // 		  }
-		
+
 // 		int j_tmp, i_tmp;
 // 		//Combine overlaping puff
 // 		for (puff_index_alpha = 0; puff_index_alpha < Npuff; puff_index_alpha++)
@@ -598,14 +598,14 @@ namespace Polyphemus
 // 			    puff_beta_volume = 1. / this->GaussianPuffModel
 // 			      ->ComputePuffOverlap(puff_index_beta, puff_index_beta);
 // 			    this->GaussianPuffModel
-// 			      ->CombineOverlappingPuff(puff_index_alpha, 
+// 			      ->CombineOverlappingPuff(puff_index_alpha,
 // 						       puff_index_beta, puff_alpha_volume,
 // 						       puff_beta_volume);
 // 			    Puff_erased.push_back(puff_index_beta);
 // 			  }
 // 		      }
 // 		  }
-		
+
 // 		// Erase merged puffs
 // 		Npuff_erase = Puff_erased.size();
 // 		sort(Puff_erased.begin(), Puff_erased.end());
@@ -614,7 +614,7 @@ namespace Polyphemus
 // 		Puff_erased.clear();
 // 	      }
 // 	    Npuff = this->GaussianPuffModel->GetPuffNumber();
-	    
+
 // 	    for (puff_index = 0; puff_index < Npuff; puff_index++)
 // 	      {
 // 		T x_c, y_c, z_c, lon_c, lat_c, puff_distance, puff_time;
@@ -623,7 +623,7 @@ namespace Polyphemus
 // 				  puff_time);
 // 		// Conversion to longitude/latitude (degrees).
 // 		this->CartesianToLatLon(x_c, y_c, lon_c, lat_c);
-		
+
 // 		// Gets corresponding cell in eulerian grid.
 // 		this->GetCellIndices(lon_c, lat_c, z_c, index_z, index_y, index_x);
 // 		UpdateMeteo(puff_index);
@@ -631,16 +631,16 @@ namespace Polyphemus
 // 		PuffCellList(puff_index,1) = index_y;
 // 		PuffCellList(puff_index,2) = index_x;
 // 	      }
-	    
+
 // 	    // Chemistry for puffs.
 // 	    this->GaussianPuffModel->Chemistry();
 
-// 	    // Save the quantities of the species in the puff 
+// 	    // Save the quantities of the species in the puff
 // 	    // if (rank == 0)
 // 	    this->GaussianPuffModel->PuffOutputSaver();
 
 // 	    this->GaussianPuffModel->AddTime(this->delta_t_local);
-// 	  } // GaussianPuffModel iteration 
+// 	  } // GaussianPuffModel iteration
 //       }
 
 //     // Eulerian model.
@@ -649,7 +649,7 @@ namespace Polyphemus
 //     this->Concentration.Copy(this->Model.GetConcentration());
 //     this->Concentration_aer.Copy(this->Model.GetConcentration_aer());
 
-//     if (this->option_process["collect_dry_flux"])      
+//     if (this->option_process["collect_dry_flux"])
 //       {
 // 	this->DryDepositionFlux_aer.Copy(this->Model.GetDryDepositionFlux_aer());
 // 	this->DryDepositionFluxNumber_aer.Copy(this->Model.GetDryDepositionFluxNumber_aer());
@@ -659,7 +659,7 @@ namespace Polyphemus
 //       {
 // 	this->WetDepositionFlux_aer.Copy(this->Model.GetWetDepositionFlux_aer());
 // 	this->InCloudWetDepositionFlux_aer.Copy(this->Model.GetInCloudWetDepositionFlux_aer());
-	
+
 // 	this->WetDepositionFluxNumber_aer.Copy(this->Model.GetWetDepositionFluxNumber_aer());
 // 	this->InCloudWetDepositionFluxNumber_aer.Copy(this->Model.GetInCloudWetDepositionFluxNumber_aer());
 //       }
@@ -686,18 +686,18 @@ namespace Polyphemus
 // 		this->GaussianPuffModel->
 // 		  GetPuffPosition(puff_index, x_c, y_c, z_c, puff_distance,
 // 				  puff_time);
-		
+
 // 		// Conversion to longitude/latitude (degrees).
 // 		this->CartesianToLatLon(x_c, y_c, lon_c, lat_c);
-		
+
 // 		//Get indices of the Eulerian cell
 // 		int ind_x, ind_y, ind_z;
 // 		this->GetCellIndices(lon_c,lat_c,z_c, ind_z, ind_y, ind_x);
-		
+
 // 		T sigma_x, sigma_y, sigma_z;
 // 		this->GaussianPuffModel->GetPuffSigma(puff_index, sigma_x,
 // 						      sigma_y, sigma_z);
-		
+
 // 		isday = IsDay(lon_c, lat_c, this->GaussianPuffModel->
 // 			      GetCurrentDate());
 // 		// Adding puff concentration to the Concentration Data.
@@ -707,7 +707,7 @@ namespace Polyphemus
 // 		    this->PuffIntegratedTransfer(puff_index, this->Concentration);
 // 		    this->PuffIntegratedTransfer_aer(puff_index, this->Concentration_aer, this->Concentration);
 // 		    if (this->option_process["with_number_concentration"])
-// 		      this->PuffIntegratedTransfer_number(puff_index, this->Concentration_aer, 
+// 		      this->PuffIntegratedTransfer_number(puff_index, this->Concentration_aer,
 // 							  this->NumberConcentration_aer);
 // 		  }
 // 		else
@@ -727,8 +727,8 @@ namespace Polyphemus
 // 		    if (this->option_process["with_number_concentration"])
 // 		      for (int b = 0; b < this->Nbin_aer; b++)
 // 			this->PuffTransfer_number(this->GaussianPuffModel->
-// 						  GetPuffQuantity_number(puff_index, b), 
-// 						  sigma_z, 
+// 						  GetPuffQuantity_number(puff_index, b),
+// 						  sigma_z,
 // 						  z_c, lat_c, lon_c,
 // 						  isday, this->NumberConcentration_aer, b);
 
@@ -755,12 +755,12 @@ namespace Polyphemus
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 #else
     rank = 0;
-#endif    
+#endif
     //Gaussian model is not parrallelized;
     if (rank == 0)
       this->Forward_Gaussian();
-    
-    this->Forward_Euler();   
+
+    this->Forward_Euler();
 
     if (rank == 0 && this->save_gaussian_domain)
       this->AddGaussianConcentrationsDomain();
@@ -777,15 +777,15 @@ namespace Polyphemus
     int l, k, j, i, s, b;
     this->Concentration.Copy(this->Model.GetConcentration());
     this->Concentration_aer.Copy(this->Model.GetConcentration_aer());
-   
-    if (this->option_process["collect_dry_flux"])      
+
+    if (this->option_process["collect_dry_flux"])
       {
 	this->DryDepositionFlux_aer.Copy
           (this->Model.GetDryDepositionFlux_aer());
 	this->DryDepositionFluxNumber_aer.Copy
           (this->Model.GetDryDepositionFluxNumber_aer());
       }
-    
+
     if (this->option_process["collect_wet_flux"])
       {
 	this->WetDepositionFlux_aer.Copy
@@ -798,13 +798,13 @@ namespace Polyphemus
 	this->InCloudWetDepositionFluxNumber_aer.Copy
           (this->Model.GetInCloudWetDepositionFluxNumber_aer());
       }
-    
+
     if (this->option_process["with_number_concentration"])
       {
 	this->NumberConcentration_aer.Copy
           (this->Model.GetNumberConcentration_aer());
       }
-    
+
     int Npuff;
     int index_x, index_y, index_z, puff_index;
     bool puff_transfer;
@@ -842,10 +842,10 @@ namespace Polyphemus
                                               sigma_y, sigma_z);
         puff_transfer = 0;
 
-	
+
 	T puff_release_time = this->GaussianPuffModel->
 	  GetPuffReleaseTime(puff_index); // YK
-	    
+
         // Tests if puff has reached the end of the domain.
         if (index_x == 0 || index_x == this->Nx - 1
             || index_y == 0 || index_y == this->Ny - 1
@@ -858,7 +858,7 @@ namespace Polyphemus
             if (puff_time >= this->reinjection_time)
               puff_transfer = 1;
 	    // Tests if puff size has reached the cell width.
-	    else if (this->coefficient_y * sigma_y >= cell_width_y)	
+	    else if (this->coefficient_y * sigma_y >= cell_width_y)
 	      puff_transfer = 1;
           }
 
@@ -876,11 +876,11 @@ namespace Polyphemus
                   (puff_index, this->Model.GetConcentration());
 
 		this->PuffIntegratedTransfer_aer
-                  (puff_index, this->Model.GetConcentration_aer(), 
+                  (puff_index, this->Model.GetConcentration_aer(),
                    this->Model.GetConcentration());
 		if (this->option_process["with_number_concentration"])
 		  this->PuffIntegratedTransfer_number
-                    (puff_index, this->Model.GetConcentration_aer(), 
+                    (puff_index, this->Model.GetConcentration_aer(),
                      this->Model.GetNumberConcentration_aer());
               }
             else
@@ -893,15 +893,15 @@ namespace Polyphemus
 		for (int s = 0; s < this->Ns_aer; s++)
 		  for (int b = 0; b < this->Nbin_aer; b++)
 		    this->PuffTransfer_aer(this->GaussianPuffModel->
-					   GetPuffQuantity_aer(puff_index, s, b), 
-					   sigma_z, 
+					   GetPuffQuantity_aer(puff_index, s, b),
+					   sigma_z,
 					   s,  z_c, lat_c, lon_c,
 					   isday, this->Model.GetConcentration_aer(), b);
 		if (this->option_process["with_number_concentration"])
 		  for (int b = 0; b < this->Nbin_aer; b++)
 		    this->PuffTransfer_number(this->GaussianPuffModel->
-					      GetPuffQuantity_number(puff_index, b), 
-					      sigma_z, 
+					      GetPuffQuantity_number(puff_index, b),
+					      sigma_z,
 					      z_c, lat_c, lon_c,
 					      isday, this->Model.GetNumberConcentration_aer(), b);
               }
@@ -912,14 +912,14 @@ namespace Polyphemus
     /*** Inner time-loop for Gaussian models. ***/
 
     Array<T, 4> PuffConcentration(this->Ns, this->Nz, this->Ny, this->Nx);
-    Array<T, 5> PuffConcentration_aer(this->Ns_aer, this->Nbin_aer, 
+    Array<T, 5> PuffConcentration_aer(this->Ns_aer, this->Nbin_aer,
                                       this->Nz, this->Ny, this->Nx);
     PuffConcentration = 0.;
     PuffConcentration_aer = 0.;
-   
+
     if (this->option_process["with_number_concentration"])
       {
-	Array<T, 4> PuffConcentration_number(this->Nbin_aer, this->Nz, 
+	Array<T, 4> PuffConcentration_number(this->Nbin_aer, this->Nz,
                                              this->Ny, this->Nx);
 	PuffConcentration_number = 0.;
       }
@@ -969,7 +969,7 @@ namespace Polyphemus
 
 	if (this->merge_puff)
 	  {
-	    //Combine overlaping puff 
+	    //Combine overlaping puff
 	    int puff_index_alpha=0;
 	    int puff_index_beta;
 	    T puff_alpha_volume;
@@ -987,7 +987,7 @@ namespace Polyphemus
 	    int Npuff_erase;
 	    string puff_alpha_id;
 	    string puff_beta_id;
-	   
+
 	    // Loop to define which puff will be merged
 	    for (puff_index_alpha = 0; puff_index_alpha < Npuff; puff_index_alpha++)
 	      {
@@ -999,25 +999,25 @@ namespace Polyphemus
 		  {
 		    puff_beta_id = this->GaussianPuffModel
 		      ->GetPuffSourceId(puff_index_beta);
-		    
+
 		    puff_alpha_volume = this->GaussianPuffModel
 		      ->ComputePuffOverlap(puff_index_alpha, puff_index_alpha);
 		    puff_beta_volume = this->GaussianPuffModel
 		      ->ComputePuffOverlap(puff_index_beta, puff_index_beta);
 		    puff_alpha_beta_volume = this->GaussianPuffModel
 		      ->ComputePuffOverlap(puff_index_alpha, puff_index_beta);
-		    
+
 		    if (puff_index_alpha == puff_index_beta)
 		      puff_alpha_beta_volume = 0.;
-		    
+
 		    if (puff_alpha_beta_volume == 0.)
 		      overlap_tmp = 0.;
 		    else
 		      overlap_tmp = puff_alpha_beta_volume / (puff_alpha_volume * puff_beta_volume);
-		    // If overlap between puff A and B is greater than 80% 
+		    // If overlap between puff A and B is greater than 80%
 		    if (overlap_tmp > 0.8 *  (1. / puff_alpha_volume))
 		      if ((1. / puff_alpha_volume) > (1. / puff_beta_volume))
-			{		  
+			{
 			  if (this->merge_source_id)
 			    {
 			      if (puff_alpha_id == puff_beta_id)
@@ -1030,7 +1030,7 @@ namespace Polyphemus
 		//List contains puff to be merged with puff A
 		PuffInteractionList(puff_index_alpha) = PuffList_tmp;
 	      }
-	    
+
 	    int j_tmp, i_tmp;
 	    //Combine overlaping puff
 	    for (puff_index_alpha = 0; puff_index_alpha < Npuff; puff_index_alpha++)
@@ -1053,14 +1053,14 @@ namespace Polyphemus
 			puff_beta_volume = 1. / this->GaussianPuffModel
 			  ->ComputePuffOverlap(puff_index_beta, puff_index_beta);
 			this->GaussianPuffModel
-			  ->CombineOverlappingPuff(puff_index_alpha, 
+			  ->CombineOverlappingPuff(puff_index_alpha,
 						   puff_index_beta, puff_alpha_volume,
 						   puff_beta_volume);
 			Puff_erased.push_back(puff_index_beta);
 		      }
 		  }
 	      }
-	    
+
 	    // Erase merged puffs
 	    Npuff_erase = Puff_erased.size();
 	    sort(Puff_erased.begin(), Puff_erased.end());
@@ -1069,7 +1069,7 @@ namespace Polyphemus
 	    Puff_erased.clear();
 	  }
 	Npuff = this->GaussianPuffModel->GetPuffNumber();
-	
+
 	for (puff_index = 0; puff_index < Npuff; puff_index++)
 	  {
 	    T x_c, y_c, z_c, lon_c, lat_c, puff_distance, puff_time;
@@ -1078,7 +1078,7 @@ namespace Polyphemus
 			      puff_time);
 	    // Conversion to longitude/latitude (degrees).
 	    this->CartesianToLatLon(x_c, y_c, lon_c, lat_c);
-	    
+
 	    // Gets corresponding cell in eulerian grid.
 	    this->GetCellIndices(lon_c, lat_c, z_c, index_z, index_y, index_x);
 	    UpdateMeteo(puff_index);
@@ -1090,12 +1090,12 @@ namespace Polyphemus
 	// Chemistry for puffs.
 	this->GaussianPuffModel->Chemistry();
 
-	// Save the quantities of the species in the puff 
+	// Save the quantities of the species in the puff
 	// if (rank == 0)
 	this->GaussianPuffModel->PuffOutputSaver();
-	
+
 	this->GaussianPuffModel->AddTime(this->delta_t_local);
-      } // GaussianPuffModel iteration 
+      } // GaussianPuffModel iteration
   }
 
 
@@ -1114,7 +1114,7 @@ namespace Polyphemus
     this->Concentration.Copy(this->Model.GetConcentration());
     this->Concentration_aer.Copy(this->Model.GetConcentration_aer());
 
-    if (this->option_process["collect_dry_flux"])      
+    if (this->option_process["collect_dry_flux"])
       {
 	this->DryDepositionFlux_aer.Copy(this->Model.GetDryDepositionFlux_aer());
 	this->DryDepositionFluxNumber_aer.Copy(this->Model.GetDryDepositionFluxNumber_aer());
@@ -1124,7 +1124,7 @@ namespace Polyphemus
       {
 	this->WetDepositionFlux_aer.Copy(this->Model.GetWetDepositionFlux_aer());
 	this->InCloudWetDepositionFlux_aer.Copy(this->Model.GetInCloudWetDepositionFlux_aer());
-	
+
 	this->WetDepositionFluxNumber_aer.Copy(this->Model.GetWetDepositionFluxNumber_aer());
 	this->InCloudWetDepositionFluxNumber_aer.Copy(this->Model.GetInCloudWetDepositionFluxNumber_aer());
       }
@@ -1164,15 +1164,15 @@ namespace Polyphemus
 
             // Conversion to longitude/latitude (degrees).
             this->CartesianToLatLon(x_c, y_c, lon_c, lat_c);
-	    
+
 	    //Get indices of the Eulerian cell
 	    int ind_x, ind_y, ind_z;
 	    this->GetCellIndices(lon_c,lat_c,z_c, ind_z, ind_y, ind_x);
-	    
+
 	    T sigma_x, sigma_y, sigma_z;
 	    this->GaussianPuffModel->GetPuffSigma(puff_index, sigma_x,
 						  sigma_y, sigma_z);
-	    
+
 	    isday = IsDay(lon_c, lat_c, this->GaussianPuffModel->
 			  GetCurrentDate());
 	    // Adding puff concentration to the Concentration Data.
@@ -1182,7 +1182,7 @@ namespace Polyphemus
 		this->PuffIntegratedTransfer(puff_index, this->Concentration);
 		this->PuffIntegratedTransfer_aer(puff_index, this->Concentration_aer, this->Concentration);
 		if (this->option_process["with_number_concentration"])
-		  this->PuffIntegratedTransfer_number(puff_index, this->Concentration_aer, 
+		  this->PuffIntegratedTransfer_number(puff_index, this->Concentration_aer,
 						      this->NumberConcentration_aer);
 	      }
 	    else
@@ -1202,11 +1202,11 @@ namespace Polyphemus
 		if (this->option_process["with_number_concentration"])
 		  for (int b = 0; b < this->Nbin_aer; b++)
 		    this->PuffTransfer_number(this->GaussianPuffModel->
-					      GetPuffQuantity_number(puff_index, b), 
-					      sigma_z, 
+					      GetPuffQuantity_number(puff_index, b),
+					      sigma_z,
 					      z_c, lat_c, lon_c,
 					      isday, this->NumberConcentration_aer, b);
-		
+
 	      }
 	  }
       }
@@ -1457,7 +1457,7 @@ namespace Polyphemus
 					   Coord4D, background_concentration_number(b));
 		// To correct extrapolation that could give concentrations < 0.
 		background_concentration_number(b) =
-		  max(background_concentration_number(b), 0.); 
+		  max(background_concentration_number(b), 0.);
 	      }
 	}
       else
@@ -1502,7 +1502,7 @@ namespace Polyphemus
     \param PuffCellList list of coordinates of the cells containing puffs.
     \param PuffConcentration Concentration perturbation to be added
     to each cell after puff chemistry.
-  */ 
+  */
   // template<class T, class ClassEulerianModel, class ClassLocalModel>
   // void PlumeInGridAerosol<T, ClassEulerianModel, ClassLocalModel>
   // ::ComputeChemistry(Array<int, 2> PuffCellList,
@@ -1576,7 +1576,7 @@ namespace Polyphemus
   // 	index_z = PuffCellCoordinates[i](0);
   // 	index_y = PuffCellCoordinates[i](1);
   // 	index_x = PuffCellCoordinates[i](2);
-	
+
   // 	for (s = 0; s < this->Ns; s++)
   // 	  {
   // 	    PuffConcentration(s, index_z, index_y, index_x)
@@ -1670,7 +1670,7 @@ namespace Polyphemus
     for (int k = 0; k < Ncell; k++)
       vertical_extent += (this->GridZ3D_interf(ibz + k + 1)
 			  - this->GridZ3D_interf(ibz + k));
-    
+
     // Concentration to be added to each cell.
     T cell_width_z, cell_width_y, cell_width_x, cell_volume;
     this->ComputeCellWidth(ibz, iby, ibx, cell_width_z, cell_width_y,
@@ -1682,7 +1682,7 @@ namespace Polyphemus
     for (int k = 0; k < Ncell; k++)
       Concentration_out_number(b, ibz + k, iby, ibx)
 	= max(Concentration_out_number(b, ibz + k, iby, ibx) + concentration, 0.);
-    
+
   }
 
 
@@ -1694,8 +1694,8 @@ namespace Polyphemus
   */
   template<class T, class ClassEulerianModel, class ClassLocalModel>
   void PlumeInGridAerosol<T, ClassEulerianModel, ClassLocalModel>
-  ::PuffIntegratedTransfer_aer(int puff_index, 
-                               Data<T, 5>& Concentration_out_aer, 
+  ::PuffIntegratedTransfer_aer(int puff_index,
+                               Data<T, 5>& Concentration_out_aer,
                                Data<T, 4>& Concentration_out)
   {
     T sigma_x, sigma_y, sigma_z;
@@ -1763,7 +1763,7 @@ namespace Polyphemus
     	species_interact = config_species.GetElement();
     	gas_aer_interaction[species_interact] = config_species.GetElement();
       }
-    
+
     for (int i = 0; i < this->Ns_aer; i++)
       {
     	iter_interact_tmp = gas_aer_interaction.find(this->species_list_aer[i]);
@@ -1776,7 +1776,7 @@ namespace Polyphemus
     	  species_index_aerosol_interact_tmp(i) = -1;
       }
     gas_aer_interaction.clear();
-    
+
     // If the puff is in only one cell.
     if (Nz * Ny * Nx == 1)
       {
@@ -1798,7 +1798,7 @@ namespace Polyphemus
               Concentration_out_aer(s, b, icz, icy, icx) =
                 max(Concentration_out_aer(s, b, icz, icy, icx) + concentration,
                     0.);
-            }	
+            }
       }
     else
       {
@@ -1811,7 +1811,7 @@ namespace Polyphemus
         T concentration_erf;
         Array<T, 2> quantity(Ns_aer, Nbin_aer);
         T x_c, y_c, z_c, lat_c, lon_c;
-        
+
         // Computing concentration to be added to each cell.
         for (k = 0; k < Nz; k++)
           for (j = 0; j < Ny; j++)
@@ -1840,17 +1840,17 @@ namespace Polyphemus
                         {
                           concentration_erf =
                             this->GaussianPuffModel->
-                            ComputePuffIntegral_aer(puff_index, s, b, 
+                            ComputePuffIntegral_aer(puff_index, s, b,
                                                     x_c, y_c, z_c,
                                                     cell_width_x, cell_width_y,
                                                     cell_width_z);
                           PuffConcentration_aer(s, b, k, j, i) += concentration_erf;
-                          
+
                           total_mass(s, b) += concentration_erf * cell_volume;
                         }
                     }
               }
-        
+
         // Adding concentration to each cell (with mass conservation).
         for (s = 0; s < Ns_aer; s++)
           for (k = 0; k < Nz; k++)
@@ -1872,12 +1872,12 @@ namespace Polyphemus
 			concentration = 0.;
 
                       Concentration_out_aer(s, b, index_z, index_y, index_x)
-                        = max(Concentration_out_aer(s, b, 
+                        = max(Concentration_out_aer(s, b,
                                                     index_z, index_y, index_x)
                               + concentration, 0.);
                     }
                 }
-        
+
       }
   }
 
@@ -1888,8 +1888,8 @@ namespace Polyphemus
   */
   template<class T, class ClassEulerianModel, class ClassLocalModel>
   void PlumeInGridAerosol<T, ClassEulerianModel, ClassLocalModel>
-  ::PuffIntegratedTransfer_number(int puff_index, 
-                                  Data<T, 5> Concentration_out_aer, 
+  ::PuffIntegratedTransfer_number(int puff_index,
+                                  Data<T, 5> Concentration_out_aer,
 				  Data<T, 4>& Concentration_out_number)
   {
     T duree;
@@ -1908,7 +1908,7 @@ namespace Polyphemus
 		      puff_time);
     // Conversion to longitude/latitude (degrees).
     this->CartesianToLatLon(x_c, y_c, lon_c, lat_c);
-    
+
     // Computes puff vertical extent.
     int ibz, iby, ibx, itz, ity, itx;
     T puff_bottom = max(z_c - (this->coefficient_z * sigma_z) / 2, 0.);
@@ -1926,7 +1926,7 @@ namespace Polyphemus
     T lon_right, lat_right;
     this->CartesianToLatLon(x_c, puff_right, lon_right, lat_right);
     this->GetCellIndices(lon_c, lat_right, z_c, iryz, iry, iryx);
-    
+
     // Computes puff horizontal extent.
     int ilxz, ilxy, ilx, irxz, irxy, irx;
     puff_left = x_c - (this->coefficient_y * sigma_x) / 2;
@@ -1956,10 +1956,10 @@ namespace Polyphemus
     Array<T, 1> MassDensity_aer(Nbin_aer);
     MassDensity_aer = 0.;
     this->GaussianPuffModel->GetMassDensity_aer(MassDensity_aer);
-    
+
     // Array<T, 1> delta_concentration_list(Nbin_aer);
     // delta_concentration_list = 0.;
-    
+
     // If the puff is in only one cell.
     if (Nz * Ny * Nx == 1)
       {
@@ -1970,34 +1970,34 @@ namespace Polyphemus
 	this->ComputeCellWidth(icz, icy, icx,
 			 cell_width_z, cell_width_y,
 			 cell_width_x, cell_volume);
-	
+
 	total_number =0.;
 	total_number_positive = 0.;
-        
+
 	for (b = 0; b < Nbin_aer; b++)
 	  {
 	    delta_concentration_number = this->GaussianPuffModel
 	      ->GetPuffQuantity_number(puff_index, b) / cell_volume;
-            
+
 	    if (Concentration_out_number(b, icz, icy, icx)
 		+ delta_concentration_number < 0.)
 	      {
 		for (s=0; s<Ns_aer-1; s++)
-		  concentration_aer_tmp(s, b) = 
-                    Concentration_out_aer(s, b, icz, icy, icx);  
-		puff_number_new = 
+		  concentration_aer_tmp(s, b) =
+                    Concentration_out_aer(s, b, icz, icy, icx);
+		puff_number_new =
 		  this->GaussianPuffModel->
                   ComputeNumberPuff(b, concentration_aer_tmp);
-		
+
 		Concentration_out_number(b, icz, icy, icx) = puff_number_new;
 	      }
 	    else
 	      {
 		Concentration_out_number(b, icz, icy, icx) =
-		  max(Concentration_out_number(b, icz, icy, icx) + 
+		  max(Concentration_out_number(b, icz, icy, icx) +
                       delta_concentration_number, 0.);
 	      }
-	  } 
+	  }
       }
     else
       {
@@ -2040,11 +2040,11 @@ namespace Polyphemus
 		      {
 			concentration_erf =
 			  this->GaussianPuffModel->
-			  ComputePuffIntegral_number(puff_index, b, 
+			  ComputePuffIntegral_number(puff_index, b,
                                                      x_c, y_c, z_c,
                                                      cell_width_x, cell_width_y,
                                                      cell_width_z);
-			PuffConcentration_number(b, k, j, i) += 
+			PuffConcentration_number(b, k, j, i) +=
                           concentration_erf;
 
 			total_mass(b) += concentration_erf * cell_volume;
@@ -2055,14 +2055,14 @@ namespace Polyphemus
 	for (k = 0; k < Nz; k++)
 	  for (j = 0; j < Ny; j++)
 	    for (i = 0; i < Nx; i++)
-	      {     
+	      {
 		index_z = ibz + k;
 		index_y = ily + j;
 		index_x = ilx + i;
-		
+
 		total_number = 0.;
 		total_number_positive = 0.;
-		
+
 		for (b = 0; b < Nbin_aer; b++)
 		  if (quantity(b) != 0. && total_mass(b) != 0.)
 		    {
@@ -2072,10 +2072,10 @@ namespace Polyphemus
                           + delta_concentration_number < 0.)
 		      	{
 		      	  for (s=0; s<Ns_aer; s++)
-		      	    concentration_aer_tmp(s, b) = 
+		      	    concentration_aer_tmp(s, b) =
 		      	      Concentration_out_aer(s, b,
                                                     index_z, index_y, index_x);
-		      	  puff_number_new = 
+		      	  puff_number_new =
 		      	    this->GaussianPuffModel->
                             ComputeNumberPuff(b, concentration_aer_tmp);
 		      	  Concentration_out_number(b, index_z, index_y, index_x) = puff_number_new;
@@ -2084,14 +2084,14 @@ namespace Polyphemus
 		      	{
 			  Concentration_out_number(b, index_z, index_y, index_x)
                             = max(Concentration_out_number(b, index_z, index_y,
-                                                           index_x) + 
+                                                           index_x) +
                                   delta_concentration_number, 0.);
 			}
 		    }
 	      }
       }
-  } 
-  
+  }
+
 } // namespace Polyphemus.
 
 

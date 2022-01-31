@@ -24,14 +24,14 @@
 from numpy import *
 import datetime
 import os, sys
-sys.path.insert(0,
-                os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])
+
+sys.path.insert(0, os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])
 import talos, observation, measure
+
 sys.path.pop(0)
 
 
-def collect(sim, obs, dates = None, stations = None, period = None,
-            stations_out = None):
+def collect(sim, obs, dates=None, stations=None, period=None, stations_out=None):
     """
     Collects data (observations and simulated concentrations) over a given
     period and at a given set of stations.
@@ -63,18 +63,16 @@ def collect(sim, obs, dates = None, stations = None, period = None,
     """
     # Initializations.
     if isinstance(sim[0], ndarray):
-        sim = (sim, )
+        sim = (sim,)
 
     if dates == None:
         dates = [range(len(x)) for x in obs]
         period = None
-    elif isinstance(dates[0], datetime.datetime) \
-             or isinstance(dates[0], datetime.date):
-        dates = (dates, )
+    elif isinstance(dates[0], datetime.datetime) or isinstance(dates[0], datetime.date):
+        dates = (dates,)
     if period == None:
         period = (min([x[0] for x in dates]), max([x[-1] for x in dates]))
-    elif isinstance(period, datetime.datetime) \
-             or isinstance(period, datetime.date):
+    elif isinstance(period, datetime.datetime) or isinstance(period, datetime.date):
         period = (period, period)
     elif len(period) == 1:
         period = (period[0], period[0])
@@ -84,16 +82,20 @@ def collect(sim, obs, dates = None, stations = None, period = None,
     if stations == None:
         stations = range(len(obs))
         stations_out = None
-    elif isinstance(stations, observation.Station) \
-             or isinstance(stations, str) \
-             or isinstance(stations, int):
-        stations = (stations, )
+    elif (
+        isinstance(stations, observation.Station)
+        or isinstance(stations, str)
+        or isinstance(stations, int)
+    ):
+        stations = (stations,)
     if stations_out == None:
         stations_out = stations
-    elif isinstance(stations_out, observation.Station) \
-           or isinstance(stations_out, str) \
-           or isinstance(stations_out, int):
-        stations_out = (stations_out, )
+    elif (
+        isinstance(stations_out, observation.Station)
+        or isinstance(stations_out, str)
+        or isinstance(stations_out, int)
+    ):
+        stations_out = (stations_out,)
 
     # Output arrays.
     out_obs = []
@@ -105,8 +107,7 @@ def collect(sim, obs, dates = None, stations = None, period = None,
             i = 0
             while i < len(dates[istation]) and dates[istation][i] < period[0]:
                 i += 1
-            while i < len(dates[istation]) \
-                      and dates[istation][i] <= period[1]:
+            while i < len(dates[istation]) and dates[istation][i] <= period[1]:
                 # Observations.
                 out_obs.append(obs[istation][i])
                 # Simulations.
@@ -117,8 +118,16 @@ def collect(sim, obs, dates = None, stations = None, period = None,
     return array(out_sim), array(out_obs)
 
 
-def compute_stat(sim, obs, measures, dates = None, stations = None, period =
-                 None, stations_out = None, cutoff = None):
+def compute_stat(
+    sim,
+    obs,
+    measures,
+    dates=None,
+    stations=None,
+    period=None,
+    stations_out=None,
+    cutoff=None,
+):
     """
     Computes a set of statistical measures for one simulation or for a set of
     simulations.
@@ -161,22 +170,20 @@ def compute_stat(sim, obs, measures, dates = None, stations = None, period =
     import inspect
 
     if isinstance(sim[0], ndarray):
-        sim = (sim, )
+        sim = (sim,)
 
     if dates == None:
         dates = [range(len(x)) for x in obs]
         period = None
-    elif isinstance(dates[0], datetime.datetime) \
-             or isinstance(dates[0], datetime.date):
-        dates = (dates, )
-    if isinstance(period, datetime.datetime) \
-           or isinstance(period, datetime.date):
+    elif isinstance(dates[0], datetime.datetime) or isinstance(dates[0], datetime.date):
+        dates = (dates,)
+    if isinstance(period, datetime.datetime) or isinstance(period, datetime.date):
         period = (period, period)
     elif period == None:
         period = (min([x[0] for x in dates]), max([x[-1] for x in dates]))
 
     if isinstance(stations, observation.Station):
-        stations = (stations, )
+        stations = (stations,)
     elif stations == None:
         stations = range(len(obs))
         stations_out = None
@@ -203,7 +210,7 @@ def compute_stat(sim, obs, measures, dates = None, stations = None, period =
                 stat_all[f].append(getattr(measure, f)(o))
             elif Nargs == 2:
                 stat_all[f].append(getattr(measure, f)(s[i], o))
-            else:   # Nargs == 3
+            else:  # Nargs == 3
                 stat_all[f].append(getattr(measure, f)(s[i], o, cutoff))
 
     # To arrays.
@@ -216,9 +223,18 @@ def compute_stat(sim, obs, measures, dates = None, stations = None, period =
     return stat_all
 
 
-def compute_stat_step(dates, sim, obs, obs_type, measures, stations = None,
-                      period = None, stations_out = None, ratio = 0.,
-                      cutoff = None):
+def compute_stat_step(
+    dates,
+    sim,
+    obs,
+    obs_type,
+    measures,
+    stations=None,
+    period=None,
+    stations_out=None,
+    ratio=0.0,
+    cutoff=None,
+):
     """
     Computes a set of statistical measures for one simulation or for a set of
     simulations, and for all time step.
@@ -267,14 +283,12 @@ def compute_stat_step(dates, sim, obs, obs_type, measures, stations = None,
     import inspect
 
     if isinstance(sim[0], ndarray):
-        sim = (sim, )
+        sim = (sim,)
 
     if obs_type != "hourly" and obs_type != "peak":
-        raise Exception, "Concentrations must be hourly concentrations" \
-              + " or peaks."
+        raise Exception, "Concentrations must be hourly concentrations" + " or peaks."
 
-    if isinstance(period, datetime.datetime) \
-           or isinstance(period, datetime.date):
+    if isinstance(period, datetime.datetime) or isinstance(period, datetime.date):
         period = (period, period)
     elif period == None:
         period = (min([x[0] for x in dates]), max([x[-1] for x in dates]))
@@ -295,8 +309,11 @@ def compute_stat_step(dates, sim, obs, obs_type, measures, stations = None,
     end_date = period[-1]
     if obs_type == "hourly":
         range_delta = datetime.timedelta(0, 3600)
-        Nsteps = (end_date - start_date).days * 24 \
-                 + (end_date - start_date).seconds / 3600 + 1
+        Nsteps = (
+            (end_date - start_date).days * 24
+            + (end_date - start_date).seconds / 3600
+            + 1
+        )
     else:
         start_date = observation.midnight(start_date)
         end_date = observation.midnight(end_date)
@@ -304,8 +321,7 @@ def compute_stat_step(dates, sim, obs, obs_type, measures, stations = None,
         Nsteps = (end_date - start_date).days + 1
     range_dates = [start_date + x * range_delta for x in range(Nsteps)]
 
-    stat_step = dict(zip(functions,
-                         [[[] for i in range(Nsim)] for f in functions]))
+    stat_step = dict(zip(functions, [[[] for i in range(Nsim)] for f in functions]))
 
     output_dates = []
     for date in range_dates:
@@ -321,9 +337,8 @@ def compute_stat_step(dates, sim, obs, obs_type, measures, stations = None,
                     stat_step[f][i].append(getattr(measure, f)(o))
                 elif Nargs == 2:
                     stat_step[f][i].append(getattr(measure, f)(s[i], o))
-                else:   # Nargs == 3
-                    stat_step[f][i].append(getattr(measure, f)(s[i], o,
-                                                               cutoff))
+                else:  # Nargs == 3
+                    stat_step[f][i].append(getattr(measure, f)(s[i], o, cutoff))
 
     # To arrays.
     for k in stat_step.keys():
@@ -335,8 +350,16 @@ def compute_stat_step(dates, sim, obs, obs_type, measures, stations = None,
     return output_dates, stat_step
 
 
-def compute_stat_station(sim, obs, measures, dates = None, stations = None,
-                         period = None, stations_out = None, cutoff = None):
+def compute_stat_station(
+    sim,
+    obs,
+    measures,
+    dates=None,
+    stations=None,
+    period=None,
+    stations_out=None,
+    cutoff=None,
+):
     """
     Computes a set of statistical measures for one simulation or for a set of
     simulations, at given stations.
@@ -379,10 +402,10 @@ def compute_stat_station(sim, obs, measures, dates = None, stations = None,
     import inspect
 
     if isinstance(sim[0], ndarray):
-        sim = (sim, )
+        sim = (sim,)
 
     if isinstance(stations, observation.Station):
-        stations = (stations, )
+        stations = (stations,)
     elif stations == None:
         stations = range(len(obs))
         stations_out = None
@@ -399,12 +422,10 @@ def compute_stat_station(sim, obs, measures, dates = None, stations = None,
 
     ### Statistics.
 
-    stat_station = dict(zip(functions,
-                            [[[] for i in range(Nsim)] for f in functions]))
+    stat_station = dict(zip(functions, [[[] for i in range(Nsim)] for f in functions]))
 
     for station in stations_out:
-        s, o = \
-           collect(sim, obs, dates, stations, period, station)
+        s, o = collect(sim, obs, dates, stations, period, station)
         for i in range(Nsim):
             for f in functions:
                 Nargs = len(inspect.getargspec(getattr(measure, f))[0])
@@ -412,9 +433,8 @@ def compute_stat_station(sim, obs, measures, dates = None, stations = None,
                     stat_station[f][i].append(getattr(measure, f)(o))
                 elif Nargs == 2:
                     stat_station[f][i].append(getattr(measure, f)(s[i], o))
-                else:   # Nargs == 3
-                    stat_station[f][i].append(getattr(measure, f)(s[i], o,
-                                                                  cutoff))
+                else:  # Nargs == 3
+                    stat_station[f][i].append(getattr(measure, f)(s[i], o, cutoff))
 
     # To arrays.
     for k in stat_station.keys():

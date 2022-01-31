@@ -9,7 +9,7 @@
 /* global variables */
 extern int naero;
 extern int aidx[NAAERO+1];
-extern double RH, acHP, totA[NAMOL+1], LWC; 
+extern double RH, acHP, totA[NAMOL+1], LWC;
 extern double MW[NAAERO+1];
 extern int NK[NAMOL+1];
 extern double negcharge;
@@ -17,7 +17,7 @@ extern double GAMMAinf[NAMOL];
 
 #ifdef POLYPHEMUS_PARALLEL_WITH_OPENMP
 #pragma omp threadprivate(naero, aidx, RH, acHP, totA, LWC, MW, NK, \
-                          negcharge) 
+                          negcharge)
 #endif
 
 /* global functions */
@@ -29,15 +29,15 @@ extern void partfunc2 (int n, double aero[], double ac[], double ff[]);
 Purpose: Type A module: takes input of particle concentrations and returns
          deviations from equilibrium
 
-Preconditions: this subroutine is called from newt, the globally 
-               convergent multi-dimensional Newton's method used to 
+Preconditions: this subroutine is called from newt, the globally
+               convergent multi-dimensional Newton's method used to
                solve the non-linear simultaneous equations.
 
 Subroutines called: unidriver and partition
                     (unidriver is always called with all 7 molecules that may
-		    be present) 
-		     
-Revisions: 1. Developed by Betty Pun, AER, Jan 99, under EPRI funding for 
+		    be present)
+
+Revisions: 1. Developed by Betty Pun, AER, Jan 99, under EPRI funding for
               prototype SOA module with 2 condensable compounds (malic acid,
 	      glyoxalic acid) and water
 
@@ -53,19 +53,19 @@ void TypeA (int n, double aero[], double f[])
 
   double tmolaom, tmol, tmolinv, MWom;
   double tmpx;
-  double  x[NAMOL+1];	
+  double  x[NAMOL+1];
   /* mole fraction input into unidriver, index 0 .. n */
   double gammar[NAMOL+1] ;
   /* activity coefficient calculated by unifac, index 0 .. n */
   double gamma[NAAERO+1];
-  /* index 1 .. n and used in partition calculation 
+  /* index 1 .. n and used in partition calculation
      gamma[1 ..n] = activity coefficients Henry's Law
      gamma contains 1 for activity coefficients of ions
   */
 
   int i,j, ieq, jeq;
 
- /* x = calloc ((NAMOL+1), sizeof(double));	
+ /* x = calloc ((NAMOL+1), sizeof(double));
     gamma = calloc ((naero+1), sizeof(double));
     gammar = calloc ((NAMOL+1), sizeof(double));  */
 
@@ -93,11 +93,11 @@ void TypeA (int n, double aero[], double f[])
     negcharge = 0.0;
     exit (1);
   }
-  /* 
-     particulate water associated with dissolved species  
-     ions treated as molecules.  Therefore, for the purpose  
-     of calculating gamma, use seven molecules: 
-     (0-5) 6 solute species, (6) water 
+  /*
+     particulate water associated with dissolved species
+     ions treated as molecules.  Therefore, for the purpose
+     of calculating gamma, use seven molecules:
+     (0-5) 6 solute species, (6) water
   */
 
   x[NAMOL] = LWC / MW[0] / tmol;/*mole fraction of H2O*/
@@ -123,10 +123,10 @@ void TypeA (int n, double aero[], double f[])
     else x[i]= TINY;
     jeq += NK[i+1];
   }
-  
+
 /*  if(aero[ieq]>1e+4)
     printf("TypeA: middle\n\n");*/
-  
+
   for ( i = 0; i <= NAMOL; i ++) {
     if (x[i] >= 0.0){
     }
@@ -138,10 +138,10 @@ void TypeA (int n, double aero[], double f[])
     }
   }
 
-  /* Call c Driver of fortran program to calculate solute a.c. */ 
+  /* Call c Driver of fortran program to calculate solute a.c. */
   thermoa (x, gammar, NAMOL+1);/*x should be unchanged, why check if after*/
   for ( i = 0; i < NAMOL; i ++) gammar[i]=gammar[i]/GAMMAinf[i];
-    
+
   for ( i = 0; i <= NAMOL; i ++) {
     if (x[i] >= 0.0){
     }
@@ -162,8 +162,8 @@ void TypeA (int n, double aero[], double f[])
     jeq += NK[i+1];
   }
 
-  /* calculate solute activity coefficient at infinite dilution 
-     according to the standard state of Raoult's Law 
+  /* calculate solute activity coefficient at infinite dilution
+     according to the standard state of Raoult's Law
   */
   jeq = 1;
   ieq = 1;
@@ -188,7 +188,7 @@ void TypeA (int n, double aero[], double f[])
 
   negcharge = 0.0;
   ieq = 1;
-  jeq = 1;     
+  jeq = 1;
   for (i = 1; i <= NAMOL; i ++){
     if (aidx[ieq] == jeq) {
       for (j = 0; j < NK[i]; j ++) {
@@ -198,7 +198,7 @@ void TypeA (int n, double aero[], double f[])
     }
     jeq += NK[i];
   }
-  
+
   /*printf("negcharge=%e \n",negcharge);*/
 }
 

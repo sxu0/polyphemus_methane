@@ -126,7 +126,7 @@ namespace Polyphemus
 
     this->D4_map["NumberBoundaryCondition_y_aer"]= &NumberBoundaryCondition_y_aer_i;
     this->D4_map["NumberBoundaryCondition_y_aer_i"]= &NumberBoundaryCondition_y_aer_i;
-	
+
 
     this->D4_map["ScavengingCoefficient_aer"] = &ScavengingCoefficient_aer_f;
     this->D4_map["ScavengingCoefficient_aer_i"]
@@ -244,13 +244,13 @@ namespace Polyphemus
 
     if (this->option_process["with_air_density"])
       throw string("The option \"With_air_density\" can not yet be used.");
-    if (this->option_process["with_number_concentration"] && 
+    if (this->option_process["with_number_concentration"] &&
 	this->option_process["with_point_emission_aer"])
-      throw string("The option with_number_concentration can not yet \"") 
+      throw string("The option with_number_concentration can not yet \"")
 	+ "\" be used with the option with_point_emission_aer.";
-    if (this->option_process["with_number_concentration"] && 
+    if (this->option_process["with_number_concentration"] &&
 	this->source_splitting)
-      throw string("The option with_number_concentration can not yet \"") 
+      throw string("The option with_number_concentration can not yet \"")
 	+ "\" be used with the option source_splitting.";
     this->config.PeekValue("Collect_dry_flux_aerosol",
                            this->option_process["collect_dry_flux_aer"]);
@@ -431,7 +431,7 @@ namespace Polyphemus
         for (int i = 0; i < this->Ns_aer; i++)
           this->aerosol_species_group_relation(i)=0;
       }
-      
+
     /*** Input files ***/
 
     // The configuration-file path is the field "Data_description" in the main
@@ -444,12 +444,12 @@ namespace Polyphemus
     if (this->option_process["with_external_composition"])
       {
         //compute composition discretisation based on number of groups and number of fraction sections
-      
+
         // Reads fraction bounds.
       this->config.SetSection("[domain]");
       this->config.Find("Fraction_bounds");
       fraction_list = split(this->config.GetLine());
-      Nfraction_aer = int(fraction_list.size()) - 1;      
+      Nfraction_aer = int(fraction_list.size()) - 1;
       Fractionbound_aer.resize(Nfraction_aer + 1);
       for (int i = 0; i < Nfraction_aer + 1; i++)
         Fractionbound_aer(i) = convert<T>(fraction_list[i]);
@@ -458,7 +458,7 @@ namespace Polyphemus
       // Nfraction_aer_2 = int(fraction_list_2.size()) - 1;
       // Fractionbound_aer_2.resize(Nfraction_aer_2 + 1);
       // for (int i = 0; i < Nfraction_aer_2 + 1; i++)
-      //   Fractionbound_aer_2(i) = convert<T>(fraction_list_2[i]);      
+      //   Fractionbound_aer_2(i) = convert<T>(fraction_list_2[i]);
 
         // this->config.SetSection("[options]");
         // this->config.PeekValue("Coagulation_coefficient_file", coagulation_coefficient_file);
@@ -468,7 +468,7 @@ namespace Polyphemus
         // NcFile fnc(coagulation_coefficient_file.c_str(), NcFile::ReadOnly);
 
       vector<T> compositions;
-      T sumfrac = 0;      
+      T sumfrac = 0;
       vector<int> counter(this->Ngroup_aer - 1);
 
       // Calculate the maximum fraction combinations
@@ -485,7 +485,7 @@ namespace Polyphemus
             {
               while (counter[1] <= Nfraction_aer - 1 )
                 {
-                  // Take the base fraction bounds of current section of 
+                  // Take the base fraction bounds of current section of
                   // first group.
                   sumfrac = Fractionbound_aer(i);
                   for(int g = 1; g < this->Ngroup_aer-1; g++)
@@ -513,7 +513,7 @@ namespace Polyphemus
                   //when the second last group hasn't reaches i top,
                   if (counter[this->Ngroup_aer-2]<=Nfraction_aer)
                     counter[this->Ngroup_aer-2]++;//move the index of second last group
-         
+
                   for(int g=3;g<this->Ngroup_aer;g++)
                     {//check every neighbor counter,[2,Ngroup_aer-2] form back to forward
                       int j=this->Ngroup_aer+1-g;
@@ -577,7 +577,7 @@ namespace Polyphemus
 	species = config_species.GetElement();
 	config_species.GetNumber(parameter[species]);
       }
-    
+
     for (int i = 0; i < this->Ns_aer; i++)
       {
 	iter = parameter.find(this->species_list_aer[i]);
@@ -635,7 +635,7 @@ namespace Polyphemus
       if (this->option_process["with_initial_condition_number_aer"])
 	this->input_files["initial_condition_aer"]
 	  .ReadFiles(data_description_file, "initial_number_aerosol");
-    
+
     // Boundary conditions.
     if (this->option_process["with_boundary_condition_aer"])
     {
@@ -682,7 +682,7 @@ namespace Polyphemus
       if (this->option_process["with_boundary_condition_number_aer"])
 	this->input_files["boundary_condition_aer"]
 	  .ReadFiles(data_description_file, "boundary_number_aerosol");
-	
+
     // Deposition velocities.
     if (this->option_process["with_deposition_aer"])
       if (this->option_process["compute_deposition_aer"])
@@ -879,7 +879,7 @@ namespace Polyphemus
     if (this->option_process["with_surface_number_emission_aer"])//
       this->input_files["surface_emission_aer"]
 	.ReadFiles(data_description_file, "surface_emission_number_aerosol");
-	  
+
     // Volume emissions.
     if (this->option_process["with_volume_emission_aer"])
       this->input_files["volume_emission_aer"]
@@ -920,7 +920,7 @@ namespace Polyphemus
     if (this->option_process["with_volume_number_emission_aer"])//
       this->input_files["volume_emission_aer"]
 	.ReadFiles(data_description_file, "volume_emission_number_aerosol");
-	
+
     // Additional variable: number of levels.
     if (this->option_process["with_volume_emission_aer"])
       {
@@ -1092,7 +1092,7 @@ namespace Polyphemus
 	+ "\" not found in Initial Conditions.";
   }
 
-  
+
   //! Returns the bin index in initial conditions of a given aerosol.
   /*!
     \param s species global index.
@@ -1105,7 +1105,7 @@ namespace Polyphemus
   Polair3DAerosol<T, ClassAdvection, ClassDiffusion, ClassChemistry>
   ::InitialConditionBinList_aer(int b)
   {
-    
+
     vector<int>::iterator pos = find(ic_bin_list_aer.begin(),
                                      ic_bin_list_aer.end(), b);
     if (pos == ic_bin_list_aer.end())
@@ -1113,7 +1113,7 @@ namespace Polyphemus
 
     return ic_bin_list_aer;
   }
-  
+
 
   //! Checks whether an aerosol has boundary conditions.
   /*!
@@ -1415,13 +1415,13 @@ namespace Polyphemus
     return this->InCloudWetDepositionFlux_aer;
   }
 
-  
+
   //! Checks whether an aerosol has number surface emissions.
   /*!
     \param b bin number.
     \return True if the aerosol has surface emissions, false otherwise.
   */
-  
+
   template<class T, class ClassAdvection,
 	   class ClassDiffusion, class ClassChemistry>
   bool Polair3DAerosol<T, ClassAdvection, ClassDiffusion, ClassChemistry>
@@ -1432,7 +1432,7 @@ namespace Polyphemus
 		surface_emission_bin_list_aer.end(), b)
       != surface_emission_bin_list_aer.end();
   }
-  
+
 
   //! Returns the index in surface emissions of a given aerosol.
   /*!
@@ -1487,9 +1487,9 @@ namespace Polyphemus
     else
       throw string("Species \"Number") + string("_") + to_str(b)
 	+ "\" not found in Surface Emissions.";
-	  
+
   }
-  
+
   //! Returns the bin index in surface emissions of a given aerosol.
   /*!
     \param s species global index.
@@ -1509,8 +1509,8 @@ namespace Polyphemus
 
     return surface_emission_bin_list_aer;
   }
-  
-  
+
+
   //! Checks whether an aerosol has volume emissions.
   /*!
     \param s species global index.
@@ -1618,7 +1618,7 @@ namespace Polyphemus
     return volume_emission_bin_list_aer;
   }
 
-  
+
   //! Returns the index in number volume emissions of a given aerosol.
   /*!
     \param b bin number.
@@ -1694,7 +1694,7 @@ namespace Polyphemus
       throw string("Error: Bin index") + string(":") + to_str(b)
 	+ "is not exit!";
   }
-  
+
   //! Returns the global index of a species (aerosol) with volume emissions.
   /*!
     \param s species index in volume emissions (for aerosols).
@@ -1739,20 +1739,20 @@ namespace Polyphemus
     GridY3D_interf_bc = RegularGrid<T>(this->y_min - this->Delta_y,
 				       T(this->Ny + 1) * this->Delta_y, 2);
     GridX3D_interf_bc = RegularGrid<T>(this->x_min - this->Delta_x,
-				       T(this->Nx + 1) * this->Delta_x, 2);				       
+				       T(this->Nx + 1) * this->Delta_x, 2);
 
     BinBound_aer.resize(this->Nsize_section_aer + 1);
     // Reads bin bounds in micrometers and converts it to meters.
     for (int i = 0; i < this->Nsize_section_aer + 1; i++)
       BinBound_aer(i) = 1.e-6 * convert<T>(bin_list[i]);
-    
+
     GridG3D_aer = RegularGrid<T>(this->Ngroup_aer);
     GridG4D_aer = RegularGrid<T>(this->Ngroup_aer);
     GridG5D_aer = RegularGrid<T>(this->Ngroup_aer);
 
     GridC4D_aer = RegularGrid<T>(this->Ncomposition_aer);
     GridC5D_aer = RegularGrid<T>(this->Ncomposition_aer);
-    
+
     GridB4D_aer = RegularGrid<T>(this->Nbin_aer);//Nsize_section_aer
     GridB5D_aer = RegularGrid<T>(this->Nbin_aer);
     GridB4D_aer_i = RegularGrid<T>(this->Nsize_section_aer);
@@ -1772,7 +1772,7 @@ namespace Polyphemus
     GridB_surf_emis_aer = RegularGrid<T>(Nb_surf_emis_aer*this->Ncomposition_aer);
 
     GridS_vol_emis_aer = RegularGrid<T>(Ns_vol_emis_aer);
-    GridB_vol_emis_aer = RegularGrid<T>(Nb_vol_emis_aer*this->Ncomposition_aer);   
+    GridB_vol_emis_aer = RegularGrid<T>(Nb_vol_emis_aer*this->Ncomposition_aer);
     GridZ_vol_emis_aer = RegularGrid<T>(Nz_vol_emis_aer);
 
     GridZ5D.SetVariable(2);
@@ -1851,7 +1851,7 @@ namespace Polyphemus
 					 this->GridY4D, this->GridX4D);
     if (this->option_process["with_number_concentration"])
       {
-		
+
 	this->NumberBoundaryCondition_z_aer_i.Resize(GridB_bc_aer,
 						     this->GridY3D,
 						     this->GridX3D);
@@ -1859,7 +1859,7 @@ namespace Polyphemus
 	FileNumberBoundaryCondition_z_aer_i.Resize(GridB_bc_aer,
 						   this->GridY3D,
 						   this->GridX3D);
-	FileNumberBoundaryCondition_z_aer_f.Resize(GridB_bc_aer, 
+	FileNumberBoundaryCondition_z_aer_f.Resize(GridB_bc_aer,
 						   this->GridY3D,
 						   this->GridX3D);
       }
@@ -1912,7 +1912,7 @@ namespace Polyphemus
     FileBoundaryCondition_x_aer_f.SetZero();
     if (this->option_process["with_number_concentration"])
       {
-	this->NumberBoundaryCondition_x_aer_i.Resize(GridB_bc_aer, 
+	this->NumberBoundaryCondition_x_aer_i.Resize(GridB_bc_aer,
 						     this->GridZ4D,
 						     this->GridY4D,
 						     this->GridX4D_interf_bc);
@@ -1927,7 +1927,7 @@ namespace Polyphemus
 						   this->GridX4D_interf_bc);
       }
 
-    if(bc_format == "Internal" && 
+    if(bc_format == "Internal" &&
        this->option_process["with_external_composition"])
       {
 	BoundaryCondition_z_aer_i_tmp.Resize(GridS_bc_aer, GridB_bc_aer_i,
@@ -2026,7 +2026,7 @@ namespace Polyphemus
     FileSurfaceEmission_aer_f.SetZero();
     if (this->option_process["with_number_concentration"])
       {
-		
+
 	NumberSurfaceEmission_aer_i.Resize(GridB_surf_emis_aer,
 					   this->GridY3D, this->GridX3D);
 	NumberSurfaceEmission_aer_i.SetZero();
@@ -2040,7 +2040,7 @@ namespace Polyphemus
 					       this->GridY3D, this->GridX3D);
 	FileNumberSurfaceEmission_aer_f.SetZero();
       }
-	
+
     // Volume emissions.
     VolumeEmission_aer_i.Resize(GridS_vol_emis_aer, GridB_vol_emis_aer,
 				this->GridZ_vol_emis_aer, this->GridY5D,
@@ -2062,7 +2062,7 @@ namespace Polyphemus
 
     if(this->option_process["with_number_concentration"])
       {
-		
+
 	NumberVolumeEmission_aer_i.Resize(GridB_vol_emis_aer, this->GridZ_vol_emis_aer,
 					  this->GridY4D, this->GridX4D);
 	NumberVolumeEmission_aer_i.SetZero();
@@ -2076,7 +2076,7 @@ namespace Polyphemus
 					      this->GridY4D, this->GridX4D);
 	FileNumberVolumeEmission_aer_f.SetZero();
       }
-	
+
     /*** Sources (source splitting) ***/
 
     if (this->source_splitting && this->option_process["with_chemistry"])
@@ -2107,7 +2107,7 @@ namespace Polyphemus
 	  DryDepositionFluxNumber_aer.Resize(GridB_dep_aer, this->GridY3D,
 					     this->GridX3D);
       }
-	
+
     if (this->option_process["collect_wet_flux_aer"])
       {
 	WetDepositionFlux_aer.Resize(GridS4D_aer, GridB_scav_aer,
@@ -2121,7 +2121,7 @@ namespace Polyphemus
 	    InCloudWetDepositionFluxNumber_aer.Resize(GridB_scav_aer,
 						      this->GridY3D, this->GridX3D);
 	  }
-		
+
       }
 
     /*** Aerosol physical properties ***/
@@ -2271,12 +2271,12 @@ namespace Polyphemus
         vector<int> isize_section;
 
 	this->Concentration_aer.SetZero();
-	if (ic_format=="Internal" && 
+	if (ic_format=="Internal" &&
             this->option_process["with_external_composition"])
           {//necessary to translate into external composition
             NumberConcentration_aer_i.SetZero();
           }
-	  
+
 	for (int i = 0; i < Ns_ic_aer; i++)
 	  {
 	    species = species_list_ic_aer[i].first;
@@ -2287,7 +2287,7 @@ namespace Polyphemus
 		string filename
 		  = this->input_files["initial_condition_aer"](species_bin);
 		int index = this->GetSpeciesIndex_aer(species);
-		if(ic_format=="Internal" && 
+		if(ic_format=="Internal" &&
                    this->option_process["with_external_composition"])
                   {
                     Data<T, 3> Concentration_tmp(&Concentration_aer_i(index, isize_section[j],0, 0, 0),
@@ -2394,8 +2394,8 @@ namespace Polyphemus
               this->ComputeNumberConcentration_forIC_aer(int(ic_bin_list_aer[i]));
             }
       }
-    
-    // if (this->option_process["with_number_concentration"]) 
+
+    // if (this->option_process["with_number_concentration"])
     //   {
     //     this->NumberConcentration_aer.PrintInfo();
     //   }
@@ -2573,7 +2573,7 @@ namespace Polyphemus
     /*** Boundary conditions ***/
 
     if (this->option_manage["boundary_condition_aer"])
-		{		
+		{
 
 	if(bc_format=="Internal"&&this->option_process["with_external_composition"])
 	{
@@ -2586,7 +2586,7 @@ namespace Polyphemus
 	  NumberBoundaryCondition_y_aer_i_tmp.SetZero();
 	  NumberBoundaryCondition_x_aer_i.SetZero();
 	  NumberBoundaryCondition_x_aer_i_tmp.SetZero();
-	}	
+	}
 
       for (i = 0; i < Ns_bc_aer; i++)
         {
@@ -2632,7 +2632,7 @@ namespace Polyphemus
 		}
 	      }
 	  }
-	  
+
 	if (this->option_process["with_number_concentration"])
 	  for (i = 0; i < Nb_bc_aer; i++)
 	    {
@@ -2659,7 +2659,7 @@ namespace Polyphemus
 				  NumberBoundaryCondition_z_aer_i,this->Ncomposition_aer);
 		}
 	      }
-			  
+
 	      if (exists(find_replace(filename, "&c", "y")))
 	      {
 		if(bc_format=="Internal"&&this->option_process["with_external_composition"])
@@ -2667,7 +2667,7 @@ namespace Polyphemus
 		  this->UpdateData(find_replace(filename, "&c", "y"), date,
 				 Delta_t, FileNumberBoundaryCondition_y_aer_i_tmp,
 				 FileNumberBoundaryCondition_y_aer_f_tmp, i,
-				 NumberBoundaryCondition_y_aer_i_tmp);		  
+				 NumberBoundaryCondition_y_aer_i_tmp);
 		}
 		else
 		{
@@ -2685,7 +2685,7 @@ namespace Polyphemus
 		  this->UpdateData(find_replace(filename, "&c", "x"), date,
 				 Delta_t, FileNumberBoundaryCondition_x_aer_i_tmp,
 				 FileNumberBoundaryCondition_x_aer_f_tmp, i,
-				 NumberBoundaryCondition_x_aer_i_tmp);		  
+				 NumberBoundaryCondition_x_aer_i_tmp);
 		}
 		else
 		{
@@ -2696,7 +2696,7 @@ namespace Polyphemus
 		}
 	      }
 	    }
-	    
+
 	if(bc_format=="Internal"&&this->option_process["with_external_composition"])
 	{//for the computation of composition within each bins, loop must stated by bins
 	  BoundaryConditionTransformation();
@@ -2724,7 +2724,7 @@ namespace Polyphemus
       {
 	date = this->input_files["surface_emission_aer"].GetDateMin();
 	Delta_t
-	  = this->input_files["surface_emission_aer"].GetDelta_t();	
+	  = this->input_files["surface_emission_aer"].GetDelta_t();
 	for (i = 0; i < Ns_surf_emis_aer; i++)
 	  {
 	    species = species_list_surf_emis_aer[i].first;
@@ -2737,7 +2737,7 @@ namespace Polyphemus
 		  = this->input_files["surface_emission_aer"](species_bin);
 		if(surface_emis_format=="Internal" &&
                    this->option_process["with_external_composition"])
-		{		  
+		{
 		  this->UpdateData(filename, date, Delta_t,
 				    FileSurfaceEmission_aer_i,
 				    FileSurfaceEmission_aer_f,
@@ -2761,7 +2761,7 @@ namespace Polyphemus
 	    {
 	      species_bin = "Number_"  + to_str(surface_emission_bin_list_aer[j]);
 	      string filename = this->input_files["surface_emission_aer"](species_bin);
-			
+
 	      if (exists(filename))
 	      {
 		if(surface_emis_format=="Internal"&&this->option_process["with_external_composition"])
@@ -2822,7 +2822,7 @@ namespace Polyphemus
 		    for (int m = 0; m < this->Nx; m++)
 		      NumberSurfaceEmission_aer_i(j*this->Ncomposition_aer+id, l, m) =
 			NumberSurfaceEmission_aer_f(j*this->Ncomposition_aer+id, l, m);
-			
+
 		 this->ComputeNumberSurfaceEmission_aer
 		  (int(surface_emission_bin_list_aer[j]));
 	      }
@@ -2850,7 +2850,7 @@ namespace Polyphemus
 		string filename
 		  = this->input_files["volume_emission_aer"](species_bin);
 		if(volume_emis_format=="Internal"&&this->option_process["with_external_composition"])
-		{	
+		{
 		  this->UpdateData(filename, date, Delta_t,
 				  FileVolumeEmission_aer_i,
 				  FileVolumeEmission_aer_f,
@@ -2936,12 +2936,12 @@ namespace Polyphemus
 		      for (int m = 0; m < this->Nx; m++)
 			NumberVolumeEmission_aer_i(j*this->Ncomposition_aer+id, k, l, m) =
 			  NumberVolumeEmission_aer_f(j*this->Ncomposition_aer+id, k, l, m);
-			
+
 		this->ComputeNumberVolumeEmission_aer
 		  (int(volume_emission_bin_list_aer[j]));
 	      }
 	    }
-	    
+
       }
 
     if (this->computed_photolysis == "online")
@@ -2969,7 +2969,7 @@ namespace Polyphemus
   }
 
 
-  //! Compute density of aerosol composition 
+  //! Compute density of aerosol composition
   //! from mass concentration, density of each species
   /*!
     \param b bin number
@@ -2986,24 +2986,24 @@ namespace Polyphemus
 
     rho = 0.0;
     subrho = 0.0;
-	
+
     for (s = 0; s < Ns; s++)
       subrho += Conc_aer_tmp(s) / Rho_species[s];
-	
+
     if (TotalMass == 0. or subrho == 0.)
       rho = 1.;
     else
       rho = 1.e-6 * TotalMass/subrho;
-	
+
     return rho;
-	
+
   }
-  
+
   //! Compute density from mass concentration, and
   //! each species density
   /*!
     \ param b bin number
-    \ return density 
+    \ return density
   */
   template<class T, class ClassAdvection,
 	   class ClassDiffusion, class ClassChemistry>
@@ -3017,7 +3017,7 @@ namespace Polyphemus
     string saver_file;
     T Rho_tmp;
     vector<T> Rho_species;
-	
+
     this->config.SetSection("[data]");
     this->config.PeekValue("Data_description", saver_file);
     ConfigStream saver_stream_Nb(saver_file);
@@ -3027,7 +3027,7 @@ namespace Polyphemus
     Data<T, 1> Conc_aer_tmp;
     Conc_aer_tmp.Resize(this->Ns_ic_aer);
     Conc_aer_tmp.SetZero();
-	
+
     for (int s =0; s < Ns_ic_aer; s++)
       {
 	rho_stream_aer.PeekValue(this->species_list_ic_aer[s].first, Rho_tmp);
@@ -3067,10 +3067,10 @@ namespace Polyphemus
       for (j = 0; j < this->Ny; j++)
 	for (i = 0; i < this->Nx; i++)
 	  for(int id=0;id<this->Ncomposition_aer;id++)
-	    {//KS: add a loop on Ncomposition_aer	     
+	    {//KS: add a loop on Ncomposition_aer
 	      TotalMass = 0.0;
 	      Rho_aer = 0.0;
-			 
+
 	      for (int s = 0; s < Ns_ic_aer; s++)
 		{
 		  TotalMass += this->Concentration_aer
@@ -3080,15 +3080,15 @@ namespace Polyphemus
 		}
 
 	      Rho_aer = ComputeDensity(Conc_aer_tmp, Rho_species, TotalMass, Ns_ic_aer);
-			
+
 	      this->NumberConcentration_aer(b*this->Ncomposition_aer+ id,k,j,i) =
 		TotalMass/Rho_aer/PI*6.
 		/(MeanDiameter*MeanDiameter*MeanDiameter);
 	      Mean_domain_number_out += this->NumberConcentration_aer(b*this->Ncomposition_aer+ id,k,j,i)/(this->Nz*this->Ny*this->Nx);
 	  }
   }
-  
-  
+
+
   //! Compute number boundary condition from mass concentration, diameter and
   //! density along z
   /*!
@@ -3100,7 +3100,7 @@ namespace Polyphemus
   void Polair3DAerosol<T, ClassAdvection, ClassDiffusion, ClassChemistry>
   ::ComputeNumberBoundaryCondition_z_aer(int b)
   {
-    
+
     int id_b = this->NumberBoundaryConditionIndex_aer(b*this->Ncomposition_aer);
     int index_b = Bin_to_size_index_aer(id_b);
     int i, j;
@@ -3121,17 +3121,17 @@ namespace Polyphemus
     vector<int>::iterator it_end;
     int dist;
     int Nc=this->Ncomposition_aer;
-    
+
     Data<T, 1> Conc_aer_tmp;
     Conc_aer_tmp.Resize(this->Ns_bc_aer);
     Conc_aer_tmp.SetZero();
-	
+
     for (int s = 0; s < Ns_bc_aer; s++)
       {
 	rho_stream_aer.PeekValue(species_list_bc_aer[s].first, Rho_tmp);
 	Rho_species.push_back(Rho_tmp);
       }
-	
+
     for (j = 0; j < this->Ny; j++)
       for (i = 0; i < this->Nx; i++)
 	{
@@ -3156,7 +3156,7 @@ namespace Polyphemus
 	    Rho_aer = ComputeDensity(Conc_aer_tmp, Rho_species, TotalMass, Ns_bc_aer);
 	      NumberBoundaryCondition_z_aer_i(index_b*Nc+ic,j,i) =
 		TotalMass/Rho_aer/PI*6.
-		/(MeanDiameter*MeanDiameter*MeanDiameter);	      
+		/(MeanDiameter*MeanDiameter*MeanDiameter);
 	  }
 	}
   }
@@ -3182,7 +3182,7 @@ namespace Polyphemus
     string saver_file;
     T Rho_tmp;
     vector<T> Rho_species;
-	
+
     this->config.SetSection("[data]");
     this->config.PeekValue("Data_description", saver_file);
     ConfigStream saver_stream_Nb(saver_file);
@@ -3193,11 +3193,11 @@ namespace Polyphemus
     vector<int>::iterator it_end;
     int dist;
     int Nc=this->Ncomposition_aer;
-    
+
     Data<T, 1> Conc_aer_tmp;
     Conc_aer_tmp.Resize(this->Ns_bc_aer);
     Conc_aer_tmp.SetZero();
-	
+
     for (int s = 0; s < Ns_bc_aer; s++)
       {
 	rho_stream_aer.PeekValue(species_list_bc_aer[s].first, Rho_tmp);
@@ -3210,7 +3210,7 @@ namespace Polyphemus
 	    TotalMass = 0.0;
 	    Rho_aer = 0.0;
 	    for (int ic=0; ic<Nc;ic++) //ZS
-	    {			 
+	    {
 	      for (int s = 0; s < Ns_bc_aer; s++)
 		{
 		  it_begin = species_list_bc_aer[s].second.begin();
@@ -3231,7 +3231,7 @@ namespace Polyphemus
 	    }
 	  }
   }
-  
+
 
   //! Compute number boundary condition from mass concentration, diameter and
   //! density along x
@@ -3253,7 +3253,7 @@ namespace Polyphemus
     string saver_file;
     T Rho_tmp;
     vector<T> Rho_species;
-	
+
     this->config.SetSection("[data]");
     this->config.PeekValue("Data_description", saver_file);
     ConfigStream saver_stream_Nb(saver_file);
@@ -3268,13 +3268,13 @@ namespace Polyphemus
     Data<T, 1> Conc_aer_tmp;
     Conc_aer_tmp.Resize(this->Ns_bc_aer);
     Conc_aer_tmp.SetZero();
-	
+
     for (int s = 0; s < Ns_bc_aer; s++)
       {
 	rho_stream_aer.PeekValue(species_list_bc_aer[s].first, Rho_tmp);
 	Rho_species.push_back(Rho_tmp);
       }
-	
+
     for (k = 0; k < this->Nz; k++)
       for (j = 0; j < this->Ny; j++)
 	for (i = 0; i < 2; i++)
@@ -3300,11 +3300,11 @@ namespace Polyphemus
 
 		NumberBoundaryCondition_x_aer_i(index_b*Nc+ic,k,j,i) =
 		  TotalMass/Rho_aer/PI*6.
-		  /(MeanDiameter*MeanDiameter*MeanDiameter);		
+		  /(MeanDiameter*MeanDiameter*MeanDiameter);
 	    }
 	  }
   }
-  
+
 
   //! Compute number surface emission from mass concentration, diameter and
   //! density
@@ -3322,13 +3322,13 @@ namespace Polyphemus
     int index_b=Bin_to_size_index_aer(id_b);
     int i, j;
     T TotalMass; // ug.m-3
-    T Rho_aer; 
+    T Rho_aer;
     T MeanDiameter = 1.e6 * sqrt(BinBound_aer(b + 1) * BinBound_aer(b)); // um
-	
+
     string saver_file;
     T Rho_tmp;
     vector<T> Rho_species; // g.cm-3 -> 10-6 ug.um-3
-	
+
     this->config.SetSection("[data]");
     this->config.PeekValue("Data_description", saver_file);
     ConfigStream saver_stream_Nb(saver_file);
@@ -3396,15 +3396,15 @@ namespace Polyphemus
     //here b is the index of size section
     //id_b is the index of bin
     int id_b = this->NumberVolumeEmissionIndex_aer(b*this->Ncomposition_aer);
-    int index_b = Bin_to_size_index_aer(id_b);	
+    int index_b = Bin_to_size_index_aer(id_b);
     int i, j, k;
     T TotalMass; // ug.m-3
-    T Rho_aer; 
-    T MeanDiameter = 1.e6 * sqrt(BinBound_aer(b + 1) * BinBound_aer(b)); 
+    T Rho_aer;
+    T MeanDiameter = 1.e6 * sqrt(BinBound_aer(b + 1) * BinBound_aer(b));
     string saver_file;
     T Rho_tmp;
     vector<T> Rho_species; // g.cm-3 -> 10-6 ug.um-3
-	
+
     this->config.SetSection("[data]");
     this->config.PeekValue("Data_description", saver_file);
     ConfigStream saver_stream_Nb(saver_file);
@@ -3415,17 +3415,17 @@ namespace Polyphemus
     vector<int>::iterator it_end;
     int dist;
     int Nc=this->Ncomposition_aer;
-    
+
     Data<T, 1> Conc_aer_tmp;
     Conc_aer_tmp.Resize(this-> Ns_vol_emis_aer);
     Conc_aer_tmp.SetZero();
-	
+
     for (int s = 0; s < Ns_vol_emis_aer; s++)
       {
 	rho_stream_aer.PeekValue(species_list_vol_emis_aer[s].first, Rho_tmp);
 	Rho_species.push_back(Rho_tmp);
       }
-	
+
     for (k = 0; k < this->Nz_vol_emis_aer; k++)
       for (j = 0; j < this->Ny; j++)
 	for (i = 0; i < this->Nx; i++)
@@ -3457,11 +3457,11 @@ namespace Polyphemus
 	      if(TotalMass*tmp_n==0&&TotalMass!=tmp_n)
 		cout<<k<<" , "<<j<<" , "<<i<<" m:"<<TotalMass<<" n:"<<tmp_n
 		<<" Rho:"<<Rho_aer<<" MeanDiameter:"<<MeanDiameter<<endl;
-		
+
 	    }
 	  }
   }
-  
+
  //! Initializes wet aerosol diameters.
   /*! Computes wet aerosol diameters for aerosols using Gerber formula.
     \param RelativeHumidity_ relative humidity.
@@ -3474,7 +3474,7 @@ namespace Polyphemus
   ::InitWetDiameter_aer(Data<T, 3>& RelativeHumidity_,
 			Data<T, 3>& Temperature_,
 			Data<T, 4>& WetDiameter_aer_)
-  {	
+  {
     int i, j, k, b, id;
 
     Array<T, 1> MeanDiameter(this->Nsize_section_aer);
@@ -3501,7 +3501,7 @@ namespace Polyphemus
   }
 
 
-  
+
   //! Initializes wet aerosol diameters.
   /*! Computes wet aerosol diameters for aerosols using Gerber formula.
     \param RelativeHumidity_ relative humidity.
@@ -3517,7 +3517,7 @@ namespace Polyphemus
 		        Data<T, 4>& NumberConcentration_aer_,
 			Data<T, 4>& WetDiameter_aer_,
 		        bool with_computation_drydiameter)
-  {	
+  {
     int i, j, k, b, id;
     T TotalMass, Rho_aer;
     // KS Number and mass concentrations are input to the subroutine
@@ -3536,24 +3536,24 @@ namespace Polyphemus
             for (i = 0; i < this->Nx; i++)
               {
                 int bin_id = b * this->Ncomposition_aer + id;
-                if (with_computation_drydiameter 
+                if (with_computation_drydiameter
                     and this->option_process["with_number_concentration"])
                   {
 
                     TotalMass = 0.0;
                     Rho_aer = 0.0;
-		  
+
                     for (int s = 0; s < this->Ns_aer-1; s++)
                       {
-                        TotalMass += this->Concentration_aer 
+                        TotalMass += this->Concentration_aer
                           (this->GetSpeciesIndex_aer(this->species_list_aer[s]),bin_id,k,j,i);
                         Conc_aer_tmp(s) = this->Concentration_aer
                           (this->GetSpeciesIndex_aer(this->species_list_aer[s]),bin_id,k,j,i);
                       }
-                    if (this->option_process["with_fixed_density"]) 
+                    if (this->option_process["with_fixed_density"])
                       Rho_aer = 1.e-9*fixed_density_aer;  // convert to [kg/m3] -> [ug/um3]
                     else
-                      Rho_aer = ComputeDensity(Conc_aer_tmp, Mass_Density_aer, 
+                      Rho_aer = ComputeDensity(Conc_aer_tmp, Mass_Density_aer,
                                                TotalMass, this->Ns_aer-1);
                     if (this->NumberConcentration_aer(bin_id,k,j,i) > 1.0 and TotalMass > 0.)
                       MeanDiameter(b) = pow((TotalMass/Rho_aer/PI*6.
@@ -3626,7 +3626,7 @@ namespace Polyphemus
 				  ZhangGamma.data(), ZhangAlpha.data(),
 				  SmallRadius.data(), LargeRadius.data(),
 				  DepositionVelocity_1D.data());
-				  
+
 	  for (b = 0; b < Nbin_dep_; b++)
 	  {
 	    DepositionVelocity_aer_(b, j, i) =DepositionVelocity_1D(b);
@@ -3885,7 +3885,7 @@ namespace Polyphemus
     return 0;
   }
 
-  //! Perform the transformation from internal bc data to external bc data 
+  //! Perform the transformation from internal bc data to external bc data
   /*!
     \ param b bin number
     \ return number concentration (m-3)
@@ -4004,7 +4004,7 @@ namespace Polyphemus
     return 1;
   }
 
-  //! Return composition id based on group mass fractions 
+  //! Return composition id based on group mass fractions
   //! for 2 D data
   /*!
     \ param b bin number
@@ -4034,7 +4034,7 @@ namespace Polyphemus
 	  }
 	  else
 	  frac_group=0.0;
-	  
+
 	  if(composition_bounds_(i,g,0)>0)
 	  {
 	    if(frac_group>composition_bounds_(i,g,0)&&frac_group<=composition_bounds_(i,g,1))
@@ -4057,7 +4057,7 @@ namespace Polyphemus
     for(int g = 0; g < Ng; g++)
       cout<<"g("<<g<<")="<<fgroup(g)<<endl;
     abort();
-    return Nc;    
+    return Nc;
   }
 
   //! Return composition id based on group mass fractions
@@ -4113,7 +4113,7 @@ namespace Polyphemus
     for(int g = 0; g < Ng; g++)
       cout<<"g("<<g<<")="<<fgroup(g)<<endl;
     abort();
-    return Nc;        
+    return Nc;
   }
 
   /////////////////
@@ -4181,7 +4181,7 @@ namespace Polyphemus
 		this->Concentration_aer(s, b, k, j, i) +=
 		  convert<T>(point_emission_list_aer[e]["quantity"])
 		  / (this->CellWidth_x(i) * this->CellWidth_y(j)
-		    * this->CellWidth_z(k));	      
+		    * this->CellWidth_z(k));
 	    }
 	  }
 	else if (point_emission_list_aer[e]["type"] == "continuous")
@@ -4241,13 +4241,13 @@ namespace Polyphemus
 		  emis_b++;
 		}
 	  }
-		
+
 	if (this->option_process["with_number_concentration"])
 	  {
 	    for (b = 0; b < this->Nbin_aer; b++)
 	      if (this->HasNumberVolumeEmission_aer(b))
 		{
-				 
+
 		  emis_b_number = this->NumberVolumeEmissionIndex_aer(b);
 		  for (k = 0; k < Nz_vol_emis_aer; k++)
 		    for (j = 0; j < this->Ny; j++)
@@ -4567,7 +4567,7 @@ namespace Polyphemus
               TinyVector<int, 2> new_shape;
               for (int j = 0; j < 2; j++)
                 new_shape(j) = DepositionVelocity_aer_f.GetArray().shape()(j + 1);
-	  
+
               Data<T, 2> FileData_extract_i(new_shape);
               Data<T, 2> FileData_extract_f(new_shape);
               Data<T, 2> CurrentData_extract_i(new_shape);
@@ -4578,7 +4578,7 @@ namespace Polyphemus
                                FileData_extract_f,
                                CurrentData_extract_i,
                                CurrentData_extract_f);
-              
+
               for(int y=0; y<this->Ny; y++)
                 for(int x=0; x<this->Nx; x++)
                   for(int id=0; id< this->Ncomposition_aer; id++)
@@ -4667,10 +4667,10 @@ namespace Polyphemus
 		  * (DepositionVelocity_aer_i(b*Nc+id, j, i)
 		     + DepositionVelocity_aer_f(b*Nc+id, j, i))
 		  * this->NumberConcentration_aer(bin_list_dep_aer[b]*Nc+id, 0, j, i);
-	      
+
 	    }
-		
-    if (this->option_process["with_diffusion"]) 
+
+    if (this->option_process["with_diffusion"])
       this->Diffusion();
 
     if (this->option_process["with_point_emission"])
@@ -4724,11 +4724,11 @@ namespace Polyphemus
 		      for (i = 0; i < this->Nx; i++)
 			this->NumberConcentration_aer(b, k, j, i) +=
 			  this->Delta_t *
-			  NumberVolumeEmission_aer_i(emis_b_number, k, j, i); 
+			  NumberVolumeEmission_aer_i(emis_b_number, k, j, i);
 		  emis_b_number++;
 			}
 		  }
-      }	    
+      }
 
 
     if (this->option_process["collect_wet_flux"])
@@ -4842,7 +4842,7 @@ namespace Polyphemus
 	    for(int id=0; id < Nc; id++)
 	    for (int j = 0; j < this->Ny; j++)
 	      for (int i = 0; i < this->Nx; i++)
-		if (this->Rain_i(j, i) > 0.) 
+		if (this->Rain_i(j, i) > 0.)
 		  {
 		    for (int s = 0; s < this->Ns_aer; s++)
 		      {
@@ -4866,7 +4866,7 @@ namespace Polyphemus
 			  WetDepositionFlux_aer(s, b * Nc +id, j, i) +=
 			    InCloudWetDepositionFlux_aer(s, b * Nc + id, j, i);
 		      }
-		  
+
 		    if  (this->option_process["with_number_concentration"])
 		      {
 			for (int k = 0; k < this->Nz; k++)
@@ -4881,8 +4881,8 @@ namespace Polyphemus
 							      k, j, i)
 				/ this->Delta_t * (1.- scavenging_ratio)
 				* (this->GridZ4D_interf(k+1) - this->GridZ4D_interf(k));
-							
-						  
+
+
 			    this->NumberConcentration_aer(bin_list_scav_aer[b]*Nc+id,
 							  k, j, i) *= scavenging_ratio;
 			  }
@@ -4890,7 +4890,7 @@ namespace Polyphemus
 			  WetDepositionFluxNumber_aer(b*Nc+id, j, i) +=
 			    InCloudWetDepositionFluxNumber_aer(b*Nc+id, j, i);
 		      }
-					
+
 		  }
 	  }
       }
@@ -4902,7 +4902,7 @@ namespace Polyphemus
 	  / this->Delta_t;
 	this->Concentration.GetArray() = this->Source_f.GetArray();
 	this->Source_f.GetArray() = this->Source_i.GetArray();
-		
+
 	if (this->option_process["with_volume_emission"])
 	  for (int s = 0; s < this->Ns_vol_emis; s++)
 	    {
@@ -4917,13 +4917,13 @@ namespace Polyphemus
 			+= this->VolumeEmission_f(s, k, j, i);
 		    }
 	    }
-		
+
 	this->Source_aer_i.GetArray() =
 	  (this->Concentration_aer.GetArray() - this->Source_aer_f.GetArray())
 	  / this->Delta_t;
 	this->Concentration_aer.GetArray() = this->Source_aer_f.GetArray();
 	this->Source_aer_f.GetArray() = this->Source_aer_i.GetArray();
-	
+
 	if (this->option_process["with_volume_emission_aer"])
 	  for (int s = 0; s < Ns_vol_emis_aer; s++)
 	    {
@@ -5369,7 +5369,7 @@ namespace Polyphemus
 
 	      if (!exists(find_replace(filename, "&c", "x")))
 		this->ComputeNumberBoundaryCondition_x_aer(int(bc_bin_list_aer[i]));
-	    }	
+	    }
       }
 
     /*** Deposition ***/
@@ -5393,7 +5393,7 @@ namespace Polyphemus
 			 FileData_extract_f,
 			 this->current_date,
 			 CurrentData_extract);
-			 
+
 	  for(int y=0; y<this->Ny; y++)
 	    for(int x=0; x<this->Nx; x++)
 	      for(int id=0; id< this->Ncomposition_aer; id++)
@@ -5402,16 +5402,16 @@ namespace Polyphemus
 		FileDepositionVelocity_aer_i(RealID,y,x)=FileData_extract_i(y,x);
 		FileDepositionVelocity_aer_f(RealID,y,x)=FileData_extract_f(y,x);
 		DepositionVelocity_aer_f(RealID,y,x)=CurrentData_extract(y,x);
-	      }	
+	      }
 	}
-      else 
+      else
 	this->InitDepositionVelocity(this->Temperature_f, this->Pressure_f,
 				     this->SurfaceTemperature_f,
 				     this->SurfacePressure_f,
 				     FirstLevelWindModule_f,
 				     WetDiameter_aer, SnowHeight_f,
 				     DepositionVelocity_aer_f);
-	  
+
     /*** Scavenging coefficients ***/
 
     if (this->option_manage["scavenging_below_cloud_coefficient"]
@@ -5461,7 +5461,7 @@ namespace Polyphemus
 		  = this->input_files["surface_emission_aer"](species_bin);
 		if (surface_emis_format == "Internal" &&
                     this->option_process["with_external_composition"])
-                  { 
+                  {
                     this->InitData(filename, date, Delta_t,
                                    FileSurfaceEmission_aer_i,
                                    FileSurfaceEmission_aer_f,

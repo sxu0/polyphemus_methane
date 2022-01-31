@@ -3,7 +3,7 @@
 
 namespace Polyphemus
 {
-  /* Compute buoyancy frequency 
+  /* Compute buoyancy frequency
   temperature in K */
   template<class T>
   void ComputeBuoyancyFrequency(T temperature,
@@ -52,14 +52,14 @@ namespace Polyphemus
     // T Dh_max;
     // T Dh_max1, Dh_max2;
     T xf;
-    
+
     if (wind_speed < 1.)
       wind_speed = 1.;
 
     const T g = 9.81;
     Fb = 0.25 * g * source_velocity * source_diameter
       * source_diameter * (source_temperature - temperature) / source_temperature;
-    Fm = (temperature / source_temperature) * wind_speed * wind_speed * 
+    Fm = (temperature / source_temperature) * wind_speed * wind_speed *
       source_diameter * source_diameter / 4.;
 
     T Bi = 0.6;
@@ -69,7 +69,7 @@ namespace Polyphemus
       xf = 34. * pow(Fb, 0.4);
     else
       xf = 14. * pow(Fb, 0.625);
-    
+
     if (Fb > 0.)
       xf = 3.5 * xf;
     else
@@ -81,12 +81,12 @@ namespace Polyphemus
     zsf = min(zsf1, zsf2);
 
     T dz_tmp;
-    dz_tmp = pow( (3. * Fm * x / (Bj * Bj * wind_speed * wind_speed)) + 
+    dz_tmp = pow( (3. * Fm * x / (Bj * Bj * wind_speed * wind_speed)) +
 		  (3. * Fb * x * x / (2. * Bi * Bi * pow(source_velocity, 3.))), 1./3.);
     plume_rise = min(dz_tmp, zsf);
   }
 
-  
+
   /* Compute Plume rise in unstable conditions.
   x: downwind distance to the source
   N2 buoyancy frequency */
@@ -115,7 +115,7 @@ namespace Polyphemus
 
     Fb = 0.25 * g * source_velocity * source_diameter
       * source_diameter * abs(source_temperature - temperature) / source_temperature;
-    Fm = (temperature / source_temperature) * wind_speed * wind_speed 
+    Fm = (temperature / source_temperature) * wind_speed * wind_speed
       * source_diameter * source_diameter / 4.;
 
     T xf;
@@ -137,9 +137,9 @@ namespace Polyphemus
     Bj = 1. / 3. + wind_speed / source_velocity;
 
     T dz_tmp, H, dz_breakup;
-    dz_tmp = 1.6 * pow(Fb * x * x, 1./3.) / wind_speed + 
+    dz_tmp = 1.6 * pow(Fb * x * x, 1./3.) / wind_speed +
       pow((3. * Fm * x / (Bj * Bj * pow(wind_speed, 3.))), 1./3.);
- 
+
     H = inversion_height;
 
     if (stability == 0 || stability == 1)
@@ -154,7 +154,7 @@ namespace Polyphemus
 
   }
 
-  /* Compute Distance corresponding to a given 
+  /* Compute Distance corresponding to a given
      Plume rise in unstable conditions.*/
   template<class T>
   T ComputeUnstablePlumeRiseDistance(T plume_rise,
@@ -173,7 +173,7 @@ namespace Polyphemus
 
     Fb = 0.25 * g * source_velocity * source_diameter
       * source_diameter * abs(source_temperature - temperature) / source_temperature;
-    Fm = (temperature / source_temperature) * wind_speed * wind_speed 
+    Fm = (temperature / source_temperature) * wind_speed * wind_speed
       * source_diameter * source_diameter / 4.;
 
     T Bj;
@@ -184,7 +184,7 @@ namespace Polyphemus
       + 4. * (1.6 / wind_speed * pow(Fb, 1./3.) * plume_rise);
     x3 = (-1. * pow(3. * Fm / (Bj * Bj * pow(wind_speed, 3.)), 1. / 3.)
 	  + sqrt(delta)) / (2. * 1.6 / wind_speed * pow(Fb, 1./3.));
-    x_rise = pow(x3, 3.);    		    
+    x_rise = pow(x3, 3.);
 
     return x_rise;
 
@@ -202,14 +202,14 @@ namespace Polyphemus
   {
     T Fb, Fm;
     T xf;
-    
+
     if (wind_speed < 1.)
       wind_speed = 1.;
 
     const T g = 9.81;
     Fb = 0.25 * g * source_velocity * source_diameter
       * source_diameter * (source_temperature - temperature) / source_temperature;
-    Fm = (temperature / source_temperature) * wind_speed * wind_speed * 
+    Fm = (temperature / source_temperature) * wind_speed * wind_speed *
       source_diameter * source_diameter / 4.;
 
     T Bi = 0.6;
@@ -274,11 +274,11 @@ namespace Polyphemus
       sigma_min = 0.01 * (lmo - 10.);
     else
       sigma_min = 0.2;
-    return sigma_min;    
+    return sigma_min;
   }
 
   /* Compute zi, zim and zic.
-  Zi: inversion height 
+  Zi: inversion height
   Zim: mixing depth
   Zic: Convection depth*/
   template<class T>
@@ -316,7 +316,7 @@ namespace Polyphemus
   T ComputeTlw(T zi, T sigmaw, T z)
   {
     T Tlw;
-    
+
     if (zi == 0.)
       Tlw = 0.;
     else
@@ -324,7 +324,7 @@ namespace Polyphemus
 				   0.0003 * exp(8.5 * z / zi));
     if (Tlw < 0.)
       Tlw = 0.;
-    
+
     return Tlw;
   }
 
@@ -365,9 +365,9 @@ namespace Polyphemus
 	  }
       }
     return N2;
-    
+
   }
-    
+
   /* Computes Puff lateral dispersion in stable/neutral conditions.
   Based on AMDS gaussian dispersion formula.
   time: time since release (s)
@@ -481,7 +481,7 @@ namespace Polyphemus
 		   sigma_z2 * sigma_z2 +
 		   sigma_zpr * sigma_zpr);
 
-    return sigma_z;    
+    return sigma_z;
   }
 
   /* Computes Puff vertical dispersion in stable/neutral conditions.
@@ -552,7 +552,7 @@ namespace Polyphemus
 	  sigma_wc2 = 0.35 * pow(convective_velocity, 2.);
 	else
 	  sigma_wc2 = 0.35 * pow(convective_velocity, 2.) *
-	    exp(-6. * (z - zic) / zic);	
+	    exp(-6. * (z - zic) / zic);
       }
     else
       sigma_wc2 = 0.;
@@ -581,7 +581,7 @@ namespace Polyphemus
     T sigma_v02, sigma_vm2zim;
     T sigma_v2, sigma_v;
 
-    
+
     if (zim > 0.)
       {
 	if (z <= zim)
@@ -606,7 +606,7 @@ namespace Polyphemus
 
   }
 
- /* Computes time corresponding to a griven sigmay 
+ /* Computes time corresponding to a griven sigmay
  Formula used in stable conditions */
   template<class T>
   T ComputeADMSStableTime(T sigma_y,
@@ -622,26 +622,26 @@ namespace Polyphemus
 
     sigma_ypr = plume_rise * 0.4 / pow(2., 1./2.);
     sigma_yi = source_diameter * source_diameter / 4.;
-    
+
     T time_tmp, sigma_tmp;
     time_tmp = 0.;
     sigma_tmp = 0.;
 
     while (sigma_tmp < (0.9995 * sigma_y))
       {
-	sigma_yw = sigma_v * time_tmp 
+	sigma_yw = sigma_v * time_tmp
 	  / pow((1 + time_tmp / (2 * Tlv_stable)), 0.3);
-		
+
 	sigma_tmp = pow((sigma_yw * sigma_yw +
 		       sigma_ypr * sigma_ypr +
 		       sigma_yi * sigma_yi), 1./2.);
 	time_tmp += 1.;
       }
     time_tmp -= 1.;
-    return time_tmp;    
+    return time_tmp;
   }
 
- /* Computes time corresponding to a griven sigmay 
+ /* Computes time corresponding to a griven sigmay
  Formula used in convective conditions */
   template<class T>
   T ComputeADMSConvectiveTime(T sigma_y,
@@ -687,10 +687,10 @@ namespace Polyphemus
 	  pow((1 + 0.91 * convective_velocity * time_tmp / boundary_height), -1./2.);
 	sigma_yn = sigma_vn * time_tmp *
 	  pow((1 + 2.5 * friction_velocity * time_tmp / boundary_height), -1./2.);
-	
+
 	sigma_yw = sigma_v * ti / pow((1. + ti / (2. * Tlv_convective)), 0.3);
-	
-	
+
+
 	sigma_tmp = sqrt(sigma_yc * sigma_yc +
 			 sigma_yn * sigma_yn +
 			 sigma_yw * sigma_yw +
@@ -730,7 +730,7 @@ namespace Polyphemus
     zic = 0.;
     ComputeZi(convective_velocity, friction_velocity, lmo,
 	      zi, zim, zic);
-    
+
     // Computes Crosswind horizontal dispersion parameters
     T sigma_v;
     sigma_v = ComputeSigmaVADMS(z, boundary_height, friction_velocity,
@@ -754,14 +754,14 @@ namespace Polyphemus
 
     if (stability <= 3)
       time_adms = ComputeADMSConvectiveTime(sigma_y, boundary_height, friction_velocity,
-					    convective_velocity, u10, u, z, plume_rise, 
+					    convective_velocity, u10, u, z, plume_rise,
 					    Tlv_convective, source_diameter);
     else
       time_adms = ComputeADMSStableTime(sigma_y, friction_velocity,
-					convective_velocity, plume_rise, 
+					convective_velocity, plume_rise,
 					Tlv_stable, source_diameter, sigma_v);
     return time_adms;
-      
+
   }
 
    /* Compute time corresponding to a given sigmaz in convective conditions*/
@@ -785,18 +785,18 @@ namespace Polyphemus
 
     while (sigma_tmp < (0.9995 * sigma_z))
       {
-	sigma_z1 = sigma_w * time_tmp * 
+	sigma_z1 = sigma_w * time_tmp *
 	  pow((1. + time_tmp / (2. * Tlw)), -1. / 2.);
-	
+
 	sigma_tmp = sqrt(sigma_z1 * sigma_z1 +
 		       sigma_z2 * sigma_z2 +
 		       sigma_zpr * sigma_zpr);
-	time_tmp += 1.;	
+	time_tmp += 1.;
       }
 
     time_tmp -= 1.;
 
-    return time_tmp;    
+    return time_tmp;
   }
 
    /* Compute time corresponding to a given sigmaz in stable conditions*/
@@ -823,7 +823,7 @@ namespace Polyphemus
     sigma_tmp = 0.;
 
     while (sigma_tmp < (0.9995 * sigma_z))
-      {	
+      {
 	if ((source_height / boundary_height) <= 0.05)
 	  b = (1. + 0.4 * friction_velocity * time_tmp / source_height)
 	    / (1. + friction_velocity * time_tmp / source_height);
@@ -895,11 +895,11 @@ namespace Polyphemus
 						    convective_velocity, source_diameter,
 						    plume_rise, Tlw);
     else
-      time_adms = ComputeADMSStableVerticalTime(sigma_z, sigma_w, boundary_height, 
+      time_adms = ComputeADMSStableVerticalTime(sigma_z, sigma_w, boundary_height,
 						friction_velocity, N2, source_diameter,
 						source_height, plume_rise);
     return time_adms;
-      
+
   }
 
 }

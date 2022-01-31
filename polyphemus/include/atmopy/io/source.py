@@ -22,9 +22,10 @@
 
 
 import os, sys
-sys.path.insert(0,
-                os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])
+
+sys.path.insert(0, os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])
 import talos
+
 sys.path.pop(0)
 
 
@@ -33,7 +34,7 @@ class Source:
     Stores information about a point source
     """
 
-    def __init__(self, content = []):
+    def __init__(self, content=[]):
         """
         Initializes the instance in case 'content' is not empty.
 
@@ -57,8 +58,7 @@ class Source:
             self.species = content[5]
             self.rate = content[6]
         else:
-            print 'Error: list of attributes must be of length 7.'
-
+            print "Error: list of attributes must be of length 7."
 
     def SetSourceLocation(self, coordinates):
         """
@@ -81,17 +81,24 @@ def read_sources(config_file):
     """
     sources = []
     config_stream = talos.ConfigStream(config_file)
-    attribute_list = ['Abscissa', 'Ordinate', 'Altitude', 'Date_beg', \
-                      'Date_end', 'Species', 'Rate']
-    section = config_stream.ListAll().split('[source]')
-    for i in range(0,len(section)):
+    attribute_list = [
+        "Abscissa",
+        "Ordinate",
+        "Altitude",
+        "Date_beg",
+        "Date_end",
+        "Species",
+        "Rate",
+    ]
+    section = config_stream.ListAll().split("[source]")
+    for i in range(0, len(section)):
         content = []
         coord = []
         date = []
-        lines = section[i].split('\n')
-        if lines != ['']:
+        lines = section[i].split("\n")
+        if lines != [""]:
             for j in range(len(lines)):
-                l = lines[j].split(':')
+                l = lines[j].split(":")
                 for k in range(len(attribute_list)):
                     if l[0] == attribute_list[k]:
                         if k == 0 or k == 1 or k == 2:
@@ -131,7 +138,7 @@ def get_sources_coordinates(config_file):
     return xslist, yslist
 
 
-def get_species_sources_coordinates(config_file, species, min_rate = 0.):
+def get_species_sources_coordinates(config_file, species, min_rate=0.0):
     """
     Loads sources coordinates from a configuration file, for sources emitting
     a given species.
@@ -182,7 +189,7 @@ def get_level_sources_coordinates(config_file, level_file):
         if l != []:
             levels.append(float(l[0]))
     f.close()
-    xslist , yslist = get_level_sources_coordinates(config_file, levels)
+    xslist, yslist = get_level_sources_coordinates(config_file, levels)
     return xslist, yslist
 
 
@@ -203,13 +210,13 @@ def get_level_sources_coordinates(config_file, levels):
     xslist = []
     yslist = []
     zslist = []
-    for k in range(len(levels)-1):
+    for k in range(len(levels) - 1):
         x = []
         y = []
         z = []
         for i in range(Nsource):
             s = sourcelist[i]
-            if s.altitude > levels[k] and s.altitude < levels[k+1]:
+            if s.altitude > levels[k] and s.altitude < levels[k + 1]:
                 x.append(s.abscissa)
                 y.append(s.ordinate)
                 z.append(s.altitude)

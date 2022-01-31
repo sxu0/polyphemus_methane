@@ -3,7 +3,7 @@
 #include "glodef.h"
 
 #define TINY2 1e-6
-                                          
+
 
 /* global variables and functions */
 /* for sun implementation */
@@ -11,18 +11,18 @@ extern int thermoflag;
 extern void unidriver(double XPASS[], double GAMMA[], int n);
 extern double GAMMAinf[NAMOL];
 
-/**************************************************************************** 
-Purpose: Call the chosen thermodynamic model 
-   
-****************************************************************************/  
+/****************************************************************************
+Purpose: Call the chosen thermodynamic model
+
+****************************************************************************/
 
 void thermoa (double XPASS[], double GAMMA[], int n)
 {
   int i;
-  
+
   if (thermoflag==1) /* unifac */
 	  unidriver(XPASS,GAMMA,n);
-	
+
   if (thermoflag==0) /*Gamma constants */
 	{
 	  for (i=0; i<n; i++)
@@ -33,12 +33,9 @@ void thermoa (double XPASS[], double GAMMA[], int n)
 	  for (i=0; i<n; i++)
 		GAMMA[i]=GAMMAinf[i];
 	}
-  
-  
+
+
   return;
 }
 
 #undef TINY2
-
-
-

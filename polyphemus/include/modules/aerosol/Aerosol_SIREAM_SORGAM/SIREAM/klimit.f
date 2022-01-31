@@ -177,4 +177,3 @@ C     ****** prevent gas clipping
       END DO
 
       END
-

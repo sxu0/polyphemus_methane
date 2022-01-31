@@ -21,7 +21,9 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-__revision__ = "src/engine/SCons/Options/PackageOption.py 5110 2010/07/25 16:14:38 bdeegan"
+__revision__ = (
+    "src/engine/SCons/Options/PackageOption.py 5110 2010/07/25 16:14:38 bdeegan"
+)
 
 __doc__ = """Place-holder for the old SCons.Options module hierarchy
 
@@ -35,6 +37,7 @@ import SCons.Warnings
 
 warned = False
 
+
 def PackageOption(*args, **kw):
     global warned
     if not warned:
@@ -42,6 +45,7 @@ def PackageOption(*args, **kw):
         SCons.Warnings.warn(SCons.Warnings.DeprecatedOptionsWarning, msg)
         warned = True
     return apply(SCons.Variables.PackageVariable, args, kw)
+
 
 # Local Variables:
 # tab-width:4

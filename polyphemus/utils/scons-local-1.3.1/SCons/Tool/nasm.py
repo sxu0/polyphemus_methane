@@ -37,12 +37,13 @@ import SCons.Defaults
 import SCons.Tool
 import SCons.Util
 
-ASSuffixes = ['.s', '.asm', '.ASM']
-ASPPSuffixes = ['.spp', '.SPP', '.sx']
-if SCons.Util.case_sensitive_suffixes('.s', '.S'):
-    ASPPSuffixes.extend(['.S'])
+ASSuffixes = [".s", ".asm", ".ASM"]
+ASPPSuffixes = [".spp", ".SPP", ".sx"]
+if SCons.Util.case_sensitive_suffixes(".s", ".S"):
+    ASPPSuffixes.extend([".S"])
 else:
-    ASSuffixes.extend(['.S'])
+    ASSuffixes.extend([".S"])
+
 
 def generate(env):
     """Add Builders and construction variables for nasm to an Environment."""
@@ -56,14 +57,18 @@ def generate(env):
         static_obj.add_action(suffix, SCons.Defaults.ASPPAction)
         static_obj.add_emitter(suffix, SCons.Defaults.StaticObjectEmitter)
 
-    env['AS']        = 'nasm'
-    env['ASFLAGS']   = SCons.Util.CLVar('')
-    env['ASPPFLAGS'] = '$ASFLAGS'
-    env['ASCOM']     = '$AS $ASFLAGS -o $TARGET $SOURCES'
-    env['ASPPCOM']   = '$CC $ASPPFLAGS $CPPFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS -c -o $TARGET $SOURCES'
+    env["AS"] = "nasm"
+    env["ASFLAGS"] = SCons.Util.CLVar("")
+    env["ASPPFLAGS"] = "$ASFLAGS"
+    env["ASCOM"] = "$AS $ASFLAGS -o $TARGET $SOURCES"
+    env[
+        "ASPPCOM"
+    ] = "$CC $ASPPFLAGS $CPPFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS -c -o $TARGET $SOURCES"
+
 
 def exists(env):
-    return env.Detect('nasm')
+    return env.Detect("nasm")
+
 
 # Local Variables:
 # tab-width:4

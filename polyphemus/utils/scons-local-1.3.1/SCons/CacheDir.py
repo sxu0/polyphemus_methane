@@ -39,15 +39,16 @@ cache_debug = False
 cache_force = False
 cache_show = False
 
+
 def CacheRetrieveFunc(target, source, env):
     t = target[0]
     fs = t.fs
     cd = env.get_CacheDir()
     cachedir, cachefile = cd.cachepath(t)
     if not fs.exists(cachefile):
-        cd.CacheDebug('CacheRetrieve(%s):  %s not in cache\n', t, cachefile)
+        cd.CacheDebug("CacheRetrieve(%s):  %s not in cache\n", t, cachefile)
         return 1
-    cd.CacheDebug('CacheRetrieve(%s):  retrieving from %s\n', t, cachefile)
+    cd.CacheDebug("CacheRetrieve(%s):  retrieving from %s\n", t, cachefile)
     if SCons.Action.execute_actions:
         if fs.islink(cachefile):
             fs.symlink(fs.readlink(cachefile), t.path)
@@ -56,6 +57,7 @@ def CacheRetrieveFunc(target, source, env):
         st = fs.stat(cachefile)
         fs.chmod(t.path, stat.S_IMODE(st[stat.ST_MODE]) | stat.S_IWRITE)
     return 0
+
 
 def CacheRetrieveString(target, source, env):
     t = target[0]
@@ -66,9 +68,11 @@ def CacheRetrieveString(target, source, env):
         return "Retrieved `%s' from cache" % t.path
     return None
 
+
 CacheRetrieve = SCons.Action.Action(CacheRetrieveFunc, CacheRetrieveString)
 
 CacheRetrieveSilent = SCons.Action.Action(CacheRetrieveFunc, None)
+
 
 def CachePushFunc(target, source, env):
     t = target[0]
@@ -85,12 +89,12 @@ def CachePushFunc(target, source, env):
         # other person running the same build pushes their copy to
         # the cache after we decide we need to build it but before our
         # build completes.
-        cd.CacheDebug('CachePush(%s):  %s already exists in cache\n', t, cachefile)
+        cd.CacheDebug("CachePush(%s):  %s already exists in cache\n", t, cachefile)
         return
 
-    cd.CacheDebug('CachePush(%s):  pushing to %s\n', t, cachefile)
+    cd.CacheDebug("CachePush(%s):  pushing to %s\n", t, cachefile)
 
-    tempfile = cachefile+'.tmp'+str(os.getpid())
+    tempfile = cachefile + ".tmp" + str(os.getpid())
     errfmt = "Unable to copy %s to cache. Cache file is %s"
 
     if not fs.isdir(cachedir):
@@ -120,10 +124,11 @@ def CachePushFunc(target, source, env):
         msg = errfmt % (str(target), cachefile)
         SCons.Warnings.warn(SCons.Warnings.CacheWriteErrorWarning, msg)
 
+
 CachePush = SCons.Action.Action(CachePushFunc, None)
 
-class CacheDir:
 
+class CacheDir:
     def __init__(self, path):
         try:
             import hashlib
@@ -138,10 +143,10 @@ class CacheDir:
 
     def CacheDebug(self, fmt, target, cachefile):
         if cache_debug != self.current_cache_debug:
-            if cache_debug == '-':
+            if cache_debug == "-":
                 self.debugFP = sys.stdout
             elif cache_debug:
-                self.debugFP = open(cache_debug, 'w')
+                self.debugFP = open(cache_debug, "w")
             else:
                 self.debugFP = None
             self.current_cache_debug = cache_debug
@@ -149,11 +154,10 @@ class CacheDir:
             self.debugFP.write(fmt % (target, os.path.split(cachefile)[1]))
 
     def is_enabled(self):
-        return (cache_enabled and not self.path is None)
+        return cache_enabled and not self.path is None
 
     def cachepath(self, node):
-        """
-        """
+        """ """
         if not self.is_enabled():
             return None, None
 
@@ -209,6 +213,7 @@ class CacheDir:
     def push_if_forced(self, node):
         if cache_force:
             return self.push(node)
+
 
 # Local Variables:
 # tab-width:4

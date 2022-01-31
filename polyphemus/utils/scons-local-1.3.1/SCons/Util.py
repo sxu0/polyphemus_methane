@@ -43,25 +43,29 @@ from UserString import UserString
 
 # Don't "from types import ..." these because we need to get at the
 # types module later to look for UnicodeType.
-DictType        = types.DictType
-InstanceType    = types.InstanceType
-ListType        = types.ListType
-StringType      = types.StringType
-TupleType       = types.TupleType
+DictType = types.DictType
+InstanceType = types.InstanceType
+ListType = types.ListType
+StringType = types.StringType
+TupleType = types.TupleType
+
 
 def dictify(keys, values, result={}):
     for k, v in zip(keys, values):
         result[k] = v
     return result
 
+
 _altsep = os.altsep
-if _altsep is None and sys.platform == 'win32':
+if _altsep is None and sys.platform == "win32":
     # My ActivePython 2.0.1 doesn't set os.altsep!  What gives?
-    _altsep = '/'
+    _altsep = "/"
 if _altsep:
+
     def rightmost_separator(path, sep, _altsep=_altsep):
         rfind = string.rfind
         return max(rfind(path, sep), rfind(path, _altsep))
+
 else:
     rightmost_separator = string.rfind
 
@@ -70,30 +74,37 @@ else:
 def containsAny(str, set):
     """Check whether sequence str contains ANY of the items in set."""
     for c in set:
-        if c in str: return 1
+        if c in str:
+            return 1
     return 0
+
 
 def containsAll(str, set):
     """Check whether sequence str contains ALL of the items in set."""
     for c in set:
-        if c not in str: return 0
+        if c not in str:
+            return 0
     return 1
+
 
 def containsOnly(str, set):
     """Check whether sequence str contains ONLY items in set."""
     for c in str:
-        if c not in set: return 0
+        if c not in set:
+            return 0
     return 1
+
 
 def splitext(path):
     "Same as os.path.splitext() but faster."
     sep = rightmost_separator(path, os.sep)
-    dot = string.rfind(path, '.')
+    dot = string.rfind(path, ".")
     # An ext is only real if it has at least one non-digit char
     if dot > sep and not containsOnly(path[dot:], "0123456789."):
-        return path[:dot],path[dot:]
+        return path[:dot], path[dot:]
     else:
-        return path,""
+        return path, ""
+
 
 def updrive(path):
     """
@@ -107,6 +118,7 @@ def updrive(path):
         path = string.upper(drive) + rest
     return path
 
+
 class NodeList(UserList):
     """This class is almost exactly like a regular list of Nodes
     (actually it can hold any object), with one important difference.
@@ -117,6 +129,7 @@ class NodeList(UserList):
     >>> someList.strip()
     [ 'foo', 'bar' ]
     """
+
     def __nonzero__(self):
         return len(self.data) != 0
 
@@ -127,10 +140,9 @@ class NodeList(UserList):
         return iter(self.data)
 
     def __call__(self, *args, **kwargs):
-        result = map(lambda x, args=args, kwargs=kwargs: apply(x,
-                                                               args,
-                                                               kwargs),
-                     self.data)
+        result = map(
+            lambda x, args=args, kwargs=kwargs: apply(x, args, kwargs), self.data
+        )
         return self.__class__(result)
 
     def __getattr__(self, name):
@@ -138,29 +150,32 @@ class NodeList(UserList):
         return self.__class__(result)
 
 
-_get_env_var = re.compile(r'^\$([_a-zA-Z]\w*|{[_a-zA-Z]\w*})$')
+_get_env_var = re.compile(r"^\$([_a-zA-Z]\w*|{[_a-zA-Z]\w*})$")
+
 
 def get_environment_var(varstr):
     """Given a string, first determine if it looks like a reference
     to a single environment variable, like "$FOO" or "${FOO}".
     If so, return that variable with no decorations ("FOO").
     If not, return None."""
-    mo=_get_env_var.match(to_String(varstr))
+    mo = _get_env_var.match(to_String(varstr))
     if mo:
         var = mo.group(1)
-        if var[0] == '{':
+        if var[0] == "{":
             return var[1:-1]
         else:
             return var
     else:
         return None
 
+
 class DisplayEngine:
     def __init__(self):
         self.__call__ = self.print_it
 
     def print_it(self, text, append_newline=1):
-        if append_newline: text = text + '\n'
+        if append_newline:
+            text = text + "\n"
         try:
             sys.stdout.write(text)
         except IOError:
@@ -181,6 +196,7 @@ class DisplayEngine:
             self.__call__ = self.print_it
         else:
             self.__call__ = self.dont_print
+
 
 def render_tree(root, child_func, prune=0, margin=[0], visited={}):
     """
@@ -213,14 +229,15 @@ def render_tree(root, child_func, prune=0, margin=[0], visited={}):
     visited[rname] = 1
 
     for i in range(len(children)):
-        margin.append(i<len(children)-1)
-        retval = retval + render_tree(children[i], child_func, prune, margin, visited
-)
+        margin.append(i < len(children) - 1)
+        retval = retval + render_tree(children[i], child_func, prune, margin, visited)
         margin.pop()
 
     return retval
 
+
 IDX = lambda N: N and 1 or 0
+
 
 def print_tree(root, child_func, prune=0, showtags=0, margin=[0], visited={}):
     """
@@ -243,45 +260,50 @@ def print_tree(root, child_func, prune=0, showtags=0, margin=[0], visited={}):
     if showtags:
 
         if showtags == 2:
-            print ' E         = exists'
-            print '  R        = exists in repository only'
-            print '   b       = implicit builder'
-            print '   B       = explicit builder'
-            print '    S      = side effect'
-            print '     P     = precious'
-            print '      A    = always build'
-            print '       C   = current'
-            print '        N  = no clean'
-            print '         H = no cache'
-            print ''
+            print " E         = exists"
+            print "  R        = exists in repository only"
+            print "   b       = implicit builder"
+            print "   B       = explicit builder"
+            print "    S      = side effect"
+            print "     P     = precious"
+            print "      A    = always build"
+            print "       C   = current"
+            print "        N  = no clean"
+            print "         H = no cache"
+            print ""
 
-        tags = ['[']
-        tags.append(' E'[IDX(root.exists())])
-        tags.append(' R'[IDX(root.rexists() and not root.exists())])
-        tags.append(' BbB'[[0,1][IDX(root.has_explicit_builder())] +
-                           [0,2][IDX(root.has_builder())]])
-        tags.append(' S'[IDX(root.side_effect)])
-        tags.append(' P'[IDX(root.precious)])
-        tags.append(' A'[IDX(root.always_build)])
-        tags.append(' C'[IDX(root.is_up_to_date())])
-        tags.append(' N'[IDX(root.noclean)])
-        tags.append(' H'[IDX(root.nocache)])
-        tags.append(']')
+        tags = ["["]
+        tags.append(" E"[IDX(root.exists())])
+        tags.append(" R"[IDX(root.rexists() and not root.exists())])
+        tags.append(
+            " BbB"[
+                [0, 1][IDX(root.has_explicit_builder())]
+                + [0, 2][IDX(root.has_builder())]
+            ]
+        )
+        tags.append(" S"[IDX(root.side_effect)])
+        tags.append(" P"[IDX(root.precious)])
+        tags.append(" A"[IDX(root.always_build)])
+        tags.append(" C"[IDX(root.is_up_to_date())])
+        tags.append(" N"[IDX(root.noclean)])
+        tags.append(" H"[IDX(root.nocache)])
+        tags.append("]")
 
     else:
         tags = []
 
     def MMM(m):
-        return ["  ","| "][m]
+        return ["  ", "| "][m]
+
     margins = map(MMM, margin[:-1])
 
     children = child_func(root)
 
     if prune and visited.has_key(rname) and children:
-        print string.join(tags + margins + ['+-[', rname, ']'], '')
+        print string.join(tags + margins + ["+-[", rname, "]"], "")
         return
 
-    print string.join(tags + margins + ['+-', rname], '')
+    print string.join(tags + margins + ["+-", rname], "")
 
     visited[rname] = 1
 
@@ -295,7 +317,6 @@ def print_tree(root, child_func, prune=0, showtags=0, margin=[0], visited={}):
         margin.pop()
 
 
-
 # Functions for deciding if things are like various types, mainly to
 # handle UserDict, UserList and UserString like their underlying types.
 #
@@ -305,8 +326,10 @@ def print_tree(root, child_func, prune=0, showtags=0, margin=[0], visited={}):
 # often too slow.
 
 try:
+
     class mystr(str):
         pass
+
 except TypeError:
     # An older Python version without new-style classes.
     #
@@ -329,35 +352,41 @@ except TypeError:
     #       little bit.
     def is_Dict(obj):
         t = type(obj)
-        return t is DictType or \
-               (t is InstanceType and isinstance(obj, UserDict))
+        return t is DictType or (t is InstanceType and isinstance(obj, UserDict))
 
     def is_List(obj):
         t = type(obj)
-        return t is ListType \
-            or (t is InstanceType and isinstance(obj, UserList))
+        return t is ListType or (t is InstanceType and isinstance(obj, UserList))
 
     def is_Sequence(obj):
         t = type(obj)
-        return t is ListType \
-            or t is TupleType \
+        return (
+            t is ListType
+            or t is TupleType
             or (t is InstanceType and isinstance(obj, UserList))
+        )
 
     def is_Tuple(obj):
         t = type(obj)
         return t is TupleType
 
-    if hasattr(types, 'UnicodeType'):
+    if hasattr(types, "UnicodeType"):
+
         def is_String(obj):
             t = type(obj)
-            return t is StringType \
-                or t is UnicodeType \
+            return (
+                t is StringType
+                or t is UnicodeType
                 or (t is InstanceType and isinstance(obj, UserString))
+            )
+
     else:
+
         def is_String(obj):
             t = type(obj)
-            return t is StringType \
-                or (t is InstanceType and isinstance(obj, UserString))
+            return t is StringType or (
+                t is InstanceType and isinstance(obj, UserString)
+            )
 
     def is_Scalar(obj):
         return is_String(obj) or not is_Sequence(obj)
@@ -402,8 +431,9 @@ except TypeError:
     # to_String_for_signature() will use a for_signature() method if the
     # specified object has one.
     #
-    if hasattr(types, 'UnicodeType'):
+    if hasattr(types, "UnicodeType"):
         UnicodeType = types.UnicodeType
+
         def to_String(s):
             if isinstance(s, UserString):
                 t = type(s.data)
@@ -413,6 +443,7 @@ except TypeError:
                 return unicode(s)
             else:
                 return str(s)
+
     else:
         to_String = str
 
@@ -425,10 +456,10 @@ except TypeError:
             return f()
 
     def to_String_for_subst(s):
-        if is_Sequence( s ):
-            return string.join( map(to_String_for_subst, s) )
+        if is_Sequence(s):
+            return string.join(map(to_String_for_subst, s))
 
-        return to_String( s )
+        return to_String(s)
 
 else:
     # A modern Python version with new-style classes, so we can just use
@@ -471,7 +502,9 @@ else:
     def is_String(obj, isinstance=isinstance, StringTypes=StringTypes):
         return isinstance(obj, StringTypes)
 
-    def is_Scalar(obj, isinstance=isinstance, StringTypes=StringTypes, SequenceTypes=SequenceTypes):
+    def is_Scalar(
+        obj, isinstance=isinstance, StringTypes=StringTypes, SequenceTypes=SequenceTypes
+    ):
         # Profiling shows that there is an impressive speed-up of 2x
         # when explicitely checking for strings instead of just not
         # sequence when the argument (i.e. obj) is already a string.
@@ -480,16 +513,26 @@ else:
         # assumes that the obj argument is a string must of the time.
         return isinstance(obj, StringTypes) or not isinstance(obj, SequenceTypes)
 
-    def do_flatten(sequence, result, isinstance=isinstance, 
-                   StringTypes=StringTypes, SequenceTypes=SequenceTypes):
+    def do_flatten(
+        sequence,
+        result,
+        isinstance=isinstance,
+        StringTypes=StringTypes,
+        SequenceTypes=SequenceTypes,
+    ):
         for item in sequence:
             if isinstance(item, StringTypes) or not isinstance(item, SequenceTypes):
                 result.append(item)
             else:
                 do_flatten(item, result)
 
-    def flatten(obj, isinstance=isinstance, StringTypes=StringTypes, 
-                SequenceTypes=SequenceTypes, do_flatten=do_flatten):
+    def flatten(
+        obj,
+        isinstance=isinstance,
+        StringTypes=StringTypes,
+        SequenceTypes=SequenceTypes,
+        do_flatten=do_flatten,
+    ):
         """Flatten a sequence to a non-nested list.
 
         Flatten() converts either a single scalar or a nested sequence
@@ -506,8 +549,13 @@ else:
                 do_flatten(item, result)
         return result
 
-    def flatten_sequence(sequence, isinstance=isinstance, StringTypes=StringTypes, 
-                         SequenceTypes=SequenceTypes, do_flatten=do_flatten):
+    def flatten_sequence(
+        sequence,
+        isinstance=isinstance,
+        StringTypes=StringTypes,
+        SequenceTypes=SequenceTypes,
+        do_flatten=do_flatten,
+    ):
         """Flatten a sequence to a non-nested list.
 
         Same as flatten(), but it does not handle the single scalar
@@ -522,17 +570,20 @@ else:
                 do_flatten(item, result)
         return result
 
-
     #
     # Generic convert-to-string functions that abstract away whether or
     # not the Python we're executing has Unicode support.  The wrapper
     # to_String_for_signature() will use a for_signature() method if the
     # specified object has one.
     #
-    def to_String(s, 
-                  isinstance=isinstance, str=str,
-                  UserString=UserString, BaseStringTypes=BaseStringTypes):
-        if isinstance(s,BaseStringTypes):
+    def to_String(
+        s,
+        isinstance=isinstance,
+        str=str,
+        UserString=UserString,
+        BaseStringTypes=BaseStringTypes,
+    ):
+        if isinstance(s, BaseStringTypes):
             # Early out when already a string!
             return s
         elif isinstance(s, UserString):
@@ -542,11 +593,17 @@ else:
         else:
             return str(s)
 
-    def to_String_for_subst(s, 
-                            isinstance=isinstance, join=string.join, str=str, to_String=to_String,
-                            BaseStringTypes=BaseStringTypes, SequenceTypes=SequenceTypes,
-                            UserString=UserString):
-                            
+    def to_String_for_subst(
+        s,
+        isinstance=isinstance,
+        join=string.join,
+        str=str,
+        to_String=to_String,
+        BaseStringTypes=BaseStringTypes,
+        SequenceTypes=SequenceTypes,
+        UserString=UserString,
+    ):
+
         # Note that the test cases are sorted by order of probability.
         if isinstance(s, BaseStringTypes):
             return s
@@ -554,7 +611,7 @@ else:
             l = []
             for e in s:
                 l.append(to_String_for_subst(e))
-            return join( s )
+            return join(s)
         elif isinstance(s, UserString):
             # s.data can only be either a unicode or a regular
             # string. Please see the UserString initializer.
@@ -562,15 +619,15 @@ else:
         else:
             return str(s)
 
-    def to_String_for_signature(obj, to_String_for_subst=to_String_for_subst, 
-                                AttributeError=AttributeError):
+    def to_String_for_signature(
+        obj, to_String_for_subst=to_String_for_subst, AttributeError=AttributeError
+    ):
         try:
             f = obj.for_signature
         except AttributeError:
             return to_String_for_subst(obj)
         else:
             return f()
-
 
 
 # The SCons "semi-deep" copy.
@@ -588,6 +645,7 @@ else:
 
 _semi_deepcopy_dispatch = d = {}
 
+
 def _semi_deepcopy_dict(x):
     copy = {}
     for key, val in x.items():
@@ -599,30 +657,38 @@ def _semi_deepcopy_dict(x):
         # Doesn't seem like we need to, but we'll comment it just in case.
         copy[key] = semi_deepcopy(val)
     return copy
+
+
 d[types.DictionaryType] = _semi_deepcopy_dict
+
 
 def _semi_deepcopy_list(x):
     return map(semi_deepcopy, x)
+
+
 d[types.ListType] = _semi_deepcopy_list
+
 
 def _semi_deepcopy_tuple(x):
     return tuple(map(semi_deepcopy, x))
+
+
 d[types.TupleType] = _semi_deepcopy_tuple
+
 
 def semi_deepcopy(x):
     copier = _semi_deepcopy_dispatch.get(type(x))
     if copier:
         return copier(x)
     else:
-        if hasattr(x, '__semi_deepcopy__'):
+        if hasattr(x, "__semi_deepcopy__"):
             return x.__semi_deepcopy__()
         elif isinstance(x, UserDict):
             return x.__class__(_semi_deepcopy_dict(x))
         elif isinstance(x, UserList):
             return x.__class__(_semi_deepcopy_list(x))
-        
-        return x
 
+        return x
 
 
 class Proxy:
@@ -651,7 +717,7 @@ class Proxy:
 
     def __getattr__(self, name):
         """Retrieve an attribute from the wrapped object.  If the named
-           attribute doesn't exist, AttributeError is raised"""
+        attribute doesn't exist, AttributeError is raised"""
         return getattr(self.__subject, name)
 
     def get(self):
@@ -663,6 +729,7 @@ class Proxy:
             return cmp(self.__subject, other)
         return cmp(self.__dict__, other.__dict__)
 
+
 # attempt to load the windows registry module:
 can_read_reg = 0
 try:
@@ -671,35 +738,38 @@ try:
     can_read_reg = 1
     hkey_mod = _winreg
 
-    RegOpenKeyEx    = _winreg.OpenKeyEx
-    RegEnumKey      = _winreg.EnumKey
-    RegEnumValue    = _winreg.EnumValue
+    RegOpenKeyEx = _winreg.OpenKeyEx
+    RegEnumKey = _winreg.EnumKey
+    RegEnumValue = _winreg.EnumValue
     RegQueryValueEx = _winreg.QueryValueEx
-    RegError        = _winreg.error
+    RegError = _winreg.error
 
 except ImportError:
     try:
         import win32api
         import win32con
+
         can_read_reg = 1
         hkey_mod = win32con
 
-        RegOpenKeyEx    = win32api.RegOpenKeyEx
-        RegEnumKey      = win32api.RegEnumKey
-        RegEnumValue    = win32api.RegEnumValue
+        RegOpenKeyEx = win32api.RegOpenKeyEx
+        RegEnumKey = win32api.RegEnumKey
+        RegEnumValue = win32api.RegEnumValue
         RegQueryValueEx = win32api.RegQueryValueEx
-        RegError        = win32api.error
+        RegError = win32api.error
 
     except ImportError:
+
         class _NoError(Exception):
             pass
+
         RegError = _NoError
 
 if can_read_reg:
-    HKEY_CLASSES_ROOT  = hkey_mod.HKEY_CLASSES_ROOT
+    HKEY_CLASSES_ROOT = hkey_mod.HKEY_CLASSES_ROOT
     HKEY_LOCAL_MACHINE = hkey_mod.HKEY_LOCAL_MACHINE
-    HKEY_CURRENT_USER  = hkey_mod.HKEY_CURRENT_USER
-    HKEY_USERS         = hkey_mod.HKEY_USERS
+    HKEY_CURRENT_USER = hkey_mod.HKEY_CURRENT_USER
+    HKEY_USERS = hkey_mod.HKEY_USERS
 
     def RegGetValue(root, key):
         """This utility function returns a value in the registry
@@ -722,11 +792,12 @@ if can_read_reg:
         """
         # I would use os.path.split here, but it's not a filesystem
         # path...
-        p = key.rfind('\\') + 1
-        keyp = key[:p-1]          # -1 to omit trailing slash
+        p = key.rfind("\\") + 1
+        keyp = key[: p - 1]  # -1 to omit trailing slash
         val = key[p:]
         k = RegOpenKeyEx(root, keyp)
-        return RegQueryValueEx(k,val)
+        return RegQueryValueEx(k, val)
+
 else:
     try:
         e = WindowsError
@@ -737,11 +808,13 @@ else:
         # OSError subclass on Windows.)
         class WindowsError(OSError):
             pass
+
         import __builtin__
+
         __builtin__.WindowsError = WindowsError
     else:
         del e
-        
+
     HKEY_CLASSES_ROOT = None
     HKEY_LOCAL_MACHINE = None
     HKEY_CURRENT_USER = None
@@ -753,26 +826,27 @@ else:
     def RegOpenKeyEx(root, key):
         raise WindowsError
 
-if sys.platform == 'win32':
+
+if sys.platform == "win32":
 
     def WhereIs(file, path=None, pathext=None, reject=[]):
         if path is None:
             try:
-                path = os.environ['PATH']
+                path = os.environ["PATH"]
             except KeyError:
                 return None
         if is_String(path):
             path = string.split(path, os.pathsep)
         if pathext is None:
             try:
-                pathext = os.environ['PATHEXT']
+                pathext = os.environ["PATHEXT"]
             except KeyError:
-                pathext = '.COM;.EXE;.BAT;.CMD'
+                pathext = ".COM;.EXE;.BAT;.CMD"
         if is_String(pathext):
             pathext = string.split(pathext, os.pathsep)
         for ext in pathext:
-            if string.lower(ext) == string.lower(file[-len(ext):]):
-                pathext = ['']
+            if string.lower(ext) == string.lower(file[-len(ext) :]):
+                pathext = [""]
                 break
         if not is_List(reject) and not is_Tuple(reject):
             reject = [reject]
@@ -788,21 +862,21 @@ if sys.platform == 'win32':
                     continue
         return None
 
-elif os.name == 'os2':
+elif os.name == "os2":
 
     def WhereIs(file, path=None, pathext=None, reject=[]):
         if path is None:
             try:
-                path = os.environ['PATH']
+                path = os.environ["PATH"]
             except KeyError:
                 return None
         if is_String(path):
             path = string.split(path, os.pathsep)
         if pathext is None:
-            pathext = ['.exe', '.cmd']
+            pathext = [".exe", ".cmd"]
         for ext in pathext:
-            if string.lower(ext) == string.lower(file[-len(ext):]):
-                pathext = ['']
+            if string.lower(ext) == string.lower(file[-len(ext) :]):
+                pathext = [""]
                 break
         if not is_List(reject) and not is_Tuple(reject):
             reject = [reject]
@@ -822,9 +896,10 @@ else:
 
     def WhereIs(file, path=None, pathext=None, reject=[]):
         import stat
+
         if path is None:
             try:
-                path = os.environ['PATH']
+                path = os.environ["PATH"]
             except KeyError:
                 return None
         if is_String(path):
@@ -850,8 +925,8 @@ else:
                     continue
         return None
 
-def PrependPath(oldpath, newpath, sep = os.pathsep, 
-                delete_existing=1, canonicalize=None):
+
+def PrependPath(oldpath, newpath, sep=os.pathsep, delete_existing=1, canonicalize=None):
     """This prepends newpath elements to the given oldpath.  Will only
     add any particular path once (leaving the first one it encounters
     and ignoring the rest, to preserve path order), and will
@@ -869,7 +944,7 @@ def PrependPath(oldpath, newpath, sep = os.pathsep,
     not move it to the beginning; it will stay where it is in the
     list.
 
-    If canonicalize is not None, it is applied to each element of 
+    If canonicalize is not None, it is applied to each element of
     newpath before use.
     """
 
@@ -883,15 +958,15 @@ def PrependPath(oldpath, newpath, sep = os.pathsep,
     if is_String(newpath):
         newpaths = string.split(newpath, sep)
     elif not is_List(newpath) and not is_Tuple(newpath):
-        newpaths = [ newpath ]  # might be a Dir
+        newpaths = [newpath]  # might be a Dir
     else:
         newpaths = newpath
 
     if canonicalize:
-        newpaths=map(canonicalize, newpaths)
+        newpaths = map(canonicalize, newpaths)
 
     if not delete_existing:
-        # First uniquify the old paths, making sure to 
+        # First uniquify the old paths, making sure to
         # preserve the first instance (in Unix/Linux,
         # the first one wins), and remembering them in normpaths.
         # Then insert the new paths at the head of the list
@@ -905,7 +980,7 @@ def PrependPath(oldpath, newpath, sep = os.pathsep,
             if normpath not in normpaths:
                 result.append(path)
                 normpaths.append(normpath)
-        newpaths.reverse()      # since we're inserting at the head
+        newpaths.reverse()  # since we're inserting at the head
         for path in newpaths:
             if not path:
                 continue
@@ -916,7 +991,7 @@ def PrependPath(oldpath, newpath, sep = os.pathsep,
         paths = result
 
     else:
-        newpaths = newpaths + paths # prepend new paths
+        newpaths = newpaths + paths  # prepend new paths
 
         normpaths = []
         paths = []
@@ -932,8 +1007,8 @@ def PrependPath(oldpath, newpath, sep = os.pathsep,
     else:
         return string.join(paths, sep)
 
-def AppendPath(oldpath, newpath, sep = os.pathsep, 
-               delete_existing=1, canonicalize=None):
+
+def AppendPath(oldpath, newpath, sep=os.pathsep, delete_existing=1, canonicalize=None):
     """This appends new path elements to the given old path.  Will
     only add any particular path once (leaving the last one it
     encounters and ignoring the rest, to preserve path order), and
@@ -950,7 +1025,7 @@ def AppendPath(oldpath, newpath, sep = os.pathsep,
     If delete_existing is 0, then adding a path that exists
     will not move it to the end; it will stay where it is in the list.
 
-    If canonicalize is not None, it is applied to each element of 
+    If canonicalize is not None, it is applied to each element of
     newpath before use.
     """
 
@@ -964,12 +1039,12 @@ def AppendPath(oldpath, newpath, sep = os.pathsep,
     if is_String(newpath):
         newpaths = string.split(newpath, sep)
     elif not is_List(newpath) and not is_Tuple(newpath):
-        newpaths = [ newpath ]  # might be a Dir
+        newpaths = [newpath]  # might be a Dir
     else:
         newpaths = newpath
 
     if canonicalize:
-        newpaths=map(canonicalize, newpaths)
+        newpaths = map(canonicalize, newpaths)
 
     if not delete_existing:
         # add old paths to result, then
@@ -995,7 +1070,7 @@ def AppendPath(oldpath, newpath, sep = os.pathsep,
     else:
         # start w/ new paths, add old ones if not present,
         # then reverse.
-        newpaths = paths + newpaths # append new paths
+        newpaths = paths + newpaths  # append new paths
         newpaths.reverse()
 
         normpaths = []
@@ -1013,18 +1088,24 @@ def AppendPath(oldpath, newpath, sep = os.pathsep,
     else:
         return string.join(paths, sep)
 
-if sys.platform == 'cygwin':
+
+if sys.platform == "cygwin":
+
     def get_native_path(path):
         """Transforms an absolute path into a native path for the system.  In
         Cygwin, this converts from a Cygwin path to a Windows one."""
-        return string.replace(os.popen('cygpath -w ' + path).read(), '\n', '')
+        return string.replace(os.popen("cygpath -w " + path).read(), "\n", "")
+
 else:
+
     def get_native_path(path):
         """Transforms an absolute path into a native path for the system.
         Non-Cygwin version, just leave the path alone."""
         return path
 
+
 display = DisplayEngine()
+
 
 def Split(arg):
     if is_List(arg) or is_Tuple(arg):
@@ -1033,6 +1114,7 @@ def Split(arg):
         return string.split(arg)
     else:
         return [arg]
+
 
 class CLVar(UserList):
     """A class for command-line construction variables.
@@ -1044,23 +1126,29 @@ class CLVar(UserList):
     arg2') regardless of whether a user adds a list or a string to a
     command-line construction variable.
     """
-    def __init__(self, seq = []):
+
+    def __init__(self, seq=[]):
         UserList.__init__(self, Split(seq))
+
     def __add__(self, other):
         return UserList.__add__(self, CLVar(other))
+
     def __radd__(self, other):
         return UserList.__radd__(self, CLVar(other))
+
     def __coerce__(self, other):
         return (self, CLVar(other))
+
     def __str__(self):
         return string.join(self.data)
+
 
 # A dictionary that preserves the order in which items are added.
 # Submitted by David Benjamin to ActiveState's Python Cookbook web site:
 #     http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/107747
 # Including fixes/enhancements from the follow-on discussions.
 class OrderedDict(UserDict):
-    def __init__(self, dict = None):
+    def __init__(self, dict=None):
         self._keys = []
         UserDict.__init__(self, dict)
 
@@ -1070,7 +1158,8 @@ class OrderedDict(UserDict):
 
     def __setitem__(self, key, item):
         UserDict.__setitem__(self, key, item)
-        if key not in self._keys: self._keys.append(key)
+        if key not in self._keys:
+            self._keys.append(key)
 
     def clear(self):
         UserDict.clear(self)
@@ -1091,16 +1180,17 @@ class OrderedDict(UserDict):
         try:
             key = self._keys[-1]
         except IndexError:
-            raise KeyError('dictionary is empty')
+            raise KeyError("dictionary is empty")
 
         val = self[key]
         del self[key]
 
         return (key, val)
 
-    def setdefault(self, key, failobj = None):
+    def setdefault(self, key, failobj=None):
         UserDict.setdefault(self, key, failobj)
-        if key not in self._keys: self._keys.append(key)
+        if key not in self._keys:
+            self._keys.append(key)
 
     def update(self, dict):
         for (key, val) in dict.items():
@@ -1109,10 +1199,12 @@ class OrderedDict(UserDict):
     def values(self):
         return map(self.get, self._keys)
 
+
 class Selector(OrderedDict):
     """A callable ordered dictionary that maps file suffixes to
     dictionary values.  We preserve the order in which items are added
     so that get_suffix() calls always return the first suffix added."""
+
     def __call__(self, env, source, ext=None):
         if ext is None:
             try:
@@ -1125,7 +1217,7 @@ class Selector(OrderedDict):
             # Try to perform Environment substitution on the keys of
             # the dictionary before giving up.
             s_dict = {}
-            for (k,v) in self.items():
+            for (k, v) in self.items():
                 if k is not None:
                     s_k = env.subst(k)
                     if s_dict.has_key(s_k):
@@ -1134,7 +1226,7 @@ class Selector(OrderedDict):
                         # and a variable suffix contains this literal,
                         # the literal wins and we don't raise an error.
                         raise KeyError, (s_dict[s_k][0], k, s_k)
-                    s_dict[s_k] = (k,v)
+                    s_dict[s_k] = (k, v)
             try:
                 return s_dict[ext][1]
             except KeyError:
@@ -1144,34 +1236,36 @@ class Selector(OrderedDict):
                     return None
 
 
-if sys.platform == 'cygwin':
+if sys.platform == "cygwin":
     # On Cygwin, os.path.normcase() lies, so just report back the
     # fact that the underlying Windows OS is case-insensitive.
     def case_sensitive_suffixes(s1, s2):
         return 0
+
 else:
+
     def case_sensitive_suffixes(s1, s2):
-        return (os.path.normcase(s1) != os.path.normcase(s2))
+        return os.path.normcase(s1) != os.path.normcase(s2)
+
 
 def adjustixes(fname, pre, suf, ensure_suffix=False):
     if pre:
         path, fn = os.path.split(os.path.normpath(fname))
-        if fn[:len(pre)] != pre:
+        if fn[: len(pre)] != pre:
             fname = os.path.join(path, pre + fn)
     # Only append a suffix if the suffix we're going to add isn't already
     # there, and if either we've been asked to ensure the specific suffix
     # is present or there's no suffix on it at all.
-    if suf and fname[-len(suf):] != suf and \
-       (ensure_suffix or not splitext(fname)[1]):
-            fname = fname + suf
+    if suf and fname[-len(suf) :] != suf and (ensure_suffix or not splitext(fname)[1]):
+        fname = fname + suf
     return fname
-
 
 
 # From Tim Peters,
 # http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/52560
 # ASPN: Python Cookbook: Remove duplicates from a sequence
 # (Also in the printed Python Cookbook.)
+
 
 def unique(s):
     """Return a list of the elements in s, but without duplicates.
@@ -1207,7 +1301,7 @@ def unique(s):
         for x in s:
             u[x] = 1
     except TypeError:
-        pass    # move on to the next method
+        pass  # move on to the next method
     else:
         return u.keys()
     del u
@@ -1223,7 +1317,7 @@ def unique(s):
         t = list(s)
         t.sort()
     except TypeError:
-        pass    # move on to the next method
+        pass  # move on to the next method
     else:
         assert n > 0
         last = t[0]
@@ -1244,16 +1338,19 @@ def unique(s):
     return u
 
 
-
 # From Alex Martelli,
 # http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/52560
 # ASPN: Python Cookbook: Remove duplicates from a sequence
 # First comment, dated 2001/10/13.
 # (Also in the printed Python Cookbook.)
 
+
 def uniquer(seq, idfun=None):
     if idfun is None:
-        def idfun(x): return x
+
+        def idfun(x):
+            return x
+
     seen = {}
     result = []
     for item in seq:
@@ -1261,31 +1358,32 @@ def uniquer(seq, idfun=None):
         # in old Python versions:
         # if seen.has_key(marker)
         # but in new ones:
-        if marker in seen: continue
+        if marker in seen:
+            continue
         seen[marker] = 1
         result.append(item)
     return result
+
 
 # A more efficient implementation of Alex's uniquer(), this avoids the
 # idfun() argument and function-call overhead by assuming that all
 # items in the sequence are hashable.
 
+
 def uniquer_hashables(seq):
     seen = {}
     result = []
     for item in seq:
-        #if not item in seen:
+        # if not item in seen:
         if not seen.has_key(item):
             seen[item] = 1
             result.append(item)
     return result
 
 
-
 # Much of the logic here was originally based on recipe 4.9 from the
 # Python CookBook, but we had to dumb it way down for Python 1.5.2.
 class LogicalLines:
-
     def __init__(self, fileobj):
         self.fileobj = fileobj
 
@@ -1295,12 +1393,12 @@ class LogicalLines:
             line = self.fileobj.readline()
             if not line:
                 break
-            if line[-2:] == '\\\n':
+            if line[-2:] == "\\\n":
                 result.append(line[:-2])
             else:
                 result.append(line)
                 break
-        return string.join(result, '')
+        return string.join(result, "")
 
     def readlines(self):
         result = []
@@ -1312,98 +1410,122 @@ class LogicalLines:
         return result
 
 
-
 class UniqueList(UserList):
-    def __init__(self, seq = []):
+    def __init__(self, seq=[]):
         UserList.__init__(self, seq)
         self.unique = True
+
     def __make_unique(self):
         if not self.unique:
             self.data = uniquer_hashables(self.data)
             self.unique = True
+
     def __lt__(self, other):
         self.__make_unique()
         return UserList.__lt__(self, other)
+
     def __le__(self, other):
         self.__make_unique()
         return UserList.__le__(self, other)
+
     def __eq__(self, other):
         self.__make_unique()
         return UserList.__eq__(self, other)
+
     def __ne__(self, other):
         self.__make_unique()
         return UserList.__ne__(self, other)
+
     def __gt__(self, other):
         self.__make_unique()
         return UserList.__gt__(self, other)
+
     def __ge__(self, other):
         self.__make_unique()
         return UserList.__ge__(self, other)
+
     def __cmp__(self, other):
         self.__make_unique()
         return UserList.__cmp__(self, other)
+
     def __len__(self):
         self.__make_unique()
         return UserList.__len__(self)
+
     def __getitem__(self, i):
         self.__make_unique()
         return UserList.__getitem__(self, i)
+
     def __setitem__(self, i, item):
         UserList.__setitem__(self, i, item)
         self.unique = False
+
     def __getslice__(self, i, j):
         self.__make_unique()
         return UserList.__getslice__(self, i, j)
+
     def __setslice__(self, i, j, other):
         UserList.__setslice__(self, i, j, other)
         self.unique = False
+
     def __add__(self, other):
         result = UserList.__add__(self, other)
         result.unique = False
         return result
+
     def __radd__(self, other):
         result = UserList.__radd__(self, other)
         result.unique = False
         return result
+
     def __iadd__(self, other):
         result = UserList.__iadd__(self, other)
         result.unique = False
         return result
+
     def __mul__(self, other):
         result = UserList.__mul__(self, other)
         result.unique = False
         return result
+
     def __rmul__(self, other):
         result = UserList.__rmul__(self, other)
         result.unique = False
         return result
+
     def __imul__(self, other):
         result = UserList.__imul__(self, other)
         result.unique = False
         return result
+
     def append(self, item):
         UserList.append(self, item)
         self.unique = False
+
     def insert(self, i):
         UserList.insert(self, i)
         self.unique = False
+
     def count(self, item):
         self.__make_unique()
         return UserList.count(self, item)
+
     def index(self, item):
         self.__make_unique()
         return UserList.index(self, item)
+
     def reverse(self):
         self.__make_unique()
         UserList.reverse(self)
+
     def sort(self, *args, **kwds):
         self.__make_unique()
-        #return UserList.sort(self, *args, **kwds)
-        return apply(UserList.sort, (self,)+args, kwds)
+        # return UserList.sort(self, *args, **kwds)
+        return apply(UserList.sort, (self,) + args, kwds)
+
     def extend(self, other):
         UserList.extend(self, other)
         self.unique = False
-
 
 
 class Unbuffered:
@@ -1411,8 +1533,10 @@ class Unbuffered:
     A proxy class that wraps a file object, flushing after every write,
     and delegating everything else to the wrapped object.
     """
+
     def __init__(self, file):
         self.file = file
+
     def write(self, arg):
         try:
             self.file.write(arg)
@@ -1426,31 +1550,32 @@ class Unbuffered:
             # properly so that the .sconsign is correctly written
             # before SCons exits.
             pass
+
     def __getattr__(self, attr):
         return getattr(self.file, attr)
 
+
 def make_path_relative(path):
-    """ makes an absolute path name to a relative pathname.
-    """
+    """makes an absolute path name to a relative pathname."""
     if os.path.isabs(path):
-        drive_s,path = os.path.splitdrive(path)
+        drive_s, path = os.path.splitdrive(path)
 
         import re
+
         if not drive_s:
-            path=re.compile("/*(.*)").findall(path)[0]
+            path = re.compile("/*(.*)").findall(path)[0]
         else:
-            path=path[1:]
+            path = path[1:]
 
-    assert( not os.path.isabs( path ) ), path
+    assert not os.path.isabs(path), path
     return path
-
 
 
 # The original idea for AddMethod() and RenameFunction() come from the
 # following post to the ActiveState Python Cookbook:
 #
-#	ASPN: Python Cookbook : Install bound methods in an instance
-#	http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/223613
+# 	ASPN: Python Cookbook : Install bound methods in an instance
+# 	http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/223613
 #
 # That code was a little fragile, though, so the following changes
 # have been wrung on it:
@@ -1467,10 +1592,11 @@ def make_path_relative(path):
 #   the "new" module, as alluded to in Alex Martelli's response to the
 #   following Cookbook post:
 #
-#	ASPN: Python Cookbook : Dynamically added methods to a class
-#	http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/81732
+# 	ASPN: Python Cookbook : Dynamically added methods to a class
+# 	http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/81732
 
-def AddMethod(object, function, name = None):
+
+def AddMethod(object, function, name=None):
     """
     Adds either a bound method to an instance or an unbound method to
     a class. If name is ommited the name of the specified function
@@ -1501,6 +1627,7 @@ def AddMethod(object, function, name = None):
         # "object" is really an instance, so it gets a bound method.
         object.__dict__[name] = new.instancemethod(function, object, klass)
 
+
 def RenameFunction(function, name):
     """
     Returns a function identical to the specified function, but with
@@ -1515,15 +1642,15 @@ def RenameFunction(function, name):
     if func_defaults is None:
         func_defaults = ()
 
-    return new.function(function.func_code,
-                        function.func_globals,
-                        name,
-                        func_defaults)
+    return new.function(function.func_code, function.func_globals, name, func_defaults)
 
 
 md5 = False
+
+
 def MD5signature(s):
     return str(s)
+
 
 def MD5filesignature(fname, chunksize=65536):
     f = open(fname, "rb")
@@ -1531,13 +1658,15 @@ def MD5filesignature(fname, chunksize=65536):
     f.close()
     return result
 
+
 try:
     import hashlib
 except ImportError:
     pass
 else:
-    if hasattr(hashlib, 'md5'):
+    if hasattr(hashlib, "md5"):
         md5 = True
+
         def MD5signature(s):
             m = hashlib.md5()
             m.update(str(s))
@@ -1553,7 +1682,8 @@ else:
                 m.update(str(blck))
             f.close()
             return m.hexdigest()
-            
+
+
 def MD5collect(signatures):
     """
     Collects a list of signatures into an aggregate signature.
@@ -1564,8 +1694,7 @@ def MD5collect(signatures):
     if len(signatures) == 1:
         return signatures[0]
     else:
-        return MD5signature(string.join(signatures, ', '))
-
+        return MD5signature(string.join(signatures, ", "))
 
 
 # Wrap the intern() function so it doesn't throw exceptions if ineligible
@@ -1575,6 +1704,7 @@ try:
     intern
 except NameError:
     from sys import intern
+
 
 def silent_intern(x):
     """
@@ -1588,7 +1718,6 @@ def silent_intern(x):
         return x
 
 
-
 # From Dinu C. Gherman,
 # Python Cookbook, second edition, recipe 6.17, p. 277.
 # Also:
@@ -1596,38 +1725,51 @@ def silent_intern(x):
 # ASPN: Python Cookbook: Null Object Design Pattern
 
 # TODO(1.5):
-#class Null(object):
+# class Null(object):
 class Null:
-    """ Null objects always and reliably "do nothing." """
+    """Null objects always and reliably "do nothing." """
+
     def __new__(cls, *args, **kwargs):
-        if not '_inst' in vars(cls):
-            #cls._inst = type.__new__(cls, *args, **kwargs)
+        if not "_inst" in vars(cls):
+            # cls._inst = type.__new__(cls, *args, **kwargs)
             cls._inst = apply(type.__new__, (cls,) + args, kwargs)
         return cls._inst
+
     def __init__(self, *args, **kwargs):
         pass
+
     def __call__(self, *args, **kwargs):
         return self
+
     def __repr__(self):
         return "Null(0x%08X)" % id(self)
+
     def __nonzero__(self):
         return False
+
     def __getattr__(self, name):
         return self
+
     def __setattr__(self, name, value):
         return self
+
     def __delattr__(self, name):
         return self
+
 
 class NullSeq(Null):
     def __len__(self):
         return 0
+
     def __iter__(self):
         return iter(())
+
     def __getitem__(self, i):
         return self
+
     def __delitem__(self, i):
         return self
+
     def __setitem__(self, i, v):
         return self
 

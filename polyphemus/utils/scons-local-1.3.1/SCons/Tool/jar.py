@@ -36,15 +36,16 @@ __revision__ = "src/engine/SCons/Tool/jar.py 5110 2010/07/25 16:14:38 bdeegan"
 import SCons.Subst
 import SCons.Util
 
+
 def jarSources(target, source, env, for_signature):
     """Only include sources that are not a manifest file."""
     try:
-        env['JARCHDIR']
+        env["JARCHDIR"]
     except KeyError:
         jarchdir_set = False
     else:
         jarchdir_set = True
-        jarchdir = env.subst('$JARCHDIR', target=target, source=source)
+        jarchdir = env.subst("$JARCHDIR", target=target, source=source)
         if jarchdir:
             jarchdir = env.fs.Dir(jarchdir)
     result = []
@@ -62,10 +63,11 @@ def jarSources(target, source, env, for_signature):
                 # If we are changing the dir with -C, then sources should
                 # be relative to that directory.
                 src = SCons.Subst.Literal(src.get_path(_chdir))
-                result.append('-C')
+                result.append("-C")
                 result.append(_chdir)
             result.append(src)
     return result
+
 
 def jarManifest(target, source, env, for_signature):
     """Look in sources for a manifest file, if any."""
@@ -73,35 +75,39 @@ def jarManifest(target, source, env, for_signature):
         contents = src.get_text_contents()
         if contents[:16] == "Manifest-Version":
             return src
-    return ''
+    return ""
+
 
 def jarFlags(target, source, env, for_signature):
     """If we have a manifest, make sure that the 'm'
     flag is specified."""
-    jarflags = env.subst('$JARFLAGS', target=target, source=source)
+    jarflags = env.subst("$JARFLAGS", target=target, source=source)
     for src in source:
         contents = src.get_text_contents()
         if contents[:16] == "Manifest-Version":
-            if not 'm' in jarflags:
-                return jarflags + 'm'
+            if not "m" in jarflags:
+                return jarflags + "m"
             break
     return jarflags
+
 
 def generate(env):
     """Add Builders and construction variables for jar to an Environment."""
     SCons.Tool.CreateJarBuilder(env)
 
-    env['JAR']        = 'jar'
-    env['JARFLAGS']   = SCons.Util.CLVar('cf')
-    env['_JARFLAGS']  = jarFlags
-    env['_JARMANIFEST'] = jarManifest
-    env['_JARSOURCES'] = jarSources
-    env['_JARCOM']    = '$JAR $_JARFLAGS $TARGET $_JARMANIFEST $_JARSOURCES'
-    env['JARCOM']     = "${TEMPFILE('$_JARCOM')}"
-    env['JARSUFFIX']  = '.jar'
+    env["JAR"] = "jar"
+    env["JARFLAGS"] = SCons.Util.CLVar("cf")
+    env["_JARFLAGS"] = jarFlags
+    env["_JARMANIFEST"] = jarManifest
+    env["_JARSOURCES"] = jarSources
+    env["_JARCOM"] = "$JAR $_JARFLAGS $TARGET $_JARMANIFEST $_JARSOURCES"
+    env["JARCOM"] = "${TEMPFILE('$_JARCOM')}"
+    env["JARSUFFIX"] = ".jar"
+
 
 def exists(env):
-    return env.Detect('jar')
+    return env.Detect("jar")
+
 
 # Local Variables:
 # tab-width:4

@@ -30,7 +30,7 @@ contains
 !
 !     -- DESCRIPTION
 !
-!     This subroutine computes SOA concentration using 
+!     This subroutine computes SOA concentration using
 !     the equilibrium approach.
 !
 !------------------------------------------------------------------------
@@ -89,13 +89,13 @@ contains
       neq = N_size * (1 + N_aerosol) + N_aerosol
 
       csol = 0.D0
-      DSD = 0.D0    
+      DSD = 0.D0
       dt2 = 0.0
 
 !    Calculate the concentration of hydronium ion in water
-!    microg/m3(=micromol/m3) / microg/m3 (H+ molar mass: 1 g/mol) 
-!     = micromol/microg * 1000 
-!     = mol/kg = mol/L (Water density: 1 kg/L) 
+!    microg/m3(=micromol/m3) / microg/m3 (H+ molar mass: 1 g/mol)
+!     = micromol/microg * 1000
+!     = mol/kg = mol/L (Water density: 1 kg/L)
       chp = proton / lwc * 1.0e3
 
       CALL soap_main(lwc, rh, temp, ionic, chp, lwcorg, &
@@ -129,7 +129,7 @@ contains
 !
 !     -- DESCRIPTION
 !
-!     This subroutine computes SOA concentration using 
+!     This subroutine computes SOA concentration using
 !     the dynamic approach.
 !
 !------------------------------------------------------------------------
@@ -169,7 +169,7 @@ contains
 !------------------------------------------------------------------------
 
       IMPLICIT NONE
-    
+
       INTEGER neq
       double precision q(N_size*(1+N_aerosol)+N_aerosol)
       INTEGER iq(N_aerosol, N_size)
@@ -202,7 +202,7 @@ contains
             IQ(jesp,js)=icpt
          END DO
       END DO
-      
+
       !   Pointer for gas-phase concentration
       DO jesp=1,N_aerosol
          icpt=icpt+1
@@ -213,14 +213,14 @@ contains
          q(js) = concentration_number(js)
       enddo
 
-      i = 0 
+      i = 0
       do jesp = 1,N_aerosol
          do js = 1, N_size
             i = i + 1
             q(N_size + i) = concentration_mass(js, jesp)
          enddo
       enddo
-    
+
       do jesp = 1,N_aerosol
          q(N_size*(1+N_aerosol) + jesp) = concentration_gas(jesp)
       enddo
@@ -267,21 +267,21 @@ contains
 
       ! Get the calculated values from SOAP
       do js = 1, N_size
-         concentration_number(js) = q(js) 
+         concentration_number(js) = q(js)
       enddo
-      i = 0 
+      i = 0
       do jesp = 1,N_aerosol
          do js = 1, N_size
             i = i + 1
-            concentration_mass(js, jesp) = q(N_size + i) 
+            concentration_mass(js, jesp) = q(N_size + i)
          enddo
       enddo
-    
+
       do jesp = 1,N_aerosol
-         concentration_gas(jesp) = q(N_size*(1+N_aerosol) + jesp) 
+         concentration_gas(jesp) = q(N_size*(1+N_aerosol) + jesp)
       enddo
 
 
    END SUBROUTINE SOAP_DYN
-   
+
 end Module kSOAP

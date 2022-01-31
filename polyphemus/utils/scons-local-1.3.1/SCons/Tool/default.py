@@ -35,13 +35,16 @@ __revision__ = "src/engine/SCons/Tool/default.py 5110 2010/07/25 16:14:38 bdeega
 
 import SCons.Tool
 
+
 def generate(env):
     """Add default tools."""
-    for t in SCons.Tool.tool_list(env['PLATFORM'], env):
+    for t in SCons.Tool.tool_list(env["PLATFORM"], env):
         SCons.Tool.Tool(t)(env)
+
 
 def exists(env):
     return 1
+
 
 # Local Variables:
 # tab-width:4

@@ -42,7 +42,7 @@ namespace CoefficientRepartition
 
     //Number of fractions
     int Nfrac_;
-    
+
     //Number of species
     int Nspecies_;
     Nspecies_ =ClassCoefficientRepartitionBase::GetNs();
@@ -107,7 +107,7 @@ namespace CoefficientRepartition
     Nb_ = int(diameter.size()) - 1;//in case of diameter from existing files
 
     if (! Nb_ > 0)
-      throw CoefficientRepartition::Error("Number of size sections should be strictly positive.");    
+      throw CoefficientRepartition::Error("Number of size sections should be strictly positive.");
 
     vector<double> mass(Nb_ + 1);
     for (int j = 0; j < Nb_ + 1; j++)
@@ -127,7 +127,7 @@ namespace CoefficientRepartition
    if(Nfrac_!=0)//calculate composition sections automatically!!ops.Exists("autofraction")
      {
        //Get auto fraction number for every species
-     
+
        cout<<"Auto composition sections:"<<endl;
        cout<<"Nfrac_= "<<Nfrac_<<"  Nspecies_= "<<Nspecies_<<endl;
        double sumfrac = 0;
@@ -167,7 +167,7 @@ namespace CoefficientRepartition
          {
            for(int s=0; s<Nspecies_ - 1; s++)
              counter[s] = 0;//initial the counter
-           //when the index counter of second species reaches its top, 
+           //when the index counter of second species reaches its top,
            //move to the next fraction bin of first species
            if(Nspecies_>2)
              {
@@ -193,9 +193,9 @@ namespace CoefficientRepartition
                          }
                        //last group with default fraction section [0,1]
                        compositions.push_back(0.0);
-                       compositions.push_back(1.0);	      
+                       compositions.push_back(1.0);
                      }
-                   //when the second last species hasn't reaches its top, 
+                   //when the second last species hasn't reaches its top,
                    if(counter[Nspecies_-2]<=Nfrac_)
                      counter[Nspecies_-2]++;//move the index of second last species
                    for(int g=3;g<Nspecies_;g++)
@@ -231,7 +231,7 @@ namespace CoefficientRepartition
                    Nc_=1;
                    Nfrac_=1;
                    compositions.push_back(0.0);
-                   compositions.push_back(1.0);	    
+                   compositions.push_back(1.0);
                  }
              }
          }
@@ -265,7 +265,7 @@ namespace CoefficientRepartition
 	Nc_++;
 
       if (! Nc_ > 0)
-	throw CoefficientRepartition::Error("Number of composition sections should be strictly positive.");    
+	throw CoefficientRepartition::Error("Number of composition sections should be strictly positive.");
 
       fraction_index_.Reallocate(Nc_);
       fraction_.Reallocate(Nc_);
@@ -306,7 +306,7 @@ namespace CoefficientRepartition
     size_bin_ = gs.size_bin_;
     composition_bin_ = gs.composition_bin_;
   }
-  
+
   // Get methods.
   int ClassGeneralSection::GetNd() const
   {
@@ -434,14 +434,14 @@ namespace CoefficientRepartition
 
 	frac= fraction(i)(0) + drand48() * real_avalible;
 	frac_avalibe-=(frac-fraction(i)(0));
-	
+
         double frac_rest(double(1));
 
         int s = fraction_index(i)(0);
         p.fraction_(s) = frac * frac_rest;
         frac_sum += frac;
       }
-      
+
     if(frac_sum>1.0)
     {
       cout<<"fraction error1: frac_sum="<<frac_sum<<endl;
@@ -480,7 +480,7 @@ namespace CoefficientRepartition
 	}
 	exit(2);
       }
-      
+
   }
 
 

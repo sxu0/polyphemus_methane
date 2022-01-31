@@ -41,7 +41,7 @@ namespace Polyphemus
     photolysis_reaction_index.resize(Nr_photolysis);
     Ncycle_aer = 1;
     Noptions_aer = 16;
-	
+
   }
 
 
@@ -643,7 +643,7 @@ namespace Polyphemus
 	string("\" for redistribution method option,\n") +
 	string("possibilities are number-conserving, interpolation,") +
 	string(" euler-mass, euler-number, hemen or euler-coupled.");
-    
+
     if (nucleation_model == "binary")
       options_aer(11) = 0;
     else if (nucleation_model == "ternary")
@@ -685,7 +685,7 @@ namespace Polyphemus
 
 
     // Activity coefficient
-    if (Thermodynamic_model == "ideal" || Thermodynamic_model == "unifac") 
+    if (Thermodynamic_model == "ideal" || Thermodynamic_model == "unifac")
       {
         soap_config.activity_model = Thermodynamic_model;
         soap_config.compute_long_and_medium_range_interactions = false;
@@ -703,9 +703,9 @@ namespace Polyphemus
     // Set the number of bins
     soap_config.nbins = Nbin_aer;
     parameters(soap_config, surrogate, species_list_aer);
-	
+
     options_aer(15) = option_process_aer["with_number_concentration"] ? 1 : 0;
-	
+
     // Index of species subject to heterogeneous reactions.
     heterogeneous_reaction_index.resize(4);
     heterogeneous_reaction_index(0) = Model.GetSpeciesIndex("HO2");
@@ -740,7 +740,7 @@ namespace Polyphemus
 		  throw string("\" InCloudWetDepositionFluxNumber_aer \" has") +
 		    string(" wrong dimension.");
 	      }
-			
+
 	  }
 	if (option_process_aer["collect_wet_flux"])
 	  {
@@ -779,7 +779,7 @@ namespace Polyphemus
     //     and options_aer(10) > 2)
     //   throw string("Warning: The euler redistributions") +
     //     string(" cannot be used with the option \"With_fixed_density\"."); // KS
- 
+
 
     BaseModuleParallel::Init(Model);
 #ifdef POLYPHEMUS_PARALLEL_WITH_MPI
@@ -969,7 +969,7 @@ namespace Polyphemus
 	  nucleation_model << endl;
 	// deschams
 	if (nucleation_model == "unary")
-	  cout << "K "<< K_nucl_factor <<", P " << P_nucl_factor<< endl; 
+	  cout << "K "<< K_nucl_factor <<", P " << P_nucl_factor<< endl;
       }
     cout << "Module: wet diameter estimation: " <<
       wet_diameter_estimation << endl;
@@ -1035,7 +1035,7 @@ namespace Polyphemus
 	    Model.GetConcentration(), Model.D3("LiquidWaterContent_i"),
 	    Model.D4("WetDiameter_aer"), Model.GetConcentration_aer(),
 	    Model.D3("pH"), Model.GetNumberConcentration_aer());
-	
+
   }
 
 
@@ -1068,7 +1068,7 @@ namespace Polyphemus
     Data<T, 4> in_cloud_wet_flux_aer(Ns_aer, Nbin_aer, Model.GetNy(),
 				     Model.GetNx());
     Data<T, 3> in_cloud_wet_flux_number_aer(Nbin_aer, Model.GetNy(), Model.GetNx());
-    
+
     Forward_aer(T(date_i.GetNumberOfSeconds()),
 		Model.D3("SpecificHumidity_i"), Model.D3("Temperature_i"),
 		Model.D3("Pressure_i"),	T(date_f.GetSecondsFrom(date_i)),
@@ -1079,7 +1079,7 @@ namespace Polyphemus
 		Model.D3("pH"),
 		Model.GetNumberConcentration_aer(),
 		in_cloud_wet_flux_number_aer);
-	
+
     if (option_process_aer["with_in_cloud_scavenging"])
       {
 	if (option_process_aer["collect_wet_flux"])
@@ -1105,7 +1105,7 @@ namespace Polyphemus
 			(Model.ScavengingIndex_aer(b), j, i) =
 			in_cloud_wet_flux_number_aer(b, j, i);
 		  }
-		  
+
       }
   }
 
@@ -1185,7 +1185,7 @@ namespace Polyphemus
 				      Data<T, 5>& Concentration_aer,
 				      Data<T, 3>& pH,
 				      Data<T, 4>& NumberConcentration_aer)
-    
+
   {
     int icld = options_aer(3);
     int iheter = option_process_aer["with_heterogeneous_reactions"] ? 1 : 0;
@@ -1334,7 +1334,7 @@ namespace Polyphemus
 #else
 		  NumberConcentration_aer(b, k, j, i) = NumberConcentration_aer1D(b);
 #endif
-		} 
+		}
           } // loop j
 
 #ifdef POLYPHEMUS_PARALLEL_WITH_MPI
@@ -1395,7 +1395,7 @@ namespace Polyphemus
     // This array will store the number concentration data
     Array<T, 4> OrdNumConc_aer;
     Array<T, 3> OrdWetDepositionFluxNumber_aer;
-	
+
     Array<T, 3> OrdWetDepositionFlux;
     Array<T, 4> OrdWetDepositionFlux_aer;
 #endif
@@ -1420,7 +1420,7 @@ namespace Polyphemus
     first_index_along_x = 0;
     last_index_along_x = Concentration.GetLength(3);
 #endif
-	
+
 #ifdef POLYPHEMUS_PARALLEL_WITH_OPENMP
     int Nthreads_openmp = GetNthreads_openmp();
 #pragma omp parallel for num_threads(Nthreads_openmp)	\
@@ -1437,7 +1437,7 @@ namespace Polyphemus
             Array<T, 1> InCloudWetDepositionFlux1D(Ns);
             Array<T, 2> InCloudWetDepositionFlux_aer2D(Ns_aer, Nbin_aer);
 	    Array<T, 1> InCloudWetDepositionFluxNumber_aer1D(Nbin_aer);
-            Array<T, 1> CurrentVerticalInterface(2); 
+            Array<T, 1> CurrentVerticalInterface(2);
             int s, b;
 
             for (s = 0; s < Ns; s++)
@@ -1489,7 +1489,7 @@ namespace Polyphemus
 #endif
                   }
               }
-			
+
 	    if (option_process_aer["with_number_concentration"])
 	      {
 		for (b = 0; b < Nbin_aer ; b++)
@@ -1504,7 +1504,7 @@ namespace Polyphemus
 		      InCloudWetDepositionFluxNumber_aer(b, j, i);
 #endif
                   }
-              
+
 		for (b = 0; b < Nbin_aer; b++)
 		  {
 #ifdef POLYPHEMUS_PARALLEL_WITH_MPI
@@ -1521,8 +1521,8 @@ namespace Polyphemus
 		InCloudWetDepositionFluxNumber_aer1D = 0.0;
 		NumberConcentration_aer1D = 0.0;
 	      }
-			
-			
+
+
             CurrentVerticalInterface(0) = VerticalInterface(k);
             CurrentVerticalInterface(1) = VerticalInterface(k + 1);
 
@@ -1603,7 +1603,7 @@ namespace Polyphemus
 #endif
                   }
               }
-			
+
 	    if (option_process_aer["with_number_concentration"])
 	      {
 		for (b = 0; b < Nbin_aer; b++)
@@ -1616,10 +1616,10 @@ namespace Polyphemus
 #else
 		    InCloudWetDepositionFluxNumber_aer(b, j, i) +=
 		      InCloudWetDepositionFluxNumber_aer1D(b);
-			
+
 #endif
 		  }
-			
+
 		for (b = 0; b < Nbin_aer ; b++)
 		  {
 #ifdef POLYPHEMUS_PARALLEL_WITH_MPI
@@ -1696,7 +1696,7 @@ namespace Polyphemus
     int iheter = option_process_aer["with_heterogeneous_reactions"] ? 1 : 0;
     int inum = options_aer(15);
     int idens = options_aer(6);
-    
+
     _chem_0d(&Ns, &Nr,
 	  &Nr_photolysis, photolysis_reaction_index.data(),
 	  &Ns_source, source_index.data(),
@@ -1720,7 +1720,7 @@ namespace Polyphemus
 	  &min_adaptive_time_step, &option_photolysis_tabulation, &jBiPER, &kBiPER,
 	  &inum, &idens, number_concentration_aer.data(),
 	  mass_density_aer.data());
-	
+
   }
 
 
@@ -1770,7 +1770,7 @@ namespace Polyphemus
                 &bc_species,
                 &Ns_cloud_interact, &species_index_cloud_interact.front(),
                 &lwc_avg, &heightfog, &ifog, number_concentration_aer.data(),
-	     incloudwetdepositionfluxnumber_aer.data(),&conserving_mass_tolerance, 
+	     incloudwetdepositionfluxnumber_aer.data(),&conserving_mass_tolerance,
 	     &P_nucl_factor, &K_nucl_factor,
              &soap_config, &surrogate);
   }

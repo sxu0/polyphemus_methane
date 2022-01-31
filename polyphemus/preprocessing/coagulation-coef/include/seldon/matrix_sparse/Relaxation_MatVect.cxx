@@ -22,14 +22,14 @@
 
 /*
   Functions defined in this file
-  
+
   SOR(A, X, B, omega, iter, type_ssor)
 
 */
 
 namespace Seldon
 {
-  
+
   //! Successive overrelaxation.
   /*!
     Solving A X = B by using S.O.R algorithm.
@@ -47,24 +47,24 @@ namespace Seldon
 	   const T3& omega, int iter, int type_ssor = 2)
   {
     T1 temp(0);
-    
+
     int ma = A.GetM();
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     int na = A.GetN();
     if (na != ma)
       throw WrongDim("SOR", "Matrix must be squared.");
-    
+
     if (ma != X.GetLength() || ma != B.GetLength())
       throw WrongDim("SOR", "Matrix and vector dimensions are incompatible.");
 #endif
-    
+
     int* ptr = A.GetPtr();
     int* ind = A.GetInd();
     typename Matrix<T0, Prop0, RowSparse, Allocator0>::pointer data
       = A.GetData();
     T0 ajj(1);
-    
+
     // Forward sweep.
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
@@ -74,11 +74,11 @@ namespace Seldon
 	    ajj = A(j, j);
 	    for (int k = ptr[j] ; k < ptr[j+1]; k++)
 	      temp += data[k] * X(ind[k]);
-	    
+
 	    temp = B(j) - temp + ajj * X(j);
 	    X(j) = (T2(1) - omega) * X(j) + omega * temp / ajj;
 	  }
-    
+
     // Backward sweep.
     if (type_ssor % 3 == 0)
       for (int i = 0; i < iter; i++)
@@ -88,13 +88,13 @@ namespace Seldon
 	    ajj = A(j, j);
 	    for (int k = ptr[j]; k < ptr[j+1]; k++)
 	      temp += data[k] * X(ind[k]);
-	    
+
 	    temp = B(j) - temp + ajj * X(j);
 	    X(j) = (T2(1) - omega) * X(j) + omega * temp / ajj;
 	  }
   }
-  
-  
+
+
   //! Successive overrelaxation.
   /*!
     Solving A X = B by using S.O.R algorithm.
@@ -113,20 +113,20 @@ namespace Seldon
 	   int iter, int type_ssor = 2)
   {
     T1 temp(0);
-    
+
     int ma = A.GetM();
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     int na = A.GetN();
     if (na != ma)
       throw WrongDim("SOR", "Matrix must be squared.");
-    
+
     if (ma != X.GetLength() || ma != B.GetLength())
       throw WrongDim("SOR", "Matrix and vector dimensions are incompatible.");
 #endif
-    
+
     T0 ajj(1);
-    
+
     // Forward sweep.
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
@@ -140,11 +140,11 @@ namespace Seldon
 		if (A.Index(j,k) == j)
 		  ajj += A.Value(j,k);
 	      }
-	    
+
 	    temp = B(j) - temp + ajj * X(j);
 	    X(j) = (T2(1) - omega) * X(j) + omega * temp / ajj;
 	  }
-    
+
     // Backward sweep.
     if (type_ssor % 3 == 0)
       for (int i = 0; i < iter; i++)
@@ -158,13 +158,13 @@ namespace Seldon
 		if (A.Index(j,k) == j)
 		  ajj += A.Value(j,k);
 	      }
-	    
+
 	    temp = B(j) - temp + ajj * X(j);
 	    X(j) = (T2(1) - omega) * X(j) + omega * temp / ajj;
 	  }
   }
-  
-  
+
+
   //! Successive overrelaxation.
   /*!
     Solving A X = B by using S.O.R algorithm.
@@ -182,18 +182,18 @@ namespace Seldon
 	   const T3& omega,int iter, int type_ssor = 2)
   {
     T1 temp(0);
-    
+
     int ma = A.GetM();
 
 #ifdef SELDON_CHECK_BOUNDS
     int na = A.GetN();
     if (na != ma)
       throw WrongDim("SOR", "Matrix must be squared.");
-    
+
     if (ma != X.GetLength() || ma != B.GetLength())
       throw WrongDim("SOR", "Matrix and vector dimensions are incompatible.");
 #endif
-    
+
     int* ptr = A.GetPtr();
     int* ind = A.GetInd();
     T0* data = A.GetData();
@@ -207,7 +207,7 @@ namespace Seldon
     // D diagonal of A
     // L lower part of A
     // U upper part of A, A is symmetric, so L = U^t
-    
+
     // Forward sweep
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
     if (type_ssor % 2 == 0)
@@ -227,11 +227,11 @@ namespace Seldon
 		  else
 		    temp += val * X(p);
 		}
-	      
+
 	      temp = B(j) - temp;
 	      X(j) = (T2(1) - omega) / omega * ajj * X(j) + temp;
 	    }
-	  
+
 	  for (int j = 0; j < ma; j++)
 	    {
 	      ajj = T0(0);
@@ -253,7 +253,7 @@ namespace Seldon
 		}
 	    }
 	}
-    
+
 
     // Backward sweep.
     // (D/omega - U) X^{n+1} = (L + (1-omega)/omega D) X^{n+1/2} + B
@@ -274,10 +274,10 @@ namespace Seldon
 		  else
 		    Y(p) += val*X(j);
 		}
-	      
+
 	      X(j) = (T2(1) - omega) / omega * ajj * X(j) + B(j) - Y(j);
 	    }
-	  
+
 	  for (int j = ma-1; j >= 0; j--)
 	    {
 	      temp = T1(0);
@@ -296,8 +296,8 @@ namespace Seldon
 	    }
 	}
   }
-  
-  
+
+
   //! Successive overrelaxation.
   /*!
     Solving A X = B by using S.O.R algorithm.
@@ -315,18 +315,18 @@ namespace Seldon
 	   const T3& omega,int iter, int type_ssor = 2)
   {
     T1 temp(0);
-    
+
     int ma = A.GetM();
 
 #ifdef SELDON_CHECK_BOUNDS
     int na = A.GetN();
     if (na != ma)
       throw WrongDim("SOR", "Matrix must be squared.");
-    
+
     if (ma != X.GetLength() || ma != B.GetLength())
       throw WrongDim("SOR", "Matrix and vector dimensions are incompatible.");
 #endif
-    
+
 
     Vector<T2,Storage2,Allocator2> Y(ma);
     Y.Zero();
@@ -336,7 +336,7 @@ namespace Seldon
     // D diagonal of A
     // L lower part of A
     // U upper part of A, A is symmetric, so L = U^t
-    
+
     // Forward sweep.
     // (D/omega - L) X^{n+1/2} = (U + (1-omega)/omega D) X^n + B
     if (type_ssor % 2 == 0)
@@ -356,11 +356,11 @@ namespace Seldon
 		  else
 		    temp += val * X(p);
 		}
-	      
+
 	      temp = B(j) - temp;
 	      X(j) = (T2(1) - omega) / omega * ajj * X(j) + temp;
 	    }
-	  
+
 	  for (int j = 0; j < ma; j++)
 	    {
 	      ajj = T0(0);
@@ -382,7 +382,7 @@ namespace Seldon
 		}
 	    }
 	}
-    
+
 
     // Backward sweep.
     // (D/omega - U) X^{n+1} = (L + (1-omega)/omega D) X^{n+1/2} + B
@@ -403,10 +403,10 @@ namespace Seldon
 		  else
 		    Y(p) += val*X(j);
 		}
-	      
+
 	      X(j) = (T2(1) - omega) / omega * ajj * X(j) + B(j) - Y(j);
 	    }
-	  
+
 	  for (int j = ma-1; j >= 0; j--)
 	    {
 	      temp = T1(0);
@@ -424,10 +424,10 @@ namespace Seldon
 	      X(j) = (X(j) - temp) * omega / ajj;
 	    }
 	}
-    
+
   }
-  
-  
+
+
   //! Successive overrelaxation.
   /*!
     Solving A X = B by using S.O.R algorithm.
@@ -445,18 +445,18 @@ namespace Seldon
 	   const T3& omega, int iter, int type_ssor = 2)
   {
     complex<T1> temp(0);
-    
+
     int ma = A.GetM();
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     int na = A.GetN();
     if (na != ma)
       throw WrongDim("SOR", "Matrix must be squared.");
-    
+
     if (ma != X.GetLength() || ma != B.GetLength())
       throw WrongDim("SOR", "Matrix and vector dimensions are incompatible.");
 #endif
-    
+
     int* ptr_real = A.GetRealPtr();
     int* ptr_imag = A.GetImagPtr();
     int* ind_real = A.GetRealInd();
@@ -466,7 +466,7 @@ namespace Seldon
     typename Matrix<T0, Prop0, RowComplexSparse, Allocator0>::pointer
       data_imag = A.GetImagData();
     complex<T0> ajj(1);
-    
+
     if (type_ssor % 2 == 0)
       for (int i = 0; i < iter; i++)
 	for (int j = 0; j < ma; j++)
@@ -475,14 +475,14 @@ namespace Seldon
 	    ajj = A(j,j);
 	    for (int k = ptr_real[j]; k < ptr_real[j+1]; k++)
 	      temp += data_real[k] * X(ind_real[k]);
-	    
+
 	    for (int k = ptr_imag[j]; k < ptr_imag[j+1]; k++)
 	      temp += complex<T1>(0, data_imag[k]) * X(ind_imag[k]);
-	    
+
 	    temp = B(j) - temp + ajj*X(j);
 	    X(j) = (T2(1) - omega) * X(j) + omega * temp / ajj;
 	  }
-	
+
     if (type_ssor % 3 == 0)
       for (int i = 0; i < iter; i++)
 	for (int j = ma-1; j >= 0; j--)
@@ -491,16 +491,16 @@ namespace Seldon
 	    ajj = A(j,j);
 	    for (int k = ptr_real[j]; k < ptr_real[j+1]; k++)
 	      temp += data_real[k] * X(ind_real[k]);
-	    
+
 	    for (int k = ptr_imag[j]; k < ptr_imag[j+1]; k++)
 	      temp += complex<T1>(0, data_imag[k]) * X(ind_imag[k]);
-	    
+
 	    temp = B(j) - temp + ajj * X(j);
 	    X(j) = (T2(1) - omega) * X(j) + omega * temp / ajj;
 	  }
   }
-  
-  
+
+
   //! Successive overrelaxation.
   /*!
     Solving A X = B by using S.O.R algorithm.
@@ -518,20 +518,20 @@ namespace Seldon
 	   const T3& omega, int iter, int type_ssor = 2)
   {
     complex<T1> temp(0);
-    
+
     int ma = A.GetM();
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     int na = A.GetN();
     if (na != ma)
       throw WrongDim("SOR", "Matrix must be squared.");
-    
+
     if (ma != X.GetLength() || ma != B.GetLength())
       throw WrongDim("SOR", "Matrix and vector dimensions are incompatible.");
 #endif
-    
+
     complex<T0> ajj(1);
-    
+
     if (type_ssor%2 == 0)
       for (int i = 0; i < iter; i++)
 	{
@@ -552,12 +552,12 @@ namespace Seldon
 		  if (A.IndexImag(j,k) == j)
 		    ajj += complex<T0>(0, A.ValueImag(j,k));
 		}
-	      
+
 	      temp = B(j) - temp + ajj * X(j);
 	      X(j) = (T2(1) - omega) * X(j) + omega * temp / ajj;
 	    }
 	}
-    
+
     if (type_ssor % 3 == 0)
       for (int i = 0; i < iter; i++)
 	for (int j = ma-1; j >= 0; j--)
@@ -577,13 +577,13 @@ namespace Seldon
 		if (A.IndexImag(j,k) == j)
 		  ajj += complex<T0>(0, A.ValueImag(j,k));
 	      }
-	    
+
 	    temp = B(j) - temp + ajj * X(j);
 	    X(j) = (T2(1) - omega) * X(j) + omega * temp / ajj;
 	  }
   }
-  
-  
+
+
   //! Successive overrelaxation.
   /*!
     Solving A X = B by using S.O.R algorithm.
@@ -601,25 +601,25 @@ namespace Seldon
 	   const T3& omega, int iter, int type_ssor = 2)
   {
     complex<T1> temp(0);
-    
+
     int ma = A.GetM();
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     int na = A.GetN();
     if (na != ma)
       throw WrongDim("SOR", "Matrix must be squared.");
-    
+
     if (ma != X.GetLength() || ma != B.GetLength())
       throw WrongDim("SOR", "Matrix and vector dimensions are incompatible.");
 #endif
-    
+
     int* ptr_real = A.GetRealPtr();
     int* ptr_imag = A.GetImagPtr();
     int* ind_real = A.GetRealInd();
     int* ind_imag = A.GetImagInd();
     T0* data_real = A.GetRealData();
     T0* data_imag = A.GetImagData();
-    
+
     Vector<complex<T2>, Storage2, Allocator2> Y(ma);
     Y.Zero();
     complex<T0> ajj(1);
@@ -658,11 +658,11 @@ namespace Seldon
 		  else
 		    temp += val * X(p);
 		}
-	      
+
 	      temp = B(j) - temp;
 	      X(j) = (T2(1) - omega) / omega * ajj * X(j) + temp;
 	    }
-	
+
 	  for (int j = 0; j < ma; j++)
 	    {
 	      ajj = complex<T0>(0);
@@ -674,7 +674,7 @@ namespace Seldon
 		  if (p == j)
 		    ajj += val;
 		}
-	      
+
 	      for (int k = ptr_imag[j]; k < ptr_imag[j+1]; k++)
 		{
 		  p = ind_imag[k];
@@ -683,7 +683,7 @@ namespace Seldon
 		    ajj += val;
 		}
 	      X(j) *= omega / ajj;
-	      
+
 	      for (int k = ptr_real[j]; k < ptr_real[j+1]; k++)
 		{
 		  p = ind_real[k];
@@ -691,7 +691,7 @@ namespace Seldon
 		  if (p != j)
 		    X(p) -= val*X(j);
 		}
-	      
+
 	      for (int k = ptr_imag[j]; k < ptr_imag[j+1]; k++)
 		{
 		  p = ind_imag[k];
@@ -701,14 +701,14 @@ namespace Seldon
 		}
 	    }
 	}
-    
+
     // Backward sweep.
     // (D/omega - U) X^{n+1} = (L + (1-omega)/omega D) X^{n+1/2} + B
     if (type_ssor % 3 == 0)
       for (int i = 0; i < iter; i++)
 	{
 	  Y.Zero();
-	  
+
 	  for (int j = 0; j < ma; j++)
 	    {
 	      ajj = complex<T0>(0);
@@ -722,7 +722,7 @@ namespace Seldon
 		  else
 		    Y(p) += val * X(j);
 		}
-	      
+
 	      for (int k = ptr_imag[j]; k < ptr_imag[j+1]; k++)
 		{
 		  p = ind_imag[k];
@@ -734,7 +734,7 @@ namespace Seldon
 		}
 	      X(j) = (T2(1) - omega) / omega * ajj * X(j) + B(j) - Y(j);
 	    }
-	
+
 	  for (int j = (ma-1); j >= 0; j--)
 	    {
 	      temp = complex<T1>(0);
@@ -749,7 +749,7 @@ namespace Seldon
 		  else
 		    temp += val * X(p);
 		}
-	      
+
 	      for (int k = ptr_imag[j]; k < ptr_imag[j+1]; k++)
 		{
 		  p = ind_imag[k];
@@ -763,8 +763,8 @@ namespace Seldon
 	    }
 	}
   }
-  
-  
+
+
   //! Successive overrelaxation.
   /*!
     Solving A X = B by using S.O.R algorithm.
@@ -782,18 +782,18 @@ namespace Seldon
 	   const T3& omega, int iter, int type_ssor = 2)
   {
     complex<T1> temp(0);
-    
+
     int ma = A.GetM();
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     int na = A.GetN();
     if (na != ma)
       throw WrongDim("SOR", "Matrix must be squared.");
-    
+
     if (ma != X.GetLength() || ma != B.GetLength())
       throw WrongDim("SOR", "Matrix and vector dimensions are incompatible.");
 #endif
-    
+
     Vector<complex<T2>, Storage2, Allocator2> Y(ma);
     Y.Zero();
     complex<T0> ajj(1);
@@ -831,11 +831,11 @@ namespace Seldon
 		  else
 		    temp += val * X(p);
 		}
-	      
+
 	      temp = B(j) - temp;
 	      X(j) = (T2(1) - omega) / omega * ajj * X(j) + temp;
 	    }
-	
+
 	  for (int j = 0; j < ma; j++)
 	    {
 	      ajj = complex<T0>(0);
@@ -871,14 +871,14 @@ namespace Seldon
 		}
 	    }
 	}
-    
+
     // Backward sweep.
     // (D/omega - U) X^{n+1} = (L + (1-omega)/omega D) X^{n+1/2} + B
     if (type_ssor % 3 == 0)
       for (int i = 0; i < iter; i++)
 	{
 	  Y.Zero();
-	  
+
 	  for (int j = 0; j < ma; j++)
 	    {
 	      ajj = complex<T0>(0);
@@ -903,7 +903,7 @@ namespace Seldon
 		}
 	      X(j) = (T2(1) - omega) / omega * ajj * X(j) + B(j) - Y(j);
 	    }
-	
+
 	  for (int j = ma-1; j >= 0; j--)
 	    {
 	      temp = complex<T1>(0);

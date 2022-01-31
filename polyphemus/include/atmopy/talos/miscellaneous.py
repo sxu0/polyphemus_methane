@@ -75,7 +75,7 @@ def to_num(str):
     elif is_num(str):
         return float(str)
     else:
-        raise Exception, "\"" + str + "\" is not a number."
+        raise Exception, '"' + str + '" is not a number.'
 
 
 def replace_string(string_in, string_out, files):
@@ -112,14 +112,16 @@ def remove_file(files):
         raise ValueError
     for file in files:
         import os
+
         if os.path.isdir(file):
             import shutil
+
             shutil.rmtree(file)
         elif os.path.isfile(file):
             os.remove(file)
 
 
-def apply_module_functions(module, args, functions = ("all", )):
+def apply_module_functions(module, args, functions=("all",)):
     """
     Applies functions (with the right number of arguments) from a given module
     to the arguments of 'args'.
@@ -137,9 +139,9 @@ def apply_module_functions(module, args, functions = ("all", )):
     """
     Nargs = len(args)
     import inspect, types
+
     if "all" in functions:
-        functions = [x for x in dir(module)
-                     if inspect.isfunction(getattr(module, x))]
+        functions = [x for x in dir(module) if inspect.isfunction(getattr(module, x))]
     out_functions, results = [], []
     for f in functions:
         if len(inspect.getargspec(getattr(module, f))[0]) == Nargs:
@@ -148,7 +150,7 @@ def apply_module_functions(module, args, functions = ("all", )):
     return out_functions, results
 
 
-def get_module_functions(module, Nargs, functions = ("all", )):
+def get_module_functions(module, Nargs, functions=("all",)):
     """
     Lists the functions, with 'Nargs' arguments, from a given module.
 
@@ -165,11 +167,11 @@ def get_module_functions(module, Nargs, functions = ("all", )):
     arguments.
     """
     import inspect, types
+
     if isinstance(Nargs, int):
-        Nargs = (Nargs, )
+        Nargs = (Nargs,)
     if "all" in functions:
-        functions = [x for x in dir(module)
-                     if inspect.isfunction(getattr(module, x))]
+        functions = [x for x in dir(module) if inspect.isfunction(getattr(module, x))]
     out_functions = []
     for f in functions:
         if len(inspect.getargspec(getattr(module, f))[0]) in Nargs:
@@ -181,13 +183,15 @@ class PrintInPlace:
     """
     PrintInPlace enables to write and overwrite data on screen.
     """
-    def __init__(self, length = 0):
+
+    def __init__(self, length=0):
         """
         @type length: integer
         @param length: Number of characters to be overwritten next time
         something is printed on screen.
         """
         self.length = length
+
     def __call__(self, elt):
         """
         Prints a string on screen.
@@ -195,10 +199,12 @@ class PrintInPlace:
         @type elt: string
         @param elt: String to be printed on screen.
         """
-        sys.stdout.write(chr(8) * self.length + ' ' * self.length \
-                         + chr(8) * self.length + str(elt))
+        sys.stdout.write(
+            chr(8) * self.length + " " * self.length + chr(8) * self.length + str(elt)
+        )
         sys.stdout.flush()
         self.length = len(str(elt))
+
     def Print(self, elt):
         """
         Prints a string on screen.
@@ -207,13 +213,15 @@ class PrintInPlace:
         @param elt: String to be printed on screen.
         """
         self.__call__(elt)
+
     def Reinit(self):
         """
         Reinits the instance: no character is removed next time something is
         printed on screen.
         """
         self.length = 0
-    def Clear(self, elt = ''):
+
+    def Clear(self, elt=""):
         """
         Reinits the instance: no character is removed next time something is
         printed on screen, and the characters that were supposed to be
@@ -222,13 +230,14 @@ class PrintInPlace:
         @type elt: string
         @param elt: The last string to be printed.
         """
-        sys.stdout.write(chr(8) * self.length + ' ' * self.length \
-                         + chr(8) * self.length + str(elt))
+        sys.stdout.write(
+            chr(8) * self.length + " " * self.length + chr(8) * self.length + str(elt)
+        )
         sys.stdout.flush()
         self.length = 0
 
 
-def print_stdout_file(elt, file, end_line = True):
+def print_stdout_file(elt, file, end_line=True):
     """
     Prints an element on standard output and in a file (if ready).
 
@@ -243,7 +252,7 @@ def print_stdout_file(elt, file, end_line = True):
     """
     output = str(elt)
     if end_line:
-        output += '\n'
+        output += "\n"
     sys.stdout.write(output)
     sys.stdout.flush()
     if file != None:

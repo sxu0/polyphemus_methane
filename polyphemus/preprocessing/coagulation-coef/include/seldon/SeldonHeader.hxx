@@ -167,7 +167,7 @@ namespace Seldon
 
 namespace Seldon
 {
-  
+
 
   class SeldonTranspose;
   class class_SeldonTrans;
@@ -196,7 +196,7 @@ namespace Seldon
   // Full vector.
   template <class T, class Allocator>
   class Vector<T, VectFull, Allocator>;
-  
+
   // Sparse vector.
   template <class T, class Allocator>
   class Vector<T, VectSparse, Allocator>;
@@ -270,7 +270,7 @@ namespace Seldon
   // row-major symmetric complex sparse matrix.
   template <class T, class Prop, class Allocator>
   class Matrix<T, Prop, RowSymComplexSparse, Allocator>;
-  
+
   // column-major sparse matrix.
   template <class T, class Prop, class Allocator>
   class Matrix<T, Prop, ArrayColSparse, Allocator>;

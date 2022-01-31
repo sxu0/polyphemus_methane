@@ -1,5 +1,5 @@
 /**************************************************************************
-Include file: binsolu.h  
+Include file: binsolu.h
 
 Purpose: concentration of solute (micromol solute / microgram water)
 	 in a binary solution at RH = Aw = 0, 0.1, 0.2, 0.3 etc
@@ -7,18 +7,18 @@ Purpose: concentration of solute (micromol solute / microgram water)
 Include dependencies: used in zsr.c
 
 Revision history: Developed by Betty Pun, December 1999, under CARB funding
-                  Revised July 2005 for new surrogates in MADRID1.5           
+                  Revised July 2005 for new surrogates in MADRID1.5
 ***********************************************************************/
 
 #ifndef BINARYSOLU_H
 #define BINARYSOLU_H
 
-/* graduation of RH scale in molalbin definition, 
+/* graduation of RH scale in molalbin definition,
 starting with RH = 0 (first row), ending with 1 (last row) */
-double RHgrad = 0.1;            
+double RHgrad = 0.1;
 
-/* binary solution molality (umol/ug water) corresponding to RH 
-   at 10% graduations --> 11 rows */   
+/* binary solution molality (umol/ug water) corresponding to RH
+   at 10% graduations --> 11 rows */
 double molalbin[11][NAMOL] = {
 {555.600, 555.600, 555.600, 555.600 , 555.600 , 555.600 , 555.600 , 555.600 , 555.600},
 {0.85976, 1.10641, 4.73165, 3.729099, 1.852990, 0.380501, 0.743472, 0.380501, 0.379525},

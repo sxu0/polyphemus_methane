@@ -30,7 +30,7 @@
 
 namespace Seldon
 {
-  
+
 
   //! Triangular packed matrix class.
   template <class T, class Prop, class Storage,
@@ -131,7 +131,7 @@ namespace Seldon
     Matrix();
     Matrix(int i, int j = 0);
     void Resize(int i, int j);
-    
+
     template <class T0>
     Matrix<T, Prop, ColLoTriangPacked, Allocator>& operator= (const T0& x);
     template<class T0>
@@ -148,7 +148,7 @@ namespace Seldon
     Matrix();
     Matrix(int i, int j = 0);
     void Resize(int i, int j);
-    
+
     template <class T0>
     Matrix<T, Prop, RowUpTriangPacked, Allocator>& operator= (const T0& x);
     template<class T0>
@@ -165,7 +165,7 @@ namespace Seldon
     Matrix();
     Matrix(int i, int j = 0);
     void Resize(int i, int j);
-    
+
     template <class T0>
     Matrix<T, Prop, RowLoTriangPacked, Allocator>& operator= (const T0& x);
     template<class T0>

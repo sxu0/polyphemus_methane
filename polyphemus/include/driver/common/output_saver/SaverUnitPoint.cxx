@@ -98,7 +98,7 @@ namespace Polyphemus
         //   {
         //     config_stream.PeekValue("Averaging_length", averaging_length);
         //     config_stream.PeekValue("Averaging_height", averaging_height);
-        //   } 
+        //   }
         config_stream.Find("Levels_coordinates");
         split(config_stream.GetLine(), levels_coord);
         Nlevels = int(levels_coord.size());

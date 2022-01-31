@@ -67,8 +67,3 @@ c     Read a real in a string
       read(ch,chtemp2)r
       return
       end
-
-
-
-
-

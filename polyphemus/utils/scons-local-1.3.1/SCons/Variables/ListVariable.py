@@ -47,12 +47,16 @@ Usage example:
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-__revision__ = "src/engine/SCons/Variables/ListVariable.py 5110 2010/07/25 16:14:38 bdeegan"
+__revision__ = (
+    "src/engine/SCons/Variables/ListVariable.py 5110 2010/07/25 16:14:38 bdeegan"
+)
 
 # Know Bug: This should behave like a Set-Type, but does not really,
 # since elements can occur twice.
 
-__all__ = ['ListVariable',]
+__all__ = [
+    "ListVariable",
+]
 
 import string
 import UserList
@@ -68,41 +72,49 @@ class _ListVariable(UserList.UserList):
 
     def __cmp__(self, other):
         raise NotImplementedError
+
     def __eq__(self, other):
         raise NotImplementedError
+
     def __ge__(self, other):
         raise NotImplementedError
+
     def __gt__(self, other):
         raise NotImplementedError
+
     def __le__(self, other):
         raise NotImplementedError
+
     def __lt__(self, other):
         raise NotImplementedError
+
     def __str__(self):
         if len(self) == 0:
-            return 'none'
+            return "none"
         self.data.sort()
         if self.data == self.allowedElems:
-            return 'all'
+            return "all"
         else:
-            return string.join(self, ',')
+            return string.join(self, ",")
+
     def prepare_to_store(self):
         return self.__str__()
 
+
 def _converter(val, allowedElems, mapdict):
-    """
-    """
-    if val == 'none':
+    """ """
+    if val == "none":
         val = []
-    elif val == 'all':
+    elif val == "all":
         val = allowedElems
     else:
-        val = filter(None, string.split(val, ','))
+        val = filter(None, string.split(val, ","))
         val = map(lambda v, m=mapdict: m.get(v, v), val)
         notAllowed = filter(lambda v, aE=allowedElems: not v in aE, val)
         if notAllowed:
-            raise ValueError("Invalid value(s) for option: %s" %
-                             string.join(notAllowed, ','))
+            raise ValueError(
+                "Invalid value(s) for option: %s" % string.join(notAllowed, ",")
+            )
     return _ListVariable(val, allowedElems)
 
 
@@ -122,15 +134,20 @@ def ListVariable(key, help, default, names, map={}):
     A 'package list' option may either be 'all', 'none' or a list of
     package names (separated by space).
     """
-    names_str = 'allowed names: %s' % string.join(names, ' ')
+    names_str = "allowed names: %s" % string.join(names, " ")
     if SCons.Util.is_List(default):
-        default = string.join(default, ',')
+        default = string.join(default, ",")
     help = string.join(
-        (help, '(all|none|comma-separated list of names)', names_str),
-        '\n    ')
-    return (key, help, default,
-            None, #_validator,
-            lambda val, elems=names, m=map: _converter(val, elems, m))
+        (help, "(all|none|comma-separated list of names)", names_str), "\n    "
+    )
+    return (
+        key,
+        help,
+        default,
+        None,  # _validator,
+        lambda val, elems=names, m=map: _converter(val, elems, m),
+    )
+
 
 # Local Variables:
 # tab-width:4

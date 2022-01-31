@@ -1,34 +1,34 @@
 SUBROUTINE REDISTRIBUTION(ns, naer, EH2O, dbound, fixed_diameter, &
     fixed_density_aer, IDENS, &
-    scheme, section_pass, aerosol_density, DQLIMIT, Qesp, N, Q) 
+    scheme, section_pass, aerosol_density, DQLIMIT, Qesp, N, Q)
 
 !!$------------------------------------------------------------------------
-!!$     
+!!$
 !!$     -- INPUT VARIABLES
-!!$     
-!!$     
+!!$
+!!$
 !!$     ns             : number of sections
 !!$     naer           : number of species
 !!$     dbound         : list of limit bound diameter [\mu m]
-!!$     fixed_diameter : list of mean diameter 
+!!$     fixed_diameter : list of mean diameter
 !!$     scheme         : redistribution scheme
 !!$                      3 = euler_mass
 !!$                      4 = euler_number
-!!$                      5 = hemen 
+!!$                      5 = hemen
 !!$                      6 = euler_coupled
-!!$     section_pass   : bin include 100nm  
+!!$     section_pass   : bin include 100nm
 !!$     aerosol_density : list of liquid mass density of each species
-!!$ 
+!!$
 !!$     -- VARIABLES
-!!$     
+!!$
 !!$     rho            : density per bin
-!!$     
-!!$     Eps_diam       : tolerance to the diameter which may be slightly above 
+!!$
+!!$     Eps_diam       : tolerance to the diameter which may be slightly above
 !!$                      the edge of the section
-!!$     Eps_dbl_prec   : tolerance lower in the case where the diameter so little 
-!!$                      increases or decreases as one considers that it is 
-!!$                      not happening 
-!!$                    : it can not work with a time not too restrictive 
+!!$     Eps_dbl_prec   : tolerance lower in the case where the diameter so little
+!!$                      increases or decreases as one considers that it is
+!!$                      not happening
+!!$                    : it can not work with a time not too restrictive
 !!$     grand          : list of 0 or 1
 !!$                      1 = cutting with the upper box
 !!$                      0 = cutting with the lower box
@@ -39,14 +39,14 @@ SUBROUTINE REDISTRIBUTION(ns, naer, EH2O, dbound, fixed_diameter, &
 !!$     alpha          : list of fraction of each species in Q
 !!$
 !!$     -- INPUT/OUTPUT VARIABLES
-!!$      
+!!$
 !!$     N            : Number concentration per bin
 !!$     Qesp         : Mass concentration per bin and species
 !!$     Q            : Total mass concentration per bin
-!!$      
+!!$
 !!$     -- OUTPUT VARIABLES
-!!$     
-!!$     
+!!$
+!!$
 !!$------------------------------------------------------------------------
 
   IMPLICIT NONE
@@ -65,17 +65,17 @@ SUBROUTINE REDISTRIBUTION(ns, naer, EH2O, dbound, fixed_diameter, &
   DOUBLE PRECISION, DIMENSION(ns), INTENT(inout) :: N, Q
   DOUBLE PRECISION, DIMENSION(ns, naer), INTENT(inout) :: Qesp
 
-  ! ------ 
+  ! ------
   INTEGER k, js, jaer, loc
   DOUBLE PRECISION, DIMENSION(ns) :: rho
   INTEGER, DIMENSION(ns) :: grand
   INTEGER, DIMENSION(ns) :: kloc
   DOUBLE PRECISION :: dbis, dnew
   DOUBLE PRECISION , DIMENSION(ns) :: X, d_after_cond, logfixed_diameter
-  DOUBLE PRECISION, DIMENSION(ns,naer) :: alpha 
-  
+  DOUBLE PRECISION, DIMENSION(ns,naer) :: alpha
+
   DOUBLE PRECISION :: frac, testalpha
-  
+
   !! Calcul of d(k) = dsqrt(dbound(k)*dbound(k+1))
   !! Reestimate d(k) from number and mass concentration BEFORE condensation/evaporation
 !  DO k = 1,ns
@@ -88,15 +88,15 @@ SUBROUTINE REDISTRIBUTION(ns, naer, EH2O, dbound, fixed_diameter, &
   !       endif
   !    ENDDO
   ! ENDDO
-  
+
 
   !***** Calcul dry total mass per bin
   Q=0.D0
   DO js = 1, ns
-     rho(js) = fixed_density_aer 
+     rho(js) = fixed_density_aer
      DO jaer = 1, naer
         if (jaer .NE. EH2O) then
-           Q(js)= Q(js) + Qesp(js, jaer) 
+           Q(js)= Q(js) + Qesp(js, jaer)
         endif
      ENDDO
   ENDDO
@@ -108,7 +108,7 @@ SUBROUTINE REDISTRIBUTION(ns, naer, EH2O, dbound, fixed_diameter, &
      DO jaer = 1, naer
         IF (Q(js) .NE. 0.D0) THEN
            alpha(js,jaer) = Qesp(js, jaer)/Q(js)
-           testalpha = testalpha + alpha(js,jaer) 
+           testalpha = testalpha + alpha(js,jaer)
         ELSE
            alpha(js, jaer) = 0.D0
         ENDIF
@@ -117,7 +117,7 @@ SUBROUTINE REDISTRIBUTION(ns, naer, EH2O, dbound, fixed_diameter, &
 !        print *,js, "Tot ALPHA",testalpha, "Qh2o", Qesp(js,EH2O), "Qtot", Q(js)
 !     endif
   ENDDO
-  
+
   !****** Calcul of new mean diameter after c/e
   DO k = 1, ns
      if (isNaN(N(k))) then
@@ -133,10 +133,10 @@ SUBROUTINE REDISTRIBUTION(ns, naer, EH2O, dbound, fixed_diameter, &
            enddo
            N(k) = 0.D0
            dbis = fixed_diameter(1)
-           kloc(k) = 1 
+           kloc(k) = 1
         ELSEIF (dbis .GT. dbound(ns+1)) THEN
            dbis = dbound(ns+1)
-           kloc(k)= ns 
+           kloc(k)= ns
         ELSE
            loc = 1
            DO WHILE(dbis .GT. dbound(loc+1))
@@ -159,7 +159,7 @@ SUBROUTINE REDISTRIBUTION(ns, naer, EH2O, dbound, fixed_diameter, &
      IF(dbis .GT. fixed_diameter(kloc(k))) THEN
         grand(k) = 1
      ELSE
-        grand(k) = 0 
+        grand(k) = 0
      ENDIF
 
   ENDDO
@@ -176,7 +176,7 @@ SUBROUTINE REDISTRIBUTION(ns, naer, EH2O, dbound, fixed_diameter, &
     CALL EULER_NUMBER(ns, naer,eh2o, dbound, grand, alpha, &
           fixed_diameter, d_after_cond, X, logfixed_diameter, &
           fixed_density_aer, idens, kloc, aerosol_density, rho, Qesp, N)
- 
+
   CASE (5)
     CALL HEMEN(ns, naer, eh2o,grand, section_pass, fixed_diameter, &
           dbound, X, d_after_cond, logfixed_diameter, &
@@ -191,10 +191,10 @@ SUBROUTINE REDISTRIBUTION(ns, naer, EH2O, dbound, fixed_diameter, &
     CALL EULER_NUMBER_NORM(ns, naer, eh2o,dbound, grand, alpha, &
           fixed_diameter, d_after_cond, X, logfixed_diameter, &
           fixed_density_aer, idens, kloc, aerosol_density,DQLIMIT, rho, Qesp, N)
- 
+
   CASE (8)
     CALL HEMEN_NORM(ns, naer,  EH2O, grand, section_pass, &
-          dbound, X, d_after_cond, fixed_diameter, fixed_density_aer, idens, & 
+          dbound, X, d_after_cond, fixed_diameter, fixed_density_aer, idens, &
           kloc, alpha, aerosol_density, DQLIMIT, rho, Qesp, N)
 
   CASE (9)
@@ -202,8 +202,8 @@ SUBROUTINE REDISTRIBUTION(ns, naer, EH2O, dbound, fixed_diameter, &
            fixed_density_aer, idens, kloc, alpha, aerosol_density, DQLIMIT, Qesp, N)
 
   CASE (10)
-    CALL MOVING_DIAM(ns, naer, eh2o, kloc, Qesp, N)  
-  
+    CALL MOVING_DIAM(ns, naer, eh2o, kloc, Qesp, N)
+
   CASE DEFAULT
      PRINT*, "Please choose from the following redistribution methods : ", &
           "number-conserving, interpolation, euler-mass, euler-number, ",&
@@ -215,7 +215,7 @@ SUBROUTINE REDISTRIBUTION(ns, naer, EH2O, dbound, fixed_diameter, &
   DO js = 1, ns
      DO jaer = 1, naer
         if (jaer .NE. EH2O) then
-           Q(js)= Q(js) + Qesp(js, jaer) 
+           Q(js)= Q(js) + Qesp(js, jaer)
         endif
      ENDDO
   ENDDO
@@ -236,4 +236,3 @@ SUBROUTINE REDISTRIBUTION(ns, naer, EH2O, dbound, fixed_diameter, &
   ENDDO
 
 END SUBROUTINE REDISTRIBUTION
-

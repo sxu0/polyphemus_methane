@@ -91,7 +91,7 @@ namespace Polyphemus
                                      double*, double*, int*, double*, double*, double*, double*, double*);
 
     void _dimensions(int*, int*, int*);
-	
+
   }
 
 
@@ -133,7 +133,7 @@ namespace Polyphemus
     Array<T, 1> ConversionFactor;
     //! Conversion factor from \mu.g/m3 to molecules/cm3.
     Array<T, 2> ConversionFactorJacobian;
-	
+
     /*! \brief Map between photolysis reactions names and their indices in
       photolysis reactions.
     */
@@ -145,37 +145,37 @@ namespace Polyphemus
 
     //! Number of inorganic aerosol species.
     int Ns_inorganic_aer;
-   
+
     //! Number of inert aerosol species.
     int Ns_inert_aer;
-    
+
     //! Number of organic aerosol species.
     int Ns_organic_aer;
-    
+
     //! Number of sub-cycles ofr aerosol processes
     int Ncycle_aer;
-   
+
     //! Number of aerosol species.
     int Ns_aer;
-    
+
     //! Number of aerosol groups.
     int Ngroup_aer;
 
     //! Number of aerosol composition sections.
     int Ncomposition_aer;
-    
+
     //! Number of aerosol size sections.
     int Nsize_section_aer;
-    
+
     //! Number of aerosol bins.
     int Nbin_aer;
-    
+
     //!Indice for PBiPER number
     int jBiPER;
 
     //!Indice for BiPER degradation kinetics
     int kBiPER;
-	
+
     //! Bin index corresponding to fixed cutting diameter.
     int cutting_bin;
     /* bins from 1 to cutting_bin included are at equilibrium
@@ -193,7 +193,7 @@ namespace Polyphemus
     /*** Configuration ***/
 
     map<string, bool> option_process_aer;
-   
+
     //! Numerical solver for dynamic bin condensation (etr, ros2 or ebi).
     string dynamic_condensation_solver;
 
@@ -229,13 +229,13 @@ namespace Polyphemus
 
     //! Bins bounds (in m).
     Array<T, 1> BinBound_aer;
-    
+
     //! relations between aerosol species index and groups index
     Array<int, 1> aerosol_species_group_relation;
-    
+
     //! List of aerosol compositions bounds
     Array<T, 1> composition_bounds;
-    
+
     //! Aerosol density (kg / m^3).
     double FixedDensity_aer;
     Array<T, 1> Density_aer;
@@ -258,7 +258,7 @@ namespace Polyphemus
 
     //! Option for photolysis
     int option_photolysis;
-	
+
     //! Saturation pressure (Pascals).
     Array<T, 1> saturation_pressure;
 
@@ -291,7 +291,7 @@ namespace Polyphemus
 
     //! Collision factor ().
     Array<T, 1> collision_factor_aer;
-  
+
     //! Mass density (\mu g.\mu m^-3).
     Array<T, 1> mass_density_aer;
 
@@ -331,7 +331,7 @@ namespace Polyphemus
 
     template<class ClassModel>
     void DisplayConfiguration(ClassModel& Model);
-    
+
     template<class ClassModel>
     void Forward(ClassModel& Model);
 
@@ -399,7 +399,7 @@ namespace Polyphemus
                      Data<T, 3>& pH,
                      Data<T, 4>& NumberConcentration_aer,
                      Data<T, 3>& InCloudWetDepositionFluxNumber_aer);
-	
+
     void Forward_aer(T current_time,
                      T& specifichumidity,
                      T& temperature,
@@ -429,7 +429,7 @@ namespace Polyphemus
 
 
     void Read_Coagulation_Coefficient(const string &input_file);
-					 
+
   };
 
 

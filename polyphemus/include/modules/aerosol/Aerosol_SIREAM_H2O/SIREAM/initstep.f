@@ -120,7 +120,7 @@ C     Coagulation time step.
      s        first_index_coag,second_index_coag,
      s        coefficient_coag,QT,XSF,MSF,DSF,XSD,MSD,DSD,AA,
      s        bin_density)
-         
+
          DO jj=1,neq
             tmp=q(jj)*dqdt(jj)
             IF (tmp.NE.0.D0) THEN
@@ -141,7 +141,7 @@ C     Cond/evap time step.
      s        first_index_coag,second_index_coag,
      s        coefficient_coag,QT,XSF,MSF,DSF,XSD,MSD,DSD,AA,
      s        bin_density)
-         
+
          DO jj=1,neq
             tmp=q(jj)*dqdt(jj)
             IF (tmp.NE.0.D0) THEN

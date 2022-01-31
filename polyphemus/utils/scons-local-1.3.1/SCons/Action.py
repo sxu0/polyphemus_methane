@@ -117,12 +117,15 @@ import SCons.Subst
 is_String = SCons.Util.is_String
 is_List = SCons.Util.is_List
 
+
 class _null:
     pass
+
 
 print_actions = 1
 execute_actions = 1
 print_actions_presub = 0
+
 
 def rfile(n):
     try:
@@ -130,8 +133,10 @@ def rfile(n):
     except AttributeError:
         return n
 
+
 def default_exitstatfunc(s):
     return s
+
 
 try:
     SET_LINENO = dis.SET_LINENO
@@ -139,6 +144,7 @@ try:
 except AttributeError:
     remove_set_lineno_codes = lambda x: x
 else:
+
     def remove_set_lineno_codes(code):
         result = []
         n = len(code)
@@ -148,19 +154,19 @@ else:
             op = ord(c)
             if op >= HAVE_ARGUMENT:
                 if op != SET_LINENO:
-                    result.append(code[i:i+3])
-                i = i+3
+                    result.append(code[i : i + 3])
+                i = i + 3
             else:
                 result.append(c)
-                i = i+1
-        return string.join(result, '')
+                i = i + 1
+        return string.join(result, "")
 
-strip_quotes = re.compile('^[\'"](.*)[\'"]$')
+
+strip_quotes = re.compile("^['\"](.*)['\"]$")
 
 
 def _callable_contents(obj):
-    """Return the signature contents of a callable Python object.
-    """
+    """Return the signature contents of a callable Python object."""
     try:
         # Test if obj is a method.
         return _function_contents(obj.im_func)
@@ -176,8 +182,8 @@ def _callable_contents(obj):
                 return _code_contents(obj)
 
             except AttributeError:
-                    # Test if obj is a function object.
-                    return _function_contents(obj)
+                # Test if obj is a function object.
+                return _function_contents(obj)
 
 
 def _object_contents(obj):
@@ -249,19 +255,20 @@ def _code_contents(code):
     # Note that we also always ignore the first entry of co_consts
     # which contains the function doc string. We assume that the
     # function does not access its doc string.
-    contents.append(',(' + string.join(map(_object_contents,code.co_consts[1:]),',') + ')')
+    contents.append(
+        ",(" + string.join(map(_object_contents, code.co_consts[1:]), ",") + ")"
+    )
 
     # The code contents depends on the variable names used to
     # accessed global variable, as changing the variable name changes
     # the variable actually accessed and therefore changes the
     # function result.
-    contents.append(',(' + string.join(map(_object_contents,code.co_names),',') + ')')
-
+    contents.append(",(" + string.join(map(_object_contents, code.co_names), ",") + ")")
 
     # The code contents depends on its actual code!!!
-    contents.append(',(' + str(remove_set_lineno_codes(code.co_code)) + ')')
+    contents.append(",(" + str(remove_set_lineno_codes(code.co_code)) + ")")
 
-    return string.join(contents, '')
+    return string.join(contents, "")
 
 
 def _function_contents(func):
@@ -271,9 +278,11 @@ def _function_contents(func):
 
     # The function contents depends on the value of defaults arguments
     if func.func_defaults:
-        contents.append(',(' + string.join(map(_object_contents,func.func_defaults),',') + ')')
+        contents.append(
+            ",(" + string.join(map(_object_contents, func.func_defaults), ",") + ")"
+        )
     else:
-        contents.append(',()')
+        contents.append(",()")
 
     # The function contents depends on the closure captured cell values.
     try:
@@ -282,14 +291,14 @@ def _function_contents(func):
         # Older versions of Python do not support closures.
         closure = []
 
-    #xxx = [_object_contents(x.cell_contents) for x in closure]
+    # xxx = [_object_contents(x.cell_contents) for x in closure]
     try:
         xxx = map(lambda x: _object_contents(x.cell_contents), closure)
     except AttributeError:
         xxx = []
-    contents.append(',(' + string.join(xxx, ',') + ')')
+    contents.append(",(" + string.join(xxx, ",") + ")")
 
-    return string.join(contents, '')
+    return string.join(contents, "")
 
 
 def _actionAppend(act1, act2):
@@ -304,39 +313,46 @@ def _actionAppend(act1, act2):
         if isinstance(a2, ListAction):
             return ListAction(a1.list + a2.list)
         else:
-            return ListAction(a1.list + [ a2 ])
+            return ListAction(a1.list + [a2])
     else:
         if isinstance(a2, ListAction):
-            return ListAction([ a1 ] + a2.list)
+            return ListAction([a1] + a2.list)
         else:
-            return ListAction([ a1, a2 ])
+            return ListAction([a1, a2])
+
 
 def _do_create_keywords(args, kw):
     """This converts any arguments after the action argument into
     their equivalent keywords and adds them to the kw argument.
     """
-    v = kw.get('varlist', ())
+    v = kw.get("varlist", ())
     # prevent varlist="FOO" from being interpreted as ['F', 'O', 'O']
-    if is_String(v): v = (v,)
-    kw['varlist'] = tuple(v)
+    if is_String(v):
+        v = (v,)
+    kw["varlist"] = tuple(v)
     if args:
         # turn positional args into equivalent keywords
         cmdstrfunc = args[0]
         if cmdstrfunc is None or is_String(cmdstrfunc):
-            kw['cmdstr'] = cmdstrfunc
+            kw["cmdstr"] = cmdstrfunc
         elif callable(cmdstrfunc):
-            kw['strfunction'] = cmdstrfunc
+            kw["strfunction"] = cmdstrfunc
         else:
             raise SCons.Errors.UserError(
-                'Invalid command display variable type. '
-                'You must either pass a string or a callback which '
-                'accepts (target, source, env) as parameters.')
+                "Invalid command display variable type. "
+                "You must either pass a string or a callback which "
+                "accepts (target, source, env) as parameters."
+            )
         if len(args) > 1:
-            kw['varlist'] = args[1:] + kw['varlist']
-    if kw.get('strfunction', _null) is not _null \
-                      and kw.get('cmdstr', _null) is not _null:
+            kw["varlist"] = args[1:] + kw["varlist"]
+    if (
+        kw.get("strfunction", _null) is not _null
+        and kw.get("cmdstr", _null) is not _null
+    ):
         raise SCons.Errors.UserError(
-            'Cannot have both strfunction and cmdstr args to Action()')
+            "Cannot have both strfunction and cmdstr args to Action()"
+        )
+
 
 def _do_create_action(act, kw):
     """This is the actual "implementation" for the
@@ -353,13 +369,13 @@ def _do_create_action(act, kw):
         return act
 
     if is_List(act):
-        #TODO(1.5) return CommandAction(act, **kw)
+        # TODO(1.5) return CommandAction(act, **kw)
         return apply(CommandAction, (act,), kw)
 
     if callable(act):
         try:
-            gen = kw['generator']
-            del kw['generator']
+            gen = kw["generator"]
+            del kw["generator"]
         except KeyError:
             gen = 0
         if gen:
@@ -369,7 +385,7 @@ def _do_create_action(act, kw):
         return action_type(act, kw)
 
     if is_String(act):
-        var=SCons.Util.get_environment_var(act)
+        var = SCons.Util.get_environment_var(act)
         if var:
             # This looks like a string that is purely an Environment
             # variable reference, like "$FOO" or "${FOO}".  We do
@@ -378,14 +394,15 @@ def _do_create_action(act, kw):
             # like a function or a CommandGenerator in that variable
             # instead of a string.
             return LazyAction(var, kw)
-        commands = string.split(str(act), '\n')
+        commands = string.split(str(act), "\n")
         if len(commands) == 1:
-            #TODO(1.5) return CommandAction(commands[0], **kw)
+            # TODO(1.5) return CommandAction(commands[0], **kw)
             return apply(CommandAction, (commands[0],), kw)
         # The list of string commands may include a LazyAction, so we
         # reprocess them via _do_create_list_action.
         return _do_create_list_action(commands, kw)
     return None
+
 
 def _do_create_list_action(act, kw):
     """A factory for list actions.  Convert the input list into Actions
@@ -393,13 +410,15 @@ def _do_create_list_action(act, kw):
     acts = []
     for a in act:
         aa = _do_create_action(a, kw)
-        if aa is not None: acts.append(aa)
+        if aa is not None:
+            acts.append(aa)
     if not acts:
         return ListAction([])
     elif len(acts) == 1:
         return acts[0]
     else:
         return ListAction(acts)
+
 
 def Action(act, *args, **kw):
     """A factory for action objects."""
@@ -408,6 +427,7 @@ def Action(act, *args, **kw):
     if is_List(act):
         return _do_create_list_action(act, kw)
     return _do_create_action(act, kw)
+
 
 class ActionBase:
     """Base class for all types of action objects that can be held by
@@ -426,15 +446,16 @@ class ActionBase:
         return str(self)
 
     def get_contents(self, target, source, env):
-        result = [ self.get_presig(target, source, env) ]
+        result = [self.get_presig(target, source, env)]
         # This should never happen, as the Action() factory should wrap
         # the varlist, but just in case an action is created directly,
         # we duplicate this check here.
         vl = self.get_varlist(target, source, env)
-        if is_String(vl): vl = (vl,)
+        if is_String(vl):
+            vl = (vl,)
         for v in vl:
-            result.append(env.subst('${'+v+'}'))
-        return string.join(result, '')
+            result.append(env.subst("${" + v + "}"))
+        return string.join(result, "")
 
     def __add__(self, other):
         return _actionAppend(self, other)
@@ -450,8 +471,8 @@ class ActionBase:
         # and CommandGeneratorAction will use this env
         # when it calls its _generate method.
         self.presub_env = env
-        lines = string.split(str(self), '\n')
-        self.presub_env = None      # don't need this any more
+        lines = string.split(str(self), "\n")
+        self.presub_env = None  # don't need this any more
         return lines
 
     def get_varlist(self, target, source, env, executor=None):
@@ -464,12 +485,22 @@ class ActionBase:
         """
         return self.targets
 
+
 class _ActionAction(ActionBase):
     """Base class for actions that create output objects."""
-    def __init__(self, cmdstr=_null, strfunction=_null, varlist=(),
-                       presub=_null, chdir=None, exitstatfunc=None,
-                       batch_key=None, targets='$TARGETS',
-                 **kw):
+
+    def __init__(
+        self,
+        cmdstr=_null,
+        strfunction=_null,
+        varlist=(),
+        presub=_null,
+        chdir=None,
+        exitstatfunc=None,
+        batch_key=None,
+        targets="$TARGETS",
+        **kw
+    ):
         self.cmdstr = cmdstr
         if strfunction is not _null:
             if strfunction is None:
@@ -493,19 +524,25 @@ class _ActionAction(ActionBase):
                 # for each construction environment.
                 def default_batch_key(self, env, target, source):
                     return (id(self), id(env))
+
                 batch_key = default_batch_key
-            SCons.Util.AddMethod(self, batch_key, 'batch_key')
+            SCons.Util.AddMethod(self, batch_key, "batch_key")
 
     def print_cmd_line(self, s, target, source, env):
         sys.stdout.write(s + "\n")
 
-    def __call__(self, target, source, env,
-                               exitstatfunc=_null,
-                               presub=_null,
-                               show=_null,
-                               execute=_null,
-                               chdir=_null,
-                               executor=None):
+    def __call__(
+        self,
+        target,
+        source,
+        env,
+        exitstatfunc=_null,
+        presub=_null,
+        show=_null,
+        execute=_null,
+        chdir=_null,
+        executor=None,
+    ):
         if not is_List(target):
             target = [target]
         if not is_List(source):
@@ -515,10 +552,14 @@ class _ActionAction(ActionBase):
             presub = self.presub
             if presub is _null:
                 presub = print_actions_presub
-        if exitstatfunc is _null: exitstatfunc = self.exitstatfunc
-        if show is _null:  show = print_actions
-        if execute is _null:  execute = execute_actions
-        if chdir is _null: chdir = self.chdir
+        if exitstatfunc is _null:
+            exitstatfunc = self.exitstatfunc
+        if show is _null:
+            show = print_actions
+        if execute is _null:
+            execute = execute_actions
+        if chdir is _null:
+            chdir = self.chdir
         save_cwd = None
         if chdir:
             save_cwd = os.getcwd()
@@ -534,8 +575,8 @@ class _ActionAction(ActionBase):
             if executor:
                 target = executor.get_all_targets()
                 source = executor.get_all_sources()
-            t = string.join(map(str, target), ' and ')
-            l = string.join(self.presub_lines(env), '\n  ')
+            t = string.join(map(str, target), " and ")
+            l = string.join(self.presub_lines(env), "\n  ")
             out = "Building %s with action:\n  %s\n" % (t, l)
             sys.stdout.write(out)
         cmd = None
@@ -549,13 +590,13 @@ class _ActionAction(ActionBase):
                 cmd = self.strfunction(target, source, env)
             if cmd:
                 if chdir:
-                    cmd = ('os.chdir(%s)\n' % repr(chdir)) + cmd
+                    cmd = ("os.chdir(%s)\n" % repr(chdir)) + cmd
                 try:
                     get = env.get
                 except AttributeError:
                     print_func = self.print_cmd_line
                 else:
-                    print_func = get('PRINT_CMD_LINE_FUNC')
+                    print_func = get("PRINT_CMD_LINE_FUNC")
                     if not print_func:
                         print_func = self.print_cmd_line
                 print_func(cmd, target, source, env)
@@ -577,7 +618,7 @@ class _ActionAction(ActionBase):
                 if save_cwd:
                     os.chdir(save_cwd)
         if cmd and save_cwd:
-            print_func('os.chdir(%s)' % repr(save_cwd), target, source, env)
+            print_func("os.chdir(%s)" % repr(save_cwd), target, source, env)
 
         return stat
 
@@ -587,10 +628,11 @@ def _string_from_cmd_list(cmd_list):
     representation for printing."""
     cl = []
     for arg in map(str, cmd_list):
-        if ' ' in arg or '\t' in arg:
+        if " " in arg or "\t" in arg:
             arg = '"' + arg + '"'
         cl.append(arg)
     return string.join(cl)
+
 
 # A fiddlin' little function that has an 'import SCons.Environment' which
 # can't be moved to the top level without creating an import loop.  Since
@@ -598,42 +640,47 @@ def _string_from_cmd_list(cmd_list):
 # the global variable, so we move it here to prevent complaints about local
 # variables being used uninitialized.
 default_ENV = None
+
+
 def get_default_ENV(env):
     global default_ENV
     try:
-        return env['ENV']
-    except (KeyError,TypeError):
+        return env["ENV"]
+    except (KeyError, TypeError):
         # TypeError handles when the env passed in is None
         if not default_ENV:
             import SCons.Environment
+
             # This is a hideously expensive way to get a default shell
             # environment.  What it really should do is run the platform
             # setup to get the default ENV.  Fortunately, it's incredibly
             # rare for an Environment not to have a shell environment, so
             # we're not going to worry about it overmuch.
-            default_ENV = SCons.Environment.Environment(tools=[])['ENV']
+            default_ENV = SCons.Environment.Environment(tools=[])["ENV"]
         return default_ENV
+
 
 # This function is still in draft mode.  We're going to need something like
 # it in the long run as more and more places use subprocess, but I'm sure
 # it'll have to be tweaked to get the full desired functionality.
 # one special arg (so far?), 'error', to tell what to do with exceptions.
-def _subproc(scons_env, cmd, error = 'ignore', **kw):
+def _subproc(scons_env, cmd, error="ignore", **kw):
     """Do common setup for a subprocess.Popen() call"""
     # allow std{in,out,err} to be "'devnull'"
-    io = kw.get('stdin')
-    if is_String(io) and io == 'devnull':
-        kw['stdin'] = open(os.devnull)
-    io = kw.get('stdout')
-    if is_String(io) and io == 'devnull':
-        kw['stdout'] = open(os.devnull, 'w')
-    io = kw.get('stderr')
-    if is_String(io) and io == 'devnull':
-        kw['stderr'] = open(os.devnull, 'w')
+    io = kw.get("stdin")
+    if is_String(io) and io == "devnull":
+        kw["stdin"] = open(os.devnull)
+    io = kw.get("stdout")
+    if is_String(io) and io == "devnull":
+        kw["stdout"] = open(os.devnull, "w")
+    io = kw.get("stderr")
+    if is_String(io) and io == "devnull":
+        kw["stderr"] = open(os.devnull, "w")
 
     # Figure out what shell environment to use
-    ENV = kw.get('env', None)
-    if ENV is None: ENV = get_default_ENV(scons_env)
+    ENV = kw.get("env", None)
+    if ENV is None:
+        ENV = get_default_ENV(scons_env)
 
     # Ensure that the ENV values are all strings:
     new_env = {}
@@ -652,27 +699,42 @@ def _subproc(scons_env, cmd, error = 'ignore', **kw):
             # is the proper way to handle Dir and File instances and will
             # produce something reasonable for just about everything else:
             new_env[key] = str(value)
-    kw['env'] = new_env
+    kw["env"] = new_env
 
     try:
-        #FUTURE return subprocess.Popen(cmd, **kw)
+        # FUTURE return subprocess.Popen(cmd, **kw)
         return apply(subprocess.Popen, (cmd,), kw)
     except EnvironmentError, e:
-        if error == 'raise': raise
+        if error == "raise":
+            raise
         # return a dummy Popen instance that only returns error
         class dummyPopen:
-            def __init__(self, e): self.exception = e
-            def communicate(self): return ('','')
-            def wait(self): return -self.exception.errno
+            def __init__(self, e):
+                self.exception = e
+
+            def communicate(self):
+                return ("", "")
+
+            def wait(self):
+                return -self.exception.errno
+
             stdin = None
+
             class f:
-                def read(self): return ''
-                def readline(self): return ''
+                def read(self):
+                    return ""
+
+                def readline(self):
+                    return ""
+
             stdout = stderr = f()
+
         return dummyPopen(e)
+
 
 class CommandAction(_ActionAction):
     """Class for command-execution actions."""
+
     def __init__(self, cmd, **kw):
         # Cmd can actually be a list or a single item; if it's a
         # single item it should be the command string to execute; if a
@@ -683,19 +745,19 @@ class CommandAction(_ActionAction):
         # factory above does).  cmd will be passed to
         # Environment.subst_list() for substituting environment
         # variables.
-        if __debug__: logInstanceCreation(self, 'Action.CommandAction')
+        if __debug__:
+            logInstanceCreation(self, "Action.CommandAction")
 
-        #TODO(1.5) _ActionAction.__init__(self, **kw)
+        # TODO(1.5) _ActionAction.__init__(self, **kw)
         apply(_ActionAction.__init__, (self,), kw)
         if is_List(cmd):
             if filter(is_List, cmd):
-                raise TypeError, "CommandAction should be given only " \
-                      "a single command"
+                raise TypeError, "CommandAction should be given only " "a single command"
         self.cmd_list = cmd
 
     def __str__(self):
         if is_List(self.cmd_list):
-            return string.join(map(str, self.cmd_list), ' ')
+            return string.join(map(str, self.cmd_list), " ")
         return str(self.cmd_list)
 
     def process(self, target, source, env, executor=None):
@@ -706,11 +768,16 @@ class CommandAction(_ActionAction):
         silent = None
         ignore = None
         while 1:
-            try: c = result[0][0][0]
-            except IndexError: c = None
-            if c == '@': silent = 1
-            elif c == '-': ignore = 1
-            else: break
+            try:
+                c = result[0][0][0]
+            except IndexError:
+                c = None
+            if c == "@":
+                silent = 1
+            elif c == "-":
+                ignore = 1
+            else:
+                break
             result[0][0] = result[0][0][1:]
         try:
             if not result[0][0]:
@@ -724,6 +791,7 @@ class CommandAction(_ActionAction):
             return None
         if self.cmdstr is not _null:
             from SCons.Subst import SUBST_RAW
+
             if executor:
                 c = env.subst(self.cmdstr, SUBST_RAW, executor=executor)
             else:
@@ -732,7 +800,7 @@ class CommandAction(_ActionAction):
                 return c
         cmd_list, ignore, silent = self.process(target, source, env, executor)
         if silent:
-            return ''
+            return ""
         return _string_from_cmd_list(cmd_list[0])
 
     def execute(self, target, source, env, executor=None):
@@ -748,19 +816,19 @@ class CommandAction(_ActionAction):
         flatten_sequence = SCons.Util.flatten_sequence
 
         try:
-            shell = env['SHELL']
+            shell = env["SHELL"]
         except KeyError:
-            raise SCons.Errors.UserError('Missing SHELL construction variable.')
+            raise SCons.Errors.UserError("Missing SHELL construction variable.")
 
         try:
-            spawn = env['SPAWN']
+            spawn = env["SPAWN"]
         except KeyError:
-            raise SCons.Errors.UserError('Missing SPAWN construction variable.')
+            raise SCons.Errors.UserError("Missing SPAWN construction variable.")
         else:
             if is_String(spawn):
                 spawn = env.subst(spawn, raw=1, conv=lambda x: x)
 
-        escape = env.get('ESCAPE', lambda x: x)
+        escape = env.get("ESCAPE", lambda x: x)
 
         ENV = get_default_ENV(env)
 
@@ -783,7 +851,9 @@ class CommandAction(_ActionAction):
         if executor:
             target = executor.get_all_targets()
             source = executor.get_all_sources()
-        cmd_list, ignore, silent = self.process(target, map(rfile, source), env, executor)
+        cmd_list, ignore, silent = self.process(
+            target, map(rfile, source), env, executor
+        )
 
         # Use len() to filter out any "command" that's zero-length.
         for cmd_line in filter(len, cmd_list):
@@ -792,10 +862,9 @@ class CommandAction(_ActionAction):
             result = spawn(shell, escape, cmd_line[0], cmd_line, ENV)
             if not ignore and result:
                 msg = "Error %s" % result
-                return SCons.Errors.BuildError(errstr=msg,
-                                               status=result,
-                                               action=self,
-                                               command=cmd_line)
+                return SCons.Errors.BuildError(
+                    errstr=msg, status=result, action=self, command=cmd_line
+                )
         return 0
 
     def get_presig(self, target, source, env, executor=None):
@@ -805,6 +874,7 @@ class CommandAction(_ActionAction):
         since those parts don't affect signatures.
         """
         from SCons.Subst import SUBST_SIG
+
         cmd = self.cmd_list
         if is_List(cmd):
             cmd = string.join(map(str, cmd))
@@ -816,12 +886,13 @@ class CommandAction(_ActionAction):
             return env.subst_target_source(cmd, SUBST_SIG, target, source)
 
     def get_implicit_deps(self, target, source, env, executor=None):
-        icd = env.get('IMPLICIT_COMMAND_DEPENDENCIES', True)
-        if is_String(icd) and icd[:1] == '$':
+        icd = env.get("IMPLICIT_COMMAND_DEPENDENCIES", True)
+        if is_String(icd) and icd[:1] == "$":
             icd = env.subst(icd)
-        if not icd or icd in ('0', 'None'):
+        if not icd or icd in ("0", "None"):
             return []
         from SCons.Subst import SUBST_SIG
+
         if executor:
             cmd_list = env.subst_list(self.cmd_list, SUBST_SIG, executor=executor)
         else:
@@ -838,14 +909,17 @@ class CommandAction(_ActionAction):
                     res.append(env.fs.File(d))
         return res
 
+
 class CommandGeneratorAction(ActionBase):
     """Class for command-generator actions."""
+
     def __init__(self, generator, kw):
-        if __debug__: logInstanceCreation(self, 'Action.CommandGeneratorAction')
+        if __debug__:
+            logInstanceCreation(self, "Action.CommandGeneratorAction")
         self.generator = generator
         self.gen_kw = kw
-        self.varlist = kw.get('varlist', ())
-        self.targets = kw.get('targets', '$TARGETS')
+        self.varlist = kw.get("varlist", ())
+        self.targets = kw.get("targets", "$TARGETS")
 
     def _generate(self, target, source, env, for_signature, executor=None):
         # ensure that target is a list, to make it easier to write
@@ -856,14 +930,16 @@ class CommandGeneratorAction(ActionBase):
         if executor:
             target = executor.get_all_targets()
             source = executor.get_all_sources()
-        ret = self.generator(target=target,
-                             source=source,
-                             env=env,
-                             for_signature=for_signature)
-        #TODO(1.5) gen_cmd = Action(ret, **self.gen_kw)
+        ret = self.generator(
+            target=target, source=source, env=env, for_signature=for_signature
+        )
+        # TODO(1.5) gen_cmd = Action(ret, **self.gen_kw)
         gen_cmd = apply(Action, (ret,), self.gen_kw)
         if not gen_cmd:
-            raise SCons.Errors.UserError("Object returned from command generator: %s cannot be used to create an Action." % repr(ret))
+            raise SCons.Errors.UserError(
+                "Object returned from command generator: %s cannot be used to create an Action."
+                % repr(ret)
+            )
         return gen_cmd
 
     def __str__(self):
@@ -880,15 +956,31 @@ class CommandGeneratorAction(ActionBase):
         return self._generate(target, source, env, 1).batch_key(env, target, source)
 
     def genstring(self, target, source, env, executor=None):
-        return self._generate(target, source, env, 1, executor).genstring(target, source, env)
+        return self._generate(target, source, env, 1, executor).genstring(
+            target, source, env
+        )
 
-    def __call__(self, target, source, env, exitstatfunc=_null, presub=_null,
-                 show=_null, execute=_null, chdir=_null, executor=None):
+    def __call__(
+        self,
+        target,
+        source,
+        env,
+        exitstatfunc=_null,
+        presub=_null,
+        show=_null,
+        execute=_null,
+        chdir=_null,
+        executor=None,
+    ):
         act = self._generate(target, source, env, 0, executor)
         if act is None:
-            raise UserError("While building `%s': Cannot deduce file extension from source files: %s" % (repr(map(str, target)), repr(map(str, source))))
-        return act(target, source, env, exitstatfunc, presub,
-                   show, execute, chdir, executor)
+            raise UserError(
+                "While building `%s': Cannot deduce file extension from source files: %s"
+                % (repr(map(str, target)), repr(map(str, source)))
+            )
+        return act(
+            target, source, env, exitstatfunc, presub, show, execute, chdir, executor
+        )
 
     def get_presig(self, target, source, env, executor=None):
         """Return the signature contents of this action's command line.
@@ -896,17 +988,22 @@ class CommandGeneratorAction(ActionBase):
         This strips $(-$) and everything in between the string,
         since those parts don't affect signatures.
         """
-        return self._generate(target, source, env, 1, executor).get_presig(target, source, env)
+        return self._generate(target, source, env, 1, executor).get_presig(
+            target, source, env
+        )
 
     def get_implicit_deps(self, target, source, env, executor=None):
-        return self._generate(target, source, env, 1, executor).get_implicit_deps(target, source, env)
+        return self._generate(target, source, env, 1, executor).get_implicit_deps(
+            target, source, env
+        )
 
     def get_varlist(self, target, source, env, executor=None):
-        return self._generate(target, source, env, 1, executor).get_varlist(target, source, env, executor)
+        return self._generate(target, source, env, 1, executor).get_varlist(
+            target, source, env, executor
+        )
 
     def get_targets(self, env, executor):
         return self._generate(None, None, env, 1, executor).get_targets(env, executor)
-
 
 
 # A LazyAction is a kind of hybrid generator and command action for
@@ -926,30 +1023,33 @@ class CommandGeneratorAction(ActionBase):
 # _generate() method, that is, our own way of handling "generation" of
 # an action based on what's in the construction variable.
 
-class LazyAction(CommandGeneratorAction, CommandAction):
 
+class LazyAction(CommandGeneratorAction, CommandAction):
     def __init__(self, var, kw):
-        if __debug__: logInstanceCreation(self, 'Action.LazyAction')
-        #FUTURE CommandAction.__init__(self, '${'+var+'}', **kw)
-        apply(CommandAction.__init__, (self, '${'+var+'}'), kw)
+        if __debug__:
+            logInstanceCreation(self, "Action.LazyAction")
+        # FUTURE CommandAction.__init__(self, '${'+var+'}', **kw)
+        apply(CommandAction.__init__, (self, "${" + var + "}"), kw)
         self.var = SCons.Util.to_String(var)
         self.gen_kw = kw
 
     def get_parent_class(self, env):
         c = env.get(self.var)
-        if is_String(c) and not '\n' in c:
+        if is_String(c) and not "\n" in c:
             return CommandAction
         return CommandGeneratorAction
 
     def _generate_cache(self, env):
         if env:
-            c = env.get(self.var, '')
+            c = env.get(self.var, "")
         else:
-            c = ''
-        #TODO(1.5) gen_cmd = Action(c, **self.gen_kw)
+            c = ""
+        # TODO(1.5) gen_cmd = Action(c, **self.gen_kw)
         gen_cmd = apply(Action, (c,), self.gen_kw)
         if not gen_cmd:
-            raise SCons.Errors.UserError("$%s value %s cannot be used to create an Action." % (self.var, repr(c)))
+            raise SCons.Errors.UserError(
+                "$%s value %s cannot be used to create an Action." % (self.var, repr(c))
+            )
         return gen_cmd
 
     def _generate(self, target, source, env, for_signature, executor=None):
@@ -958,7 +1058,7 @@ class LazyAction(CommandGeneratorAction, CommandAction):
     def __call__(self, target, source, env, *args, **kw):
         args = (self, target, source, env) + args
         c = self.get_parent_class(env)
-        #TODO(1.5) return c.__call__(*args, **kw)
+        # TODO(1.5) return c.__call__(*args, **kw)
         return apply(c.__call__, args, kw)
 
     def get_presig(self, target, source, env):
@@ -974,7 +1074,8 @@ class FunctionAction(_ActionAction):
     """Class for Python function actions."""
 
     def __init__(self, execfunction, kw):
-        if __debug__: logInstanceCreation(self, 'Action.FunctionAction')
+        if __debug__:
+            logInstanceCreation(self, "Action.FunctionAction")
 
         self.execfunction = execfunction
         try:
@@ -987,7 +1088,7 @@ class FunctionAction(_ActionAction):
                 # This is weird, just do the best we can.
                 self.funccontents = _object_contents(execfunction)
 
-        #TODO(1.5) _ActionAction.__init__(self, **kw)
+        # TODO(1.5) _ActionAction.__init__(self, **kw)
         apply(_ActionAction.__init__, (self,), kw)
 
     def function_name(self):
@@ -1004,12 +1105,14 @@ class FunctionAction(_ActionAction):
             return None
         if self.cmdstr is not _null:
             from SCons.Subst import SUBST_RAW
+
             if executor:
                 c = env.subst(self.cmdstr, SUBST_RAW, executor=executor)
             else:
                 c = env.subst(self.cmdstr, SUBST_RAW, target, source)
             if c:
                 return c
+
         def array(a):
             def quote(s):
                 try:
@@ -1019,7 +1122,9 @@ class FunctionAction(_ActionAction):
                 else:
                     s = str_for_display()
                 return s
-            return '[' + string.join(map(quote, a), ", ") + ']'
+
+            return "[" + string.join(map(quote, a), ", ") + "]"
+
         try:
             strfunc = self.execfunction.strfunction
         except AttributeError:
@@ -1036,12 +1141,12 @@ class FunctionAction(_ActionAction):
 
     def __str__(self):
         name = self.function_name()
-        if name == 'ActionCaller':
+        if name == "ActionCaller":
             return str(self.execfunction)
         return "%s(target, source, env)" % name
 
     def execute(self, target, source, env, executor=None):
-        exc_info = (None,None,None)
+        exc_info = (None, None, None)
         try:
             if executor:
                 target = executor.get_all_targets()
@@ -1059,12 +1164,12 @@ class FunctionAction(_ActionAction):
 
             if result:
                 result = SCons.Errors.convert_to_BuildError(result, exc_info)
-                result.node=target
-                result.action=self
+                result.node = target
+                result.action = self
                 try:
-                    result.command=self.strfunction(target, source, env, executor)
+                    result.command = self.strfunction(target, source, env, executor)
                 except TypeError:
-                    result.command=self.strfunction(target, source, env)
+                    result.command = self.strfunction(target, source, env)
 
                 # FIXME: This maintains backward compatibility with respect to
                 # which type of exceptions were returned by raising an
@@ -1072,8 +1177,7 @@ class FunctionAction(_ActionAction):
                 # probably be best to always return them by value here, but
                 # some codes do not check the return value of Actions and I do
                 # not have the time to modify them at this point.
-                if (exc_info[1] and
-                    not isinstance(exc_info[1],EnvironmentError)):
+                if exc_info[1] and not isinstance(exc_info[1], EnvironmentError):
                     raise result
 
             return result
@@ -1082,7 +1186,6 @@ class FunctionAction(_ActionAction):
             # function stack frame. See the sys.exc_info() doc info for
             # more information about this issue.
             del exc_info
-
 
     def get_presig(self, target, source, env):
         """Return the signature contents of this callable action."""
@@ -1094,51 +1197,78 @@ class FunctionAction(_ActionAction):
     def get_implicit_deps(self, target, source, env):
         return []
 
+
 class ListAction(ActionBase):
     """Class for lists of other actions."""
+
     def __init__(self, list):
-        if __debug__: logInstanceCreation(self, 'Action.ListAction')
+        if __debug__:
+            logInstanceCreation(self, "Action.ListAction")
+
         def list_of_actions(x):
             if isinstance(x, ActionBase):
                 return x
             return Action(x)
+
         self.list = map(list_of_actions, list)
         # our children will have had any varlist
         # applied; we don't need to do it again
         self.varlist = ()
-        self.targets = '$TARGETS'
+        self.targets = "$TARGETS"
 
     def genstring(self, target, source, env):
-        return string.join(map(lambda a, t=target, s=source, e=env:
-                                  a.genstring(t, s, e),
-                               self.list),
-                           '\n')
+        return string.join(
+            map(lambda a, t=target, s=source, e=env: a.genstring(t, s, e), self.list),
+            "\n",
+        )
 
     def __str__(self):
-        return string.join(map(str, self.list), '\n')
+        return string.join(map(str, self.list), "\n")
 
     def presub_lines(self, env):
         return SCons.Util.flatten_sequence(
-            map(lambda a, env=env: a.presub_lines(env), self.list))
+            map(lambda a, env=env: a.presub_lines(env), self.list)
+        )
 
     def get_presig(self, target, source, env):
         """Return the signature contents of this action list.
 
         Simple concatenation of the signatures of the elements.
         """
-        return string.join(map(lambda x, t=target, s=source, e=env:
-                                      x.get_contents(t, s, e),
-                               self.list),
-                           "")
+        return string.join(
+            map(
+                lambda x, t=target, s=source, e=env: x.get_contents(t, s, e), self.list
+            ),
+            "",
+        )
 
-    def __call__(self, target, source, env, exitstatfunc=_null, presub=_null,
-                 show=_null, execute=_null, chdir=_null, executor=None):
+    def __call__(
+        self,
+        target,
+        source,
+        env,
+        exitstatfunc=_null,
+        presub=_null,
+        show=_null,
+        execute=_null,
+        chdir=_null,
+        executor=None,
+    ):
         if executor:
             target = executor.get_all_targets()
             source = executor.get_all_sources()
         for act in self.list:
-            stat = act(target, source, env, exitstatfunc, presub,
-                       show, execute, chdir, executor)
+            stat = act(
+                target,
+                source,
+                env,
+                exitstatfunc,
+                presub,
+                show,
+                execute,
+                chdir,
+                executor,
+            )
             if stat:
                 return stat
         return 0
@@ -1156,6 +1286,7 @@ class ListAction(ActionBase):
                 result[var] = True
         return result.keys()
 
+
 class ActionCaller:
     """A class for delaying calling an Action function with specific
     (positional and keyword) arguments until the Action is actually
@@ -1165,6 +1296,7 @@ class ActionCaller:
     but what it's really doing is hanging on to the arguments until we
     have a target, source and env to use for the expansion.
     """
+
     def __init__(self, parent, args, kw):
         self.parent = parent
         self.args = args
@@ -1198,16 +1330,17 @@ class ActionCaller:
         # Special-case hack:  Let a custom function wrapped in an
         # ActionCaller get at the environment through which the action
         # was called by using this hard-coded value as a special return.
-        if s == '$__env__':
+        if s == "$__env__":
             return env
         elif is_String(s):
             return env.subst(s, 1, target, source)
         return self.parent.convert(s)
 
     def subst_args(self, target, source, env):
-        return map(lambda x, self=self, t=target, s=source, e=env:
-                          self.subst(x, t, s, e),
-                   self.args)
+        return map(
+            lambda x, self=self, t=target, s=source, e=env: self.subst(x, t, s, e),
+            self.args,
+        )
 
     def subst_kw(self, target, source, env):
         kw = {}
@@ -1218,18 +1351,19 @@ class ActionCaller:
     def __call__(self, target, source, env, executor=None):
         args = self.subst_args(target, source, env)
         kw = self.subst_kw(target, source, env)
-        #TODO(1.5) return self.parent.actfunc(*args, **kw)
+        # TODO(1.5) return self.parent.actfunc(*args, **kw)
         return apply(self.parent.actfunc, args, kw)
 
     def strfunction(self, target, source, env):
         args = self.subst_args(target, source, env)
         kw = self.subst_kw(target, source, env)
-        #TODO(1.5) return self.parent.strfunc(*args, **kw)
+        # TODO(1.5) return self.parent.strfunc(*args, **kw)
         return apply(self.parent.strfunc, args, kw)
 
     def __str__(self):
-        #TODO(1.5) return self.parent.strfunc(*self.args, **self.kw)
+        # TODO(1.5) return self.parent.strfunc(*self.args, **self.kw)
         return apply(self.parent.strfunc, self.args, self.kw)
+
 
 class ActionFactory:
     """A factory class that will wrap up an arbitrary function
@@ -1240,6 +1374,7 @@ class ActionFactory:
     called with and give them to the ActionCaller object we create,
     so it can hang onto them until it needs them.
     """
+
     def __init__(self, actfunc, strfunc, convert=lambda x: x):
         self.actfunc = actfunc
         self.strfunc = strfunc
@@ -1249,6 +1384,7 @@ class ActionFactory:
         ac = ActionCaller(self, args, kw)
         action = Action(ac, strfunction=ac.strfunction)
         return action
+
 
 # Local Variables:
 # tab-width:4

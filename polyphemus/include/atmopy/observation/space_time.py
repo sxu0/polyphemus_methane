@@ -42,12 +42,11 @@ def remove_lowest(dates, data1, data2, mini):
     Elements corresponding to values lower than mini in data1
     are not returned.
     """
-    condition = (data1 > mini)
-    for i in range(len(condition)-1, -1, -1):
+    condition = data1 > mini
+    for i in range(len(condition) - 1, -1, -1):
         if condition[i] == 0:
             dates.pop(i)
-    return dates, data1[numpy.where(condition)], \
-           data2[numpy.where(condition)]
+    return dates, data1[numpy.where(condition)], data2[numpy.where(condition)]
 
 
 def remove_highest(dates, data1, data2, maxi):
@@ -71,9 +70,8 @@ def remove_highest(dates, data1, data2, maxi):
     Elements corresponding to values higher than maxi in data1
     are not returned.
     """
-    condition = (data1 < maxi)
-    for i in range(len(condition)-1, -1, -1):
+    condition = data1 < maxi
+    for i in range(len(condition) - 1, -1, -1):
         if condition[i] == 0:
             dates.pop(i)
-    return dates, data1[numpy.where(condition)], \
-           data2[numpy.where(condition)]
+    return dates, data1[numpy.where(condition)], data2[numpy.where(condition)]

@@ -29,8 +29,8 @@ import optparse, sys, string, os
 usage = "%prog [command] [file(s)]\n\n"
 usage += "This program applies a given command to a list of files.\n\n"
 usage += "The command is the first argument. It may contain special"
-usage += " references.\nFor instance, from directory \"/local\","
-usage += " the file \"path/file.txt\" may be referred to as:\n"
+usage += ' references.\nFor instance, from directory "/local",'
+usage += ' the file "path/file.txt" may be referred to as:\n'
 usage += "  %f\tFile path\t\t\t\tpath/file.txt\n"
 usage += "  %F\tFile absolute path\t\t\t/local/path/file.txt\n"
 usage += "  %n\tFile path without extension\t\tpath/file\n"
@@ -42,10 +42,10 @@ usage += "If no special reference is given, the filename is simply"
 usage += " appended at the end of the command.\n\n"
 usage += "Examples:\n"
 usage += "  %prog echo /usr/*\n"
-usage += "  %prog \"echo Test: command %f -- %B\" /usr/*\n"
-usage += "  %prog \"ln -s %f %n.link\" /somewhere/*.py"
+usage += '  %prog "echo Test: command %f -- %B" /usr/*\n'
+usage += '  %prog "ln -s %f %n.link" /somewhere/*.py'
 
-parser = optparse.OptionParser(usage = usage)
+parser = optparse.OptionParser(usage=usage)
 (options, args) = parser.parse_args()
 
 if len(args) < 2:
@@ -56,20 +56,23 @@ if len(args) < 2:
 file_list = args[1:]
 raw_command = args[0]
 
+
 def remove_extension(filename):
-    decomposition = os.path.basename(filename).split('.')
+    decomposition = os.path.basename(filename).split(".")
     if len(decomposition) == 1:
         basename = decomposition[0]
     else:
         basename = ".".join(decomposition[:-1])
     return os.path.join(os.path.dirname(filename), basename)
 
+
 def get_extension(filename):
-    decomposition = os.path.basename(filename).split('.')
+    decomposition = os.path.basename(filename).split(".")
     if len(decomposition) == 1:
         return ""
     else:
         return decomposition[-1]
+
 
 flag_list = "fFnNbBe"
 flag_list = ["%" + x for x in flag_list]
@@ -97,5 +100,5 @@ for filename in file_list:
     status = os.system(command)
 
     if status != 0:
-        print "\"" + command + "\" failed with status " + str(status) + "."
+        print '"' + command + '" failed with status ' + str(status) + "."
         sys.exit(status)

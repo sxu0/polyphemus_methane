@@ -62,4 +62,3 @@ C-----------------------------------------------------------------------
 	parameter (ictmBiISO2= 24)
 	parameter (ictmBiBmP= 19)
 C     parameter (ictm =)
-

@@ -89,7 +89,7 @@ namespace Polyphemus
     //! Bins bounds (in m).
     Array<T, 1> Fractionbound_aer;
     Array<T, 1> Fractionbound_aer_2;
-    
+
     //! Number of aerosol fraction sections.
     int Nfraction_aer;
     int Nfraction_aer_2;
@@ -169,19 +169,19 @@ namespace Polyphemus
     // 			      Array<vector<T>, 2 >& PuffCellConcentration_aer,
     // 			      Array<vector<T>, 1 >& PuffCellConcentration_number);
     virtual    void Forward();
-    virtual    void InitWetDiameter_aer(T& RelativeHumidity_, 
-                       T& Temperature_, 
+    virtual    void InitWetDiameter_aer(T& RelativeHumidity_,
+                       T& Temperature_,
                        Array<T, 1>& WetDiameter_aer_);
-    T ComputeDensity(Data<T,1> Conc_aer_tmp, 
+    T ComputeDensity(Data<T,1> Conc_aer_tmp,
 		     vector<float> Rho_species, float TotalMass, int Ns);
     void ComputePuffNumberEmission_aer(int emission, Array<T, 1>& puff_number_emissions);
     T ComputeNumberPuff(int b, Array<T, 2> concentration_list_aer);
     T ComputeNumberPuffDiameter(int b, T diameter, Array<T, 2> concentration_list_aer);
-    void ComputeRedistribution(Array<T, 2>& concentration_list_aer, 
+    void ComputeRedistribution(Array<T, 2>& concentration_list_aer,
 			       Array<T, 1>& concentration_list_number,
 			       int bin);
     T ComputeDiameter(int b,
-		      Array<T, 2> concentration_list_aer, 
+		      Array<T, 2> concentration_list_aer,
 		      Array<T, 1> concentration_list_number);
 
     void ComputePrecursorContribution_aer(Array<T, 1> quantity_puf_beta,
@@ -190,14 +190,14 @@ namespace Polyphemus
     void ComputePrecursorContribution(Array<T, 1> quantity_puf_beta,
 				   Array<T, 1>& precursors_contribution);
 
-    T ComputeOutputNumber(int b, 
+    T ComputeOutputNumber(int b,
 			  Array<T, 2> concentration_list_aer,
 			  Array<T, 1> concentration_list_number,
 			  Array<T, 2> background_concentration_aer,
 			  Array<T, 1> background_concentration_number,
 			  vector<float> Rho_species);
 
-    T ComputeInputNumber(int b, 
+    T ComputeInputNumber(int b,
 			 Array<T, 2> concentration_list_aer,
 			 Array<T, 1> delta_concentration_list_number,
 			 Array<T, 2> background_concentration_aer,
@@ -245,7 +245,7 @@ namespace Polyphemus
                               T lx, T ly, T lz);
     T ComputePuffIntegral_aer(Puff<T>* puff, int s, int b, T x, T y, T z,
 			  T lz, T ly, T lx);
-  
+
     T ComputePuffIntegral_number(int index, int b, T x, T y, T z,
                           T lx, T ly, T lz);
     T ComputePuffIntegral_number(Puff<T>* puff, int b, T x, T y, T z,

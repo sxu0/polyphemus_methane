@@ -180,13 +180,13 @@ namespace Polyphemus
     Puff(T time_puff, T velocity, T temperature, T width, T length,
 	 T quantity, T abscissa, T ordinate, T height,
 	 T source_water,T volume_prev,
-	 int species_index, string source_id); 
+	 int species_index, string source_id);
 
     Puff(T time_puff, T velocity, T temperature,
          T diameter, T width, T length,
 	 T quantity, T abscissa, T ordinate, T height,
 	 T source_water, T volume_prev,
-	 int species_index, bool is_volume_source, string source_id); 
+	 int species_index, bool is_volume_source, string source_id);
 
     Puff(T time_puff, T velocity, T temperature,
          T diameter, T quantity, T abscissa, T ordinate, T height,
@@ -257,7 +257,7 @@ namespace Polyphemus
     virtual T GetPreviousBackgroundConcentration(int s, int b) const;
     virtual T GetSpecificHumidity() const;
     // virtual T GetLiquidWaterContent() const;
-    
+
     void SetMeteo(T temperature, T wind_angle, T wind,
                   string stability_class, T longitude, T latitude,
                   bool isday, bool rural, T boundary_height);

@@ -1,24 +1,24 @@
 C-----------------------------------------------------------------------
 C     Copyright (C) 2003-2007, ENPC - INRIA - EDF R&D
 C     Author(s): Kathleen Fahey
-C     
+C
 C     This file is part of the Variable Size Resolved Model (VSRM),
 C     based on the VSRM model of Carnegie Melon University.  It is a
 C     component of the air quality modeling system Polyphemus.
-C    
+C
 C     Polyphemus is developed in the INRIA - ENPC joint project-team
 C     CLIME and in the ENPC - EDF R&D joint laboratory CEREA.
-C    
+C
 C     Polyphemus is free software; you can redistribute it and/or modify
 C     it under the terms of the GNU General Public License as published
 C     by the Free Software Foundation; either version 2 of the License,
 C     or (at your option) any later version.
-C     
+C
 C     Polyphemus is distributed in the hope that it will be useful, but
 C     WITHOUT ANY WARRANTY; without even the implied warranty of
 C     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 C     General Public License for more details.
-C     
+C
 C     For more information, visit the Polyphemus web site:
 C     http://cerea.enpc.fr/polyphemus/
 C-----------------------------------------------------------------------
@@ -27,17 +27,17 @@ C-----------------------------------------------------------------------
      &     fixed_rho_aero,DBF_AERO,dsf_aero,xbf_aero,C_GAS,
      &     C_AER,HUMID,press2,temp,lwc_c,t0,t1,rain_rate,pH,
      &     qscav_gas,qscav_aer,qscav_num,INUM,C_NUM,dqlimit,
-     &     CLD_SP_INT,ID_SIZE,List_species, n_isorropia,n_aec, 
+     &     CLD_SP_INT,ID_SIZE,List_species, n_isorropia,n_aec,
      &     n_pankow, n_pom,section_pass,IREDIST,with_fixed_density)
 
 C------------------------------------------------------------------------
-C     
-C     -- DESCRIPTION 
-C     
+C
+C     -- DESCRIPTION
+C
 C     This routine solves the aqueous-phase model.
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- INPUT VARIABLES
 C
 C     HUMID : specific humidity    ([kg.kg^{-1}]).
@@ -68,15 +68,15 @@ C     qscav_aer : scavenged aerosol quantity by in-cloud scavenging
 C     qscav_num : scavenged number quantity by in-cloud scavenging
 C     for dissolved aerosols species ([\mu.g/m^3])
 C     and dissolves gas      species ([ppm])
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- REMARKS
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- MODIFICATIONS
-C     
+C
 C     1) Optimize conversion and define molar mass as parameters.
 C     2) Introduce pointers for aerosols (E*) and for gas (ICTM*).
 C     3) Clipping at the end (TINYAQ).
@@ -105,13 +105,13 @@ C     22)Remove include 'dropcom.inc'.
 C     23) 2005/11/25: Implement in-cloud scavenging (Edouard Debry).
 C     24) Shupeng ZHU: add composition support for SCRAM (Oct.2014)
 C------------------------------------------------------------------------
-C     
+C
 C     -- AUTHOR(S)
-C     
+C
 C     Kathleen Fahey, CEREA, , on the basis of the VSRM model
 C     (Carneggie Mellon University).
 C     2005/10/3, cleaning and update, Bruno Sportisse, CEREA.
-C     
+C
 C------------------------------------------------------------------------
 
       IMPLICIT NONE
@@ -130,7 +130,7 @@ C       include 'dynaero.inc'
       INTEGER NGAS,NAER,NS,NB,NF,NICD
       INTEGER k,l,IREDIST
       INTEGER nesp,f,jesp,b
-      INTEGER section_pass      
+      INTEGER section_pass
       INTEGER CLD_SP_INT(NICD)
       INTEGER ID_SIZE(NS,2)
       INTEGER INUM
@@ -139,25 +139,25 @@ C       include 'dynaero.inc'
 
       INTEGER ifirstact!first activated bin
       INTEGER isect,isp,i,istep,nistep,ind_ok,j,jj,jb
-      
+
       double precision d(NB)
       double precision mass_rdb(NB,naers)
       double precision totQ(NB)
       double precision Nub(NB)
       double precision dqlimit
       double precision dold(NS)
-      double precision volume(NS)      
-      
+      double precision volume(NS)
+
       double precision coefloc,tinit,coefloc2
       double precision dh2SO4,dso2
-      double precision gas(ngas_aq), aerosol(NS,naers)   
+      double precision gas(ngas_aq), aerosol(NS,naers)
       double precision gasav(ngas_aq), aerosav(NS,naers)
       double precision rh,temp,press,lwc_c,t0,t1,initso2
       double precision dnew(NS),deltat,press2
       double precision numberconc(NS),totmass(NS)
       double precision C_GAS(NGAS)
       double precision C_AER(NS,NAER)
-      double precision C_NUM(NS)      
+      double precision C_NUM(NS)
       double precision HUMID
       double precision nitbef,nitaf
       double precision sulfbef,sulfaf,sbal
@@ -179,12 +179,12 @@ C       include 'dynaero.inc'
       double precision totmass_init(NS)
       double precision fNH3,fHNO3,fHCl,fSO2
       double precision fHCHO,fO3,fOH,fHCOOH
-      double precision fNO,fNO3,fNO2,fPAN,fHO2,fH2O2,fHNO2      
+      double precision fNO,fNO3,fNO2,fPAN,fHO2,fH2O2,fHNO2
 
       data collision_eff /0.9d0/
 
       double precision liquid_density(naers)
-      data liquid_density /0.97D-06, 0.85D-06, 
+      data liquid_density /0.97D-06, 0.85D-06,
      &     0.91D-06, 1.50D-06, 1.15D-06, 1.84D-06, 1.00D-06,
      &     2.25D-06, 1.30D-06, 2.33D-06, 1.84D-06, 1.835D-06/
 
@@ -250,7 +250,7 @@ c   Initialize system pointer
       do i=1,ngas_aq
          gas(i)=0.d0
       enddo
-      
+
       do isect=1,NS
          do isp=1,naers
             aerosol(isect,isp)=0.d0
@@ -269,7 +269,7 @@ c   Initialize system pointer
 
       do isp=1,NS!SZ
          qscav_num(isp)=0.d0
-      enddo      
+      enddo
 
       deltat = (t1-t0)/60.d0/nistep !timestep in min
 
@@ -363,7 +363,7 @@ C     -----------------------------------
             endif
          ENDDO
          aerosol(i,naw) = C_AER(i,EH2O) ! H2O
-      ENDDO      
+      ENDDO
 
 
 C     Calculation of aerosol number and diameter of each section before aqueous chemistry
@@ -747,7 +747,7 @@ C     -------------------------------
          C_GAS(ictmH2O2)= C_GAS(ictmH2O2) - qscav_gas(ictmH2O2)
 
       ENDIF
-! 
+!
 ! C     16) Treshold TINYAQ.
 ! C----
 !       DO i=1,NGAS!problem of dimension
@@ -762,6 +762,6 @@ C     -------------------------------
 !          C_NUM(i) = dmax1(C_NUM(i), TINYNAQ)
 !       ENDDO
 
-      
+
       return
       end

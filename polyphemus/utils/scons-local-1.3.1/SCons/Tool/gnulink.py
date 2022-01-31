@@ -37,24 +37,27 @@ import SCons.Util
 
 import link
 
-linkers = ['g++', 'gcc']
+linkers = ["g++", "gcc"]
+
 
 def generate(env):
     """Add Builders and construction variables for gnulink to an Environment."""
     link.generate(env)
 
-    if env['PLATFORM'] == 'hpux':
-        env['SHLINKFLAGS'] = SCons.Util.CLVar('$LINKFLAGS -shared -fPIC')
+    if env["PLATFORM"] == "hpux":
+        env["SHLINKFLAGS"] = SCons.Util.CLVar("$LINKFLAGS -shared -fPIC")
 
     # __RPATH is set to $_RPATH in the platform specification if that
     # platform supports it.
-    env.Append(LINKFLAGS=['$__RPATH'])
-    env['RPATHPREFIX'] = '-Wl,-rpath='
-    env['RPATHSUFFIX'] = ''
-    env['_RPATH'] = '${_concat(RPATHPREFIX, RPATH, RPATHSUFFIX, __env__)}'
-    
+    env.Append(LINKFLAGS=["$__RPATH"])
+    env["RPATHPREFIX"] = "-Wl,-rpath="
+    env["RPATHSUFFIX"] = ""
+    env["_RPATH"] = "${_concat(RPATHPREFIX, RPATH, RPATHSUFFIX, __env__)}"
+
+
 def exists(env):
     return env.Detect(linkers)
+
 
 # Local Variables:
 # tab-width:4

@@ -36,7 +36,7 @@ usage += "  # To replace every tabulation with a single space in all files\n"
 usage += "  # in current directory and all subdirectories (recursively):\n"
 usage += "  %prog '\\t' ' ' `find . -name '*'`\n"
 
-parser = optparse.OptionParser(usage = usage)
+parser = optparse.OptionParser(usage=usage)
 (options, args) = parser.parse_args()
 
 if len(args) < 3:
@@ -53,8 +53,7 @@ for filename in file_list_in:
     if os.path.isfile(filename):
         file_list.append(filename)
     else:
-        print "Warning: \"" + filename \
-              + "\" is ignored because it is not a file."
+        print 'Warning: "' + filename + '" is ignored because it is not a file.'
 
 if len(file_list) != 0:
     for line in fileinput.input(file_list, 1):

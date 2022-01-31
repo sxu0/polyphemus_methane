@@ -52,7 +52,7 @@ C
 C     NITER_POA     number of iterations
 C                   in poa module
 C     diam_pass		cut diameter = 100nm
-C	                diam_pass is define in parameuler.inc 
+C	                diam_pass is define in parameuler.inc
 C
 C	  NITAERO		number of subcycling time step
 C
@@ -75,7 +75,7 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       PARAMETER(MTSBL = 1.0D0)
       PARAMETER(ALFHP = 0.1D0)
       PARAMETER(TINYM = 0.D0) !1.D-15)
-      PARAMETER(TINYN = 1.D0) 
+      PARAMETER(TINYN = 1.D0)
       PARAMETER(ALFORG = 0.4D0)
       PARAMETER(EPSEQ =0.D0)
       PARAMETER(TOLEQ =1.D-02)

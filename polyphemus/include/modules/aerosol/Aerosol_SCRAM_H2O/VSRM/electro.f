@@ -1,24 +1,24 @@
 C-----------------------------------------------------------------------
 C     Copyright (C) 2003-2007, ENPC - INRIA - EDF R&D
 C     Author(s): Kathleen Fahey
-C     
+C
 C     This file is part of the Variable Size Resolved Model (VSRM),
 C     based on the VSRM model of Carnegie Melon University.  It is a
 C     component of the air quality modeling system Polyphemus.
-C    
+C
 C     Polyphemus is developed in the INRIA - ENPC joint project-team
 C     CLIME and in the ENPC - EDF R&D joint laboratory CEREA.
-C    
+C
 C     Polyphemus is free software; you can redistribute it and/or modify
 C     it under the terms of the GNU General Public License as published
 C     by the Free Software Foundation; either version 2 of the License,
 C     or (at your option) any later version.
-C     
+C
 C     Polyphemus is distributed in the hope that it will be useful, but
 C     WITHOUT ANY WARRANTY; without even the implied warranty of
 C     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 C     General Public License for more details.
-C     
+C
 C     For more information, visit the Polyphemus web site:
 C     http://cerea.enpc.fr/polyphemus/
 C-----------------------------------------------------------------------
@@ -26,15 +26,15 @@ C-----------------------------------------------------------------------
       subroutine electro(x,con,spres,cmet,akeq,akhen,wv,temp,f,frel)
 
 C------------------------------------------------------------------------
-C     
-C     -- DESCRIPTION 
-C     
-C     This routine computes the electroneutrality balance for the 
+C
+C     -- DESCRIPTION
+C
+C     This routine computes the electroneutrality balance for the
 C     aqueous-phase model.
 C------------------------------------------------------------------------
-C     
+C
 C     -- INPUT VARIABLES
-C     
+C
 C     X    : H+ concentration.
 C     CON  : concentration vector (28 species).
 C     SPRES: gas-phase concentrations.
@@ -43,35 +43,35 @@ C     AKEQ : equilibrium rate constants.
 C     AKHEN: Henry's rates.
 C     WV   : water vapour.
 C     TEMP : temperature.
-C     
+C
 C     -- INPUT/OUTPUT VARIABLES
-C     
+C
 C     -- OUTPUT VARIABLES
-C     
+C
 C     F : evaluation of the electroneutrality relation (anion-cation).
 C     FL: relative value (ABS(F)/(anion+cation).
 C------------------------------------------------------------------------
-C     
+C
 C     -- REMARKS
-C     
+C
 C     The aqueous-phase composition may be found in values.f.
-C     
+C
 C------------------------------------------------------------------------
-C     
+C
 C     -- MODIFICATIONS
-C     
+C
 C     1) Add relative value FL.
 C     2) Change order or arguments (F).
 C     3) Remove UU.
 C     4) Optimize (coefloc and chlorine).
 C------------------------------------------------------------------------
-C     
+C
 C     -- AUTHOR(S)
-C     
-C     Kathleen Fahey, CEREA, , on the basis of the VSRM model 
+C
+C     Kathleen Fahey, CEREA, , on the basis of the VSRM model
 C     (Carneggie Mellon University).
 C     2005/10/3, cleaning and update, Bruno Sportisse, CEREA.
-C     
+C
 C------------------------------------------------------------------------
 
       IMPLICIT NONE
@@ -88,8 +88,8 @@ C------------------------------------------------------------------------
 
 
 C     1)Compute ions in aqueous-phase
-C     
-C     HNO2(g), CO2(g) and HCOOH(g) are 
+C
+C     HNO2(g), CO2(g) and HCOOH(g) are
 C     computed from equilibrium
 C     -----------------------------------
 
@@ -101,7 +101,7 @@ C     -----------------------------------
      &     (x*x+akeq(3)*x+akeq(3)*akeq(4)) !SO4--
 
       coefloc = 8.314d-2*temp*wv
-      
+
       dfac  = coefloc*akhen(3)*(1.d0+akeq(7)/x)
       hno2  = spres(3)/(1.d0+dfac) !New HNO2(g) in ppm
       cc(8) = akhen(3)*1.d-6*(akeq(7)/x)*hno2 !NO2-
@@ -109,7 +109,7 @@ C     -----------------------------------
 
       cc(12)= akeq(8)*akhen(5)*spres(5)*1.d-6/x !HCO3-
       cc(13)= akeq(9)*cc(12)/x  !CO3--
-      
+
       cc(15)=(akeq(5)*con(6))/(x+akeq(5)) !HO2-
 
       dform = coefloc*akhen(8)*(1.d0+akeq(13)/x)
@@ -138,7 +138,7 @@ C     Chlorine
       cc(27)=(akeq(14)*hcl)/x   !Cl-
       cc(36)=cl*cc(27)/akeq(16) !Cl2-
 
-C     
+C
       cc(33)=(akeq(10)*x*con(19))/
      &     (akeq(11)+akeq(10)*x) !NH4+
       cc(46)=x                  !H+
@@ -163,7 +163,3 @@ C     -----------------------------------
 
       return
       end
-
-
-
-

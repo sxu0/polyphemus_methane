@@ -12,6 +12,7 @@ from test_utils import *
 from test_utils.config_helpers import *
 
 from IPython import get_ipython
+
 ipython = get_ipython()
 ipython.magic("matplotlib inline")
 

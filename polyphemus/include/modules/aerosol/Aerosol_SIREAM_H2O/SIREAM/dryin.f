@@ -439,4 +439,3 @@ C     Giving out the kernel for case <=6
       ENDIF
 
       END
-

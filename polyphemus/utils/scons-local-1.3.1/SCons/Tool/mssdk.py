@@ -33,15 +33,17 @@ It will usually be imported through the generic SCons.Tool.Tool()
 selection method.
 """
 
-from MSCommon import mssdk_exists, \
-                     mssdk_setup_env
+from MSCommon import mssdk_exists, mssdk_setup_env
+
 
 def generate(env):
     """Add construction variables for an MS SDK to an Environment."""
     mssdk_setup_env(env)
 
+
 def exists(env):
     return mssdk_exists()
+
 
 # Local Variables:
 # tab-width:4

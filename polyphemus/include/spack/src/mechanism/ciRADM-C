@@ -34,7 +34,7 @@ MGLY          72.
 DCB           87.
 ONIT         119.
 PAN          121.
-TPAN         147. 
+TPAN         147.
 OP1           48.
 OP2           62.
 PAA           76.
@@ -62,14 +62,14 @@ OLN           136.
 XNO2          1.
 ISOP          117.
 ISON          1.
-MAC           70. 
+MAC           70.
 MACP          119.
 MVK           70.
 MVKP          119.
 
 ! The following species are not taken into account for gas-phase:
 ! CO2 (mass = 44.)
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! NH3 and HCL : not in RADM (BUT TO BE ADDED FOR AEROSOLS !!!!)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -77,4 +77,3 @@ MVKP          119.
 
 ! Addition for RADM-C: ISOP, ISON, MAC, MACP, MVK, MVKP.
 ! Unknown molecular weight for ISON.
-

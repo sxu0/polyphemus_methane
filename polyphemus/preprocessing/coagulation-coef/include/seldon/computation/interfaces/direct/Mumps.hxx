@@ -39,8 +39,8 @@ namespace Seldon
   class TypeMumps
   {
   };
- 
-  
+
+
   //! class containing MUMPS data structure
   template<>
   class TypeMumps<double>
@@ -49,8 +49,8 @@ namespace Seldon
     typedef DMUMPS_STRUC_C data;
     typedef double* pointer;
   };
-  
-  
+
+
   //! class containing MUMPS data structure
   template<>
   class TypeMumps<complex<double> >
@@ -59,8 +59,8 @@ namespace Seldon
     typedef ZMUMPS_STRUC_C data;
     typedef mumps_double_complex* pointer;
   };
-  
-  
+
+
   //! object used to solve linear system by calling mumps subroutines
   template<class T>
   class MatrixMumps
@@ -74,46 +74,46 @@ namespace Seldon
     typedef typename TypeMumps<T>::pointer pointer;
     int print_level;
     bool out_of_core;
-    
+
     // internal methods
     void CallMumps();
     template<class MatrixSparse>
     void InitMatrix(const MatrixSparse&);
-    
+
   public :
     MatrixMumps();
     ~MatrixMumps();
-    
+
     void Clear();
-    
+
     void SelectOrdering(int num_ordering);
-    
+
     void HideMessages();
     void ShowMessages();
-    
+
     void EnableOutOfCore();
     void DisableOutOfCore();
-    
+
     int GetInfoFactorization() const;
-    
+
     template<class Prop,class Storage,class Allocator>
     void FindOrdering(Matrix<T, Prop, Storage, Allocator> & mat,
 		      IVect& numbers, bool keep_matrix = false);
-    
+
     template<class Prop,class Storage,class Allocator>
     void FactorizeMatrix(Matrix<T,Prop,Storage,Allocator> & mat,
 			 bool keep_matrix = false);
-    
+
     template<class Prop1, class Storage1, class Allocator1,
 	     class Prop2, class Storage2, class Allocator2>
     void GetSchurMatrix(Matrix<T,Prop1,Storage1,Allocator1>& mat,
 			const IVect& num,
 			Matrix<T,Prop2,Storage2,Allocator2> & mat_schur,
 			bool keep_matrix = false);
-    
+
     template<class Allocator2>
     void Solve(Vector<T, VectFull, Allocator2>& x);
-    
+
     template<class Allocator2, class Transpose_status>
     void Solve(const Transpose_status& TransA,
 	       Vector<T, VectFull, Allocator2>& x);
@@ -124,23 +124,20 @@ namespace Seldon
 				    ColSparse, Allocator> & mat,
 				    const Prop& sym, const IVect& glob_number,
 				    bool keep_matrix = false);
-    
+
     template<class Allocator2, class Transpose_status>
     void SolveDistributed(const Transpose_status& TransA,
 			  Vector<T, VectFull, Allocator2>& x,
 			  const IVect& glob_num);
-    
+
     template<class Allocator2>
     void SolveDistributed(Vector<T, VectFull, Allocator2>& x, const IVect& );
-    
+
 #endif
-    
+
   };
-  
+
 }
 
 #define SELDON_FILE_MUMPS_HXX
 #endif
-
-
-

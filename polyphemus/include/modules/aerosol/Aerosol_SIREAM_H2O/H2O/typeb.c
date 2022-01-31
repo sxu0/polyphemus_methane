@@ -163,7 +163,7 @@ void TypeB(int n, float aero[], float f[])
           for (i = 1; i <= n; i ++)
             {
               f[i] = aerof[i] - aero[i];
-              
+
             }
         }
       else
@@ -180,4 +180,3 @@ void TypeB(int n, float aero[], float f[])
   free(ac);
 
 }
-

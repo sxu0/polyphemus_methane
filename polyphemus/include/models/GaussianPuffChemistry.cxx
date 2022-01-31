@@ -424,7 +424,7 @@ namespace Polyphemus
   ::SetPuffCurrentMeteo(T interaction_coefficient, Puff<T>* puff)
   {
     GaussianPuffTransport<T>::SetCurrentMeteo(puff);
-      
+
     if (this->option_process["with_chemistry"])
       {
 	if (puff->HasMeteo())
@@ -435,7 +435,7 @@ namespace Polyphemus
 	    water_puff = puff->GetEmittedWater();
 	    water_puff *= interaction_coefficient;
 
-	    specific_humidity_ = specific_humidity_tmp + (water_puff * 287. * this->temperature_ 
+	    specific_humidity_ = specific_humidity_tmp + (water_puff * 287. * this->temperature_
 	    			   / pressure_);
 
 	  }
@@ -528,7 +528,7 @@ namespace Polyphemus
   ::GetPuffBackgroundConcentration(int index, int s)
   {
     this->SetCurrentPuff(index);
-    
+
     return (*this->current_puff)->GetBackgroundConcentration(s);
   }
 
@@ -1229,21 +1229,21 @@ namespace Polyphemus
       {
 	T c_alpha_beta, coeff, alpha, beta, delta;
 	T interaction_coefficient = 1.;
-    
+
 	// Direction x.
 	alpha = 1. / (2. * sigmax_alpha *sigmax_alpha);
 	beta = 1. / (2. * sigmax_beta *sigmax_beta);
 	delta = x_beta - x_alpha;
-    
+
 	c_alpha_beta = alpha * beta * delta * delta / (alpha + beta);
 	coeff =  sqrt((4. * alpha * beta) / (alpha + beta));
 	interaction_coefficient *= coeff_pi * coeff * exp(- c_alpha_beta);
-    
+
 	// Direction y.
 	alpha = 1. / (2. * sigmay_alpha *sigmay_alpha);
 	beta = 1. / (2. * sigmay_beta *sigmay_beta);
 	delta = y_beta - y_alpha;
-    
+
 	c_alpha_beta = alpha * beta * delta * delta / (alpha + beta);
 	coeff =  sqrt((4. * alpha * beta) / (alpha + beta));
 	interaction_coefficient *= coeff_pi * coeff * exp(- c_alpha_beta);
@@ -1252,7 +1252,7 @@ namespace Polyphemus
 	alpha = 1. / (2. * sigmaz_alpha *sigmaz_alpha);
 	beta = 1. / (2. * sigmaz_beta *sigmaz_beta);
 	delta = z_beta - z_alpha;
-    
+
 	c_alpha_beta = alpha * beta * delta * delta / (alpha + beta);
 	coeff =  sqrt((4. * alpha * beta) / (alpha + beta));
 	interaction_coefficient *= coeff_pi * coeff * exp(- c_alpha_beta);

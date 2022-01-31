@@ -496,4 +496,3 @@ namespace AtmoData
 
 #define ATMODATA_FILE_INTERPOLATIONCHIMERE_CXX
 #endif
-

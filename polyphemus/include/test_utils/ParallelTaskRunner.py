@@ -38,6 +38,7 @@ class ParallelTaskRunner:
     results can be compared). The reason of this class is the lack of such a
     tool in the standard Python libraries.
     """
+
     def __init__(self, process_count=mp.cpu_count()):
         self.process_count = process_count
         self.pool = None
@@ -54,7 +55,7 @@ class ParallelTaskRunner:
             self.pool.terminate()
             self.pool = None
 
-    def append(self, func, args=(), callback=lambda x : None):
+    def append(self, func, args=(), callback=lambda x: None):
         """Runs 'func' with 'args' in a subprocess.
 
         A call to 'append' is non-blocking (it returns immediately).

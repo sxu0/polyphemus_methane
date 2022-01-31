@@ -132,7 +132,7 @@ contains
                      lwc_Nsize(j),ionic_Nsize(j),proton_Nsize(j),liquid)
 	do s=1,12
            liquid_Nsize(s,j) = liquid(s)
-        enddo 
+        enddo
 	!calculate the C/E kernal
 	do s=1, nesp_isorropia
 	  jesp = isorropia_species(s)
@@ -179,7 +179,7 @@ contains
     double precision ::c_mass(N_size,N_aerosol)
     double precision ::rate_number(N_size)
     double precision ::rate_mass(N_size,N_aerosol)
-    
+
     rate_number=0.d0
     rate_mass=0.d0
 
@@ -188,9 +188,9 @@ contains
     enddo !! Added by YK
 
     if(total_mass_t*total_number.ne.0.d0) then
-      
+
 !       call compute_average_diameter()
-! 
+!
 !       do j1 = 1, N_size
 ! 	do j2 = 1, N_size
 ! 	  call compute_bidisperse_coagulation_kernel(Temperature,air_free_mean_path,&
@@ -207,7 +207,7 @@ contains
     !call check_diam_fraction(rate_mass,rate_number)
 
   end subroutine fgde_coag
-  
+
   subroutine fgde_nucl(c_mass,c_number,c_gas,dqdt,dndt)
 !------------------------------------------------------------------------
 !
@@ -242,24 +242,24 @@ contains
 !     Compute gas mass conservation
 
       call mass_conservation(c_mass,c_number,c_gas, total_mass)
-      
+
       if(nucl_model.eq.1) then            ! sulfuric-acid-ammonia-water nucl'n
 !     mr should be in ppt
          mr = 10.d12 * c_gas(ENH4)/(Pressure*MMair/RGAS*Temperature)
-         
+
          na= c_gas(ESO4)*1.D-06&       ! convert to µg.cm-3
 	        /molecular_weight_aer(ESO4)&        ! to mol.m-3
-                *Navog            ! to #molec.m-3      
-                
-         call COMPUTE_TERNARY_NUCLEATION(Relative_Humidity,&     ! relative humidity 
+                *Navog            ! to #molec.m-3
+
+         call COMPUTE_TERNARY_NUCLEATION(Relative_Humidity,&     ! relative humidity
 		Temperature,&             ! temperature (Kelvin)
 		na,&               ! gas h2so4 conc (#molec.cm-3)
 		mr,&		      !Mixing ratio of NH3 (ppt).
 		jnucl,&           ! nucleation rate (#part.cm-3.s-1)
-		ntot,&             ! number of molec of h2so4 in nucleus 
-		ntotnh3,&          ! number of molec of nh3 in nucleus 
-		dpnucl )          ! nucleation diameter (nm)    
-		
+		ntot,&             ! number of molec of h2so4 in nucleus
+		ntotnh3,&          ! number of molec of nh3 in nucleus
+		dpnucl )          ! nucleation diameter (nm)
+
                                 ! nucleation rate (#part.m-3.s-1)
          jnucl=jnucl*1.D06
          if(Navog.ne.0.d0.and.(.not.IsNaN(jnucl*0.d0))) then
@@ -273,32 +273,32 @@ contains
 	   dqdt(1,ESO4)=0.d0
 	   dqdt(1,ENH4)=0.d0
 	 endif
-         
-      else                      !sulfuric-acid-water nucl'n    !we should use this  
+
+      else                      !sulfuric-acid-water nucl'n    !we should use this
 !     Compute H2SO4 threshold concentration
 
          call NA_THRESHOLD_VEAHKAMAKI(Relative_Humidity,Temperature,nanucl) !#molec.cm-3
 
          qanucl= nanucl*1.D06&   ! convert to #molec.m-3
 		/Navog&            ! to mol.m-3
-		*molecular_weight_aer(ESO4)        ! to µg.mol-1      
-     
-!     Compute nucleation kernel if qSO4 exceed qanucl  
+		*molecular_weight_aer(ESO4)        ! to µg.mol-1
+
+!     Compute nucleation kernel if qSO4 exceed qanucl
 
          if (c_gas(ESO4).GE.qanucl) then
-            
+
             na= c_gas(ESO4)*1.D-06&    ! convert to µg.cm-3
 		  /molecular_weight_aer(ESO4)&     ! to mol.m-3
 		  *Navog         ! to #molec.m-3
 
-            call COMPUTE_BINARY_NUCLEATION_KERNEL( Relative_Humidity,& ! relative humidity 
+            call COMPUTE_BINARY_NUCLEATION_KERNEL( Relative_Humidity,& ! relative humidity
 		    Temperature,&          ! temperature (Kelvin)
 		    na,&            ! gas h2so4 conc (#molec.cm-3)
 		    jnucl,&         ! nucleation rate (#part.cm-3.s-1)
-		    ntot,&          ! num of molec in nucleus 
+		    ntot,&          ! num of molec in nucleus
 		    xstar,&         ! mol fraction of h2so4
 		    dpnucl )       ! nucleation diameter (nm)
-            
+
                                 ! nucleation rate (#part.m-3.s-1)
             jnucl=jnucl*1.D06
 	  if(Navog.ne.0.d0.and.(.not.IsNaN(jnucl*0.d0))) then
@@ -307,7 +307,7 @@ contains
 		    /Navog&         ! Avogadro number (adim)
 		    *xstar&         ! mol fraction of h2so4
 		    *molecular_weight_aer(ESO4)     ! mol weight µg.mol-1
-		    
+
 	    dndt(1) =dndt(1) +jnucl ! #part.m-3.s-1
 	    dqdt(1,ESO4)=dqdt(1,ESO4)+jnucl*mSO4! µg.m-3.s-1
 	  endif
@@ -316,10 +316,10 @@ contains
 	   dndt(1)=0.d0
 	   dqdt(1,ESO4)=0.d0
 	 endif
-	  
+
          endif
 
-      endif     
+      endif
    end subroutine fgde_nucl
-  
+
 end module hCongregation

@@ -68,9 +68,3 @@ c     total number of gas phase species so we know where the aerosol starts
 c
       parameter (ngtotal = 50)
       parameter (naers = 9)
-
-
-
-
-
-

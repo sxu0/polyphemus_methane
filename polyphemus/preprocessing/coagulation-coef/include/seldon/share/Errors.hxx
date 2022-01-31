@@ -22,7 +22,7 @@
 namespace Seldon
 {
 
-  
+
   ///////////
   // ERROR //
   ///////////
@@ -46,7 +46,7 @@ namespace Seldon
     void CoutWhat();
   };
 
-  
+
   ///////////////////
   // WRONGARGUMENT //
   ///////////////////
@@ -58,7 +58,7 @@ namespace Seldon
 
     virtual string What();
   };
-  
+
 
   //////////////
   // NOMEMORY //
@@ -69,7 +69,7 @@ namespace Seldon
   public:
     NoMemory(string function, string comment)  throw();
   };
-  
+
 
   //////////////
   // WRONGDIM //
@@ -80,7 +80,7 @@ namespace Seldon
   public:
     WrongDim(string function, string comment)  throw();
   };
-  
+
 
   ////////////////
   // WRONGINDEX //
@@ -91,7 +91,7 @@ namespace Seldon
   public:
     WrongIndex(string function, string comment)  throw();
   };
-  
+
 
   //////////////
   // WRONGROW //
@@ -102,7 +102,7 @@ namespace Seldon
   public:
     WrongRow(string function, string comment)  throw();
   };
-  
+
 
   //////////////
   // WRONGCOL //
@@ -113,7 +113,7 @@ namespace Seldon
   public:
     WrongCol(string function, string comment)  throw();
   };
-  
+
 
   /////////////
   // IOERROR //
@@ -124,7 +124,7 @@ namespace Seldon
   public:
     IOError(string function, string comment)  throw();
   };
-  
+
 
   /////////////////
   // LAPACKERROR //
@@ -140,7 +140,7 @@ namespace Seldon
 
     virtual string What();
   };
-  
+
 
 } // namespace Seldon.
 

@@ -27,21 +27,22 @@ import string
 import sys
 
 
-Ns=None
-species_name=[]
-species_weight=[]
+Ns = None
+species_name = []
+species_weight = []
 
-with open(sys.argv[1],'r') as f:
+with open(sys.argv[1], "r") as f:
     # Jumps the title line.
     f.readline()
     for line in f:
         line = line.strip()
         if not line or line[0] in "#%!-":
-            continue # A comment,
-        line=line.split()
+            continue  # A comment,
+        line = line.split()
         if Ns is None:
-            Ns=int(line[0])
-            continue; # The first value is the number of species.
+            Ns = int(line[0])
+            continue
+            # The first value is the number of species.
         species_name.append(line[0])
         species_weight.append(line[1])
 
@@ -54,32 +55,33 @@ assert Ns == len(species_name)
 # but a mapping should be done with the real photolysis reactions names
 # to generate automatically the section [photolysis_reaction_index].
 def format_reaction(reaction_str):
-    lhs, rhs = reaction_str.split('->')
-    lhs = sorted([ s.strip() for s in lhs.split('+')])
-    rhs = sorted([ s.strip() for s in rhs.split('+')])
-    return ' + '.join(lhs) + ' -> ' + ' + '.join(rhs)
+    lhs, rhs = reaction_str.split("->")
+    lhs = sorted([s.strip() for s in lhs.split("+")])
+    rhs = sorted([s.strip() for s in rhs.split("+")])
+    return " + ".join(lhs) + " -> " + " + ".join(rhs)
+
 
 photolysis_reactions = []
 current_reaction = ""
-with open(sys.argv[2],'r') as f:
+with open(sys.argv[2], "r") as f:
     # Jumps the title line.
     f.readline()
     for line in f:
         line = line.strip()
         if not line or line[0] in "#%!-":
-            continue # A comment.
-        if '->' in line:
+            continue  # A comment.
+        if "->" in line:
             current_reaction = line
-            continue # A reaction.
-        line=line.split()
+            continue  # A reaction.
+        line = line.split()
         if line[0:2] != ["KINETIC", "PHOTOLYSIS"]:
-            continue # current_reaction is not a photolysis reaction.
+            continue  # current_reaction is not a photolysis reaction.
 
         photolysis_reactions.append(format_reaction(current_reaction))
 ####################
 
 
-with open("species.spack.dat","w") as f:
+with open("species.spack.dat", "w") as f:
     f.write("[species]\n")
     f.write("\n".join(species_name))
     f.write("\n\n[molecular_weight]\n")
@@ -88,11 +90,13 @@ with open("species.spack.dat","w") as f:
         v += "\n"
         f.write(k.ljust(8))
         f.write(v)
-    f.write("""
+    f.write(
+        """
 
 # Here is the list of photolysis reactions in good order.
 # This section is generated to help debugging
 # the section '[photolysis_reaction_index]'
-#""")
+#"""
+    )
     f.write("\n#".join(photolysis_reactions))
     f.write("\n")

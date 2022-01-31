@@ -34,7 +34,7 @@ namespace Seldon
   /****************
    * CONSTRUCTORS *
    ****************/
-  
+
 
   //! Default constructor.
   /*!
@@ -76,7 +76,7 @@ namespace Seldon
   /**************
    * DESTRUCTOR *
    **************/
-  
+
 
   //! Destructor.
   template <class T, class Allocator>
@@ -94,7 +94,7 @@ namespace Seldon
 	    m_ = 0;
 	    data_ = NULL;
 	  }
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -110,7 +110,7 @@ namespace Seldon
   /*******************
    * BASIC FUNCTIONS *
    *******************/
-  
+
 
   //! Returns the number of elements.
   /*!
@@ -196,7 +196,7 @@ namespace Seldon
   // VECTOR<VECT_FULL> //
   ///////////////////////
 
-  
+
   /****************
    * CONSTRUCTORS *
    ****************/
@@ -226,9 +226,9 @@ namespace Seldon
     try
       {
 #endif
-	  
+
 	this->data_ = this->vect_allocator_.allocate(i, this);
-	  
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -244,7 +244,7 @@ namespace Seldon
 		     + to_str(i*sizeof(T)) + " bytes ("
 		     + to_str(i) + " elements).");
 #endif
-      
+
   }
 
 
@@ -257,12 +257,12 @@ namespace Seldon
   Vector(const Vector<T, VectFull, Allocator>& V):
     Vector_Base<T, Allocator>(V)
   {
-      
+
 #ifdef SELDON_CHECK_MEMORY
     try
       {
 #endif
-	  
+
 	this->data_ = this->vect_allocator_.allocate(V.GetM(), this);
 
 #ifdef SELDON_CHECK_MEMORY
@@ -282,10 +282,10 @@ namespace Seldon
 #endif
 
     this->vect_allocator_.memorycpy(this->data_, V.GetData(), V.GetM());
-	  
+
   }
 
-  
+
   /**************
    * DESTRUCTOR *
    **************/
@@ -325,7 +325,7 @@ namespace Seldon
   template <class T, class Allocator>
   inline void Vector<T, VectFull, Allocator>::Reallocate(int i)
   {
-    
+
     if (i != this->m_)
       {
 
@@ -357,8 +357,8 @@ namespace Seldon
 
       }
   }
-  
-  
+
+
   //! Changes the length of the vector, and keeps previous values.
   /*!
     Reallocates the vector to size i. Previous values are kept.
@@ -367,19 +367,19 @@ namespace Seldon
   template <class T, class Allocator>
   inline void Vector<T, VectFull, Allocator>::Resize(int n)
   {
-    
+
     if (n == this->m_)
       return;
-    
+
     Vector<T, VectFull, Allocator> X_new(n);
     for (int i = 0; i < min(this->m_, n); i++)
       X_new(i) = this->data_[i];
-    
+
     SetData(n, X_new.GetData());
     X_new.Nullify();
   }
-  
-  
+
+
   //! Changes the length of the vector and sets its data array
   //! (low level method).
   /*!
@@ -497,8 +497,8 @@ namespace Seldon
 
     this->vect_allocator_.memorycpy(this->data_, X.GetData(), this->m_);
   }
-  
-  
+
+
   //! Multiplies a vector by a scalar.
   /*!
     \param alpha scalar.
@@ -509,11 +509,11 @@ namespace Seldon
   {
     for (int i = 0; i < this->m_; i++)
       this->data_[i] *= alpha;
-    
+
     return *this;
   }
-  
-  
+
+
   //! Appends an element to the vector.
   /*!
     \param x element to be appended.
@@ -527,8 +527,8 @@ namespace Seldon
     this->Reallocate(i + 1);
     this->data_[i] = x;
   }
-  
-  
+
+
   //! Appends an element at the end of the vector.
   /*!
     \param x element to be appended.
@@ -539,8 +539,8 @@ namespace Seldon
     Resize(this->m_+1);
     this->data_[this->m_-1] = x;
   }
-  
-  
+
+
   //! Appends a vector X at the end of the vector.
   /*!
     \param X vector to be appended.
@@ -554,7 +554,7 @@ namespace Seldon
     for (int i = 0; i < X.GetM(); i++)
       this->data_[Nold+i] = X(i);
   }
-  
+
 
   /*******************
    * BASIC FUNCTIONS *
@@ -731,7 +731,7 @@ namespace Seldon
 #endif
 
     this->Write(FileStream, with_size);
-    
+
     FileStream.close();
   }
 
@@ -890,7 +890,7 @@ namespace Seldon
 
   }
 
-  
+
 #ifndef SELDON_EXCLUDE_FROM_EXPLICIT_INSTANTIATION
   //! Sets the vector from a file.
   /*!
@@ -928,36 +928,36 @@ namespace Seldon
   {
     // Previous values of the vector are cleared.
     Clear();
-    
+
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
       throw IOError("Vector<VectFull>::ReadText(istream& FileStream)",
                     "The stream is not ready.");
 #endif
-    
+
     T entry;
     int number_element = 0;
     while (!FileStream.eof())
       {
 	// Reads a new entry.
 	FileStream >> entry;
-	
+
 	if (FileStream.fail())
 	  break;
 	else
 	  {
 	    number_element++;
-	    
+
 	    // If needed, resizes the vector. Its size is already doubled so
 	    // that the vector should be resized a limited number of times.
 	    if (number_element > this->m_)
 	      this->Resize(2 * number_element);
-	    
+
 	    this->data_[number_element - 1] = entry;
 	  }
       }
-    
+
     // Resizes to the actual size.
     if (number_element > 0)
       this->Resize(number_element);
@@ -965,8 +965,8 @@ namespace Seldon
       this->Clear();
   }
 #endif // SELDON_EXCLUDE_FROM_EXPLICIT_INSTANTIATION
-  
-  
+
+
   //! operator<< overloaded for vectors.
   /*!
     \param out output stream.

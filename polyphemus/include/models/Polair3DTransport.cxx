@@ -825,7 +825,7 @@ namespace Polyphemus
     return species_list_bc.at(s);
   }
 
-  
+
   //! Returns the name of the model.
   /*!
   */

@@ -75,7 +75,7 @@ namespace Seldon
   Matrix_Sparse(int i, int j, int nz):
     Matrix_Base<T, Allocator>(i, j)
   {
-    
+
     this->nz_ = nz;
 
 #ifdef SELDON_CHECK_DIMENSIONS
@@ -135,9 +135,9 @@ namespace Seldon
     try
       {
 #endif
-	
+
 	ind_ = reinterpret_cast<int*>( calloc(nz_, sizeof(int)) );
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -229,10 +229,10 @@ namespace Seldon
     Matrix_Base<T, Allocator>(i, j)
   {
     nz_ = values.GetLength();
-    
+
 #ifdef SELDON_CHECK_DIMENSIONS
     // Checks whether vector sizes are acceptable.
-    
+
     if (ind.GetLength() != nz_)
       {
 	this->m_ = 0;
@@ -306,8 +306,8 @@ namespace Seldon
     ind_ = NULL;
     this->Copy(A);
   }
-  
-  
+
+
   /**************
    * DESTRUCTOR *
    **************/
@@ -324,13 +324,13 @@ namespace Seldon
     try
       {
 #endif
-	
+
 	if (ptr_ != NULL)
 	  {
 	    free(ptr_);
 	    ptr_ = NULL;
 	  }
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -343,13 +343,13 @@ namespace Seldon
     try
       {
 #endif
-	
+
 	if (ind_ != NULL)
 	  {
 	    free(ind_);
 	    ind_ = NULL;
 	  }
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -362,13 +362,13 @@ namespace Seldon
     try
       {
 #endif
-	
+
 	if (this->data_ != NULL)
 	  {
 	    this->allocator_.deallocate(this->data_, nz_);
 	    this->data_ = NULL;
 	  }
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -380,7 +380,7 @@ namespace Seldon
 
     this->nz_ = 0;
   }
-  
+
 
   //! Clears the matrix.
   /*! This methods is equivalent to the destructor. On exit, the matrix
@@ -423,10 +423,10 @@ namespace Seldon
     this->m_ = i;
     this->n_ = j;
     this->nz_ = values.GetLength();
-    
+
 #ifdef SELDON_CHECK_DIMENSIONS
     // Checks whether vector sizes are acceptable.
-    
+
     if (ind.GetLength() != nz_)
       {
 	this->m_ = 0;
@@ -487,7 +487,7 @@ namespace Seldon
     values.Nullify();
   }
 
-  
+
   //! Redefines the matrix.
   /*! It clears the matrix and sets it to a new matrix defined by arrays
     'values' (values), 'ptr' (pointers) and 'ind' (indices).
@@ -617,10 +617,10 @@ namespace Seldon
     try
       {
 #endif
-	
+
 	ind_ = reinterpret_cast<int*>( calloc(nz_, sizeof(int)) );
 	memcpy(this->ind_, A.ind_, nz_);
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -685,14 +685,14 @@ namespace Seldon
 		     + " bytes to store " + to_str(nz) + " values, for a "
 		     + to_str(i) + " by " + to_str(j) + " matrix.");
 #endif
-    
+
   }
 
-  
+
   /*******************
    * BASIC FUNCTIONS *
    *******************/
-  
+
 
   //! Returns the number of non-zero elements.
   /*!
@@ -755,7 +755,7 @@ namespace Seldon
     return (Storage::GetFirst(this->m_, this->n_) + 1);
   }
 
-  
+
   //! Returns the length of the array of (column or row) indices.
   /*!
     Returns the length of the array ('ind_') of (row or column) indices
@@ -835,8 +835,8 @@ namespace Seldon
 
     return *this;
   }
-  
-  
+
+
   /************************
    * CONVENIENT FUNCTIONS *
    ************************/
@@ -885,8 +885,8 @@ namespace Seldon
 
     FileStream.close();
   }
-  
-  
+
+
   //! Writes the matrix to an output stream.
   /*!
     Stores the matrix in a file in ascii format.
@@ -898,28 +898,28 @@ namespace Seldon
   void Matrix_Sparse<T, Prop, Storage, Allocator>::
   WriteText(ostream& FileStream) const
   {
-    
+
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
       throw IOError("Matrix_ArraySparse::Write(ofstream& FileStream)",
 		    "Stream is not ready.");
 #endif
-    
+
     // conversion in coordinate format (1-index convention)
     IVect IndRow, IndCol; Vector<T> Value;
     const Matrix<T, Prop, Storage, Allocator>& leaf_class =
       static_cast<const Matrix<T, Prop, Storage, Allocator>& >(*this);
-    
+
     ConvertMatrix_to_Coordinates(leaf_class, IndRow, IndCol,
 				 Value, 1, true);
-    
+
     for (int i = 0; i < IndRow.GetM(); i++)
       FileStream << IndRow(i) << " " << IndCol(i) << " " << Value(i) << '\n';
-    
+
   }
-  
-  
+
+
   ///////////////////////
   // MATRIX<COLSPARSE> //
   ///////////////////////

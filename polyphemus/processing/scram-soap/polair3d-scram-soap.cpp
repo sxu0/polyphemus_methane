@@ -47,9 +47,9 @@ int main(int argc, char** argv)
   ofstream fout("machine.pid");
   fout << s << "." << getpid() << endl;
   fout.close();
-  
+
   TRY;
-  
+
   if (argc != 2)
     {
       string mesg  = "Usage:\n";
@@ -57,7 +57,7 @@ int main(int argc, char** argv)
       cout << mesg << endl;
       return 1;
     }
-  
+
   typedef double real;
   typedef Polair3DAerosol < real, SplitAdvectionDST3<real>,
                             DiffusionROS2<real>,
@@ -65,11 +65,11 @@ int main(int argc, char** argv)
 
   BaseDriver<real, ClassModel, BaseOutputSaver<real, ClassModel> >
     Driver(argv[1]);
-  
+
   Driver.Run();
 
   END;
-  
+
   return 0;
 
 }

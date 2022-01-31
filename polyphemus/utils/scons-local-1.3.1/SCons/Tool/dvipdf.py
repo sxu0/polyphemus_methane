@@ -41,44 +41,49 @@ import SCons.Util
 
 _null = SCons.Scanner.LaTeX._null
 
-def DviPdfPsFunction(XXXDviAction, target = None, source= None, env=None):
+
+def DviPdfPsFunction(XXXDviAction, target=None, source=None, env=None):
     """A builder for DVI files that sets the TEXPICTS environment
-       variable before running dvi2ps or dvipdf."""
+    variable before running dvi2ps or dvipdf."""
 
     try:
         abspath = source[0].attributes.path
-    except AttributeError :
-        abspath =  ''
+    except AttributeError:
+        abspath = ""
 
-    saved_env = SCons.Scanner.LaTeX.modify_env_var(env, 'TEXPICTS', abspath)
+    saved_env = SCons.Scanner.LaTeX.modify_env_var(env, "TEXPICTS", abspath)
 
     result = XXXDviAction(target, source, env)
 
     if saved_env is _null:
         try:
-            del env['ENV']['TEXPICTS']
+            del env["ENV"]["TEXPICTS"]
         except KeyError:
-            pass # was never set
+            pass  # was never set
     else:
-        env['ENV']['TEXPICTS'] = saved_env
+        env["ENV"]["TEXPICTS"] = saved_env
 
     return result
 
-def DviPdfFunction(target = None, source= None, env=None):
-    result = DviPdfPsFunction(PDFAction,target,source,env)
+
+def DviPdfFunction(target=None, source=None, env=None):
+    result = DviPdfPsFunction(PDFAction, target, source, env)
     return result
 
-def DviPdfStrFunction(target = None, source= None, env=None):
+
+def DviPdfStrFunction(target=None, source=None, env=None):
     """A strfunction for dvipdf that returns the appropriate
     command string for the no_exec options."""
     if env.GetOption("no_exec"):
-        result = env.subst('$DVIPDFCOM',0,target,source)
+        result = env.subst("$DVIPDFCOM", 0, target, source)
     else:
-        result = ''
+        result = ""
     return result
+
 
 PDFAction = None
 DVIPDFAction = None
+
 
 def PDFEmitter(target, source, env):
     """Strips any .aux or .log files from the input source list.
@@ -86,37 +91,47 @@ def PDFEmitter(target, source, env):
     used to generate the .dvi file we're using as input, and we only
     care about the .dvi file.
     """
+
     def strip_suffixes(n):
-        return not SCons.Util.splitext(str(n))[1] in ['.aux', '.log']
+        return not SCons.Util.splitext(str(n))[1] in [".aux", ".log"]
+
     source = filter(strip_suffixes, source)
     return (target, source)
+
 
 def generate(env):
     """Add Builders and construction variables for dvipdf to an Environment."""
     global PDFAction
     if PDFAction is None:
-        PDFAction = SCons.Action.Action('$DVIPDFCOM', '$DVIPDFCOMSTR')
+        PDFAction = SCons.Action.Action("$DVIPDFCOM", "$DVIPDFCOMSTR")
 
     global DVIPDFAction
     if DVIPDFAction is None:
-        DVIPDFAction = SCons.Action.Action(DviPdfFunction, strfunction = DviPdfStrFunction)
+        DVIPDFAction = SCons.Action.Action(
+            DviPdfFunction, strfunction=DviPdfStrFunction
+        )
 
     import pdf
+
     pdf.generate(env)
 
-    bld = env['BUILDERS']['PDF']
-    bld.add_action('.dvi', DVIPDFAction)
-    bld.add_emitter('.dvi', PDFEmitter)
+    bld = env["BUILDERS"]["PDF"]
+    bld.add_action(".dvi", DVIPDFAction)
+    bld.add_emitter(".dvi", PDFEmitter)
 
-    env['DVIPDF']      = 'dvipdf'
-    env['DVIPDFFLAGS'] = SCons.Util.CLVar('')
-    env['DVIPDFCOM']   = 'cd ${TARGET.dir} && $DVIPDF $DVIPDFFLAGS ${SOURCE.file} ${TARGET.file}'
+    env["DVIPDF"] = "dvipdf"
+    env["DVIPDFFLAGS"] = SCons.Util.CLVar("")
+    env[
+        "DVIPDFCOM"
+    ] = "cd ${TARGET.dir} && $DVIPDF $DVIPDFFLAGS ${SOURCE.file} ${TARGET.file}"
 
     # Deprecated synonym.
-    env['PDFCOM']      = ['$DVIPDFCOM']
+    env["PDFCOM"] = ["$DVIPDFCOM"]
+
 
 def exists(env):
-    return env.Detect('dvipdf')
+    return env.Detect("dvipdf")
+
 
 # Local Variables:
 # tab-width:4

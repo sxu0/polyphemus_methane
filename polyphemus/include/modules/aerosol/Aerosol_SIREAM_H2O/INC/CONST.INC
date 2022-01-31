@@ -99,4 +99,3 @@ C     Boltzmann constant
 C     Maximum number of subcycle for advection
       INTEGER Ncycle_adv_max
       PARAMETER(Ncycle_adv_max = 100)
-

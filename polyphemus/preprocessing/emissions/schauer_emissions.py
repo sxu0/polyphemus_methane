@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 import os, sys
-from string   import find,ljust,replace
-from re       import compile, search
+from string import find, ljust, replace
+from re import compile, search
 
-p = compile('^#')
+p = compile("^#")
 
 C16 = 0.0
 PSOAT = 0.0
@@ -12,10 +12,10 @@ C19 = 0.0
 C25 = 0.0
 VOC = 0.0
 
-f = open(sys.argv[1], 'r')
+f = open(sys.argv[1], "r")
 
 for line in f:
-    line = line.replace("\n","")
+    line = line.replace("\n", "")
     if p.search(line) == None:
         ls = line.split(":")
 
@@ -25,8 +25,10 @@ for line in f:
         gas = 0.0
         part = 0.0
 
-        if ls[3] != "": gas = float(ls[3])
-        if ls[4] != "": part = float(ls[4])
+        if ls[3] != "":
+            gas = float(ls[3])
+        if ls[4] != "":
+            part = float(ls[4])
 
         sys.stderr.write("species " + species)
 
@@ -54,7 +56,7 @@ for line in f:
                     C25 += gas
                     PSOAT += part
             elif kind == "OTH":
-                 sys.stderr.write(" and is OTH.\n")
+                sys.stderr.write(" and is OTH.\n")
         else:
             sys.stderr.write(line)
             sys.exit(2)
@@ -66,7 +68,7 @@ print "C19", C19
 print "C25", C25
 print "PSOAT", PSOAT
 print
-print "C16/VOC", C16/VOC
-print "C19/VOC", C19/VOC
-print "C25/VOC", C25/VOC
-print "PSOAT/VOC", PSOAT/VOC
+print "C16/VOC", C16 / VOC
+print "C19/VOC", C19 / VOC
+print "C25/VOC", C25 / VOC
+print "PSOAT/VOC", PSOAT / VOC

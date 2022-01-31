@@ -29,7 +29,7 @@ namespace Seldon
   /****************
    * CONSTRUCTORS *
    ****************/
-  
+
 
   //! Default constructor.
   /*!
@@ -53,7 +53,7 @@ namespace Seldon
   inline Matrix_Symmetric<T, Prop, Storage, Allocator>
   ::Matrix_Symmetric(int i, int j): Matrix_Base<T, Allocator>(i, i)
   {
-    
+
 #ifdef SELDON_CHECK_MEMORY
     try
       {
@@ -126,7 +126,7 @@ namespace Seldon
       me_[k] = ptr;
   }
 
-  
+
   //! Copy constructor.
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_Symmetric<T, Prop, Storage, Allocator>
@@ -137,11 +137,11 @@ namespace Seldon
     this->n_ = 0;
     this->data_ = NULL;
     this->me_ = NULL;
-    
+
     this->Copy(A);
   }
-  
-  
+
+
   /**************
    * DESTRUCTOR *
    **************/
@@ -151,18 +151,18 @@ namespace Seldon
   template <class T, class Prop, class Storage, class Allocator>
   inline Matrix_Symmetric<T, Prop, Storage, Allocator>::~Matrix_Symmetric()
   {
-    
+
 #ifdef SELDON_CHECK_MEMORY
     try
       {
 #endif
-	
+
 	if (this->data_ != NULL)
 	  {
 	    this->allocator_.deallocate(this->data_, this->m_ * this->n_);
 	    this->data_ = NULL;
 	  }
-	
+
 #ifdef SELDON_CHECK_MEMORY
       }
     catch (...)
@@ -244,7 +244,7 @@ namespace Seldon
   inline void Matrix_Symmetric<T, Prop, Storage, Allocator>
   ::Reallocate(int i, int j)
   {
-    
+
     if (i != this->m_)
       {
 	this->m_ = i;
@@ -429,7 +429,7 @@ namespace Seldon
     this->data_ = NULL;
   }
 
-  
+
   //! Reallocates memory to resize the matrix and keeps previous entries.
   /*!
     On exit, the matrix is a i x j matrix.
@@ -449,20 +449,20 @@ namespace Seldon
     Vector<value_type, VectFull, Allocator> xold(this->GetDataSize());
     for (int k = 0; k < this->GetDataSize(); k++)
       xold(k) = this->data_[k];
-    
+
     // Reallocation.
     int inew = Storage::GetFirst(i, j);
     int jnew = Storage::GetSecond(i, j);
     this->Reallocate(i, j);
-    
+
     // Filling the matrix with its old values.
     int imin = min(iold, inew), jmin = min(jold, jnew);
     for (int k = 0; k < imin; k++)
       for (int l = 0; l < jmin; l++)
 	this->data_[k*jnew+l] = xold(l+jold*k);
   }
-  
-  
+
+
   /**********************************
    * ELEMENT ACCESS AND AFFECTATION *
    **********************************/
@@ -497,7 +497,7 @@ namespace Seldon
       return me_[Storage::GetFirst(i, j)][Storage::GetSecond(i, j)];
   }
 
- 
+
   //! Access operator.
   /*!
     Returns the value of element (i, j).
@@ -510,7 +510,7 @@ namespace Seldon
   Matrix_Symmetric<T, Prop, Storage, Allocator>
   ::operator() (int i, int j) const
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_Symmetric::operator() const",
@@ -541,7 +541,7 @@ namespace Seldon
   ::const_reference
   Matrix_Symmetric<T, Prop, Storage, Allocator>::Val(int i, int j) const
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_Symmetric::Val(int, int) const",
@@ -568,7 +568,7 @@ namespace Seldon
   inline typename Matrix_Symmetric<T, Prop, Storage, Allocator>::reference
   Matrix_Symmetric<T, Prop, Storage, Allocator>::Val(int i, int j)
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->m_)
       throw WrongRow("Matrix_Symmetric::Val(int, int)",
@@ -594,7 +594,7 @@ namespace Seldon
   inline typename Matrix_Symmetric<T, Prop, Storage, Allocator>::reference
   Matrix_Symmetric<T, Prop, Storage, Allocator>::operator[] (int i)
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->GetDataSize())
       throw WrongIndex("Matrix_Symmetric::operator[] (int)",
@@ -602,7 +602,7 @@ namespace Seldon
 		       + to_str(this->GetDataSize()-1) + "], but is equal to "
 		       + to_str(i) + ".");
 #endif
-    
+
     return this->data_[i];
   }
 
@@ -618,7 +618,7 @@ namespace Seldon
   ::const_reference
   Matrix_Symmetric<T, Prop, Storage, Allocator>::operator[] (int i) const
   {
-    
+
 #ifdef SELDON_CHECK_BOUNDS
     if (i < 0 || i >= this->GetDataSize())
       throw WrongIndex("Matrix_Symmetric::operator[] (int) const",
@@ -626,7 +626,7 @@ namespace Seldon
 		       + to_str(this->GetDataSize()-1) + "], but is equal to "
 		       + to_str(i) + ".");
 #endif
-    
+
     return this->data_[i];
   }
 
@@ -687,7 +687,7 @@ namespace Seldon
   void Matrix_Symmetric<T, Prop, Storage, Allocator>::SetIdentity()
   {
     this->Fill(T(0));
-    
+
     T one(1);
     for (int i = 0; i < min(this->m_, this->n_); i++)
       this->Val(i, i) = one;
@@ -733,7 +733,7 @@ namespace Seldon
 
     return *this;
   }
-  
+
 
   //! Fills a matrix randomly.
   /*!
@@ -975,7 +975,7 @@ namespace Seldon
 
     FileStream.close();
   }
- 
+
 
   //! Reads the matrix from an input stream.
   /*!
@@ -1015,8 +1015,8 @@ namespace Seldon
 #endif
 
   }
-  
-  
+
+
   //! Reads the matrix from a file.
   /*!
     Reads a matrix stored in text format in a file.
@@ -1034,13 +1034,13 @@ namespace Seldon
       throw IOError("Matrix_Pointers::ReadText(string FileName)",
 		    string("Unable to open file \"") + FileName + "\".");
 #endif
-    
+
     this->ReadText(FileStream);
 
     FileStream.close();
   }
-  
-  
+
+
   //! Reads the matrix from an input stream.
   /*!
     Reads a matrix in text format from an input stream.
@@ -1052,14 +1052,14 @@ namespace Seldon
   {
     // clears previous matrix
     Clear();
-    
+
 #ifdef SELDON_CHECK_IO
     // Checks if the stream is ready.
     if (!FileStream.good())
       throw IOError("Matrix_Pointers::ReadText(ifstream& FileStream)",
                     "Stream is not ready.");
 #endif
-    
+
     // we read first line
     string line;
     getline(FileStream, line);
@@ -1069,43 +1069,43 @@ namespace Seldon
 	// empty file ?
 	return;
       }
-    
+
     // converting first line into a vector
     istringstream line_stream(line);
     Vector<T> first_row;
     first_row.ReadText(line_stream);
-    
+
     // and now the other rows
     Vector<T> other_rows;
     other_rows.ReadText(FileStream);
-    
+
     // number of rows and columns
     int n = first_row.GetM();
     int m = 1 + other_rows.GetM()/n;
-    
+
 #ifdef SELDON_CHECK_IO
     // Checking number of elements
     if (other_rows.GetM() != (m-1)*n)
       throw IOError("Matrix_Pointers::ReadText(ifstream& FileStream)",
                     "The file should contain same number of columns.");
 #endif
-    
+
     this->Reallocate(m,n);
     // filling matrix
     for (int j = 0; j < n; j++)
       this->Val(0, j) = first_row(j);
-    
+
     int nb = 0;
     for (int i = 1; i < m; i++)
       {
 	for (int j = 0; j < i; j++)
 	  nb++;
-	
+
 	for (int j = i; j < n; j++)
 	  this->Val(i, j) = other_rows(nb++);
       }
   }
-  
+
 
 
   ////////////////////
@@ -1159,8 +1159,8 @@ namespace Seldon
 
     return *this;
   }
-  
-  
+
+
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
@@ -1172,7 +1172,7 @@ namespace Seldon
   {
     for (int i = 0; i < this->GetDataSize();i++)
       this->data_[i] *= x;
-    
+
     return *this;
   }
 
@@ -1228,8 +1228,8 @@ namespace Seldon
 
     return *this;
   }
-  
-  
+
+
   //! Multiplies the matrix by a given value.
   /*!
     \param x multiplication coefficient
@@ -1241,7 +1241,7 @@ namespace Seldon
   {
     for (int i = 0; i < this->GetDataSize();i++)
       this->data_[i] *= x;
-    
+
     return *this;
   }
 

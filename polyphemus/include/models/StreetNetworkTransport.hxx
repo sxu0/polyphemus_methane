@@ -16,7 +16,7 @@ namespace Polyphemus
   ////////////////////////////
 
 
-  /*! StreetNetworkTransport model describes the atmospheric concentrations of 
+  /*! StreetNetworkTransport model describes the atmospheric concentrations of
     pollutants in an urban street network.
    */
   template<class T>
@@ -74,7 +74,7 @@ namespace Polyphemus
 
     /*** Meteorological data ***/
 
-    int Nt_meteo; 
+    int Nt_meteo;
     T ustreet_min; // Minimum wind speed in the streets (m/s)
     Array<T, 2> wind_direction_arr; // Wind direction (rad)
     Array<T, 2> wind_speed_arr; // Wind speed  (m/s)
@@ -96,7 +96,7 @@ namespace Polyphemus
     int maxnstreet;
     Array<T, 1> x_inter, y_inter;
     //! List of the streets which are connected to the intersection.
-    Array<int, 2> street_list; 
+    Array<int, 2> street_list;
     Array<bool, 1> is_virtual;
     Array<T, 2> wind_direction_inter, wind_speed_inter, pblh_inter, ust_inter, lmo_inter;
     //! Pointer to the current intersection.
@@ -120,7 +120,7 @@ namespace Polyphemus
     void ReadConfiguration();
     void ReadStreetData();
     void CheckConfiguration();
-    
+
     void Init();
     void InitStep();
     void InitData(string input_file, Array<T, 2>& input_data);
@@ -146,14 +146,14 @@ namespace Polyphemus
     int GetNStreet() const;
     int GetNumberIntersection() const;
     void GetStreetCoordinate(int street_index, T& longitude, T& latitude);
-    void SetStreetMeteo(int street_index, T wind_direction, T wind_speed, 
+    void SetStreetMeteo(int street_index, T wind_direction, T wind_speed,
                         T pblh, T ust, T lmo);
     void SetDelta_t(T delta_t);
     T GetDelta_t() const;
     void SetDateMin(Date date_min);
     Date GetDateMin() const;
     void GetIntersectionCoordinate(int intersection_index, T& longitude, T& latitude);
-    void SetIntersectionMeteo(int intersection_index, T wind_direction, T wind_speed, 
+    void SetIntersectionMeteo(int intersection_index, T wind_direction, T wind_speed,
                               T pblh, T ust, T lmo);
     void SetCurrentStreet(int index);
     void SetCurrentIntersection(int index);
@@ -169,7 +169,7 @@ namespace Polyphemus
     int GetIntersectionID(int index);
 
     /*** Computational Methods ***/
-    
+
     void Forward();
     void Transport();
 
@@ -183,7 +183,7 @@ namespace Polyphemus
                               Array<T, 2>& extended_matrix);
     void ComputeStreetAngle();
     T ComputeSigmaV(T lmo, T pblh, T ustar);
-    T ComputeGaussian(double theta, double sigma_theta, 
+    T ComputeGaussian(double theta, double sigma_theta,
                       double theta0);
     void ComputeSigmaW();
     void ComputeUstreet();
@@ -194,7 +194,7 @@ namespace Polyphemus
     T ComputeBesselC(T z0_build, T delta_i);
     void GetMin(Array<T, 1> arr, int length, T& minimum, int& index);
     void ComputeTransferVelocity();
-    void ComputeAlpha(int nstreet_in, int nstreet_out, 
+    void ComputeAlpha(int nstreet_in, int nstreet_out,
                       Array<double, 1> P_in, Array<double, 1> P_out,
                       Array<double, 2>& alpha, Array<double, 2>& flux_matrix);
     void ComputeInflowRateExtended();

@@ -93,8 +93,3 @@ void free_f3tensor1(float ***t, long nrl, long nrh, long ncl, long nch,
                     long ndl, long ndh);
 
 #endif /* _NR_UTILS_H_ */
-
-
-
-
-

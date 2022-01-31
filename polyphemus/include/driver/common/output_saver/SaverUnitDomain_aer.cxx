@@ -93,7 +93,7 @@ namespace Polyphemus
 
 
     bool model_with_number = Model.HasNumberConcentration_aer();
-	
+
 
     // Vertical levels to be saved.
     config_stream.Find("Levels");
@@ -198,7 +198,7 @@ namespace Polyphemus
 	  {
 	    output_file.push_back(vector<string>());
 	    Concentration_.push_back(vector<Data<T, 3> >());
-		
+
 	    vector<int> bins;
 	    pair<string, vector<int> > tmp;
 	    for (int i = 0; i < Model.GetNbin_aer(); i++)
@@ -206,7 +206,7 @@ namespace Polyphemus
 	    tmp.second = bins;
 	    tmp.first = "Number";
 	    species_list_aer.push_back(tmp);
-			
+
 	    int rear = output_file.size()-1;
 	    for (k = 0; k < int(bins.size()); k++)
 	      {
@@ -257,7 +257,7 @@ namespace Polyphemus
 							     levels[k], j, i);
 	      }
 	  }
-	
+
     if (this->initial_concentration && !this->averaged)
       Save(Model);
   }
@@ -290,8 +290,8 @@ namespace Polyphemus
     int base_s, base_b;
     base_s = -999;
     bool model_with_number = Model.HasNumberConcentration_aer();
-	
-	
+
+
     if (this->averaged)
       {
         if (this->counter % this->interval_length == 0)
@@ -299,7 +299,7 @@ namespace Polyphemus
             for (b = 0; b < int(species_list_aer[s].second.size()); b++)
               {
                 base_b = species_list_aer[s].second[b];
-                
+
                 if (species_list_aer[s].first != "Number")
                   {
                     base_s = Model.GetSpeciesIndex_aer(species_list_aer[s].first);
@@ -310,7 +310,7 @@ namespace Polyphemus
                             * Model.GetConcentration_aer()(base_s, base_b,
                                                            levels[k], j, i);
                   }
-                else if (model_with_number)		
+                else if (model_with_number)
                   {
                     for (k = 0; k < Nlevels; k++)
                       for (j = 0; j < this->base_Ny; j++)
@@ -348,7 +348,7 @@ namespace Polyphemus
 
                 this->counter = 0;
               }
-        
+
         else
           for (s = 0; s < int(species_list_aer.size()); s++)
             for (b = 0; b < int(species_list_aer[s].second.size()); b++)

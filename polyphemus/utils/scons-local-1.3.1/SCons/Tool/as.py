@@ -37,14 +37,15 @@ import SCons.Defaults
 import SCons.Tool
 import SCons.Util
 
-assemblers = ['as']
+assemblers = ["as"]
 
-ASSuffixes = ['.s', '.asm', '.ASM']
-ASPPSuffixes = ['.spp', '.SPP', '.sx']
-if SCons.Util.case_sensitive_suffixes('.s', '.S'):
-    ASPPSuffixes.extend(['.S'])
+ASSuffixes = [".s", ".asm", ".ASM"]
+ASPPSuffixes = [".spp", ".SPP", ".sx"]
+if SCons.Util.case_sensitive_suffixes(".s", ".S"):
+    ASPPSuffixes.extend([".S"])
 else:
-    ASSuffixes.extend(['.S'])
+    ASSuffixes.extend([".S"])
+
 
 def generate(env):
     """Add Builders and construction variables for as to an Environment."""
@@ -62,14 +63,18 @@ def generate(env):
         static_obj.add_emitter(suffix, SCons.Defaults.StaticObjectEmitter)
         shared_obj.add_emitter(suffix, SCons.Defaults.SharedObjectEmitter)
 
-    env['AS']        = env.Detect(assemblers) or 'as'
-    env['ASFLAGS']   = SCons.Util.CLVar('')
-    env['ASCOM']     = '$AS $ASFLAGS -o $TARGET $SOURCES'
-    env['ASPPFLAGS'] = '$ASFLAGS'
-    env['ASPPCOM']   = '$CC $ASPPFLAGS $CPPFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS -c -o $TARGET $SOURCES'
+    env["AS"] = env.Detect(assemblers) or "as"
+    env["ASFLAGS"] = SCons.Util.CLVar("")
+    env["ASCOM"] = "$AS $ASFLAGS -o $TARGET $SOURCES"
+    env["ASPPFLAGS"] = "$ASFLAGS"
+    env[
+        "ASPPCOM"
+    ] = "$CC $ASPPFLAGS $CPPFLAGS $_CPPDEFFLAGS $_CPPINCFLAGS -c -o $TARGET $SOURCES"
+
 
 def exists(env):
     return env.Detect(assemblers)
+
 
 # Local Variables:
 # tab-width:4

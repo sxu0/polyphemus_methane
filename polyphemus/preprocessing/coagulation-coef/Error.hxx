@@ -11,7 +11,7 @@ namespace CoefficientRepartition
 
     // Destructor.
     virtual ~Error() throw();
-    
+
     virtual string What();
     void CoutWhat();
   };

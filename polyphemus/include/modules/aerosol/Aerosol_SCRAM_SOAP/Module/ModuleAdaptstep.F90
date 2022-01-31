@@ -53,13 +53,13 @@ contains
     Integer solver
     Double precision emw_tmp,tmp
     doUBLE PRECISION start_time,end_time
-    double precision :: timestep_coag,timestep_cond    
+    double precision :: timestep_coag,timestep_cond
 
     !**** SOAP ****
-    double precision :: inorg_total, inorg_bin(N_size) 
+    double precision :: inorg_total, inorg_bin(N_size)
     integer :: neq !! YK
     DOUBLE PRECISION :: q(N_size*(1+N_aerosol)+N_aerosol)
-    integer :: iq(N_aerosol, N_size) 
+    integer :: iq(N_aerosol, N_size)
     ! integer :: ig(N_aerosol)
     double precision :: ionic, lwc, proton
     double precision:: lwc_Nsize(N_size),ionic_Nsize(N_size)
@@ -70,7 +70,7 @@ contains
     double precision :: qext(N_aerosol),surface_equilibrium_conc_tmp(N_aerosol)
     double precision :: qinti_tmp(N_inside_aer)
     integer k,s
-  
+
     ! Initialize the density of aerosols
     do j1 = 1, N_size
       call compute_density(N_size,N_aerosol,EH2O,TINYM,concentration_mass,&
@@ -149,7 +149,7 @@ contains
 	      * partition_coefficient(jesp) * DEXP(vaporization_enthalpy(jesp) * tmp)
 	enddo
     endIF
-    
+
     !call mass_conservation(concentration_mass,concentration_number,concentration_gas, total_mass)
 
     initial_time_splitting = 0.D0
@@ -212,13 +212,13 @@ contains
     if (with_cond.gt.0) then
 
       if(ICUT.ge.1) then
-        call  bulkequi_inorg(nesp_isorropia,& 
+        call  bulkequi_inorg(nesp_isorropia,&
                lwc, ionic, proton, liquid)!equlibrium for inorganic
         call redistribution_lwc(lwc,ionic,proton,liquid, &
                lwc_Nsize,ionic_Nsize,proton_Nsize,liquid_Nsize)
 !      else
 !       if inorganics are computed dynamically but organics are at equilibrium,
-!       then lwc, proton, ionic and liquid are estimated by isorropia in bulkequi_org      
+!       then lwc, proton, ionic and liquid are estimated by isorropia in bulkequi_org
 !        lwc = 0.d0
 !       proton = 0.d0
 !       ionic = 0.d0
@@ -241,7 +241,7 @@ contains
               lwc,lwcorg,ionic,proton,liquid)!equilibrium for organic
          call redistribution_lwcorg(lwcorg,lwcorg_Nsize)
 
-      else 
+      else
   	do jesp=1,N_aerosol
            qext(jesp) = 0.d0
            surface_equilibrium_conc_tmp(jesp) = 0.d0
@@ -265,7 +265,7 @@ contains
 !update wet diameter at the end of current c/e cycle
        call update_wet_diameter_liquid(1,N_size,concentration_mass, &
             concentration_number,wet_mass,wet_diameter,wet_volume,cell_diam_av)
- 
+
 
       if(N_fracmax.gt.1) then
 	call redistribution_fraction()!fraction redistribution
@@ -299,7 +299,7 @@ contains
 !     -- OUTPUT VARIABLES
 !------------------------------------------------------------------------
     implicit none
-    
+
     integer:: solver,itrat
     double precision:: time_t,time_p
     integer :: j
@@ -325,7 +325,7 @@ contains
 	         concentration_number,concentration_gas,dqdt,sub_timestep_splitting)
 	   else
 	      call SULFDYN(concentration_mass_tmp,concentration_mass,concentration_number_tmp,&
-	         concentration_number,concentration_gas,dqdt,time_t)	  
+	         concentration_number,concentration_gas,dqdt,time_t)
 	   endif
         endif
       endif
@@ -333,10 +333,10 @@ contains
       if(ICUT.eq.N_size.AND.tag_nucl.eq.0) then
 	  sub_timestep_splitting=final_sub_time-current_sub_time
 	  current_sub_time=final_sub_time
-   
+
       elseif (solver.eq.0) then
 			  ! euler solver used for coagulation
-	call Euler_solver(concentration_mass,concentration_number,concentration_gas,dqdt,& 
+	call Euler_solver(concentration_mass,concentration_number,concentration_gas,dqdt,&
                      lwc_Nsize,ionic_Nsize,proton_Nsize,liquid_Nsize)
       elseif (solver.eq.1) then
 			    ! etr dynamic solver
@@ -443,7 +443,7 @@ contains
                 proton_Nsize,liquid_Nsize)
       do j=ICUT+1,N_size
 	do s= 1, (N_aerosol-1)!s=G1,G2
-	  jesp=List_species(s)	  
+	  jesp=List_species(s)
 	  tmp=c_mass(j,jesp)*dqdt1(j,jesp)
 	  if (DABS(dqdt1(j,jesp)).gt.0.d0.and.c_mass(j,jesp).gt.TINYM) then
 	    tscale=c_mass(j,jesp)/DABS(dqdt1(j,jesp))
@@ -887,5 +887,5 @@ contains
       enddo
     enddo
   end subroutine Ros2_solver
-  
+
 end Module jAdaptstep

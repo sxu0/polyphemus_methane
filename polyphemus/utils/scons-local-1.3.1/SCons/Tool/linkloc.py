@@ -46,20 +46,22 @@ import SCons.Util
 from SCons.Tool.MSCommon import msvs_exists, merge_default_version
 from SCons.Tool.PharLapCommon import addPharLapPaths
 
-_re_linker_command = re.compile(r'(\s)@\s*([^\s]+)')
+_re_linker_command = re.compile(r"(\s)@\s*([^\s]+)")
+
 
 def repl_linker_command(m):
     # Replaces any linker command file directives (e.g. "@foo.lnk") with
     # the actual contents of the file.
     try:
-        f=open(m.group(2), "r")
+        f = open(m.group(2), "r")
         return m.group(1) + f.read()
     except IOError:
         # the linker should return an error if it can't
         # find the linker command file so we will remain quiet.
         # However, we will replace the @ with a # so we will not continue
         # to find it with recursive substitution
-        return m.group(1) + '#' + m.group(2)
+        return m.group(1) + "#" + m.group(2)
+
 
 class LinklocGenerator:
     def __init__(self, cmdline):
@@ -76,34 +78,41 @@ class LinklocGenerator:
         else:
             return "${TEMPFILE('" + self.cmdline + "')}"
 
+
 def generate(env):
     """Add Builders and construction variables for ar to an Environment."""
     SCons.Tool.createSharedLibBuilder(env)
     SCons.Tool.createProgBuilder(env)
 
-    env['SUBST_CMD_FILE'] = LinklocGenerator
-    env['SHLINK']      = '$LINK'
-    env['SHLINKFLAGS'] = SCons.Util.CLVar('$LINKFLAGS')
-    env['SHLINKCOM']   = '${SUBST_CMD_FILE("$SHLINK $SHLINKFLAGS $_LIBDIRFLAGS $_LIBFLAGS -dll $TARGET $SOURCES")}'
-    env['SHLIBEMITTER']= None
-    env['LINK']        = "linkloc"
-    env['LINKFLAGS']   = SCons.Util.CLVar('')
-    env['LINKCOM']     = '${SUBST_CMD_FILE("$LINK $LINKFLAGS $_LIBDIRFLAGS $_LIBFLAGS -exe $TARGET $SOURCES")}'
-    env['LIBDIRPREFIX']='-libpath '
-    env['LIBDIRSUFFIX']=''
-    env['LIBLINKPREFIX']='-lib '
-    env['LIBLINKSUFFIX']='$LIBSUFFIX'
+    env["SUBST_CMD_FILE"] = LinklocGenerator
+    env["SHLINK"] = "$LINK"
+    env["SHLINKFLAGS"] = SCons.Util.CLVar("$LINKFLAGS")
+    env[
+        "SHLINKCOM"
+    ] = '${SUBST_CMD_FILE("$SHLINK $SHLINKFLAGS $_LIBDIRFLAGS $_LIBFLAGS -dll $TARGET $SOURCES")}'
+    env["SHLIBEMITTER"] = None
+    env["LINK"] = "linkloc"
+    env["LINKFLAGS"] = SCons.Util.CLVar("")
+    env[
+        "LINKCOM"
+    ] = '${SUBST_CMD_FILE("$LINK $LINKFLAGS $_LIBDIRFLAGS $_LIBFLAGS -exe $TARGET $SOURCES")}'
+    env["LIBDIRPREFIX"] = "-libpath "
+    env["LIBDIRSUFFIX"] = ""
+    env["LIBLINKPREFIX"] = "-lib "
+    env["LIBLINKSUFFIX"] = "$LIBSUFFIX"
 
     # Set-up ms tools paths for default version
     merge_default_version(env)
 
     addPharLapPaths(env)
 
+
 def exists(env):
     if msvs_exists():
-        return env.Detect('linkloc')
+        return env.Detect("linkloc")
     else:
         return 0
+
 
 # Local Variables:
 # tab-width:4

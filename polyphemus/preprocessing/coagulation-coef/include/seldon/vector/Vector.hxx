@@ -62,7 +62,7 @@ namespace Seldon
     Vector_Base();
     explicit Vector_Base(int i);
     Vector_Base(const Vector_Base<T, Allocator>& A);
-  
+
     // Destructor.
     ~Vector_Base();
 
@@ -107,7 +107,7 @@ namespace Seldon
     explicit Vector()  throw();
     explicit Vector(int i);
     Vector(const Vector<T, VectFull, Allocator>& A);
-    
+
     // Destructor.
     ~Vector();
     void Clear();
@@ -131,7 +131,7 @@ namespace Seldon
     void PushBack(const T0& x);
     template<class Allocator0>
     void PushBack(const Vector<T, VectFull, Allocator0>& X);
-    
+
     // Basic functions.
     int GetDataSize();
 
@@ -176,7 +176,7 @@ namespace Seldon
     void ReadText(istream& FileStream);
 #endif
 #endif
-    
+
   };
 
 #ifndef SWIG

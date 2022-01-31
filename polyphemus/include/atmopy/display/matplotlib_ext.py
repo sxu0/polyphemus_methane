@@ -54,15 +54,15 @@ def segplot(x, y, fmt, maxdelta, **kwargs):
     d = diff(x)
     lines = []
     ind = nonzero(greater(d, maxdelta))[0]
-    ind = ind+1
+    ind = ind + 1
     if not len(ind):
-        lines.extend( plot(x,y,fmt,**kwargs) )
+        lines.extend(plot(x, y, fmt, **kwargs))
     else:
         allind = [0]
         allind.extend(ind)
         allind.append(len(x))
-        for i1,i2 in zip(allind[:-1], allind[1:]):
-            lines.extend( plot(x[i1:i2], y[i1:i2], fmt, **kwargs) )
+        for i1, i2 in zip(allind[:-1], allind[1:]):
+            lines.extend(plot(x[i1:i2], y[i1:i2], fmt, **kwargs))
     return lines
 
 
@@ -96,16 +96,17 @@ def segplot_logx(x, y, fmt, maxdelta, **kwargs):
     d = diff(x)
     lines = []
     ind = nonzero(greater(d, maxdelta))[0]
-    ind = ind+1
+    ind = ind + 1
     if not len(ind):
-        lines.extend( semilogx(x,y,fmt,**kwargs) )
+        lines.extend(semilogx(x, y, fmt, **kwargs))
     else:
         allind = [0]
         allind.extend(ind)
         allind.append(len(x))
-        for i1,i2 in zip(allind[:-1], allind[1:]):
-            lines.extend( semilogx(x[i1:i2], y[i1:i2], fmt, **kwargs) )
+        for i1, i2 in zip(allind[:-1], allind[1:]):
+            lines.extend(semilogx(x[i1:i2], y[i1:i2], fmt, **kwargs))
     return lines
+
 
 def segplot_date(x, y, fmt, maxdelta, **kwargs):
     """
@@ -137,15 +138,15 @@ def segplot_date(x, y, fmt, maxdelta, **kwargs):
     d = diff(x)
     lines = []
     ind = nonzero(greater(d, maxdelta))[0]
-    ind = ind+1
+    ind = ind + 1
     if not len(ind):
-        lines.extend(plot_date(x,y,fmt,**kwargs) )
+        lines.extend(plot_date(x, y, fmt, **kwargs))
     else:
         allind = [0]
         allind.extend(ind)
         allind.append(len(x))
-        for i1,i2 in zip(allind[:-1], allind[1:]):
-            lines.extend(plot_date(x[i1:i2], y[i1:i2], fmt, **kwargs) )
+        for i1, i2 in zip(allind[:-1], allind[1:]):
+            lines.extend(plot_date(x[i1:i2], y[i1:i2], fmt, **kwargs))
     return lines
 
 
@@ -157,13 +158,9 @@ def set_style1(lines):
     @type lines: matplotlib.lines
     @param lines: Lines to set this predefined style to.
     """
-    set(lines, \
-        antialiased = True, \
-        color = 'r', \
-        linestyle = '-', \
-        linewidth = 1.5)
+    set(lines, antialiased=True, color="r", linestyle="-", linewidth=1.5)
     grid(True)
-    yearsFmt = DateFormatter('%d/%m/%y')
+    yearsFmt = DateFormatter("%d/%m/%y")
     axes().xaxis.set_major_locator(WeekdayLocator())
     axes().xaxis.set_minor_locator(DayLocator())
     axes().xaxis.set_major_formatter(yearsFmt)
@@ -180,13 +177,9 @@ def set_style2(lines):
     @type lines: matplotlib.lines
     @param lines: Lines to set this predefined style to.
     """
-    set(lines, \
-        antialiased = True, \
-        color = 'b', \
-        linestyle = '--', \
-        linewidth = 1.0)
+    set(lines, antialiased=True, color="b", linestyle="--", linewidth=1.0)
     grid(True)
-    yearsFmt = DateFormatter('%d/%m/%y')
+    yearsFmt = DateFormatter("%d/%m/%y")
     axes().xaxis.set_major_locator(WeekdayLocator())
     axes().xaxis.set_minor_locator(DayLocator())
     axes().xaxis.set_major_formatter(yearsFmt)
@@ -224,11 +217,13 @@ def set_style_fromconfig(config, section, lines):
     grid_arg = config.GetElement("grid", section)
     date_format = config.GetElement("date_format", section)
     labels_rotation = config.GetElement("labels_rotation", section)
-    set(lines, \
-        antialiased = antialiased_arg, \
-        color = color_arg, \
-        linestyle = linestyle_arg, \
-        linewidth = linewidth_arg)
+    set(
+        lines,
+        antialiased=antialiased_arg,
+        color=color_arg,
+        linestyle=linestyle_arg,
+        linewidth=linewidth_arg,
+    )
     grid(grid_arg)
     yearsFmt = DateFormatter(date_format)
     axes().xaxis.set_major_locator(WeekdayLocator())
@@ -262,8 +257,12 @@ def dstep(config, date):
     delta = date - config.t_min
 
     if date >= config.t_min:
-        return int((delta.days * 24 * 3600 + delta.seconds
-                    + config.Delta_t * 1800) / (config.Delta_t * 3600))
+        return int(
+            (delta.days * 24 * 3600 + delta.seconds + config.Delta_t * 1800)
+            / (config.Delta_t * 3600)
+        )
     else:
-        return int((delta.days * 24 * 3600 + delta.seconds
-                    - config.Delta_t * 1800) / (config.Delta_t * 3600))
+        return int(
+            (delta.days * 24 * 3600 + delta.seconds - config.Delta_t * 1800)
+            / (config.Delta_t * 3600)
+        )

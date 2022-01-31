@@ -26,7 +26,7 @@ namespace Seldon
   class General
   {
   };
-  
+
   class Symmetric
   {
   };

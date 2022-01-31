@@ -7,7 +7,7 @@
 
 // INCLUDES //
 //////////////
-  
+
 namespace Polyphemus
 {
 
@@ -39,7 +39,7 @@ namespace Polyphemus
     StreetNetworkTransport<T>(config_file)
   {
   }
-  
+
 
   //! Destructor.
   template<class T, class ClassChemistry>
@@ -107,7 +107,7 @@ namespace Polyphemus
     init_conc = 0.0;
     for (int i = 0; i < this->total_nstreet; ++i)
       {
-        Street<T>* street = 
+        Street<T>* street =
           new Street<T>(this->id_street(i), this->begin_inter(i), this->end_inter(i),
                         this->length(i), this->width(i), this->height(i),
                         this->Ns, Nr_photolysis);
@@ -118,7 +118,7 @@ namespace Polyphemus
   }
 
   //! Checks the configuration.
-  /*! 
+  /*!
   */
   template<class T, class ClassChemistry>
   void StreetNetworkChemistry<T, ClassChemistry>::CheckConfiguration()
@@ -182,11 +182,11 @@ namespace Polyphemus
     StreetNetworkTransport<T>::Allocate();
 
     /*** Photolysis rates ***/
-    
+
     if (this->option_process["with_photolysis"])
       {
 	GridR_photolysis = RegularGrid<T>(Nr_photolysis);
-    
+
 	Grid_time_angle_photolysis =
 	  RegularGrid<T>(photolysis_time_angle_min,
 			 photolysis_delta_time_angle,
@@ -252,7 +252,7 @@ namespace Polyphemus
 
             FormatBinary<float> format;
             format.ReadRecord(filename, day, FileRates);
-          
+
             // Along z.
             k_in = 0;
             while (k_in < Nphotolysis_z - 1 && GridZ_photolysis(k_in)
@@ -284,7 +284,7 @@ namespace Polyphemus
             time_angle = abs(time_angle - 24. * T(nb_days));
             if (time_angle > 12.)
               time_angle = 24. - time_angle;
-		
+
             angle_in = int((time_angle - photolysis_time_angle_min)
                            / photolysis_delta_time_angle);
             alpha_angle = (time_angle - photolysis_time_angle_min
@@ -318,7 +318,7 @@ namespace Polyphemus
           }
         street->SetPhotolysisRate(photolysis_rate);
       }
-    
+
   }
 
 
@@ -375,7 +375,7 @@ namespace Polyphemus
     \note Empty method.
   */
   template<class T, class ClassChemistry>
-  void StreetNetworkChemistry<T, ClassChemistry>::InitData(string input_file, 
+  void StreetNetworkChemistry<T, ClassChemistry>::InitData(string input_file,
                                                            Array<T, 2>& input_data)
   {
     StreetNetworkTransport<T>::InitData(input_file, input_data);
@@ -412,7 +412,7 @@ namespace Polyphemus
 
   //! Chemistry.
   /*!
-    \param 
+    \param
   */
   template<class T, class ClassChemistry>
   void StreetNetworkChemistry<T, ClassChemistry>::Chemistry()
@@ -423,8 +423,8 @@ namespace Polyphemus
     Array<T, 1> concentration_array(this->Ns);
 
     source = 0.0;
-    
-    for (typename vector<Street<T>* >::iterator iter = this->StreetVector.begin(); 
+
+    for (typename vector<Street<T>* >::iterator iter = this->StreetVector.begin();
          iter != this->StreetVector.end(); iter++)
       {
         Street<T>* street = *iter;
@@ -468,7 +468,7 @@ namespace Polyphemus
   ::InitChemistry()
   {
     InitPhotolysis(this->current_date);
-    
+
     Chemistry_.Init(*this);
   }
 
@@ -486,7 +486,7 @@ namespace Polyphemus
         if (st == street_index)
           {
             Street<T>* street = *iter;
-            street->SetMeteoChemistry(attenuation, specific_humidity, 
+            street->SetMeteoChemistry(attenuation, specific_humidity,
                               pressure, temperature);
           }
         ++st;

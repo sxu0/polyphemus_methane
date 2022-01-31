@@ -35,7 +35,6 @@ from distutils.msvccompiler.
 __revision__ = "src/engine/SCons/Defaults.py 5110 2010/07/25 16:14:38 bdeegan"
 
 
-
 import os
 import os.path
 import errno
@@ -69,6 +68,7 @@ def _fetch_DefaultEnvironment(*args, **kw):
     global _default_env
     return _default_env
 
+
 def DefaultEnvironment(*args, **kw):
     """
     Initial public entry point for creating the default construction
@@ -88,15 +88,17 @@ def DefaultEnvironment(*args, **kw):
     global _default_env
     if not _default_env:
         import SCons.Util
+
         _default_env = apply(SCons.Environment.Environment, args, kw)
         if SCons.Util.md5:
-            _default_env.Decider('MD5')
+            _default_env.Decider("MD5")
         else:
-            _default_env.Decider('timestamp-match')
+            _default_env.Decider("timestamp-match")
         global DefaultEnvironment
         DefaultEnvironment = _fetch_DefaultEnvironment
         _default_env._CacheDir_path = None
     return _default_env
+
 
 # Emitters for setting the shared attribute on object files,
 # and an action for checking that all of the source files
@@ -106,21 +108,27 @@ def StaticObjectEmitter(target, source, env):
         tgt.attributes.shared = None
     return (target, source)
 
+
 def SharedObjectEmitter(target, source, env):
     for tgt in target:
         tgt.attributes.shared = 1
     return (target, source)
 
+
 def SharedFlagChecker(source, target, env):
-    same = env.subst('$STATIC_AND_SHARED_OBJECTS_ARE_THE_SAME')
-    if same == '0' or same == '' or same == 'False':
+    same = env.subst("$STATIC_AND_SHARED_OBJECTS_ARE_THE_SAME")
+    if same == "0" or same == "" or same == "False":
         for src in source:
             try:
                 shared = src.attributes.shared
             except AttributeError:
                 shared = None
             if not shared:
-                raise SCons.Errors.UserError, "Source file: %s is static and is not compatible with shared target: %s" % (src, target[0])
+                raise SCons.Errors.UserError, "Source file: %s is static and is not compatible with shared target: %s" % (
+                    src,
+                    target[0],
+                )
+
 
 SharedCheck = SCons.Action.Action(SharedFlagChecker, None)
 
@@ -138,6 +146,7 @@ ProgScan = SCons.Tool.ProgramScanner
 # the rest of those in Tool/__init__.py, but I'm not sure where else
 # they should go.  Leave them here for now.
 import SCons.Scanner.Dir
+
 DirScanner = SCons.Scanner.Dir.DirScanner()
 DirEntryScanner = SCons.Scanner.Dir.DirEntryScanner()
 
@@ -159,15 +168,17 @@ LdModuleLinkAction = SCons.Action.Action("$LDMODULECOM", "$LDMODULECOMSTR")
 # ways by creating ActionFactory instances.
 ActionFactory = SCons.Action.ActionFactory
 
+
 def get_paths_str(dest):
     # If dest is a list, we need to manually call str() on each element
     if SCons.Util.is_List(dest):
         elem_strs = []
         for element in dest:
             elem_strs.append('"' + str(element) + '"')
-        return '[' + string.join(elem_strs, ', ') + ']'
+        return "[" + string.join(elem_strs, ", ") + "]"
     else:
         return '"' + str(dest) + '"'
+
 
 def chmod_func(dest, mode):
     SCons.Node.FS.invalidate_node_memos(dest)
@@ -176,10 +187,13 @@ def chmod_func(dest, mode):
     for element in dest:
         os.chmod(str(element), mode)
 
+
 def chmod_strfunc(dest, mode):
-    return 'Chmod(%s, 0%o)' % (get_paths_str(dest), mode)
+    return "Chmod(%s, 0%o)" % (get_paths_str(dest), mode)
+
 
 Chmod = ActionFactory(chmod_func, chmod_strfunc)
+
 
 def copy_func(dest, src):
     SCons.Node.FS.invalidate_node_memos(dest)
@@ -192,9 +206,11 @@ def copy_func(dest, src):
     else:
         return shutil.copytree(src, dest, 1)
 
-Copy = ActionFactory(copy_func,
-                     lambda dest, src: 'Copy("%s", "%s")' % (dest, src),
-                     convert=str)
+
+Copy = ActionFactory(
+    copy_func, lambda dest, src: 'Copy("%s", "%s")' % (dest, src), convert=str
+)
+
 
 def delete_func(dest, must_exist=0):
     SCons.Node.FS.invalidate_node_memos(dest)
@@ -211,10 +227,13 @@ def delete_func(dest, must_exist=0):
             shutil.rmtree(entry, 1)
             continue
 
+
 def delete_strfunc(dest, must_exist=0):
-    return 'Delete(%s)' % get_paths_str(dest)
+    return "Delete(%s)" % get_paths_str(dest)
+
 
 Delete = ActionFactory(delete_func, delete_strfunc)
+
 
 def mkdir_func(dest):
     SCons.Node.FS.invalidate_node_memos(dest)
@@ -225,23 +244,27 @@ def mkdir_func(dest):
             os.makedirs(str(entry))
         except os.error, e:
             p = str(entry)
-            if (e[0] == errno.EEXIST or (sys.platform=='win32' and e[0]==183)) \
-                    and os.path.isdir(str(entry)):
-                pass            # not an error if already exists
+            if (
+                e[0] == errno.EEXIST or (sys.platform == "win32" and e[0] == 183)
+            ) and os.path.isdir(str(entry)):
+                pass  # not an error if already exists
             else:
                 raise
 
-Mkdir = ActionFactory(mkdir_func,
-                      lambda dir: 'Mkdir(%s)' % get_paths_str(dir))
+
+Mkdir = ActionFactory(mkdir_func, lambda dir: "Mkdir(%s)" % get_paths_str(dir))
+
 
 def move_func(dest, src):
     SCons.Node.FS.invalidate_node_memos(dest)
     SCons.Node.FS.invalidate_node_memos(src)
     shutil.move(src, dest)
 
-Move = ActionFactory(move_func,
-                     lambda dest, src: 'Move("%s", "%s")' % (dest, src),
-                     convert=str)
+
+Move = ActionFactory(
+    move_func, lambda dest, src: 'Move("%s", "%s")' % (dest, src), convert=str
+)
+
 
 def touch_func(dest):
     SCons.Node.FS.invalidate_node_memos(dest)
@@ -253,14 +276,15 @@ def touch_func(dest):
         if os.path.exists(file):
             atime = os.path.getatime(file)
         else:
-            open(file, 'w')
+            open(file, "w")
             atime = mtime
         os.utime(file, (atime, mtime))
 
-Touch = ActionFactory(touch_func,
-                      lambda file: 'Touch(%s)' % get_paths_str(file))
+
+Touch = ActionFactory(touch_func, lambda file: "Touch(%s)" % get_paths_str(file))
 
 # Internal utility functions
+
 
 def _concat(prefix, list, suffix, env, f=lambda x: x, target=None, source=None):
     """
@@ -277,6 +301,7 @@ def _concat(prefix, list, suffix, env, f=lambda x: x, target=None, source=None):
         list = l
 
     return _concat_ixes(prefix, list, suffix, env)
+
 
 def _concat_ixes(prefix, list, suffix, env):
     """
@@ -300,20 +325,21 @@ def _concat_ixes(prefix, list, suffix, env):
         if x:
 
             if prefix:
-                if prefix[-1] == ' ':
+                if prefix[-1] == " ":
                     result.append(prefix[:-1])
-                elif x[:len(prefix)] != prefix:
+                elif x[: len(prefix)] != prefix:
                     x = prefix + x
 
             result.append(x)
 
             if suffix:
-                if suffix[0] == ' ':
+                if suffix[0] == " ":
                     result.append(suffix[1:])
-                elif x[-len(suffix):] != suffix:
-                    result[-1] = result[-1]+suffix
+                elif x[-len(suffix) :] != suffix:
+                    result[-1] = result[-1] + suffix
 
     return result
+
 
 def _stripixes(prefix, list, suffix, stripprefixes, stripsuffixes, env, c=None):
     """
@@ -322,12 +348,12 @@ def _stripixes(prefix, list, suffix, stripprefixes, stripsuffixes, env, c=None):
     where it finds them.  This is used by tools (like the GNU linker)
     that need to turn something like 'libfoo.a' into '-lfoo'.
     """
-    
+
     if not list:
         return list
 
     if not callable(c):
-        env_c = env['_concat']
+        env_c = env["_concat"]
         if env_c != _concat and callable(env_c):
             # There's a custom _concat() method in the construction
             # environment, and we've allowed people to set that in
@@ -336,7 +362,7 @@ def _stripixes(prefix, list, suffix, stripprefixes, stripsuffixes, env, c=None):
             c = env_c
         else:
             c = _concat_ixes
-    
+
     stripprefixes = map(env.subst, SCons.Util.flatten(stripprefixes))
     stripsuffixes = map(env.subst, SCons.Util.flatten(stripsuffixes))
 
@@ -367,6 +393,7 @@ def _stripixes(prefix, list, suffix, stripprefixes, stripsuffixes, env, c=None):
 
     return c(prefix, stripped, suffix, env)
 
+
 def processDefines(defs):
     """process defines, resolving strings, lists, dictionaries, into a list of
     strings
@@ -375,7 +402,7 @@ def processDefines(defs):
         l = []
         for d in defs:
             if SCons.Util.is_List(d) or type(d) is types.TupleType:
-                l.append(str(d[0]) + '=' + str(d[1]))
+                l.append(str(d[0]) + "=" + str(d[1]))
             else:
                 l.append(str(d))
     elif SCons.Util.is_Dict(defs):
@@ -393,10 +420,11 @@ def processDefines(defs):
             if v is None:
                 l.append(str(k))
             else:
-                l.append(str(k) + '=' + str(v))
+                l.append(str(k) + "=" + str(v))
     else:
         l = [str(defs)]
     return l
+
 
 def _defines(prefix, defs, suffix, env, c=_concat_ixes):
     """A wrapper around _concat_ixes that turns a list or string
@@ -404,7 +432,8 @@ def _defines(prefix, defs, suffix, env, c=_concat_ixes):
     """
 
     return c(prefix, env.subst_path(processDefines(defs)), suffix, env)
-    
+
+
 class NullCmdGenerator:
     """This is a callable class that can be used in place of other
     command generators if you don't want them to do anything.
@@ -423,6 +452,7 @@ class NullCmdGenerator:
     def __call__(self, target, source, env, for_signature=None):
         return self.cmd
 
+
 class Variable_Method_Caller:
     """A class for finding a construction variable on the stack and
     calling one of its methods.
@@ -435,12 +465,15 @@ class Variable_Method_Caller:
     the way of Memoizing construction environments, because we had to
     create new environment objects to hold the variables.)
     """
+
     def __init__(self, variable, method):
         self.variable = variable
         self.method = method
+
     def __call__(self, *args, **kw):
-        try: 1/0
-        except ZeroDivisionError: 
+        try:
+            1 / 0
+        except ZeroDivisionError:
             # Don't start iterating with the current stack-frame to
             # prevent creating reference cycles (f_back is safe).
             frame = sys.exc_info()[2].tb_frame.f_back
@@ -454,28 +487,29 @@ class Variable_Method_Caller:
             frame = frame.f_back
         return None
 
+
 ConstructionEnvironment = {
-    'BUILDERS'      : {},
-    'SCANNERS'      : [],
-    'CONFIGUREDIR'  : '#/.sconf_temp',
-    'CONFIGURELOG'  : '#/config.log',
-    'CPPSUFFIXES'   : SCons.Tool.CSuffixes,
-    'DSUFFIXES'     : SCons.Tool.DSuffixes,
-    'ENV'           : {},
-    'IDLSUFFIXES'   : SCons.Tool.IDLSuffixes,
-#    'LATEXSUFFIXES' : SCons.Tool.LaTeXSuffixes, # moved to the TeX tools generate functions
-    '_concat'       : _concat,
-    '_defines'      : _defines,
-    '_stripixes'    : _stripixes,
-    '_LIBFLAGS'     : '${_concat(LIBLINKPREFIX, LIBS, LIBLINKSUFFIX, __env__)}',
-    '_LIBDIRFLAGS'  : '$( ${_concat(LIBDIRPREFIX, LIBPATH, LIBDIRSUFFIX, __env__, RDirs, TARGET, SOURCE)} $)',
-    '_CPPINCFLAGS'  : '$( ${_concat(INCPREFIX, CPPPATH, INCSUFFIX, __env__, RDirs, TARGET, SOURCE)} $)',
-    '_CPPDEFFLAGS'  : '${_defines(CPPDEFPREFIX, CPPDEFINES, CPPDEFSUFFIX, __env__)}',
-    'TEMPFILE'      : NullCmdGenerator,
-    'Dir'           : Variable_Method_Caller('TARGET', 'Dir'),
-    'Dirs'          : Variable_Method_Caller('TARGET', 'Dirs'),
-    'File'          : Variable_Method_Caller('TARGET', 'File'),
-    'RDirs'         : Variable_Method_Caller('TARGET', 'RDirs'),
+    "BUILDERS": {},
+    "SCANNERS": [],
+    "CONFIGUREDIR": "#/.sconf_temp",
+    "CONFIGURELOG": "#/config.log",
+    "CPPSUFFIXES": SCons.Tool.CSuffixes,
+    "DSUFFIXES": SCons.Tool.DSuffixes,
+    "ENV": {},
+    "IDLSUFFIXES": SCons.Tool.IDLSuffixes,
+    #    'LATEXSUFFIXES' : SCons.Tool.LaTeXSuffixes, # moved to the TeX tools generate functions
+    "_concat": _concat,
+    "_defines": _defines,
+    "_stripixes": _stripixes,
+    "_LIBFLAGS": "${_concat(LIBLINKPREFIX, LIBS, LIBLINKSUFFIX, __env__)}",
+    "_LIBDIRFLAGS": "$( ${_concat(LIBDIRPREFIX, LIBPATH, LIBDIRSUFFIX, __env__, RDirs, TARGET, SOURCE)} $)",
+    "_CPPINCFLAGS": "$( ${_concat(INCPREFIX, CPPPATH, INCSUFFIX, __env__, RDirs, TARGET, SOURCE)} $)",
+    "_CPPDEFFLAGS": "${_defines(CPPDEFPREFIX, CPPDEFINES, CPPDEFSUFFIX, __env__)}",
+    "TEMPFILE": NullCmdGenerator,
+    "Dir": Variable_Method_Caller("TARGET", "Dir"),
+    "Dirs": Variable_Method_Caller("TARGET", "Dirs"),
+    "File": Variable_Method_Caller("TARGET", "File"),
+    "RDirs": Variable_Method_Caller("TARGET", "RDirs"),
 }
 
 # Local Variables:

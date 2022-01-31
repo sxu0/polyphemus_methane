@@ -25,7 +25,7 @@ from numpy import *
 import scipy.stats.stats
 
 
-def pdf(data, Nbins = 200, val = None):
+def pdf(data, Nbins=200, val=None):
     """
     Computes an approximation of the probability density function. The range
     of data (minimum to maximum) is split into bins of constant length and a
@@ -51,23 +51,23 @@ def pdf(data, Nbins = 200, val = None):
 
     if val is not None:
         delta = float(val[1] - val[0])
-        bins = arange(len(val) + 1, dtype = 'd') * delta \
-               + val[0] - 0.5 * delta
+        bins = arange(len(val) + 1, dtype="d") * delta + val[0] - 0.5 * delta
         res = searchsorted(data, bins)
         return val, (res[1:] - res[:-1]) / (delta * float(len(data)))
 
     # Bins.
     Nbins = float(Nbins)
     delta = (data[-1] - data[0]) / Nbins
-    bins = arange(Nbins + 1., dtype = 'd') * delta + data[0]
-    bins[0] = data[0] - delta   # So that all elements are counted.
-    bins[-1] = data[-1] + delta   # So that all elements are counted.
+    bins = arange(Nbins + 1.0, dtype="d") * delta + data[0]
+    bins[0] = data[0] - delta  # So that all elements are counted.
+    bins[-1] = data[-1] + delta  # So that all elements are counted.
 
     res = searchsorted(data, bins)
 
-    return arange(data[0] + delta / 2., data[-1], delta), \
-           (res[1:] - res[:-1]) / (data[-1] - data[0]) \
-           / float(len(data)) * Nbins
+    return (
+        arange(data[0] + delta / 2.0, data[-1], delta),
+        (res[1:] - res[:-1]) / (data[-1] - data[0]) / float(len(data)) * Nbins,
+    )
 
 
 def cdf(data):
@@ -82,4 +82,4 @@ def cdf(data):
     them.
     """
     data = sort(ravel(data))
-    return data, (arange(len(data), dtype = 'd') + 1.) / float(len(data))
+    return data, (arange(len(data), dtype="d") + 1.0) / float(len(data))
