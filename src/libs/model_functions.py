@@ -4,6 +4,7 @@
 import datetime
 import os
 import shutil
+from pathlib2 import Path
 
 import numpy as np
 import matplotlib
@@ -92,8 +93,28 @@ def fichier_meteo(site, temp, wd, ws, pbl, SC, press):
 
     nom = open("%s/meteo.dat" % (chemin), "w")
     nom.write(
-        "[situation]\n\n# Temperature (Celsius degrees)\nTemperature = %s\n\n# Wind angle (degrees)\nWind_angle = %s\n\n# Wind speed (m/s)\nWind = %s\n\n# Boundary height (m)\n\
-        Boundary_height =  %s\n\n# Stability class\nStability = %s\n\n# Rainfall rate (mm/hr)\nRainfall_rate = 0.\n\n# Pressure (Pa)\nPressure = %s\n\n"
+       "[situation]\n\n\
+        \
+        # Temperature (Celsius degrees)\n\
+        Temperature = %s\n\n\
+        \
+        # Wind angle (degrees)\n\
+        Wind_angle = %s\n\n\
+        \
+        # Wind speed (m/s)\n\
+        Wind = %s\n\n\
+        \
+        # Boundary height (m)\n\
+        Boundary_height =  %s\n\n\
+        \
+        # Stability class\n\
+        Stability = %s\n\n\
+        \
+        # Rainfall rate (mm/hr)\n\
+        Rainfall_rate = 0.\n\n\
+        \
+        # Pressure (Pa)\n\
+        Pressure = %s\n\n"
         % (temp, wd, ws, pbl, SC, press)
     )
     nom.close()
@@ -150,8 +171,31 @@ def plume_response_function(site, source, date, rate, temp, window, facteur):
 
     nom = open("%s/plume-source.dat" % (chemin2), "w")
     nom.write(
-        "[source]\n\n# Source coordinates (meters)\nAbscissa: %s\nOrdinate: %s\nAltitude: %s\n\n# Species name\nSpecies: Methane\n\nType: continuous\nDate_beg: %s\nDate_end: %s\n\n\
-        # Source rate (mass/s)\nRate: %s\n# Source velocity (m/s)\nVelocity = 0.\n\n# Source temperature (Celsius degrees)\nTemperature = %s\n\n#Source diameter (m)\nDiameter = %s\n\n"
+       "[source]\n\n\
+        \
+        # Source coordinates (meters)\n\
+        Abscissa: %s\n\
+        Ordinate: %s\n\
+        Altitude: %s\n\n\
+        \
+        # Species name\n\
+        Species: Methane\n\n\
+        \
+        Type: continuous\n\
+        Date_beg: %s\n\
+        Date_end: %s\n\n\
+        \
+        # Source rate (mass/s)\n\
+        Rate: %s\n\n\
+        \
+        # Source velocity (m/s)\n\
+        Velocity = 0.\n\n\
+        \
+        # Source temperature (degrees Celsius)\n\
+        Temperature = %s\n\n\
+        \
+        # Source diameter (m)\n\
+        Diameter = %s\n\n"
         % (source[0], source[1], source[3], date, date, rate, temp, source[2])
     )
     nom.close()
@@ -167,37 +211,90 @@ def plume_response_function(site, source, date, rate, temp, window, facteur):
 
     nom = open("%s/plume.cfg" % (chemin2), "w")
     nom.write(
-        '[display]\n\n\
-        Show_iterations: yes\nShow_meteorological_data: yes\nShow_date: yes\n\n\n\
+       '[display]\n\n\
+        \
+        Show_iterations: yes\n\
+        Show_meteorological_data: yes\n\
+        Show_date: yes\n\n\n\
+        \
         \
         [domain]\n\n\
+        \
         ## Domain where species concentrations are computed.\n\
         Date_min: %s	Delta_t = 1.0	Nt = 1\n\
         x_min = 0.0		Delta_x = 1.	Nx = %s\n\
         y_min = 0.0		Delta_y = 1.	Ny = %s\n\n\
-        Nz = 7\nVertical_levels: plume-levels.dat\n\n# Land category: rural or urban.\nLand_category: rural\n\n# Time of the day: night or day.\nTime: day\n\n\
-        # File containing the species data.\nSpecies: gaussian-species.dat\n\n\n\
+        \
+        Nz = 7\n\
+        Vertical_levels: plume-levels.dat\n\n\
+        \
+        # Land category: rural or urban.\n\
+        Land_category: rural\n\n\
+        \
+        # Time of the day: night or day.\n\
+        Time: day\n\n\
+        \
+        # File containing the species data.\n\
+        Species: gaussian-species.dat\n\n\n\
+        \
         \
         [gaussian]\n\n\
-        With_plume_rise: no\nWith_plume_rise_breakup: no\nWith_radioactive_decay: no\nWith_biological_decay: no\nWith_scavenging: no\nWith_dry_deposition: no\n\n\
-        # Parameterization to compute standard deviations: "Briggs", "Doury" or\n# "similarity_theory".\n\
-        Sigma_parameterization: Briggs\n\n# Is there a particular formula for standard deviation above the boundary layer?\
-        # If "Gillani" is provided, the vertical sigma is computed with this formula. Otherwise, the formula is the same above and below the boundary layer.\n\
-        Above_BL: none\n\n# Alternative parameterization. Useful only when using similarity theory. It is recommended to use it for elevated sources (about 200 m).\n\
-        With_HPDM: no\n\n# Plume rise parameterization: put "HPDM", "Concawe" or "Holland".\n\
-        Plume_rise_parameterization: HPDM\n\n# File containing the meteorological data.\nFile_meteo:  gaussian-meteo.dat\n\n# File containing the source data.\nFile_source:  plume-source.dat\n\n\
-        # File containing the correction coefficients (used with line sources only).\nFile_correction: correction_coefficients.dat\n\n\n\
+        \
+        With_plume_rise: no\n\
+        With_plume_rise_breakup: no\n\
+        With_radioactive_decay: no\n\
+        With_biological_decay: no\n\
+        With_scavenging: no\n\
+        With_dry_deposition: no\n\n\
+        \
+        # Parameterization to compute standard deviations: "Briggs", "Doury" or\n\
+        # "similarity_theory".\n\
+        Sigma_parameterization: Briggs\n\n\
+        \
+        # Is there a particular formula for standard deviation above the boundary layer?\n\
+        # If "Gillani" is provided, the vertical sigma is computed with this formula.\n\
+        # Otherwise, the formula is the same above and below the boundary layer.\n\
+        Above_BL: none\n\n\
+        \
+        # Alternative parameterization. Useful only when using similarity theory.\n\
+        # It is recommended to use it for elevated sources (about 200 m).\n\
+        With_HPDM: no\n\n\
+        \
+        # Plume rise parameterization: put "HPDM", "Concawe" or "Holland".\n\
+        Plume_rise_parameterization: HPDM\n\n\
+        \
+        # File containing the meteorological data.\n\
+        File_meteo: gaussian-meteo.dat\n\n\
+        \
+        # File containing the source data.\n\
+        File_source: plume-source.dat\n\n\
+        \
+        # File containing the correction coefficients (used with line sources only).\n\
+        File_correction: correction_coefficients.dat\n\n\n\
+        \
         \
         [deposition]\n\n\
-        # Deposition model: "Chamberlain" or "Overcamp".\nDeposition_model: Overcamp\n\n# Number of points to compute the Chamberlain integral.\nNchamberlain: 100\n\n\n\
+        \
+        # Deposition model: "Chamberlain" or "Overcamp".\n\
+        Deposition_model: Overcamp\n\n\
+        \
+        # Number of points to compute the Chamberlain integral.\n\
+        Nchamberlain: 100\n\n\n\
+        \
         \
         [uncertainty]\n\n\
-        File_perturbation: perturbation.cfg\nNumber_samples = 10\n# Newran seed directory (with "/" at the end), or "current_time" for random\n\
-        # seeds generated with current time, or a given seed number (in ]0, 1[).\nRandom_seed = 0.5\n\n\n\
+        \
+        File_perturbation: perturbation.cfg\n\
+        Number_samples = 10\n\
+        # Newran seed directory (with "/" at the end), or "current_time" for random\n\
+        # seeds generated with current time, or a given seed number (in ]0, 1[).\n\
+        Random_seed = 0.5\n\n\n\
+        \
         \
         [output]\n\n\
         \
-        # File describing which concentrations are saved.\nConfiguration_file:  plume-saver.cfg'
+        # File describing which concentrations are saved.\n\
+        Configuration_file: plume-saver.cfg'
         % (date, window, window)
     )
     nom.close()
@@ -330,8 +427,31 @@ def plume(site, sources, date, rate, temp, window, facteur):
     nom = open("%s/plume-source.dat" % (chemin2), "w")
     for ii in range(0, len(sources)):
         nom.write(
-            "[source]\n\n# Source coordinates (meters)\nAbscissa: %s\nOrdinate: %s\nAltitude: %s\n\n# Species name\nSpecies: Methane\n\nType: continuous\nDate_beg: %s\nDate_end: %s\n\n\
-            # Source rate (mass/s)\nRate: %s\n# Source velocity (m/s)\nVelocity = 0.\n\n# Source temperature (Celsius degrees)\nTemperature = %s\n\n#Source diameter (m)\nDiameter = %s\n\n"
+           "[source]\n\n\
+            \
+            # Source coordinates (meters)\n\
+            Abscissa: %s\n\
+            Ordinate: %s\n\
+            Altitude: %s\n\n\
+            \
+            # Species name\n\
+            Species: Methane\n\n\
+            \
+            Type: continuous\n\
+            Date_beg: %s\n\
+            Date_end: %s\n\n\
+            \
+            # Source rate (mass/s)\n\
+            Rate: %s\n\n\
+            \
+            # Source velocity (m/s)\n\
+            Velocity = 0.\n\n\
+            \
+            # Source temperature (degrees Celsius)\n\
+            Temperature = %s\n\n\
+            \
+            # Source diameter (m)\n\
+            Diameter = %s\n\n"
             % (
                 sources[ii, 0],
                 sources[ii, 1],
@@ -356,35 +476,90 @@ def plume(site, sources, date, rate, temp, window, facteur):
 
     nom = open("%s/plume.cfg" % (chemin2), "w")
     nom.write(
-        '[display]\n\n\
-        Show_iterations: yes\nShow_meteorological_data: yes\nShow_date: yes\n\n\n\
+       '[display]\n\n\
+        \
+        Show_iterations: yes\n\
+        Show_meteorological_data: yes\n\
+        Show_date: yes\n\n\n\
+        \
         \
         [domain]\n\n\
+        \
         ## Domain where species concentrations are computed.\n\
         Date_min: %s	Delta_t = 1.0	Nt = 1\n\
         x_min = 0.0		Delta_x = 1.	Nx = %s\n\
         y_min = 0.0		Delta_y = 1.	Ny = %s\n\n\
-        Nz = 7\nVertical_levels: plume-levels.dat\n\n# Land category: rural or urban.\nLand_category: rural\n\n# Time of the day: night or day.\nTime: day\n\n\
-        # File containing the species data.\nSpecies: gaussian-species.dat\n\n\n\
+        \
+        Nz = 7\n\
+        Vertical_levels: plume-levels.dat\n\n\
+        \
+        # Land category: rural or urban.\n\
+        Land_category: rural\n\n\
+        \
+        # Time of the day: night or day.\n\
+        Time: day\n\n\
+        \
+        # File containing the species data.\n\
+        Species: gaussian-species.dat\n\n\n\
+        \
         \
         [gaussian]\n\n\
-        With_plume_rise: no\nWith_plume_rise_breakup: no\nWith_radioactive_decay: no\nWith_biological_decay: no\nWith_scavenging: no\nWith_dry_deposition: no\n\n\
-        # Parameterization to compute standard deviations: "Briggs", "Doury" or\n# "similarity_theory".\nSigma_parameterization: Briggs\n\n\
-        # Is there a particular formula for standard deviation above the boundary layer?\
-        # If "Gillani" is provided, the vertical sigma is computed with this formula. Otherwise, the formula is the same above and below the boundary layer.\n\
-        Above_BL: none\n\n# Alternative parameterization. Useful only when using similarity theory. It is recommended to use it for elevated sources (about 200 m).\n\
-        With_HPDM: no\n\n# Plume rise parameterization: put "HPDM", "Concawe" or "Holland".\nPlume_rise_parameterization: HPDM\n\n# File containing the meteorological data.\nFile_meteo:  gaussian-meteo.dat\n\n\
-        # File containing the source data.\nFile_source:  plume-source.dat\n\n# File containing the correction coefficients (used with line sources only).\nFile_correction: correction_coefficients.dat\n\n\n\
+        \
+        With_plume_rise: no\n\
+        With_plume_rise_breakup: no\n\
+        With_radioactive_decay: no\n\
+        With_biological_decay: no\n\
+        With_scavenging: no\n\
+        With_dry_deposition: no\n\n\
+        \
+        # Parameterization to compute standard deviations: "Briggs", "Doury" or\n\
+        # "similarity_theory".\n\
+        Sigma_parameterization: Briggs\n\n\
+        \
+        # Is there a particular formula for standard deviation above the boundary layer?\n\
+        # If "Gillani" is provided, the vertical sigma is computed with this formula.\n\
+        # Otherwise, the formula is the same above and below the boundary layer.\n\
+        Above_BL: none\n\n\
+        \
+        # Alternative parameterization. Useful only when using similarity theory.\n\
+        # It is recommended to use it for elevated sources (about 200 m).\n\
+        With_HPDM: no\n\n\
+        \
+        # Plume rise parameterization: put "HPDM", "Concawe" or "Holland".\n\
+        Plume_rise_parameterization: HPDM\n\n\
+        \
+        # File containing the meteorological data.\n\
+        File_meteo: gaussian-meteo.dat\n\n\
+        \
+        # File containing the source data.\n\
+        File_source: plume-source.dat\n\n\
+        \
+        # File containing the correction coefficients (used with line sources only).\n\
+        File_correction: correction_coefficients.dat\n\n\n\
+        \
         \
         [deposition]\n\n\
-        # Deposition model: "Chamberlain" or "Overcamp".\nDeposition_model: Overcamp\n\n# Number of points to compute the Chamberlain integral.\nNchamberlain: 100\n\n\n\
+        \
+        # Deposition model: "Chamberlain" or "Overcamp".\n\
+        Deposition_model: Overcamp\n\n\
+        \
+        # Number of points to compute the Chamberlain integral.\n\
+        Nchamberlain: 100\n\n\n\
+        \
         \
         [uncertainty]\n\n\
-        File_perturbation: perturbation.cfg\nNumber_samples = 10\n# Newran seed directory (with "/" at the end), or "current_time" for random\n\
-        # seeds generated with current time, or a given seed number (in ]0, 1[).\nRandom_seed = 0.5\n\n\n\
+        \
+        File_perturbation: perturbation.cfg\n\
+        Number_samples = 10\n\
+        # Newran seed directory (with "/" at the end), or "current_time" for random\n\
+        # seeds generated with current time, or a given seed number (in ]0, 1[).\n\
+        Random_seed = 0.5\n\n\n\
+        \
+        \
         [output]\n\n\
         \
-        # File describing which concentrations are saved.\nConfiguration_file:  plume-saver.cfg'
+        # File describing which concentrations are saved.\n\
+        Configuration_file: plume-saver.cfg'
         % (date, window, window)
     )
     nom.close()
