@@ -29,22 +29,17 @@ def convert_to_time(x):
     return datetime.datetime.strptime(x, "%Y-%m-%d %H:%M:%S.%f")
 
 
-def fichier_meteo(site, temp, wd, ws, pbl, SC, press):
+def fichier_meteo(site_name, temp, wind_dir, wind_speed, pbl, stabil_class, pressure):
     # directory creation
-    raccourci = (
-        "/home/centos7/Documents/Polyphemus/Polyphemus-1.8.1/" + site + "/"
-    )  # chemin dossier
-    path = raccourci + "preprocessing/"
-    chemin = path + "dep/"
-    path2 = raccourci + "processing/"
-    chemin2 = path2 + "gaussian/"
-    chemin_fichiers = "/home/centos7/Documents/Polyphemus/Polyphemus-1.8.1/fichiers/preprocessing/dep/"
-    path3 = raccourci + "graphes/"
-    chemin3 = path3 + "config/"
-    chemin4 = chemin3 + "results/"
+    model_path = Path.cwd() / "polyphemus" / site_name
+    chemin1 = model_path / "preprocessing" / "dep"
+    chemin2 = model_path / "processing" / "gaussian"
+    chemin_fichiers = Path.cwd() / "polyphemus" / "fichiers" / "preprocessing" / "dep"
+    chemin3 = model_path / "graphes" / "config"
+    chemin4 = chemin3 / "results"
 
     try:
-        os.makedirs(chemin)  # creation des dossiers inexistants du chemin
+        os.makedirs(chemin1)
     except OSError:
         pass
 
@@ -67,31 +62,29 @@ def fichier_meteo(site, temp, wd, ws, pbl, SC, press):
     ### copie des fichiers non modifies dans les dossiers #
     #######################################################
 
-    pathfile = chemin_fichiers + "gaussian-deposition.cfg"  # chemin du fichier a copier
-    shutil.copy(pathfile, chemin)  # collage du fichier copie
-    shutil.copy(pathfile, chemin3)
-    pathfile = chemin_fichiers + "gaussian-deposition.cpp"
-    shutil.copy(pathfile, chemin)
-    shutil.copy(pathfile, chemin3)
-    pathfile = chemin_fichiers + "gaussian-species.dat"
-    shutil.copy(pathfile, chemin)
-    shutil.copy(pathfile, chemin3)
-    pathfile = chemin_fichiers + "SConstruct"
-    shutil.copy(pathfile, chemin)
+    path_file = chemin_fichiers / "gaussian-deposition.cfg"
+    shutil.copy(path_file, chemin1)
+    shutil.copy(path_file, chemin3)
+    path_file = chemin_fichiers / "gaussian-deposition.cpp"
+    shutil.copy(path_file, chemin1)
+    shutil.copy(path_file, chemin3)
+    path_file = chemin_fichiers / "gaussian-species.dat"
+    shutil.copy(path_file, chemin1)
+    shutil.copy(path_file, chemin3)
+    path_file = chemin_fichiers / "SConstruct"
+    shutil.copy(path_file, chemin1)
 
     #####################################################
     # conversion des directions du vent pour polyphemus #
     #####################################################
-    #
-    wd = 450 - wd - 180  #
-    #
-    #####################################################
+
+    wind_dir = 450 - wind_dir - 180
 
     ###################################
     ### creation du fichier meteo.dat #
     ###################################
 
-    nom = open("%s/meteo.dat" % (chemin), "w")
+    nom = open(chemin1 / "meteo.dat", "w")
     nom.write(
        "[situation]\n\n\
         \
@@ -115,22 +108,22 @@ def fichier_meteo(site, temp, wd, ws, pbl, SC, press):
         \
         # Pressure (Pa)\n\
         Pressure = %s\n\n"
-        % (temp, wd, ws, pbl, SC, press)
+        % (temp, wind_dir, wind_speed, pbl, stabil_class, pressure)
     )
     nom.close()
 
-    pathfile = (
-        chemin + "meteo.dat"
+    path_file = (
+        chemin1 / "meteo.dat"
     )  # copie/colle le fichier meteo que l on vient de creer
-    shutil.copy(pathfile, chemin3)
+    shutil.copy(path_file, chemin3)
 
     #############################################################################
     ### Compiler gaussian-deposition  dans le bon dossier pour le preprocessing #
     #############################################################################
 
-    os.chdir(chemin)
+    os.chdir(chemin1)
     os.system(
-        "/home/centos7/Documents/Polyphemus/Polyphemus-1.8.1/utils/scons.py gaussian-deposition"
+        str(Path.cwd() / "polyphemus" / "utils" / "scons.py") + " gaussian-deposition"
     )
 
     #############################################
@@ -139,37 +132,33 @@ def fichier_meteo(site, temp, wd, ws, pbl, SC, press):
 
     os.chdir(chemin3)
     os.system(
-        raccourci + "preprocessing/dep/gaussian-deposition gaussian-deposition.cfg"
+        str(model_path / "preprocessing" / "dep" / "gaussian-deposition") + " gaussian-deposition.cfg"
     )
 
-    pathfile = (
-        chemin + "meteo.dat"
+    #? SX: is this meant to be done twice?
+    path_file = (
+        chemin1 / "meteo.dat"
     )  # copie/colle le fichier meteo que l on vient de creer
-    shutil.copy(pathfile, chemin3)
+    shutil.copy(path_file, chemin3)
 
     return
 
 
-def plume_response_function(site, source, date, rate, temp, window, facteur):
+def plume_response_function(site_name, source, date, rate, temp, window, facteur):
 
-    raccourci = (
-        "/home/centos7/Documents/Polyphemus/Polyphemus-1.8.1/" + site + "/"
-    )  # chemin dossier
-    path = raccourci + "preprocessing/"
-    chemin = path + "dep/"
-    path2 = raccourci + "processing/"
-    chemin2 = path2 + "gaussian/"
-    chemin_fichiers = "/home/centos7/Documents/Polyphemus/Polyphemus-1.8.1/fichiers/preprocessing/dep/"
-    chemin_fichiers2 = "/home/centos7/Documents/Polyphemus/Polyphemus-1.8.1/fichiers/processing/gaussian/"
-    path3 = raccourci + "graphes/"
-    chemin3 = path3 + "config/"
-    chemin4 = chemin3 + "results/"
+    model_path = Path.cwd() / "polyphemus" / site_name
+    chemin1 = model_path / "preprocessing" / "dep"
+    chemin2 = model_path / "processing" / "gaussian"
+    chemin_fichiers = Path.cwd() / "polyphemus" / "fichiers" / "preprocessing" / "dep"
+    chemin_fichiers2 = Path.cwd() / "polyphemus" / "fichiers" / "processing" / "gaussian"
+    chemin3 = model_path / "graphes" / "config"
+    chemin4 = chemin3 / "results"
 
     #####################################
     # creation fichier plume-source.dat #
     #####################################
 
-    nom = open("%s/plume-source.dat" % (chemin2), "w")
+    nom = open(chemin2 / "plume-source.dat", "w")
     nom.write(
        "[source]\n\n\
         \
@@ -200,16 +189,16 @@ def plume_response_function(site, source, date, rate, temp, window, facteur):
     )
     nom.close()
 
-    pathfile = (
-        chemin2 + "plume-source.dat"
+    path_file = (
+        chemin2 / "plume-source.dat"
     )  # copie/colle le fichier meteo que l on vient de creer
-    shutil.copy(pathfile, chemin3)
+    shutil.copy(path_file, chemin3)
 
     #####################################
     # creation fichier plume.cfg 	    #
     #####################################
 
-    nom = open("%s/plume.cfg" % (chemin2), "w")
+    nom = open(chemin2 / "plume.cfg", "w")
     nom.write(
        '[display]\n\n\
         \
@@ -299,28 +288,28 @@ def plume_response_function(site, source, date, rate, temp, window, facteur):
     )
     nom.close()
 
-    pathfile = (
-        chemin2 + "plume.cfg"
+    path_file = (
+        chemin2 / "plume.cfg"
     )  # copie/colle le fichier meteo que l on vient de creer
-    shutil.copy(pathfile, chemin3)
+    shutil.copy(path_file, chemin3)
 
     ###################################################################
     ### copie des fichiers qui ne sont pas modifies dans les dossiers #
     ###################################################################
 
-    pathfile = chemin_fichiers2 + "plume.cpp"
-    shutil.copy(pathfile, chemin2)
-    shutil.copy(pathfile, chemin3)
-    pathfile = chemin_fichiers2 + "plume-levels.dat"
-    shutil.copy(pathfile, chemin2)
-    shutil.copy(pathfile, chemin3)
-    pathfile = chemin_fichiers2 + "SConstruct"
-    shutil.copy(pathfile, chemin2)
-    pathfile = chemin_fichiers2 + "plume-saver.cfg"
-    shutil.copy(pathfile, chemin2)
-    shutil.copy(pathfile, chemin3)
-    pathfile = chemin3 + "gaussian-meteo.dat"
-    shutil.copy(pathfile, chemin2)
+    path_file = chemin_fichiers2 / "plume.cpp"
+    shutil.copy(path_file, chemin2)
+    shutil.copy(path_file, chemin3)
+    path_file = chemin_fichiers2 / "plume-levels.dat"
+    shutil.copy(path_file, chemin2)
+    shutil.copy(path_file, chemin3)
+    path_file = chemin_fichiers2 / "SConstruct"
+    shutil.copy(path_file, chemin2)
+    path_file = chemin_fichiers2 / "plume-saver.cfg"
+    shutil.copy(path_file, chemin2)
+    shutil.copy(path_file, chemin3)
+    path_file = chemin3 / "gaussian-meteo.dat"
+    shutil.copy(path_file, chemin2)
 
     ###########################################################
     ### Compiler plume dans le bon dossier pour le processing #
@@ -328,7 +317,7 @@ def plume_response_function(site, source, date, rate, temp, window, facteur):
 
     os.chdir(chemin2)
     os.system(
-        "/home/centos7/Documents/Polyphemus/Polyphemus-1.8.1/utils/scons.py plume"
+        str(Path.cwd() / "polyphemus" / "utils" / "scons.py") + " plume"
     )
 
     ###############################
@@ -336,23 +325,30 @@ def plume_response_function(site, source, date, rate, temp, window, facteur):
     ###############################
 
     os.chdir(chemin3)
-    os.system(raccourci + "processing/gaussian/plume plume.cfg")
+    os.system(
+        str(model_path / "processing" / "gaussian" / "plume") + " plume.cfg"
+    )
 
     return
 
 
-def window(lat_s, lon_s, lat, lon, ws, wd, last):
+def window(lat_s, lon_s, lat, lon, wind_speed, wind_dir, last):
+    """
+    """
     x_ext1, y_ext1 = convert_coord(lat[0], lon[0])
     x_ext2, y_ext2 = convert_coord(lat[last], lon[last])
+
     x_s, y_s = convert_coord(lat_s, lon_s)
-    xmin, ymin, xmax, ymax = (
+
+    x_min, y_min, x_max, y_max = (
         min(x_ext1, x_ext2, x_s),
         min(y_ext1, y_ext2, y_s),
         max(x_ext1, x_ext2, x_s),
         max(y_ext1, y_ext2, y_s),
     )
 
-    ############ size of the window
+    ## window size
+
     r = 6371e3  # earth's radius (m)
     lat_s, lat, lon_s, lon = map(np.radians, [lat_s, lat, lon_s, lon])
 
@@ -361,7 +357,7 @@ def window(lat_s, lon_s, lat, lon, ws, wd, last):
     a = (np.sin(ch_lat / 2) ** 2) + (
         np.cos(lat_s) * np.cos(lat[0]) * np.sin(ch_lon / 2) ** 2
     )
-    c = 2 * math.atan2(np.sqrt(a), np.sqrt(1 - a))  # the angular distance in radian
+    c = 2 * math.atan2(np.sqrt(a), np.sqrt(1 - a))  # angular distance (rad)
     d_s_ext1 = r * c
 
     ch_lat = lat[last] - lat_s
@@ -369,7 +365,7 @@ def window(lat_s, lon_s, lat, lon, ws, wd, last):
     a = (np.sin(ch_lat / 2) ** 2) + (
         np.cos(lat_s) * np.cos(lat[0]) * np.sin(ch_lon / 2) ** 2
     )
-    c = 2 * math.atan2(np.sqrt(a), np.sqrt(1 - a))  # the angular distance in radian
+    c = 2 * math.atan2(np.sqrt(a), np.sqrt(1 - a))  # angular distance (rad)
     d_s_ext2 = r * c
 
     ch_lat = lat[last] - lat[0]
@@ -377,7 +373,7 @@ def window(lat_s, lon_s, lat, lon, ws, wd, last):
     a = (np.sin(ch_lat / 2) ** 2) + (
         np.cos(lat[0]) * np.cos(lat[last]) * np.sin(ch_lon / 2) ** 2
     )
-    c = 2 * math.atan2(np.sqrt(a), np.sqrt(1 - a))  # the angular distance in radian
+    c = 2 * math.atan2(np.sqrt(a), np.sqrt(1 - a))  # angular distance (rad)
     d_ext1_ext2 = r * c
 
     window = max(d_s_ext1, d_s_ext2, d_ext1_ext2)
@@ -385,40 +381,31 @@ def window(lat_s, lon_s, lat, lon, ws, wd, last):
     window = window + 200
     print("Window:", window)
 
-    ######### origin of the window
+    ### window origin
 
-    u, v = (-ws * math.sin(math.radians(wd))), (-ws * math.cos(math.radians(wd)))
+    u, v = (-wind_speed * math.sin(math.radians(wind_dir))), (-wind_speed * math.cos(math.radians(wind_dir)))
 
     if u > 0 and v > 0:
-        # x0, y0 = xmin - 200 , ymin - 200
-        x0, y0 = xmin - 200, ymin - 200
+        x0, y0 = x_min - 200, y_min - 200
     if u < 0 and v < 0:
-        # x0, y0 = xmax - window + 200, ymax - window + 200
-        x0, y0 = xmax - window + 200, ymax - window + 200
+        x0, y0 = x_max - window + 200, y_max - window + 200
     if u > 0 and v < 0:
-        # x0, y0 = xmin - 200, ymax - window + 200
-        x0, y0 = xmin - 200, ymax - window + 200
+        x0, y0 = x_min - 200, y_max - window + 200
     if u < 0 and v > 0:
-        # x0, y0 = xmax - window + 200, ymin - 200
-        x0, y0 = xmax - window + 200, ymin - 200
+        x0, y0 = x_max - window + 200, y_min - 200
 
     return window, x0, y0
 
 
-def plume(site, sources, date, rate, temp, window, facteur):
+def plume(site_name, sources, date, rate, temp, window, facteur):
 
-    raccourci = (
-        "/home/centos7/Documents/Polyphemus/Polyphemus-1.8.1/" + site + "/"
-    )  # chemin dossier
-    path = raccourci + "preprocessing/"
-    chemin = path + "dep/"
-    path2 = raccourci + "processing/"
-    chemin2 = path2 + "gaussian/"
-    chemin_fichiers = "/home/centos7/Documents/Polyphemus/Polyphemus-1.8.1/fichiers/preprocessing/dep/"
-    chemin_fichiers2 = "/home/centos7/Documents/Polyphemus/Polyphemus-1.8.1/fichiers/processing/gaussian/"
-    path3 = raccourci + "graphes/"
-    chemin3 = path3 + "config/"
-    chemin4 = chemin3 + "results/"
+    model_path = Path.cwd() / "polyphemus" / site_name
+    chemin1 = model_path / "preprocessing" / "dep"
+    chemin2 = model_path / "processing" / "gaussian"
+    chemin_fichiers = Path.cwd() / "polyphemus" / "fichiers" / "preprocessing" / "dep"
+    chemin_fichiers2 = Path.cwd() / "polyphemus" / "fichiers" / "processing" / "gaussian"
+    chemin3 = model_path / "graphes" / "config"
+    chemin4 = chemin3 / "results"
 
     #####################################
     # creation fichier plume-source.dat #
@@ -465,10 +452,10 @@ def plume(site, sources, date, rate, temp, window, facteur):
         )
     nom.close()
 
-    pathfile = (
-        chemin2 + "plume-source.dat"
+    path_file = (
+        chemin2 / "plume-source.dat"
     )  # copie/colle le fichier meteo que l on vient de creer
-    shutil.copy(pathfile, chemin3)
+    shutil.copy(path_file, chemin3)
 
     #####################################
     # creation fichier plume.cfg 	    #
@@ -564,28 +551,28 @@ def plume(site, sources, date, rate, temp, window, facteur):
     )
     nom.close()
 
-    pathfile = (
-        chemin2 + "plume.cfg"
+    path_file = (
+        chemin2 / "plume.cfg"
     )  # copie/colle le fichier meteo que l on vient de creer
-    shutil.copy(pathfile, chemin3)
+    shutil.copy(path_file, chemin3)
 
     ###################################################################
     ### copie des fichiers qui ne sont pas modifies dans les dossiers #
     ###################################################################
 
-    pathfile = chemin_fichiers2 + "plume.cpp"
-    shutil.copy(pathfile, chemin2)
-    shutil.copy(pathfile, chemin3)
-    pathfile = chemin_fichiers2 + "plume-levels.dat"
-    shutil.copy(pathfile, chemin2)
-    shutil.copy(pathfile, chemin3)
-    pathfile = chemin_fichiers2 + "SConstruct"
-    shutil.copy(pathfile, chemin2)
-    pathfile = chemin_fichiers2 + "plume-saver.cfg"
-    shutil.copy(pathfile, chemin2)
-    shutil.copy(pathfile, chemin3)
-    pathfile = chemin3 + "gaussian-meteo.dat"
-    shutil.copy(pathfile, chemin2)
+    path_file = chemin_fichiers2 / "plume.cpp"
+    shutil.copy(path_file, chemin2)
+    shutil.copy(path_file, chemin3)
+    path_file = chemin_fichiers2 / "plume-levels.dat"
+    shutil.copy(path_file, chemin2)
+    shutil.copy(path_file, chemin3)
+    path_file = chemin_fichiers2 / "SConstruct"
+    shutil.copy(path_file, chemin2)
+    path_file = chemin_fichiers2 / "plume-saver.cfg"
+    shutil.copy(path_file, chemin2)
+    shutil.copy(path_file, chemin3)
+    path_file = chemin3 / "gaussian-meteo.dat"
+    shutil.copy(path_file, chemin2)
 
     ###########################################################
     ### Compiler plume dans le bon dossier pour le processing #
@@ -593,7 +580,7 @@ def plume(site, sources, date, rate, temp, window, facteur):
 
     os.chdir(chemin2)
     os.system(
-        "/home/centos7/Documents/Polyphemus/Polyphemus-1.8.1/utils/scons.py plume"
+        str(Path.cwd() / "polyphemus" / "utils" / "scons.py") + " plume"
     )
 
     ###############################
@@ -601,7 +588,9 @@ def plume(site, sources, date, rate, temp, window, facteur):
     ###############################
 
     os.chdir(chemin3)
-    os.system(raccourci + "processing/gaussian/plume plume.cfg")
+    os.system(
+        str(model_path / "processing" / "gaussian" / "plume") + " plume.cfg"
+    )
 
     ####################################
     ### Tracer graphiques sur la route #
