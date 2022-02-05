@@ -30,7 +30,6 @@ def convert_to_time(x):
 
 
 def fichier_meteo(site_name, temp, wind_dir, wind_speed, pbl, stabil_class, pressure):
-    # directory creation
     model_path = Path.cwd() / "polyphemus" / site_name
     chemin1 = model_path / "preprocessing" / "dep"
     chemin2 = model_path / "processing" / "gaussian"
@@ -86,7 +85,7 @@ def fichier_meteo(site_name, temp, wind_dir, wind_speed, pbl, stabil_class, pres
 
     nom = open(chemin1 / "meteo.dat", "w")
     nom.write(
-       "[situation]\n\n\
+        "[situation]\n\n\
         \
         # Temperature (Celsius degrees)\n\
         Temperature = %s\n\n\
@@ -132,10 +131,11 @@ def fichier_meteo(site_name, temp, wind_dir, wind_speed, pbl, stabil_class, pres
 
     os.chdir(chemin3)
     os.system(
-        str(model_path / "preprocessing" / "dep" / "gaussian-deposition") + " gaussian-deposition.cfg"
+        str(model_path / "preprocessing" / "dep" / "gaussian-deposition")
+        + " gaussian-deposition.cfg"
     )
 
-    #? SX: is this meant to be done twice?
+    # ? SX: is this meant to be done twice?
     path_file = (
         chemin1 / "meteo.dat"
     )  # copie/colle le fichier meteo que l on vient de creer
@@ -145,12 +145,13 @@ def fichier_meteo(site_name, temp, wind_dir, wind_speed, pbl, stabil_class, pres
 
 
 def plume_response_function(site_name, source, date, rate, temp, window, facteur):
-
     model_path = Path.cwd() / "polyphemus" / site_name
     chemin1 = model_path / "preprocessing" / "dep"
     chemin2 = model_path / "processing" / "gaussian"
     chemin_fichiers = Path.cwd() / "polyphemus" / "fichiers" / "preprocessing" / "dep"
-    chemin_fichiers2 = Path.cwd() / "polyphemus" / "fichiers" / "processing" / "gaussian"
+    chemin_fichiers2 = (
+        Path.cwd() / "polyphemus" / "fichiers" / "processing" / "gaussian"
+    )
     chemin3 = model_path / "graphes" / "config"
     chemin4 = chemin3 / "results"
 
@@ -160,7 +161,7 @@ def plume_response_function(site_name, source, date, rate, temp, window, facteur
 
     nom = open(chemin2 / "plume-source.dat", "w")
     nom.write(
-       "[source]\n\n\
+        "[source]\n\n\
         \
         # Source coordinates (meters)\n\
         Abscissa: %s\n\
@@ -200,7 +201,7 @@ def plume_response_function(site_name, source, date, rate, temp, window, facteur
 
     nom = open(chemin2 / "plume.cfg", "w")
     nom.write(
-       '[display]\n\n\
+        '[display]\n\n\
         \
         Show_iterations: yes\n\
         Show_meteorological_data: yes\n\
@@ -316,25 +317,19 @@ def plume_response_function(site_name, source, date, rate, temp, window, facteur
     ###########################################################
 
     os.chdir(chemin2)
-    os.system(
-        str(Path.cwd() / "polyphemus" / "utils" / "scons.py") + " plume"
-    )
+    os.system(str(Path.cwd() / "polyphemus" / "utils" / "scons.py") + " plume")
 
     ###############################
     ### lancer l'executable plume #
     ###############################
 
     os.chdir(chemin3)
-    os.system(
-        str(model_path / "processing" / "gaussian" / "plume") + " plume.cfg"
-    )
+    os.system(str(model_path / "processing" / "gaussian" / "plume") + " plume.cfg")
 
     return
 
 
 def window(lat_s, lon_s, lat, lon, wind_speed, wind_dir, last):
-    """
-    """
     x_ext1, y_ext1 = convert_coord(lat[0], lon[0])
     x_ext2, y_ext2 = convert_coord(lat[last], lon[last])
 
@@ -383,7 +378,9 @@ def window(lat_s, lon_s, lat, lon, wind_speed, wind_dir, last):
 
     ### window origin
 
-    u, v = (-wind_speed * math.sin(math.radians(wind_dir))), (-wind_speed * math.cos(math.radians(wind_dir)))
+    u, v = (-wind_speed * math.sin(math.radians(wind_dir))), (
+        -wind_speed * math.cos(math.radians(wind_dir))
+    )
 
     if u > 0 and v > 0:
         x0, y0 = x_min - 200, y_min - 200
@@ -398,12 +395,13 @@ def window(lat_s, lon_s, lat, lon, wind_speed, wind_dir, last):
 
 
 def plume(site_name, sources, date, rate, temp, window, facteur):
-
     model_path = Path.cwd() / "polyphemus" / site_name
     chemin1 = model_path / "preprocessing" / "dep"
     chemin2 = model_path / "processing" / "gaussian"
     chemin_fichiers = Path.cwd() / "polyphemus" / "fichiers" / "preprocessing" / "dep"
-    chemin_fichiers2 = Path.cwd() / "polyphemus" / "fichiers" / "processing" / "gaussian"
+    chemin_fichiers2 = (
+        Path.cwd() / "polyphemus" / "fichiers" / "processing" / "gaussian"
+    )
     chemin3 = model_path / "graphes" / "config"
     chemin4 = chemin3 / "results"
 
@@ -414,7 +412,7 @@ def plume(site_name, sources, date, rate, temp, window, facteur):
     nom = open("%s/plume-source.dat" % (chemin2), "w")
     for ii in range(0, len(sources)):
         nom.write(
-           "[source]\n\n\
+            "[source]\n\n\
             \
             # Source coordinates (meters)\n\
             Abscissa: %s\n\
@@ -463,7 +461,7 @@ def plume(site_name, sources, date, rate, temp, window, facteur):
 
     nom = open("%s/plume.cfg" % (chemin2), "w")
     nom.write(
-       '[display]\n\n\
+        '[display]\n\n\
         \
         Show_iterations: yes\n\
         Show_meteorological_data: yes\n\
@@ -579,18 +577,14 @@ def plume(site_name, sources, date, rate, temp, window, facteur):
     ###########################################################
 
     os.chdir(chemin2)
-    os.system(
-        str(Path.cwd() / "polyphemus" / "utils" / "scons.py") + " plume"
-    )
+    os.system(str(Path.cwd() / "polyphemus" / "utils" / "scons.py") + " plume")
 
     ###############################
     ### lancer l'executable plume #
     ###############################
 
     os.chdir(chemin3)
-    os.system(
-        str(model_path / "processing" / "gaussian" / "plume") + " plume.cfg"
-    )
+    os.system(str(model_path / "processing" / "gaussian" / "plume") + " plume.cfg")
 
     ####################################
     ### Tracer graphiques sur la route #
