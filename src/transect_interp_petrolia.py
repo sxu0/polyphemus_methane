@@ -7,10 +7,11 @@ and interpolates points along transects.
 Author: Shiqi Xu
 """
 
-import os
+import os, sys
 
 import numpy as np
 import pandas as pd
+from pathlib2 import Path
 
 from libs import coord_convert
 
@@ -83,7 +84,7 @@ def interp_transect_points(start_local, end_local):
 if __name__ == "__main__":
 
     anchor_filename = os.path.join(
-        os.path.dirname(__file__), "petrolia_landfill_reference_coords.csv"
+        os.path.dirname(sys.path[0]), "data", "petrolia_landfill_reference_coords.csv"
     )
     anchors_lat_lon = import_anchors(anchor_filename)
     # print(anchors_lat_lon)
@@ -117,7 +118,9 @@ if __name__ == "__main__":
     )
     # print(transect_mid)
 
-    path_save = os.path.join(os.path.dirname(__file__), "petrolia_transects")
+    path_save = os.path.join(
+        os.path.dirname(sys.path[0]), "outputs", "petrolia_transects"
+    )
     try:
         os.mkdir(path_save)
     except OSError:
