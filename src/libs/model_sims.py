@@ -30,6 +30,20 @@ def convert_to_time(x):
 
 
 def fichier_meteo(site_name, temp, wind_dir, wind_speed, pbl, stabil_class, pressure):
+    """Generates `meteo.dat` file containing relevant meteorological data. Executes
+    the preprocessing step of the gaussian plume model.
+
+    Args:
+        site_name (str): [description]
+        temp (float): Temperature, in degrees Celsius.
+        wind_dir (float): Originating wind direction in degrees,
+            measured clockwise from North.
+        wind_speed (float): Wind speed, in m/s.
+        pbl (float): Planetary boundary layer height, in meters.
+        stabil_class (str): Pasquill-Gifford stability class.
+            One of 'A', 'B', 'C', 'D', 'E', 'F', and 'G'.
+        pressure (float): Pressure, in hPa.
+    """
     model_path = Path.cwd() / "polyphemus" / site_name
     chemin1 = model_path / "preprocessing" / "dep"
     chemin2 = model_path / "processing" / "gaussian"
@@ -116,9 +130,9 @@ def fichier_meteo(site_name, temp, wind_dir, wind_speed, pbl, stabil_class, pres
     )  # copie/colle le fichier meteo que l on vient de creer
     shutil.copy(path_file, chemin3)
 
-    #############################################################################
-    ### Compiler gaussian-deposition  dans le bon dossier pour le preprocessing #
-    #############################################################################
+    ############################################################################
+    ### Compiler gaussian-deposition dans le bon dossier pour le preprocessing #
+    ############################################################################
 
     os.chdir(chemin1)
     os.system(
@@ -145,6 +159,7 @@ def fichier_meteo(site_name, temp, wind_dir, wind_speed, pbl, stabil_class, pres
 
 
 def plume_response_function(site_name, source, date, rate, temp, window, facteur=None):
+    """TODO"""
     model_path = Path.cwd() / "polyphemus" / site_name
     chemin1 = model_path / "preprocessing" / "dep"
     chemin2 = model_path / "processing" / "gaussian"
@@ -330,6 +345,7 @@ def plume_response_function(site_name, source, date, rate, temp, window, facteur
 
 
 def window(lat_s, lon_s, lat, lon, wind_speed, wind_dir, last):
+    """TODO"""
     x_ext1, y_ext1 = convert_coord(lat[0], lon[0])
     x_ext2, y_ext2 = convert_coord(lat[last], lon[last])
 
@@ -395,6 +411,24 @@ def window(lat_s, lon_s, lat, lon, wind_speed, wind_dir, last):
 
 
 def plume(site_name, sources, date, rate, temp, window, facteur=None):
+    """Generates `plume-source.dat` and `plume.cfg` files, creates necessary
+    directories and files, and runs the processing step of the gaussian plume model.
+
+    Args:
+        site_name (str): Name of site being modelled. Name of parent directory.
+        sources (np.ndarray[float]): 2D numpy array containing information about
+            sources. Each outer element corresponds to a source, whose elements
+            entail the following:
+                [0] x-coordinate in local coordinate system, in metres;
+                [1] y-coordinate in local coordinate system, in metres;
+                [2] source diameter, in metres;
+                [3] source height above ground, in metres.
+        date (str): Date for model, in format "YYYY-MM-DD".
+        rate (float): Source flux rate, in g/s.
+        temp (float): Temperature, in degrees Celsius.
+        window (float): Width of square window, in metres.
+        facteur (float, optional): TODO. Defaults to None.
+    """
     model_path = Path.cwd() / "polyphemus" / site_name
     chemin1 = model_path / "preprocessing" / "dep"
     chemin2 = model_path / "processing" / "gaussian"
@@ -409,7 +443,7 @@ def plume(site_name, sources, date, rate, temp, window, facteur=None):
     # creation fichier plume-source.dat #
     #####################################
 
-    nom = open("%s/plume-source.dat" % (chemin2), "w")
+    nom = open(chemin2 / "plume-source.dat", "w")
     for ii in range(0, len(sources)):
         nom.write(
             "[source]\n\n\
@@ -459,7 +493,7 @@ def plume(site_name, sources, date, rate, temp, window, facteur=None):
     # creation fichier plume.cfg 	    #
     #####################################
 
-    nom = open("%s/plume.cfg" % (chemin2), "w")
+    nom = open(chemin2 / "plume.cfg", "w")
     nom.write(
         '[display]\n\n\
         \
