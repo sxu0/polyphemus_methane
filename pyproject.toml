@@ -11,6 +11,7 @@ numpy = "1.16.*"
 scipy = "1.2.*"
 pandas = "0.24.*"
 matplotlib = "2.2.*"
+pathlib2 = "^2.3.6"
 
 [tool.poetry.dev-dependencies]
 pylint = "1.4.*"
