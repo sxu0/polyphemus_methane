@@ -144,7 +144,7 @@ def fichier_meteo(site_name, temp, wind_dir, wind_speed, pbl, stabil_class, pres
     return
 
 
-def plume_response_function(site_name, source, date, rate, temp, window, facteur):
+def plume_response_function(site_name, source, date, rate, temp, window, facteur=None):
     model_path = Path.cwd() / "polyphemus" / site_name
     chemin1 = model_path / "preprocessing" / "dep"
     chemin2 = model_path / "processing" / "gaussian"
@@ -394,7 +394,7 @@ def window(lat_s, lon_s, lat, lon, wind_speed, wind_dir, last):
     return window, x0, y0
 
 
-def plume(site_name, sources, date, rate, temp, window, facteur):
+def plume(site_name, sources, date, rate, temp, window, facteur=None):
     model_path = Path.cwd() / "polyphemus" / site_name
     chemin1 = model_path / "preprocessing" / "dep"
     chemin2 = model_path / "processing" / "gaussian"
