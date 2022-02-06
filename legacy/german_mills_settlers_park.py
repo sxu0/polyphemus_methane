@@ -17,10 +17,10 @@ import scipy
 from scipy import integrate as integ
 from scipy import stats
 
-from polyphemus.include import atmopy
-from polyphemus.include.atmopy.display import *
+from src.libs.polyphemus.include import atmopy
+from src.libs.polyphemus.include.atmopy.display import *
 
-from libs.model_functions import *
+from libs.model_sims import *
 from libs.coord_convert import *
 
 
@@ -80,7 +80,7 @@ for ii in range(nbsource):
     sources[ii, 3] = locals()["height{}".format(ii + 1)]
     flux[ii] = locals()["flux{}".format(ii + 1)]
 
-# transect coords converted in transect_mapping_germain_mills.py
+# transect coords converted in transect_mapping_german_mills.py
 transect = pd.read_csv(transect_path, sep="\t", header=None, index_col=False)
 transect_x = transect.iloc[:, 0]
 transect_y = transect.iloc[:, 1]
