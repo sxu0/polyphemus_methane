@@ -33,18 +33,19 @@ from libs import model_sims, coord_convert
 
 
 def run_model(
-    sources: np.ndarray,
-    flux: np.ndarray,
-    window: float,
-    stabil_class: str,
-    wind_dir: float,
-    wind_speed: float,
-    pressure: float,
-    temp: float,
-    pbl: float,
-    site: str,
-    date: str,
-) -> None:
+    sources,
+    flux,
+    window,
+    stabil_class,
+    wind_dir,
+    wind_speed,
+    pressure,
+    temp,
+    pbl,
+    site,
+    date,
+):
+    # type: (np.ndarray, np.ndarray, float, str, float, float, float, float, float, str, str) -> None
     """Runs the Gaussian plume model using the libs/model_sims.py module.
 
     Args:
@@ -76,7 +77,8 @@ def run_model(
     return
 
 
-def calc_conversion_factor(pressure: float, temp: float) -> float:
+def calc_conversion_factor(pressure, temp):
+    # type: (float, float) -> float
     """Calculates g/m^3 to ppb conversion factor given pressure and temperature.
 
     Notes:
@@ -98,17 +100,18 @@ def calc_conversion_factor(pressure: float, temp: float) -> float:
 
 
 def plot_plume_horiz_slice(
-    sources: np.ndarray,
-    transect_x: np.ndarray,
-    transect_y: np.ndarray,
-    window: float,
-    conv_factor: float,
-    site: str,
-    date: str = "",
-    time_run: str = "",
-    save_fig: bool = False,
-    location_save: str = "",
-) -> None:
+    sources,
+    transect_x,
+    transect_y,
+    window,
+    conv_factor,
+    site,
+    date="",
+    time_run="",
+    save_fig=False,
+    location_save="",
+):
+    # type: (np.ndarray, np.ndarray, np.ndarray, float, float, str, str, str, bool, str) -> None
     """Generates contour plot of concentrations across a horizontal slice of domain.
 
     Args:
@@ -200,17 +203,18 @@ def plot_plume_horiz_slice(
 
 
 def plot_plume_transect(
-    transect_x: np.ndarray,
-    transect_y: np.ndarray,
-    measured_ch4: np.ndarray,
-    window: float,
-    conv_factor: float,
-    site: str,
-    date: str = "",
-    time_run: str = "",
-    save_fig: bool = False,
-    location_save: str = "",
-) -> None:
+    transect_x,
+    transect_y,
+    measured_ch4,
+    window,
+    conv_factor,
+    site,
+    date="",
+    time_run="",
+    save_fig=False,
+    location_save="",
+):
+    # type: (np.ndarray, np.ndarray, np.ndarray, float, float, str, str, str, bool, str) -> None
     """Generates plot of modelled (and measured) concentrations along transect.
 
     Args:
