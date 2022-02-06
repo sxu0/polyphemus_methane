@@ -12,14 +12,12 @@ Author: Shiqi Xu
 import datetime
 import os
 
-import matplotlib
-matplotlib.use("Agg")
-from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 from pathlib2 import Path
 
 from libs import coord_convert
+import gaussian_plume
 
 
 if __name__ == "__main__":
