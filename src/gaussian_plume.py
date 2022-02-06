@@ -411,8 +411,7 @@ def flux_scaling_factor(transect_dists, model_transect, measured_ch4):
 def shift_source(transect_x, transect_y, model_transect, measured_ch4):
     # type: (np.ndarray, np.ndarray, np.ndarray, np.ndarray) -> Tuple[float, float]
     """Suggests translation of source in x and y directions, in metres, based on
-    offset between measured and modelled peaks. Works for a single source. Limited
-    to cases with a single source.
+    offset between measured and modelled peaks. Limited to cases with a single source.
 
     Args:
         transect_x (np.ndarray): Local x-coordinates of points along transect.
@@ -447,3 +446,79 @@ def shift_source(transect_x, transect_y, model_transect, measured_ch4):
 
     return src_delta_x, src_delta_y
 
+
+def wind_dir_change(
+    transect_x, transect_y,
+    model_transect, measured_ch4,
+    src_x_coord, src_y_coord
+):
+    # type: (np.ndarray, np.ndarray, np.ndarray, np.ndarray, float, float) -> float
+    """Suggests shift in wind direction, in degrees clockwise, by calculating
+    angular deviation between modelled and measured peaks. Limited to cases with
+    a single source.
+
+    Args:
+        transect_x (np.ndarray): Local x-coordinates of points along transect.
+        transect_y (np.ndarray): Local y-coordinates of points along transect.
+        model_transect (np.ndarray): Modelled concentrations along transect, in ppb.
+        measured_ch4 (np.ndarray): Measured concentrations along transect, in ppb.
+        src_x_coord (float): Local x-coordinate of source.
+        src_y_coord (float): Local y-coordinate of source.
+
+    Returns:
+        angle_dev (float): Suggested shift in wind direction, in degrees clockwise.
+    """
+    ## index of model peak along transect
+    model_peak_i_start = model_transect.index(max(model_transect))
+    model_peak_i_stop = model_peak_i_start
+    while (model_peak_i_stop < len(model_transect) - 1) and (
+        model_transect[model_peak_i_stop + 1] == model_transect[model_peak_i_stop]
+    ):
+        model_peak_i_stop += 1
+    model_peak_index = int((model_peak_i_start + model_peak_i_stop) / 2)
+    ## index of measured peak along transect
+    meas_peak_i_start = measured_ch4.index(max(measured_ch4))
+    meas_peak_i_stop = meas_peak_i_start
+    while (meas_peak_i_stop < len(measured_ch4) - 1) and (
+        measured_ch4[meas_peak_i_stop + 1] == measured_ch4[meas_peak_i_stop]
+    ):
+        meas_peak_i_stop += 1
+    meas_peak_index = int((meas_peak_i_start + meas_peak_i_stop) / 2)
+
+    # modelled peak location along transect
+    model_peak_x_coord = transect_x[model_peak_index]
+    model_peak_y_coord = transect_y[model_peak_index]
+    # measured peak distance along transect
+    meas_peak_x_coord = transect_x[meas_peak_index]
+    meas_peak_y_coord = transect_y[meas_peak_index]
+
+    # modelled transect peak distance from source
+    model_peak_dist_from_src = (
+        (model_peak_x_coord - src_x_coord) ** 2 + (model_peak_y_coord - src_y_coord) ** 2
+    ) ** 0.5
+    # measured transect peak distance from source
+    meas_peak_dist_from_src = (
+        (meas_peak_x_coord - src_x_coord) ** 2 + (meas_peak_y_coord - src_y_coord) ** 2
+    ) ** 0.5
+    # distance between modelled peak and measured peak
+    dist_model_meas_peaks = (
+        (model_peak_x_coord - meas_peak_x_coord) ** 2
+        + (model_peak_y_coord - meas_peak_y_coord) ** 2
+    ) ** 0.5
+
+    # cosine law: gamma = arccos( (a^2 + b^2 - c^2) / (2ab) )
+    angle_dev = round(
+        math.degrees(
+            math.acos(
+                (
+                    model_peak_dist_from_src ** 2
+                    + meas_peak_dist_from_src ** 2
+                    - dist_model_meas_peaks ** 2
+                )
+                / (2 * model_peak_dist_from_src * meas_peak_dist_from_src)
+            )
+        ),
+        2,
+    )
+
+    return angle_dev
