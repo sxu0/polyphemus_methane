@@ -337,6 +337,20 @@ def plot_plume_transect(
     return
 
 
+def max_transect_conc(plume_transect):
+    # type: (np.ndarray) -> float
+    """Returns maximum concentration along transect, in ppb.
+    Args:
+        plume_transect (np.ndarray): Concentration values along model plume transect,
+            in ppb.
+    Returns:
+        max_conc (float): Peak concentration along transect, in ppb.
+    """
+    max_conc = max(plume_transect)
+
+    return max_conc
+
+
 def tot_transect_conc(transect_dists, plume_transect):
     # type: (np.ndarray, np.ndarray) -> float
     """Returns total concentration across transect (i.e. area under concentration
@@ -453,7 +467,7 @@ def wind_dir_change(
     src_x_coord, src_y_coord
 ):
     # type: (np.ndarray, np.ndarray, np.ndarray, np.ndarray, float, float) -> float
-    """Suggests shift in wind direction, in degrees clockwise, by calculating
+    """Suggests shift in wind direction, in degrees (absolute value), by calculating
     angular deviation between modelled and measured peaks. Limited to cases with
     a single source.
 
@@ -542,3 +556,100 @@ def correlation_plume_transects(model_transect, measured_ch4):
     R_sq = correlation_xy ** 2
 
     return R_sq
+
+
+def generate_summary_cfg(
+    window,
+    sources,
+    flux,
+    src_name,
+    stabil_class,
+    wind_dir,
+    wind_speed,
+    pressure,
+    temp,
+    pbl,
+    peak_conc,
+    tot_conc,
+    angle_dev,
+    R_sq,
+    car_heading,
+    total_no_transects,
+    transect_no,
+    site,
+    date,
+    wind_data_src,
+    time_run,
+    path_save,
+):
+    # Generates summary config file.
+    cfg_filename = time_run + "_cfg_" + site + "_" + date + ".txt"
+
+    cfg_file = open(os.path.join(path_save, cfg_filename), "a")  # append mode
+
+    cfg_file.write("INPUTS\n")
+    cfg_file.write("======\n\n")
+
+    cfg_file.write("site:\t\t\t\t" + site + "\n")
+    cfg_file.write("date:\t\t\t\t" + date + "\n")
+    cfg_file.write("suspected source:\t" + src_name + "\n")
+    cfg_file.write("window size:\t\t" + str(window) + "\n")
+
+    for i in range(len(sources)):
+        cfg_file.write("\nsource #" + str(i + 1) + ":\n")
+        cfg_file.write("- - - - -\n")
+        cfg_file.write(
+            "source location:\t(" + str(sources[i, 0]) + ", " + str(sources[i, 1]) + ")\n"
+        )
+        cfg_file.write("source diameter:\t" + str(sources[i, 2]) + " m\n")
+        cfg_file.write("flux:\t\t\t\t" + str(flux[i]) + " g/s\n")
+
+    cfg_file.write("\n---------------------------------------\n\n")
+
+    cfg_file.write("PBL:\t\t\t\t" + str(pbl) + " m\n")
+    cfg_file.write("stability class:\t" + stabil_class + "\n")
+    cfg_file.write("pressure:\t\t\t" + str(pressure) + " hPa\n")
+    cfg_file.write("temperature:\t\t" + str(temp) + " deg C\n")
+    cfg_file.write("wind direction:\t\t" + str(wind_dir) + " deg\n")
+    cfg_file.write("wind speed:\t\t\t" + str(wind_speed) + " m/s\n")
+
+    cfg_file.write("\n---------------------------------------\n\n")
+
+    cfg_file.write("additional notes:\n")
+    if total_no_transects > 1:
+        cfg_file.write(
+            "- this is TRANSECT #"
+            + str(transect_no)
+            + " on "
+            + date
+            + ", there are "
+            + str(total_no_transects)
+            + " total\n"
+        )
+    cfg_file.write(
+        "- driving " + car_heading + " (distance travelled along transect is plotted)\n"
+    )
+    cfg_file.write("- used " + wind_data_src + "\n")
+    cfg_file.write(
+        "- plotted measured ch4 (background removed) alongside model transect\n"
+    )
+    cfg_file.write("\n\n")
+
+    cfg_file.write("MODEL TRANSECT\n")
+    cfg_file.write("==============\n\n")
+
+    cfg_file.write("peak concentration:\t" + str(peak_conc) + "\n")
+    cfg_file.write("total concentration:\t" + str(tot_conc) + "\n")
+    cfg_file.write("\n\n")
+
+    cfg_file.write("CORRELATION\n")
+    cfg_file.write("===========\n\n")
+
+    cfg_file.write(
+        "flux scaling factor (mod/meas):\t\t" + str(flux_scaling_factor) + "\n"
+    )
+    cfg_file.write("angular deviation btwn maxima:\t\t" + str(angle_dev) + " deg\n")
+    cfg_file.write("R_squared:\t\t\t\t\t\t\t" + str(R_sq) + "\n")
+
+    cfg_file.write("\n")
+    cfg_file.close()
