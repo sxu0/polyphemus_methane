@@ -302,7 +302,7 @@ def plot_plume_transect(
         model_transect (np.ndarray): Concentration values along model plume transect,
             in ppb.
         measured_ch4 (np.ndarray): Measured CH4 concentrations along
-            transect, in ppb. #! remember to convert to ppb in main
+            transect, in ppb.
         site (str): Name of site being modelled, for populating paths.
         date (str, optional): Date of measurements, in "YYYY-MM-DD" format.
             Defaults to "".
@@ -522,3 +522,23 @@ def wind_dir_change(
     )
 
     return angle_dev
+
+
+def correlation_plume_transects(model_transect, measured_ch4):
+    # type: (np.ndarray, np.ndarray) -> float
+    """Calculates correlation coefficient between measured and modelled
+    concentrations along transect.
+
+    Args:
+        model_transect (np.ndarray): Modelled concentrations along transect, in ppb.
+        measured_ch4 (np.ndarray): Measured concentrations along transect, in ppb.
+
+    Returns:
+        R_sq (float): R^2 correlation coefficient.
+    """
+    correlation_matrix = np.corrcoef(model_transect, measured_ch4)
+    # print(correlation_matrix)
+    correlation_xy = correlation_matrix[0, 1]
+    R_sq = correlation_xy ** 2
+
+    return R_sq
