@@ -13,10 +13,10 @@ import datetime
 import os
 import shutil
 from pathlib2 import Path
-from typing import Tuple
 
 import numpy as np
 import matplotlib
+from typing import Tuple
 
 matplotlib.use("Agg")
 
