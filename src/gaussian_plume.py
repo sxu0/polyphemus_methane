@@ -301,7 +301,7 @@ def plot_plume_transect(
         model_transect (np.ndarray): Concentration values along model plume transect,
             in ppb.
         measured_ch4 (np.ndarray): Measured CH4 concentrations along
-            transect, in ppm.
+            transect, in ppb. #! remember to convert to ppb in main
         site (str): Name of site being modelled, for populating paths.
         date (str, optional): Date of measurements, in "YYYY-MM-DD" format.
             Defaults to "".
@@ -310,20 +310,16 @@ def plot_plume_transect(
         save_fig (bool, optional): Whether to save output figure. Defaults to False.
         location_save (str, optional): Path to save output figure. Defaults to "".
     """
-    if measured_ch4 is not None:
-        measured_ch4 *= 1000  # convert to ppb
-        bkg = min(measured_ch4)
-        measured_ch4 -= bkg  # subtract background concentration
+    bkg = min(measured_ch4)
+    measured_ch4 -= bkg  # subtract background concentration
 
     plt.figure()
     plt.plot(transect_dists, model_transect, color="red", label="modelled")
-    if measured_ch4 is not None:
-        plt.plot(transect_dists, measured_ch4, color="blue", label="measured")
+    plt.plot(transect_dists, measured_ch4, color="blue", label="measured")
     plt.title("Plume Cross Section at Transect")
     plt.xlabel("Distance Along Transect (m)")
     plt.ylabel("Concentration (ppb)")
-    if measured_ch4 is not None:
-        plt.legend()
+    plt.legend()
 
     if save_fig:
         if time_run != "":
@@ -338,3 +334,35 @@ def plot_plume_transect(
         plt.show()
 
     return
+
+
+def max_transect_conc(plume_transect):
+    # type: (np.ndarray) -> float
+    """Returns maximum concentration along transect, in ppb.
+
+    Args:
+        plume_transect (np.ndarray): Concentration values along model plume transect,
+            in ppb.
+    Returns:
+        max_conc (float): Peak concentration along transect, in ppb.
+    """
+    max_conc = max(plume_transect)
+
+    return max_conc
+
+
+def tot_transect_conc(transect_dists, plume_transect):
+    # type: (np.ndarray, np.ndarray) -> float
+    """Returns total concentration across transect, i.e. area under concentration
+    vs distance along transect curve, in ppb.
+
+    Args:
+        transect_dists (np.ndarray): Distances along transect, in metres.
+        plume_transect (np.ndarray): Concentrations along transect, in ppb.
+
+    Returns:
+        area (float): Total concentration across transect, in ppb.
+    """
+    area = scipy.integrate.trapz(plume_transect, transect_dists)
+
+    return area
