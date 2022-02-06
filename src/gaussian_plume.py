@@ -2,9 +2,9 @@
 gaussian_plume.py
 
 Main functions for running Polyphemus' Gaussian plume model,
-as well as for visualizing its outputs.
+visualizing its outputs, and facilitating pinpointing of sources.
 
-Authors: Shiqi Xu, Sebastien Ars
+Author: Shiqi Xu
 """
 
 #!/usr/bin/env python
@@ -25,6 +25,7 @@ import scipy
 from scipy import integrate as integ
 from scipy import stats
 from pathlib2 import Path
+from typing import Tuple
 
 from libs.polyphemus.include import atmopy
 from libs.polyphemus.include.atmopy.display import *
@@ -336,25 +337,10 @@ def plot_plume_transect(
     return
 
 
-def max_transect_conc(plume_transect):
-    # type: (np.ndarray) -> float
-    """Returns maximum concentration along transect, in ppb.
-
-    Args:
-        plume_transect (np.ndarray): Concentration values along model plume transect,
-            in ppb.
-    Returns:
-        max_conc (float): Peak concentration along transect, in ppb.
-    """
-    max_conc = max(plume_transect)
-
-    return max_conc
-
-
 def tot_transect_conc(transect_dists, plume_transect):
     # type: (np.ndarray, np.ndarray) -> float
-    """Returns total concentration across transect, i.e. area under concentration
-    vs distance along transect curve, in ppb.
+    """Returns total concentration across transect (i.e. area under concentration
+    vs distance along transect curve), in ppb.
 
     Args:
         transect_dists (np.ndarray): Distances along transect, in metres.
@@ -366,3 +352,98 @@ def tot_transect_conc(transect_dists, plume_transect):
     area = scipy.integrate.trapz(plume_transect, transect_dists)
 
     return area
+
+    '''
+    # ! ## note: the following cases are specific to 2021-08-09 (transect #2)
+    # ! ## and 2018-08-16 (want to include only main peak)
+    if date == "2021-08-09":
+        dist_index = 0
+        while dist_along_transect[dist_index] < 600:
+            dist_index += 1
+        model_transect_area = scipy.integrate.trapz(
+            plume_transect[dist_index:], dist_along_transect[dist_index:]
+        )
+        measured_ch4_area = scipy.integrate.trapz(
+            measured_ch4[dist_index:], dist_along_transect[dist_index:]
+        )
+    elif date == "2018-08-16":
+        dist_i_start = 0
+        while dist_along_transect[dist_i_start] < 600:
+            dist_i_start += 1
+        dist_i_end = dist_i_start + 1
+        while dist_along_transect[dist_i_end] < 1750:
+            dist_i_end += 1
+        model_transect_area = scipy.integrate.trapz(
+            plume_transect[dist_i_start:dist_i_end],
+            dist_along_transect[dist_i_start:dist_i_end],
+        )
+        measured_ch4_area = scipy.integrate.trapz(
+            measured_ch4[dist_i_start:dist_i_end],
+            dist_along_transect[dist_i_start:dist_i_end],
+        )
+    else:
+        model_transect_area = scipy.integrate.trapz(plume_transect, dist_along_transect)
+        measured_ch4_area = scipy.integrate.trapz(measured_ch4, dist_along_transect)
+    '''
+
+
+def flux_scaling_factor(transect_dists, model_transect, measured_ch4):
+    # type: (np.ndarray, np.ndarray, np.ndarray) -> float
+    """Suggested scaling factor for source flux (model input), defined as the
+    ratio of total concentration across the transect in the measured data against
+    that in the modelled plume.
+
+    Args:
+        transect_dists (np.ndarray): Distances along transect, in metres.
+        model_transect (np.ndarray): Modelled concentrations along transect, in ppb.
+        measured_ch4 (np.ndarray): Measured concentrations along transect, in ppb.
+
+    Returns:
+        flux_sf (float): Suggested scaling factor for flux (model input).
+    """
+    measured_ch4_area = tot_transect_conc(transect_dists, measured_ch4)
+    model_transect_area = tot_transect_conc(transect_dists, model_transect)
+    flux_sf = measured_ch4_area / model_transect_area
+
+    return flux_sf
+
+
+def shift_source(transect_x, transect_y, model_transect, measured_ch4):
+    # type: (np.ndarray, np.ndarray, np.ndarray, np.ndarray) -> Tuple[float, float]
+    """Suggests translation of source in x and y directions, in metres, based on
+    offset between measured and modelled peaks. Works for a single source. Limited
+    to cases with a single source.
+
+    Args:
+        transect_x (np.ndarray): Local x-coordinates of points along transect.
+        transect_y (np.ndarray): Local y-coordinates of points along transect.
+        model_transect (np.ndarray): Modelled concentrations along transect, in ppb.
+        measured_ch4 (np.ndarray): Measured concentrations along transect, in ppb.
+
+    Returns:
+        src_delta_x (float): Suggested source location shift in x, in metres.
+        src_delta_y (float): Suggested source location shift in y, in metres.
+    """
+    ## index of model peak along transect
+    model_peak_i_start = model_transect.index(max(model_transect))
+    model_peak_i_stop = model_peak_i_start
+    while (model_peak_i_stop < len(model_transect) - 1) and (
+        model_transect[model_peak_i_stop + 1] == model_transect[model_peak_i_stop]
+    ):
+        model_peak_i_stop += 1
+    model_peak_index = int((model_peak_i_start + model_peak_i_stop) / 2)
+    ## index of measured peak along transect
+    meas_peak_i_start = measured_ch4.index(max(measured_ch4))
+    meas_peak_i_stop = meas_peak_i_start
+    while (meas_peak_i_stop < len(measured_ch4) - 1) and (
+        measured_ch4[meas_peak_i_stop + 1] == measured_ch4[meas_peak_i_stop]
+    ):
+        meas_peak_i_stop += 1
+    meas_peak_index = int((meas_peak_i_start + meas_peak_i_stop) / 2)
+
+    ## difference in coordinates between measured & modelled peaks
+    src_delta_x = transect_x[meas_peak_index] - transect_x[model_peak_index]
+    src_delta_y = transect_y[meas_peak_index] - transect_y[model_peak_index]
+
+    return src_delta_x, src_delta_y
+
