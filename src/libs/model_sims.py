@@ -24,25 +24,34 @@ from polyphemus.include.atmopy.display import *
 from coord_convert import *
 
 
-def convert_to_time(x):
+def convert_to_time(x: str) -> datetime.datetime:
     """Converts gps_time strings into datetime objects."""
     return datetime.datetime.strptime(x, "%Y-%m-%d %H:%M:%S.%f")
 
 
-def fichier_meteo(site_name, temp, wind_dir, wind_speed, pbl, stabil_class, pressure):
+def fichier_meteo(
+    site_name: str,
+    stabil_class: str,
+    wind_dir: float,
+    wind_speed: float,
+    pressure: float,
+    temp: float,
+    pbl: float,
+) -> None:
     """Generates `meteo.dat` file containing relevant meteorological data. Executes
     the preprocessing step of the gaussian plume model.
 
     Args:
-        site_name (str): [description]
-        temp (float): Temperature, in degrees Celsius.
+        site_name (str): Name of site being modelled, for populating
+            paths and filenames.
+        stabil_class (str): Pasquill-Gifford stability class.
+            One of 'A', 'B', 'C', 'D', 'E', 'F', and 'G'.
         wind_dir (float): Originating wind direction in degrees,
             measured clockwise from North.
         wind_speed (float): Wind speed, in m/s.
-        pbl (float): Planetary boundary layer height, in meters.
-        stabil_class (str): Pasquill-Gifford stability class.
-            One of 'A', 'B', 'C', 'D', 'E', 'F', and 'G'.
         pressure (float): Pressure, in hPa.
+        temp (float): Temperature, in degrees Celsius.
+        pbl (float): Planetary boundary layer height, in meters.
     """
     model_path = Path.cwd() / "polyphemus" / site_name
     chemin1 = model_path / "preprocessing" / "dep"
@@ -158,7 +167,14 @@ def fichier_meteo(site_name, temp, wind_dir, wind_speed, pbl, stabil_class, pres
     return
 
 
-def plume_response_function(site_name, source, date, rate, temp, window, facteur=None):
+def plume_response_function(
+    site_name: str,
+    source: np.array,
+    date: str,
+    rate: float,
+    temp: float,
+    window: float,
+) -> None:
     """TODO"""
     model_path = Path.cwd() / "polyphemus" / site_name
     chemin1 = model_path / "preprocessing" / "dep"
@@ -410,7 +426,14 @@ def window(lat_s, lon_s, lat, lon, wind_speed, wind_dir, last):
     return window, x0, y0
 
 
-def plume(site_name, sources, date, rate, temp, window, facteur=None):
+def plume(
+    site_name: str,
+    sources: np.array,
+    date: str,
+    rate: float,
+    temp: float,
+    window: float,
+) -> None:
     """Generates `plume-source.dat` and `plume.cfg` files, creates necessary
     directories and files, and runs the processing step of the gaussian plume model.
 
@@ -423,11 +446,11 @@ def plume(site_name, sources, date, rate, temp, window, facteur=None):
                 [1] y-coordinate in local coordinate system, in metres;
                 [2] source diameter, in metres;
                 [3] source height above ground, in metres.
-        date (str): Date for model, in format "YYYY-MM-DD".
+        date (str): Date of model (of measurements if applicable), in format
+            "YYYY-MM-DD".
         rate (float): Source flux rate, in g/s.
         temp (float): Temperature, in degrees Celsius.
         window (float): Width of square window, in metres.
-        facteur (float, optional): TODO. Defaults to None.
     """
     model_path = Path.cwd() / "polyphemus" / site_name
     chemin1 = model_path / "preprocessing" / "dep"
