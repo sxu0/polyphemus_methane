@@ -1,5 +1,13 @@
-#!/usr/bin/env python
+"""
+model_sims.py
 
+Functions that run the pre-processing and processing steps of
+Polyphemus' Gaussian plume model.
+
+Authors: Sebastien Ars, Shiqi Xu
+"""
+
+#!/usr/bin/env python
 
 import datetime
 import os
@@ -10,13 +18,6 @@ import numpy as np
 import matplotlib
 
 matplotlib.use("Agg")
-from matplotlib import colors
-
-# from matplotlib import pyplot as plt
-# import pandas as pd
-# import scipy
-# from scipy import integrate as integ
-# from scipy import stats
 
 from polyphemus.include import atmopy
 from polyphemus.include.atmopy.display import *
