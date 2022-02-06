@@ -13,6 +13,7 @@ import datetime
 import os
 import shutil
 from pathlib2 import Path
+from typing import Tuple
 
 import numpy as np
 import matplotlib
@@ -25,20 +26,14 @@ from polyphemus.include.atmopy.display import *
 from coord_convert import *
 
 
-def convert_to_time(x: str) -> datetime.datetime:
+def convert_to_time(x):
+    # type: (str) -> datetime.datetime
     """Converts gps_time strings into datetime objects."""
     return datetime.datetime.strptime(x, "%Y-%m-%d %H:%M:%S.%f")
 
 
-def fichier_meteo(
-    site_name: str,
-    stabil_class: str,
-    wind_dir: float,
-    wind_speed: float,
-    pressure: float,
-    temp: float,
-    pbl: float,
-) -> None:
+def fichier_meteo(site_name, stabil_class, wind_dir, wind_speed, pressure, temp, pbl):
+    # type: (str, str, float, float, float, float, float) -> None
     """Generates `meteo.dat` file containing relevant meteorological data. Executes
     the preprocessing step of the gaussian plume model.
 
@@ -54,10 +49,11 @@ def fichier_meteo(
         temp (float): Temperature, in degrees Celsius.
         pbl (float): Planetary boundary layer height, in meters.
     """
-    model_path = Path.cwd() / "polyphemus" / site_name
+    polyphemus_path = Path.cwd() / "src" / "libs" / "polyphemus"
+    model_path = polyphemus_path / site_name
     chemin1 = model_path / "preprocessing" / "dep"
     chemin2 = model_path / "processing" / "gaussian"
-    chemin_fichiers = Path.cwd() / "polyphemus" / "fichiers" / "preprocessing" / "dep"
+    chemin_fichiers = polyphemus_path / "fichiers" / "preprocessing" / "dep"
     chemin3 = model_path / "graphes" / "config"
     chemin4 = chemin3 / "results"
 
@@ -81,10 +77,7 @@ def fichier_meteo(
     except OSError:
         pass
 
-    #######################################################
-    ### copie des fichiers non modifies dans les dossiers #
-    #######################################################
-
+    ## copie des fichiers non modifies dans les dossiers
     path_file = chemin_fichiers / "gaussian-deposition.cfg"
     shutil.copy(path_file, chemin1)
     shutil.copy(path_file, chemin3)
@@ -97,16 +90,10 @@ def fichier_meteo(
     path_file = chemin_fichiers / "SConstruct"
     shutil.copy(path_file, chemin1)
 
-    #####################################################
-    # conversion des directions du vent pour polyphemus #
-    #####################################################
-
+    ## conversion des directions du vent pour polyphemus
     wind_dir = 450 - wind_dir - 180
 
-    ###################################
-    ### creation du fichier meteo.dat #
-    ###################################
-
+    ## creation du fichier meteo.dat
     nom = open(chemin1 / "meteo.dat", "w")
     nom.write(
         "[situation]\n\n\
@@ -140,19 +127,11 @@ def fichier_meteo(
     )  # copie/colle le fichier meteo que l on vient de creer
     shutil.copy(path_file, chemin3)
 
-    ############################################################################
-    ### Compiler gaussian-deposition dans le bon dossier pour le preprocessing #
-    ############################################################################
-
+    ## compiler gaussian-deposition dans le bon dossier pour le preprocessing
     os.chdir(chemin1)
-    os.system(
-        str(Path.cwd() / "polyphemus" / "utils" / "scons.py") + " gaussian-deposition"
-    )
+    os.system(str(polyphemus_path / "utils" / "scons.py") + " gaussian-deposition")
 
-    #############################################
-    ### lancer l'executable gaussian-deposition #
-    #############################################
-
+    ## lancer l'executable gaussian-deposition
     os.chdir(chemin3)
     os.system(
         str(model_path / "preprocessing" / "dep" / "gaussian-deposition")
@@ -168,29 +147,28 @@ def fichier_meteo(
     return
 
 
-def plume_response_function(
-    site_name: str,
-    source: np.ndarray,
-    date: str,
-    rate: float,
-    temp: float,
-    window: float,
-) -> None:
-    """TODO"""
-    model_path = Path.cwd() / "polyphemus" / site_name
+def plume_response_function(source, window, rate, temp, site_name, date):
+    # type: (np.ndarray, float, float, float, str, str) -> None
+    """TODO
+
+    Args:
+        source (np.ndarray): [TODO].
+        window (float): [TODO].
+        rate (float): [TODO].
+        temp (float): [TODO].
+        site_name (str): [TODO].
+        date (str): [TODO].
+    """
+    polyphemus_path = Path.cwd() / "src" / "libs" / "polyphemus"
+    model_path = polyphemus_path / site_name
     chemin1 = model_path / "preprocessing" / "dep"
     chemin2 = model_path / "processing" / "gaussian"
-    chemin_fichiers = Path.cwd() / "polyphemus" / "fichiers" / "preprocessing" / "dep"
-    chemin_fichiers2 = (
-        Path.cwd() / "polyphemus" / "fichiers" / "processing" / "gaussian"
-    )
+    chemin_fichiers = polyphemus_path / "fichiers" / "preprocessing" / "dep"
+    chemin_fichiers2 = polyphemus_path / "fichiers" / "processing" / "gaussian"
     chemin3 = model_path / "graphes" / "config"
     chemin4 = chemin3 / "results"
 
-    #####################################
-    # creation fichier plume-source.dat #
-    #####################################
-
+    ## creation fichier plume-source.dat
     nom = open(chemin2 / "plume-source.dat", "w")
     nom.write(
         "[source]\n\n\
@@ -224,13 +202,10 @@ def plume_response_function(
 
     path_file = (
         chemin2 / "plume-source.dat"
-    )  # copie/colle le fichier meteo que l on vient de creer
+    )  # copie/colle le fichier meteo que l'on vient de creer
     shutil.copy(path_file, chemin3)
 
-    #####################################
-    # creation fichier plume.cfg 	    #
-    #####################################
-
+    ## creation fichier plume.cfg
     nom = open(chemin2 / "plume.cfg", "w")
     nom.write(
         '[display]\n\n\
@@ -326,10 +301,7 @@ def plume_response_function(
     )  # copie/colle le fichier meteo que l on vient de creer
     shutil.copy(path_file, chemin3)
 
-    ###################################################################
-    ### copie des fichiers qui ne sont pas modifies dans les dossiers #
-    ###################################################################
-
+    ## copie des fichiers qui ne sont pas modifies dans les dossiers
     path_file = chemin_fichiers2 / "plume.cpp"
     shutil.copy(path_file, chemin2)
     shutil.copy(path_file, chemin3)
@@ -344,17 +316,11 @@ def plume_response_function(
     path_file = chemin3 / "gaussian-meteo.dat"
     shutil.copy(path_file, chemin2)
 
-    ###########################################################
-    ### Compiler plume dans le bon dossier pour le processing #
-    ###########################################################
-
+    ## compiler plume dans le bon dossier pour le processing
     os.chdir(chemin2)
-    os.system(str(Path.cwd() / "polyphemus" / "utils" / "scons.py") + " plume")
+    os.system(str(polyphemus_path / "utils" / "scons.py") + " plume")
 
-    ###############################
-    ### lancer l'executable plume #
-    ###############################
-
+    ## lancer l'executable plume
     os.chdir(chemin3)
     os.system(str(model_path / "processing" / "gaussian" / "plume") + " plume.cfg")
 
@@ -362,7 +328,9 @@ def plume_response_function(
 
 
 def window(lat_s, lon_s, lat, lon, wind_speed, wind_dir, last):
-    """TODO"""
+    # type: (float, float, np.ndarray, np.ndarray, float, float, int) -> Tuple[float, float, float]
+    """TODO (SX: not sure what all the arguments are)
+    """
     x_ext1, y_ext1 = convert_coord(lat[0], lon[0])
     x_ext2, y_ext2 = convert_coord(lat[last], lon[last])
 
@@ -409,7 +377,7 @@ def window(lat_s, lon_s, lat, lon, wind_speed, wind_dir, last):
     window = window + 200
     print("Window:", window)
 
-    ### window origin
+    ## window origin
 
     u, v = (-wind_speed * math.sin(math.radians(wind_dir))), (
         -wind_speed * math.cos(math.radians(wind_dir))
@@ -427,19 +395,12 @@ def window(lat_s, lon_s, lat, lon, wind_speed, wind_dir, last):
     return window, x0, y0
 
 
-def plume(
-    site_name: str,
-    sources: np.ndarray,
-    date: str,
-    rate: float,
-    temp: float,
-    window: float,
-) -> None:
+def plume(sources, window, rate, temp, site_name, date):
+    # type: (np.ndarray, float, float, float, str, str) -> None
     """Generates `plume-source.dat` and `plume.cfg` files, creates necessary
     directories and files, and runs the processing step of the gaussian plume model.
 
     Args:
-        site_name (str): Name of site being modelled. Name of parent directory.
         sources (np.ndarray[float]): 2D array containing information about
             sources. Each outer element corresponds to a source, whose elements
             entail the following:
@@ -447,26 +408,23 @@ def plume(
                 [1] y-coordinate in local coordinate system, in metres;
                 [2] source diameter, in metres;
                 [3] source height above ground, in metres.
-        date (str): Date of model (of measurements if applicable), in format
-            "YYYY-MM-DD".
+        window (float): Width of square domain, in metres.
         rate (float): Source flux rate, in g/s.
         temp (float): Temperature, in degrees Celsius.
-        window (float): Width of square domain, in metres.
+        site_name (str): Name of site being modelled. Name of parent directory.
+        date (str): Date of model (of measurements if applicable), in format
+            "YYYY-MM-DD".
     """
-    model_path = Path.cwd() / "polyphemus" / site_name
+    polyphemus_path = Path.cwd() / "src" / "libs" / "polyphemus"
+    model_path = polyphemus_path / site_name
     chemin1 = model_path / "preprocessing" / "dep"
     chemin2 = model_path / "processing" / "gaussian"
-    chemin_fichiers = Path.cwd() / "polyphemus" / "fichiers" / "preprocessing" / "dep"
-    chemin_fichiers2 = (
-        Path.cwd() / "polyphemus" / "fichiers" / "processing" / "gaussian"
-    )
+    chemin_fichiers = polyphemus_path / "fichiers" / "preprocessing" / "dep"
+    chemin_fichiers2 = polyphemus_path / "fichiers" / "processing" / "gaussian"
     chemin3 = model_path / "graphes" / "config"
     chemin4 = chemin3 / "results"
 
-    #####################################
-    # creation fichier plume-source.dat #
-    #####################################
-
+    ## creation fichier plume-source.dat
     nom = open(chemin2 / "plume-source.dat", "w")
     for ii in range(0, len(sources)):
         nom.write(
@@ -513,10 +471,7 @@ def plume(
     )  # copie/colle le fichier meteo que l on vient de creer
     shutil.copy(path_file, chemin3)
 
-    #####################################
-    # creation fichier plume.cfg 	    #
-    #####################################
-
+    ## creation fichier plume.cfg
     nom = open(chemin2 / "plume.cfg", "w")
     nom.write(
         '[display]\n\n\
@@ -612,10 +567,7 @@ def plume(
     )  # copie/colle le fichier meteo que l on vient de creer
     shutil.copy(path_file, chemin3)
 
-    ###################################################################
-    ### copie des fichiers qui ne sont pas modifies dans les dossiers #
-    ###################################################################
-
+    ## copie des fichiers qui ne sont pas modifies dans les dossiers
     path_file = chemin_fichiers2 / "plume.cpp"
     shutil.copy(path_file, chemin2)
     shutil.copy(path_file, chemin3)
@@ -630,22 +582,12 @@ def plume(
     path_file = chemin3 / "gaussian-meteo.dat"
     shutil.copy(path_file, chemin2)
 
-    ###########################################################
-    ### Compiler plume dans le bon dossier pour le processing #
-    ###########################################################
-
+    ## compiler plume dans le bon dossier pour le processing
     os.chdir(chemin2)
-    os.system(str(Path.cwd() / "polyphemus" / "utils" / "scons.py") + " plume")
+    os.system(str(polyphemus_path / "utils" / "scons.py") + " plume")
 
-    ###############################
-    ### lancer l'executable plume #
-    ###############################
-
+    ## lancer l'executable plume
     os.chdir(chemin3)
     os.system(str(model_path / "processing" / "gaussian" / "plume") + " plume.cfg")
-
-    ####################################
-    ### Tracer graphiques sur la route #
-    ####################################
 
     return
