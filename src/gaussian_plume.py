@@ -202,35 +202,25 @@ def plot_plume_horiz_slice(
     return
 
 
-def plot_plume_transect(
+def extract_plume_transect(
     transect_x,
     transect_y,
-    measured_ch4,
     window,
     conv_factor,
     site,
-    date="",
-    time_run="",
-    save_fig=False,
-    location_save="",
 ):
-    # type: (np.ndarray, np.ndarray, np.ndarray, float, float, str, str, str, bool, str) -> None
-    """Generates plot of modelled (and measured) concentrations along transect.
+    # type: (np.ndarray, np.ndarray, float, float, str) -> np.ndarray
+    """Retrieves array containing concentration along the specified plume transect,
+    in ppb.
 
     Args:
         transect_x (np.ndarray): Local x-coordinates of points along transect.
         transect_y (np.ndarray): Local y-coordinates of points along transect.
-        measured_ch4 (np.ndarray): Measured CH4 concentrations along
-            transect, in ppm.
         window (float): Width of square domain, in metres.
         conv_factor (float): g/m^3 to ppb conversion factor.
-        site (str): Name of site being modelled, for populating paths.
-        date (str, optional): Date of measurements, in "YYYY-MM-DD" format.
-            Defaults to "".
-        time_run (str, optional): Time of analysis, for distinguishing outputs.
-            Defaults to "".
-        save_fig (bool, optional): Whether to save output figure. Defaults to False.
-        location_save (str, optional): Path to save output figure. Defaults to "".
+        site (str): Name of site being modelled, for retrieving paths.
+    Returns:
+        plume_transect (np.ndarray): ppb values along plume transect.
     """
     x_min, y_min = 0.0, 0.0
     delta_x, delta_y = 1.0, 1.0
@@ -262,9 +252,24 @@ def plot_plume_transect(
             plume_transect.append(loc_conc[0, 0])
             # print("\nloc_conc:\n", loc_conc)
     # print("\nplume_transect:\n", plume_transect)
+    plume_transect = np.array(plume_transect)
 
-    ## distance along transect
-    dist_along_transect = [0]
+    return plume_transect
+
+
+def distance_along_transect(transect_x, transect_y):
+    # type: (np.ndarray, np.ndarray) -> np.ndarray
+    """Converts x and y transect coordinates to a single array containing
+    distances along the transect.
+
+    Args:
+        transect_x (np.ndarray): Local x-coordinates of points along transect.
+        transect_y (np.ndarray): Local y-coordinates of points along transect.
+
+    Returns:
+        dists: Distances along transect, in metres.
+    """
+    dists = [0]
     dist = 0
     for i in range(len(transect_x) - 1):
         dist_segment = (
@@ -272,17 +277,48 @@ def plot_plume_transect(
             + (transect_y[i + 1] - transect_y[i]) ** 2
         ) ** 0.5
         dist += dist_segment
-        dist_along_transect.append(dist)
+        dists.append(dist)
+    dists = np.array(dists)
 
+    return dists
+
+
+def plot_plume_transect(
+    transect_dists,
+    model_transect,
+    measured_ch4,
+    site,
+    date="",
+    time_run="",
+    save_fig=False,
+    location_save="",
+):
+    # type: (np.ndarray, np.ndarray, np.ndarray, str, str, str, bool, str) -> None
+    """Generates plot of modelled (and measured) concentrations along transect.
+
+    Args:
+        transect_dists (np.ndarray): Distances along transect, in metres.
+        model_transect (np.ndarray): Concentration values along model plume transect,
+            in ppb.
+        measured_ch4 (np.ndarray): Measured CH4 concentrations along
+            transect, in ppm.
+        site (str): Name of site being modelled, for populating paths.
+        date (str, optional): Date of measurements, in "YYYY-MM-DD" format.
+            Defaults to "".
+        time_run (str, optional): Time of analysis, for distinguishing outputs.
+            Defaults to "".
+        save_fig (bool, optional): Whether to save output figure. Defaults to False.
+        location_save (str, optional): Path to save output figure. Defaults to "".
+    """
     if measured_ch4 is not None:
         measured_ch4 *= 1000  # convert to ppb
         bkg = min(measured_ch4)
         measured_ch4 -= bkg  # subtract background concentration
 
     plt.figure()
-    plt.plot(dist_along_transect, plume_transect, color="red", label="modelled")
+    plt.plot(transect_dists, model_transect, color="red", label="modelled")
     if measured_ch4 is not None:
-        plt.plot(dist_along_transect, measured_ch4, color="blue", label="measured")
+        plt.plot(transect_dists, measured_ch4, color="blue", label="measured")
     plt.title("Plume Cross Section at Transect")
     plt.xlabel("Distance Along Transect (m)")
     plt.ylabel("Concentration (ppb)")
@@ -302,30 +338,3 @@ def plot_plume_transect(
         plt.show()
 
     return
-
-
-# # ! transect coords converted in transect_mapping_germain_mills.py
-# transect = pd.read_csv(transect_path, sep="\t", header=None, index_col=False)
-# transect_x = transect.iloc[:, 0]
-# transect_y = transect.iloc[:, 1]
-
-
-# ## measured ch4
-# # ! load in prepared (pre-cropped i think) file with measured ch4
-# measured_ch4_file = pd.read_csv(measured_ch4_path, index_col=False)
-# if date[:4] == "2018":
-#     measured_ch4 = measured_ch4_file.loc[:, "ch4_cal"]
-# else:
-#     measured_ch4 = measured_ch4_file.loc[:, "ch4d"]
-# # measured_ch4_file = pd.read_csv("/home/centos7/Documents/Polyphemus/german_mills_transects/german_mills_transect_2018-08-28_measured_ch4.txt", header=None, index_col=False)
-# # measured_ch4 = measured_ch4_file.iloc[:, 0]
-# measured_ch4 = measured_ch4.to_numpy()
-
-
-# # ! calculate max height and "area" under transect concentrations
-# #########################
-# ## plot plume transect ##
-# #########################
-
-# print("maximum height:\t" + str(max(plume_transect)))
-# print("area:\t\t" + str(model_transect_area))
