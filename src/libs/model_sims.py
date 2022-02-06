@@ -169,7 +169,7 @@ def fichier_meteo(
 
 def plume_response_function(
     site_name: str,
-    source: np.array,
+    source: np.ndarray,
     date: str,
     rate: float,
     temp: float,
@@ -428,7 +428,7 @@ def window(lat_s, lon_s, lat, lon, wind_speed, wind_dir, last):
 
 def plume(
     site_name: str,
-    sources: np.array,
+    sources: np.ndarray,
     date: str,
     rate: float,
     temp: float,
@@ -439,7 +439,7 @@ def plume(
 
     Args:
         site_name (str): Name of site being modelled. Name of parent directory.
-        sources (np.ndarray[float]): 2D numpy array containing information about
+        sources (np.ndarray[float]): 2D array containing information about
             sources. Each outer element corresponds to a source, whose elements
             entail the following:
                 [0] x-coordinate in local coordinate system, in metres;
