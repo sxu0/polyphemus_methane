@@ -10,27 +10,21 @@ Author: Shiqi Xu
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import datetime
 import math
 import os
-import shutil
 
 import matplotlib
 matplotlib.use("Agg")
 from matplotlib import pyplot as plt
-from matplotlib import colors
 import numpy as np
-import pandas as pd
 import scipy
-from scipy import integrate as integ
-from scipy import stats
 from pathlib2 import Path
 from typing import Tuple
 
 from libs.polyphemus.include import atmopy
 from libs.polyphemus.include.atmopy.display import *
 
-from libs import model_sims, coord_convert
+from libs import model_sims
 
 
 def run_model(
