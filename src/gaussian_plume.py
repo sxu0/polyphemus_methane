@@ -17,12 +17,9 @@ import matplotlib
 matplotlib.use("Agg")
 from matplotlib import pyplot as plt
 import numpy as np
-import scipy
+from scipy import integrate
 from pathlib2 import Path
 from typing import Tuple
-
-from libs.polyphemus.include import atmopy
-from libs.polyphemus.include.atmopy.display import *
 
 from libs import model_sims
 
@@ -357,7 +354,7 @@ def tot_transect_conc(transect_dists, plume_transect):
     Returns:
         area (float): Total concentration across transect, in ppb.
     """
-    area = scipy.integrate.trapz(plume_transect, transect_dists)
+    area = integrate.trapz(plume_transect, transect_dists)
 
     return area
 
@@ -368,10 +365,10 @@ def tot_transect_conc(transect_dists, plume_transect):
         dist_index = 0
         while dist_along_transect[dist_index] < 600:
             dist_index += 1
-        model_transect_area = scipy.integrate.trapz(
+        model_transect_area = integrate.trapz(
             plume_transect[dist_index:], dist_along_transect[dist_index:]
         )
-        measured_ch4_area = scipy.integrate.trapz(
+        measured_ch4_area = integrate.trapz(
             measured_ch4[dist_index:], dist_along_transect[dist_index:]
         )
     elif date == "2018-08-16":
@@ -381,17 +378,17 @@ def tot_transect_conc(transect_dists, plume_transect):
         dist_i_end = dist_i_start + 1
         while dist_along_transect[dist_i_end] < 1750:
             dist_i_end += 1
-        model_transect_area = scipy.integrate.trapz(
+        model_transect_area = integrate.trapz(
             plume_transect[dist_i_start:dist_i_end],
             dist_along_transect[dist_i_start:dist_i_end],
         )
-        measured_ch4_area = scipy.integrate.trapz(
+        measured_ch4_area = integrate.trapz(
             measured_ch4[dist_i_start:dist_i_end],
             dist_along_transect[dist_i_start:dist_i_end],
         )
     else:
-        model_transect_area = scipy.integrate.trapz(plume_transect, dist_along_transect)
-        measured_ch4_area = scipy.integrate.trapz(measured_ch4, dist_along_transect)
+        model_transect_area = integrate.trapz(plume_transect, dist_along_transect)
+        measured_ch4_area = integrate.trapz(measured_ch4, dist_along_transect)
     '''
 
 
