@@ -450,7 +450,7 @@ def plume(
             "YYYY-MM-DD".
         rate (float): Source flux rate, in g/s.
         temp (float): Temperature, in degrees Celsius.
-        window (float): Width of square window, in metres.
+        window (float): Width of square domain, in metres.
     """
     model_path = Path.cwd() / "polyphemus" / site_name
     chemin1 = model_path / "preprocessing" / "dep"
