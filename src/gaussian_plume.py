@@ -26,8 +26,8 @@ from scipy import integrate as integ
 from scipy import stats
 from pathlib2 import Path
 
-from polyphemus.include import atmopy
-from polyphemus.include.atmopy.display import *
+from libs.polyphemus.include import atmopy
+from libs.polyphemus.include.atmopy.display import *
 
 from libs import model_sims, coord_convert
 
@@ -71,7 +71,7 @@ def run_model(
     ## 1_ create meteo file for Polyphemus
     model_sims.fichier_meteo(site, stabil_class, wind_dir, wind_speed, pressure, temp, pbl)
     ## 2_ run model
-    model_sims.plume(site, sources, date, flux, temp, window)
+    model_sims.plume(sources, window, flux, temp, site, date)
 
     return
 
