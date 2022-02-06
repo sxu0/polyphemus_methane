@@ -4,7 +4,7 @@ gaussian_plume.py
 Main functions for running Polyphemus' Gaussian plume model,
 visualizing its outputs, and facilitating pinpointing of sources.
 
-Author: Shiqi Xu
+Author: Shiqi Xu (extension of work by Sebastien Ars)
 """
 
 #!/usr/bin/env python
